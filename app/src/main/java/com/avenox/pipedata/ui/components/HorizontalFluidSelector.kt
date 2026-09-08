@@ -107,7 +107,7 @@ fun HorizontalFluidSelector(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .background(colors.cardBackground)
+                    .background(colors.chipBg)
                     .border(1.dp, colors.border, RoundedCornerShape(6.dp))
                     .padding(horizontal = 8.dp, vertical = 3.dp)
             ) {
@@ -321,7 +321,7 @@ private fun FluidRulerTrack(
             .fillMaxWidth()
             .height(76.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(colors.cardBackground)
+            .background(colors.surface)
             .border(1.dp, colors.border, RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -563,7 +563,7 @@ private fun FluidSegmentedStrip(
                 .fillMaxWidth()
                 .height(36.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(colors.cardBackground)
+                .background(colors.chipBg)
                 .border(1.dp, colors.border, RoundedCornerShape(8.dp))
                 .padding(2.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -613,7 +613,7 @@ private fun FluidSegmentedStrip(
                 .fillMaxWidth()
                 .height(36.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(colors.cardBackground)
+                .background(colors.chipBg)
                 .border(1.dp, colors.border, RoundedCornerShape(8.dp))
                 .padding(2.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
