@@ -7,3 +7,15 @@ __pycache__/
 .DS_Store
 *.tmp
 *.log
+
+# Android & Gradle
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+*.hprof
+.cxx/
+*.apk
+!gradle/wrapper/gradle-wrapper.jar

@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#0B111E"
+        android:pathData="M0,0h108v108h-108z"/>
+    <!-- Outer flange circle -->
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="4"
+        android:pathData="M54,18 A36,36 0 1,1 53.9,18 Z"/>
+    <!-- Inner pipe bore -->
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="3"
+        android:pathData="M54,36 A18,18 0 1,1 53.9,36 Z"/>
+    <!-- Bolt holes -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M54,23a3,3 0 1,0 0.01,0 Z M54,85a3,3 0 1,0 0.01,0 Z M23,54a3,3 0 1,0 0.01,0 Z M85,54a3,3 0 1,0 0.01,0 Z"/>
+    <!-- Center lines -->
+    <path
+        android:strokeColor="#FBBF24"
+        android:strokeWidth="1.5"
+        android:pathData="M54,10 L54,98 M10,54 L98,54"/>
+</vector>

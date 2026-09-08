@@ -1,0 +1,68 @@
+name: Build Android Jetpack Compose APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Package APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make Gradlew Executable
+        run: chmod +x gradlew
+
+      - name: Build Debug APK with Gradle
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Verify APK Output
+        run: |
+          ls -lh app/build/outputs/apk/debug/
+          test -f app/build/outputs/apk/debug/app-debug.apk || exit 1
+
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipedata-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: Create GitHub Release & Publish APK
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-compose
+          name: "Pipedata v1.0.0 - Native Jetpack Compose Release"
+          body: |
+            ## Pipedata Native Android Jetpack Compose Release (v1.0.0)
+
+            ### ✨ Key Features
+            - **Maximized Expansive CAD Drawing Stage**: Interactive touch zoom (1.0x to 4.0x), pan, double-tap zoom/reset, and edge arrows (‹ and ›) for seamless flange navigation.
+            - **Technical Glossary `(?)` Modal**: Instant ASME engineering explanations for NPS vs DN, Pressure Classes (150# - 2500#), Facings (RF, FF, RTJ), and Flange Dimensions (OD, Thickness, Hub, Bore, PCD).
+            - **4 Coherent CAD Themes**: AutoCAD Modern Dark, Classic Blueprint (Ozalit Mavisi), Engineering White (Paper Print), and OLED Amber (High Contrast).
+            - **Dual Language & Units**: Live English & Turkish translation, Metric (mm / kg) and Imperial (in / lb) unit conversion.
+            - **Text Accessibility**: Simple `[−]` and `[+]` font scaling stepper with high-contrast text rendering.
+            - **Embedded SQLite Engine**: Direct offline access to all ASME B16.5 flange specifications.
+          files: app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
