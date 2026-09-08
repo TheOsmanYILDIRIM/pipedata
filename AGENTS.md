@@ -7,9 +7,14 @@
 * **Beyin Ayrı Oda, Atölye Ayrı Oda:** Bu vault; notların, kuralların, kararların, sözlüğün ve proje özetlerinin yaşadığı yerdir. Kodun kendisi doğrudan vault köküne saçılmaz.
 * **Proje İskeleti:** Her projenin kendi atölye klasöründe `AGENTS.md`/`CLAUDE.md`, `notes.md` (dump & mimari), `reports/` (araştırmalar), `backlog.md` (yarım kalan işler) ve `constants` dosyası bulunur.
 
-## 3. Agentic Engineering & "Bitti" Protokolü
+## 3. Agentic Engineering, Test ve "Bitti" Protokolü
 * **Sınır Çiz, Yol Çizme:** Ajan brief'i 5 parçadan oluşur: *Hedef* (ne olursa bitti sayılır) + *Eldekiler/Ham Veri* + *Sert Sınırlar* (dokunma listesi) + *Ölçü* + *Serbestlik* (hata görürse söyleme inisiyatifi).
-* **Vibe Coding Yasaktır:** Ajanın "bitti" demesine körü körüne güvenilmez. Yapılan her değişiklik `git diff` ve CLI kontrolleri ile doğrulanır.
+* **Vibe Coding ve Sahte Onay Yasaktır:** Ajanın veya alt-ajanın "bitti" demesine körü körüne güvenilmez. Yapılan her kod değişikliği `git diff` ve bağımsız CLI kontrolleri ile doğrulanır.
+* **Makro Metrik Yanılgısı Yasağı (Anti-Macro Fallacy):** Testler yalnızca toplam dosya sayısı veya genel satır adedi gibi kaba toplamlarla geçiştirilemez. Her tablo, model ve kategori için EN AZ bir gerçek kaydın kritik semantik kolonları (`> 0`, `not null`, doğru tip ve birim) açıkça `assert` edilmelidir. Makro sayaçlar veri bütünlüğü kanıtı değildir.
+* **Sıfır Sessiz Fallback Kuralı (No Silent Fallback):** Veritabanı, servis veya dosya okumasında veri bulunamadığında ya da `NULL` döndüğünde kodun sessizce sahte varsayılan sayılar (hardcoded fallback: `if (val <= 0) val = 61.2`) uydurarak hatayı gizlemesi KESİNLİKLE YASAKTIR. Eksik veri geliştirme/denetim aşamasında açıkça `N/A`, `NULL` veya hata fırlatmalıdır; aksi takdirde otomatik ve görsel testler veri mimarisindeki çöküşleri yakalayamaz.
+* **Varlık - Kayıt Mutabakatı (Asset-to-Registry Reconciliation):** Projedeki statik varlıklar (SVG, ikon, şablon, dosya) ile koddaki enum, subtype veya model listeleri mutabakat kontrolünden (`ls assets/ | wc` vs `grep subtypes | wc`) geçirilmelidir. Klasörde 9 SVG varken arayüzde 3 alt tip tanımlı bırakılamaz.
+* **Anomali ve 0-Bayt Dosya Sorgulama (Oddity Investigation):** 0-bayt dosya, boş dönen sorgu veya teknik standarda aykırı bir isimlendirme (örneğin Socket Weld 2000#) görüldüğünde körü körüne koda dahil edilmez; standardın aslı (ASME, DIN, ISO vb.) araştırılarak kök anomali sorgulanır ve çözülür.
+* **Şüpheci Alt-Ajan Denetimi (Adversarial Subagent Verification):** Bir alt ajanın oluşturduğu markdown kontrol listesindeki `[x]` işaretleri veya "tamamlandı/kusursuz" raporları asla kanıt sayılamaz. Alt ajanın "kodu yazmış olması", o kodun "doğru veri ürettiği" anlamına gelmez. Ana ajan, alt ajanın tamamladığını beyan ettiği her veri/kod bloğunu doğrudan ham CLI komutlarıyla (`sqlite3 db "SELECT ..."`, `diff`, `curl`, `jq`) bağımsız olarak test etmeden alt-ajan çıktısını onaylayamaz.
 * **Slop ve Yarım İş Engeli:** Yarım kalan veya sonraki oturuma devreden her iş projenin `backlog.md` dosyasına kaydedilir.
 
 ## 4. Termux Araç Tercihi & CLI Entegrasyonu

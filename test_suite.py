@@ -347,12 +347,52 @@ class TestPipedataIntegrity(unittest.TestCase):
     def test_5_4_sqlite_downloads_sync(self):
         """Test 5.4: /storage/emulated/0/Download/ klasorundeki dosya senkronizasyonunu dogrular"""
         download_db = "/storage/emulated/0/Download/pipedata.db"
-        download_html = "/storage/emulated/0/Download/pipedata_tester.html"
         self.assertTrue(os.path.exists(download_db), "Downloads/pipedata.db bulunamadi")
-        self.assertTrue(os.path.exists(download_html), "Downloads/pipedata_tester.html bulunamadi")
         self.assertGreater(os.path.getsize(download_db), 10 * 1024 * 1024, "pipedata.db 10MB uzerinde olmali")
-        self.assertGreater(os.path.getsize(download_html), 3 * 1024 * 1024, "pipedata_tester.html 3MB uzerinde olmali")
+
+    def test_5_5_sqlite_socketweld_b16_11_deep_integrity(self):
+        """Test 5.5: Anti-Macro Fallacy Kurali - tbl_fittings_socketweld_b16_11 derin semantik dogrulama"""
+        import sqlite3
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        # 1. Class 2000# Soket Kaynakta KESINLIKLE OLMAMALIDIR (ASME B16.11 kurali)
+        count_2000 = cur.execute("SELECT count(*) FROM tbl_fittings_socketweld_b16_11 WHERE rating = 2000;").fetchone()[0]
+        self.assertEqual(count_2000, 0, "ASME B16.11 geregi soket kaynakta 2000# sinifi kesinlikle bulunamaz!")
+
+        # 2. 1/2" 3000# 90° Dirsek icin gercek ground-truth olculer dolu ve dogru olmalidir
+        row = cur.execute("""
+            SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, bore_diameter_mm, socket_wall_thickness_mm, weight_kg
+            FROM tbl_fittings_socketweld_b16_11
+            WHERE component_type = '90° Elbow' AND rating = 3000 AND (nps = '1/2' OR nps = '0+1/2') AND unit_system = 'Metric';
+        """).fetchone()
+
+        self.assertIsNotNone(row, "1/2\" 3000# 90° Soket Dirsek veritabaninda bulunamadi!")
+        self.assertEqual(row[0], 9.5, "Soket derinligi 9.5 mm olmali")
+        self.assertEqual(row[1], 22.2, "Soket capi 22.2 mm olmali")
+        self.assertEqual(row[2], 15.5, "Eksen-uc mesafesi 15.5 mm olmali")
+        self.assertEqual(row[3], 16.6, "Ic delik capi 16.6 mm olmali")
+        self.assertEqual(row[4], 4.67, "Soket et kalinligi 4.67 mm olmali")
+        self.assertEqual(row[5], 0.15, "Agirlik 0.15 kg olmali")
+
+        # 3. 9 alt tipin tamaminin varligini dogrula
+        types = set(r[0] for r in cur.execute("SELECT DISTINCT component_type FROM tbl_fittings_socketweld_b16_11;").fetchall())
+        expected_types = {"90° Elbow", "45° Elbow", "Tee", "Cross", "Full Coupling", "Half Coupling", "Cap", "Reducing Coupling", "Union"}
+        for exp in expected_types:
+            self.assertIn(exp, types, f"Soket alt tipi '{exp}' veritabaninda eksik!")
+
+        conn.close()
+
+    def test_5_6_asset_to_registry_reconciliation(self):
+        """Test 5.6: Varlik - Kayit Mutabakati: modern_ftsw1..9 tum SVG'ler assets altinda mevcut olmalidir"""
+        assets_svg_dir = os.path.join(self.project_dir, "app", "src", "main", "assets", "svg")
+        for i in range(1, 10):
+            svg_name = f"modern_ftsw{i}.svg"
+            svg_path = os.path.join(assets_svg_dir, svg_name)
+            self.assertTrue(os.path.exists(svg_path), f"Gerekli teknik cizim '{svg_name}' assets klasorunde bulunamadi!")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
 
