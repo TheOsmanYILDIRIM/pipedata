@@ -32,37 +32,41 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x gradlew
 
-      - name: Build Debug APK with Gradle
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+      - name: Build Signed APKs with Gradle
+        run: ./gradlew assembleRelease assembleDebug --no-daemon --stacktrace
 
       - name: Verify APK Output
         run: |
-          ls -lh app/build/outputs/apk/debug/
+          ls -lh app/build/outputs/apk/release/ app/build/outputs/apk/debug/
+          test -f app/build/outputs/apk/release/app-release.apk || exit 1
           test -f app/build/outputs/apk/debug/app-debug.apk || exit 1
 
-      - name: Upload Debug APK Artifact
+      - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: pipedata-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: pipedata-apks
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
       - name: Create GitHub Release & Publish APK
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0-compose
-          name: "Pipedata v1.0.0 - Native Jetpack Compose Release"
+          tag_name: v1.0.1-compose
+          name: "Pipedata v1.0.1 - Performance & Preference Persistence Update"
           body: |
-            ## Pipedata Native Android Jetpack Compose Release (v1.0.0)
+            ## Pipedata Native Android Jetpack Compose Release (v1.0.1)
 
-            ### ✨ Key Features
-            - **Maximized Expansive CAD Drawing Stage**: Interactive touch zoom (1.0x to 4.0x), pan, double-tap zoom/reset, and edge arrows (‹ and ›) for seamless flange navigation.
-            - **Technical Glossary `(?)` Modal**: Instant ASME engineering explanations for NPS vs DN, Pressure Classes (150# - 2500#), Facings (RF, FF, RTJ), and Flange Dimensions (OD, Thickness, Hub, Bore, PCD).
-            - **4 Coherent CAD Themes**: AutoCAD Modern Dark, Classic Blueprint (Ozalit Mavisi), Engineering White (Paper Print), and OLED Amber (High Contrast).
-            - **Dual Language & Units**: Live English & Turkish translation, Metric (mm / kg) and Imperial (in / lb) unit conversion.
-            - **Text Accessibility**: Simple `[−]` and `[+]` font scaling stepper with high-contrast text rendering.
-            - **Embedded SQLite Engine**: Direct offline access to all ASME B16.5 flange specifications.
-          files: app/build/outputs/apk/debug/app-debug.apk
+            ### ✨ What's New
+            - **Lightning Fast Navigation**: Pre-warmed SQLite caching and zero-I/O in-memory SVG asset caching for instantaneous category and screen transitions.
+            - **Full Preference Persistence**: All user settings, active unit system, theme, language, font scale, and per-category component selections (NPS, Class, Schedule, Rating, Facing) are automatically saved and restored across app restarts.
+            - **Default Imperial (Inch) Units**: Default unit system is now Imperial (in / lb), with live instant toggle buttons accessible directly on top bars across all screens.
+            - **Dynamic Responsive SVG Dimension Labels**: Numbers scale smoothly with font scale preferences while maintaining strict padding and translucent badge backgrounds that never overlap or obstruct CAD technical drawings.
+            - **Fixed Keystore Signing**: Consistent, immutable keystore signing (`antigravity.keystore`) ensuring seamless in-place APK updates without signature mismatch errors.
+          files: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

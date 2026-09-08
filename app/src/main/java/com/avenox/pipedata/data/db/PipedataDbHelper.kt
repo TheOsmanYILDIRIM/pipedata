@@ -44,6 +44,21 @@ class PipedataDbHelper(private val context: Context) {
             if (db == null || !db!!.isOpen) {
                 db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
             }
+            prewarmCache()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun prewarmCache() {
+        try {
+            getComponentData("flanges", 0, "2\"", "150#", "RF")
+            getComponentData("pipes", 0, "2\"", "40", null)
+            getComponentData("fittings_bw", 0, "2\"", "STD", null)
+            getComponentData("fittings_sw", 0, "2\"", "3000#", null)
+            getComponentData("valves", 0, "2\"", "150#", null)
+            getComponentData("gaskets", 0, "2\"", "150#", null)
+            getComponentData("blanks", 0, "2\"", "150#", null)
         } catch (e: Exception) {
             e.printStackTrace()
         }

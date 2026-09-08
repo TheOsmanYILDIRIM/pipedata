@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.avenox.pipedata.data.db.PipedataDbHelper
 import com.avenox.pipedata.data.model.*
+import com.avenox.pipedata.data.prefs.PreferencesManager
 import com.avenox.pipedata.ui.components.HelpBottomSheet
 import com.avenox.pipedata.ui.components.SettingsBottomSheet
 import com.avenox.pipedata.ui.screens.ComponentDetailScreen
@@ -39,21 +40,42 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            var currentTheme by remember { mutableStateOf(CadTheme.CAD_DARK) }
-            var currentUnit by remember { mutableStateOf(UnitSystem.METRIC) }
-            var currentLang by remember { mutableStateOf(AppLanguage.EN) }
-            var fontScale by remember { mutableFloatStateOf(1.0f) }
-            var highContrast by remember { mutableStateOf(false) }
+            val prefsManager = remember { PreferencesManager(this@MainActivity) }
+            var currentTheme by remember { mutableStateOf(prefsManager.cadTheme) }
+            var currentUnit by remember { mutableStateOf(prefsManager.unitSystem) }
+            var currentLang by remember { mutableStateOf(prefsManager.appLanguage) }
+            var fontScale by remember { mutableFloatStateOf(prefsManager.fontScale) }
+            var highContrast by remember { mutableStateOf(prefsManager.highContrast) }
+
+            val onUnitToggle = {
+                val newUnit = if (currentUnit == UnitSystem.METRIC) UnitSystem.IMPERIAL else UnitSystem.METRIC
+                currentUnit = newUnit
+                prefsManager.unitSystem = newUnit
+            }
 
             // Navigation state
             var currentScreen by remember { mutableStateOf("catalog") }
-            var selectedCategory by remember { mutableStateOf(categories.first()) }
+            val initialCategory = remember {
+                val lastId = prefsManager.lastCategoryId
+                categories.find { it.id == lastId } ?: categories.first()
+            }
+            var selectedCategory by remember { mutableStateOf(initialCategory) }
+
+            val initialSelection = remember(selectedCategory.id) {
+                prefsManager.getCategorySelection(
+                    categoryId = selectedCategory.id,
+                    defaultSubtype = 0,
+                    defaultNps = "2\"",
+                    defaultPrimary = if (selectedCategory.id == "pipes") "40" else if (selectedCategory.id == "fittings_bw") "STD" else if (selectedCategory.id == "fittings_sw") "3000#" else "150#",
+                    defaultSecondary = if (selectedCategory.id == "flanges") "RF" else null
+                )
+            }
 
             // Component selection state
-            var currentSubtypeIndex by remember { mutableIntStateOf(0) }
-            var selectedNps by remember { mutableStateOf("2\"") }
-            var selectedPrimary by remember { mutableStateOf("150#") }
-            var selectedSecondary by remember { mutableStateOf<String?>("RF") }
+            var currentSubtypeIndex by remember { mutableIntStateOf(initialSelection.subtypeIndex) }
+            var selectedNps by remember { mutableStateOf(initialSelection.nps) }
+            var selectedPrimary by remember { mutableStateOf(initialSelection.primary) }
+            var selectedSecondary by remember { mutableStateOf<String?>(initialSelection.secondary) }
 
             // Modals & Splash
             var showSplash by remember { mutableStateOf(true) }
@@ -111,25 +133,25 @@ class MainActivity : ComponentActivity() {
                             transitionSpec = {
                                 if (targetState == "detail") {
                                     (slideInHorizontally(
-                                        initialOffsetX = { fullWidth -> (fullWidth * 0.22f).toInt() },
-                                        animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
-                                    ) + fadeIn(animationSpec = tween(220)))
+                                        initialOffsetX = { fullWidth -> (fullWidth * 0.18f).toInt() },
+                                        animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing)
+                                    ) + fadeIn(animationSpec = tween(150)))
                                     .togetherWith(
                                         slideOutHorizontally(
-                                            targetOffsetX = { fullWidth -> (-fullWidth * 0.15f).toInt() },
-                                            animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
-                                        ) + fadeOut(animationSpec = tween(180))
+                                            targetOffsetX = { fullWidth -> (-fullWidth * 0.12f).toInt() },
+                                            animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing)
+                                        ) + fadeOut(animationSpec = tween(120))
                                     )
                                 } else {
                                     (slideInHorizontally(
-                                        initialOffsetX = { fullWidth -> (-fullWidth * 0.22f).toInt() },
-                                        animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
-                                    ) + fadeIn(animationSpec = tween(220)))
+                                        initialOffsetX = { fullWidth -> (-fullWidth * 0.18f).toInt() },
+                                        animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing)
+                                    ) + fadeIn(animationSpec = tween(150)))
                                     .togetherWith(
                                         slideOutHorizontally(
-                                            targetOffsetX = { fullWidth -> (fullWidth * 0.15f).toInt() },
-                                            animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
-                                        ) + fadeOut(animationSpec = tween(180))
+                                            targetOffsetX = { fullWidth -> (fullWidth * 0.12f).toInt() },
+                                            animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing)
+                                        ) + fadeOut(animationSpec = tween(120))
                                     )
                                 }
                             },
@@ -140,50 +162,39 @@ class MainActivity : ComponentActivity() {
                                     TopicListScreen(
                                         categories = categories,
                                         currentUnit = currentUnit,
-                                        onUnitToggle = {
-                                            currentUnit = if (currentUnit == UnitSystem.METRIC) UnitSystem.IMPERIAL else UnitSystem.METRIC
-                                        },
+                                        onUnitToggle = onUnitToggle,
                                         fontScale = fontScale,
                                         currentLang = currentLang,
                                         onOpenSettings = { isSettingsOpen = true },
                                         onSelectCategory = { cat ->
-                                            selectedCategory = cat
-                                            currentSubtypeIndex = 0
-                                            selectedNps = "2\""
-                                            when (cat.id) {
-                                                "flanges" -> {
-                                                    selectedPrimary = "150#"
-                                                    selectedSecondary = "RF"
-                                                }
-                                                "pipes" -> {
-                                                    selectedPrimary = "40"
-                                                    selectedSecondary = null
-                                                }
-                                                "fittings_bw" -> {
-                                                    selectedPrimary = "STD"
-                                                    selectedSecondary = null
-                                                }
-                                                "fittings_sw" -> {
-                                                    selectedPrimary = "3000#"
-                                                    selectedSecondary = null
-                                                }
-                                                "valves" -> {
-                                                    selectedPrimary = "150#"
-                                                    selectedSecondary = null
-                                                }
-                                                "gaskets" -> {
-                                                    selectedPrimary = "150#"
-                                                    selectedSecondary = null
-                                                }
-                                                "blanks" -> {
-                                                    selectedPrimary = "150#"
-                                                    selectedSecondary = null
-                                                }
-                                                else -> {
-                                                    selectedPrimary = "150#"
-                                                    selectedSecondary = null
-                                                }
+                                            val defaultSub = 0
+                                            val defaultN = "2\""
+                                            val defaultP = when (cat.id) {
+                                                "flanges" -> "150#"
+                                                "pipes" -> "40"
+                                                "fittings_bw" -> "STD"
+                                                "fittings_sw" -> "3000#"
+                                                "valves" -> "150#"
+                                                "gaskets" -> "150#"
+                                                "blanks" -> "150#"
+                                                else -> "150#"
                                             }
+                                            val defaultS = if (cat.id == "flanges") "RF" else null
+
+                                            val saved = prefsManager.getCategorySelection(
+                                                categoryId = cat.id,
+                                                defaultSubtype = defaultSub,
+                                                defaultNps = defaultN,
+                                                defaultPrimary = defaultP,
+                                                defaultSecondary = defaultS
+                                            )
+
+                                            selectedCategory = cat
+                                            currentSubtypeIndex = saved.subtypeIndex
+                                            selectedNps = saved.nps
+                                            selectedPrimary = saved.primary
+                                            selectedSecondary = saved.secondary
+                                            prefsManager.lastCategoryId = cat.id
                                             currentScreen = "detail"
                                         }
                                     )
@@ -192,11 +203,50 @@ class MainActivity : ComponentActivity() {
                                     ComponentDetailScreen(
                                         data = currentData,
                                         currentSubtypeIndex = currentSubtypeIndex,
-                                        onSubtypeChange = { currentSubtypeIndex = it },
-                                        onNpsChange = { selectedNps = it },
-                                        onPrimaryChange = { selectedPrimary = it },
-                                        onSecondaryChange = if (selectedSecondary != null) { { selectedSecondary = it } } else null,
+                                        onSubtypeChange = {
+                                            currentSubtypeIndex = it
+                                            prefsManager.saveCategorySelection(
+                                                categoryId = selectedCategory.id,
+                                                subtypeIndex = it,
+                                                nps = selectedNps,
+                                                primary = selectedPrimary,
+                                                secondary = selectedSecondary
+                                            )
+                                        },
+                                        onNpsChange = {
+                                            selectedNps = it
+                                            prefsManager.saveCategorySelection(
+                                                categoryId = selectedCategory.id,
+                                                subtypeIndex = currentSubtypeIndex,
+                                                nps = it,
+                                                primary = selectedPrimary,
+                                                secondary = selectedSecondary
+                                            )
+                                        },
+                                        onPrimaryChange = {
+                                            selectedPrimary = it
+                                            prefsManager.saveCategorySelection(
+                                                categoryId = selectedCategory.id,
+                                                subtypeIndex = currentSubtypeIndex,
+                                                nps = selectedNps,
+                                                primary = it,
+                                                secondary = selectedSecondary
+                                            )
+                                        },
+                                        onSecondaryChange = if (selectedSecondary != null) {
+                                            {
+                                                selectedSecondary = it
+                                                prefsManager.saveCategorySelection(
+                                                    categoryId = selectedCategory.id,
+                                                    subtypeIndex = currentSubtypeIndex,
+                                                    nps = selectedNps,
+                                                    primary = selectedPrimary,
+                                                    secondary = it
+                                                )
+                                            }
+                                        } else null,
                                         currentUnit = currentUnit,
+                                        onUnitToggle = onUnitToggle,
                                         fontScale = fontScale,
                                         currentLang = currentLang,
                                         currentTheme = currentTheme,
@@ -212,15 +262,30 @@ class MainActivity : ComponentActivity() {
                     if (isSettingsOpen) {
                         SettingsBottomSheet(
                             currentTheme = currentTheme,
-                            onThemeChange = { currentTheme = it },
+                            onThemeChange = {
+                                currentTheme = it
+                                prefsManager.cadTheme = it
+                            },
                             currentUnit = currentUnit,
-                            onUnitChange = { currentUnit = it },
+                            onUnitChange = {
+                                currentUnit = it
+                                prefsManager.unitSystem = it
+                            },
                             fontScale = fontScale,
-                            onFontScaleChange = { fontScale = it },
+                            onFontScaleChange = {
+                                fontScale = it
+                                prefsManager.fontScale = it
+                            },
                             highContrast = highContrast,
-                            onHighContrastChange = { highContrast = it },
+                            onHighContrastChange = {
+                                highContrast = it
+                                prefsManager.highContrast = it
+                            },
                             currentLang = currentLang,
-                            onLangChange = { currentLang = it },
+                            onLangChange = {
+                                currentLang = it
+                                prefsManager.appLanguage = it
+                            },
                             onDismiss = { isSettingsOpen = false }
                         )
                     }

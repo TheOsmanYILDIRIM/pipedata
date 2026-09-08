@@ -53,6 +53,7 @@ fun ComponentDetailScreen(
     onPrimaryChange: (String) -> Unit,
     onSecondaryChange: ((String) -> Unit)? = null,
     currentUnit: UnitSystem,
+    onUnitToggle: () -> Unit,
     fontScale: Float,
     currentLang: AppLanguage,
     currentTheme: CadTheme = CadTheme.CAD_DARK,
@@ -127,6 +128,24 @@ fun ComponentDetailScreen(
                             )
                         }
                     }
+
+                    // Inch / mm Unit Toggle Badge Button on Top Bar
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colors.chipBg)
+                            .border(1.dp, colors.border, RoundedCornerShape(8.dp))
+                            .clickable { onUnitToggle() }
+                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = currentUnit.symbol,
+                            color = colors.accent,
+                            fontSize = (12 * fontScale).sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
                 Divider(color = colors.border, thickness = 0.8.dp)
             }
@@ -149,6 +168,7 @@ fun ComponentDetailScreen(
                 colors = colors,
                 data = data,
                 isMetric = currentUnit == UnitSystem.METRIC,
+                fontScale = fontScale,
                 hasMultipleSubtypes = data.allSubtypes.size > 1,
                 onPrevSubtype = {
                     val newIdx = if (currentSubtypeIndex > 0) currentSubtypeIndex - 1 else data.allSubtypes.lastIndex
@@ -362,6 +382,7 @@ private fun CadDrawingStage(
     colors: com.avenox.pipedata.ui.theme.CadColorPalette,
     data: ComponentData,
     isMetric: Boolean,
+    fontScale: Float,
     hasMultipleSubtypes: Boolean,
     onPrevSubtype: () -> Unit,
     onNextSubtype: () -> Unit,
@@ -378,10 +399,10 @@ private fun CadDrawingStage(
         offsetY = 0f
     }
 
-    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}"
+    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$fontScale"
 
     val svgBytes = remember(dynamicCacheKey) {
-        getThemedSvgBytes(context, svgAsset, theme, data, isMetric)
+        getThemedSvgBytes(context, svgAsset, theme, data, isMetric, fontScale)
     }
 
     val imageRequest = remember(dynamicCacheKey, svgBytes) {
@@ -553,20 +574,37 @@ private fun fmt(d: Double): String {
 }
 
 
+private val rawSvgCache = java.util.concurrent.ConcurrentHashMap<String, String>()
+private val renderedSvgBytesCache = java.util.concurrent.ConcurrentHashMap<String, ByteArray>()
+
 /**
  * Reads raw SVG asset, injects theme-calibrated CSS, and dynamically substitutes
  * all dimension placeholders ([[3]], [[4]], [[19]], [[6]], [[11]], [[DB2_6]], etc.)
  * with real, live engineering numbers corresponding to the user's active selection.
+ * Number size dynamically adapts to fontScale while preserving badge boundaries and CAD clarity.
  */
 private fun getThemedSvgBytes(
     context: Context,
     assetName: String,
     theme: CadTheme,
     data: ComponentData,
-    isMetric: Boolean
+    isMetric: Boolean,
+    fontScale: Float = 1.0f
 ): ByteArray? {
+    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$fontScale"
+    renderedSvgBytesCache[cacheKey]?.let { return it }
+
     return try {
-        val rawSvg = context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
+        val rawSvg = rawSvgCache.getOrPut(assetName) {
+            context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
+        }
+
+        // Dynamically scale font size with user's fontScale preference:
+        // Scaled smoothly between 15.5px and 22.0px so that dimension numbers grow noticeably
+        // but remain safely within badge boundaries and never overlap or obscure CAD drawings.
+        val badgeFontSize = (17.5f * (1.0f + (fontScale - 1.0f) * 0.70f)).coerceIn(15.5f, 22.0f)
+        val fs = String.format(java.util.Locale.US, "%.1f", badgeFontSize)
+
         val styleReplacement = when (theme) {
             CadTheme.ENGINEERING_WHITE -> """
 <style>
@@ -577,8 +615,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #dc2626; stroke-width: 1.3; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -591,8 +629,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #60a5fa; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -605,8 +643,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #ef4444; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -619,8 +657,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #fbbf24; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
         }
@@ -727,7 +765,9 @@ private fun getThemedSvgBytes(
             }
         }
 
-        themedSvg.toByteArray(Charsets.UTF_8)
+        val bytes = themedSvg.toByteArray(Charsets.UTF_8)
+        renderedSvgBytesCache[cacheKey] = bytes
+        bytes
     } catch (e: Exception) {
         null
     }
