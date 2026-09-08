@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="130 25 1487 1116" preserveAspectRatio="xMidYMin">
+  <defs>
+    
+    <style>
+      .cad-bg { fill: #0d1520; }
+      .cad-part { stroke: #38bdf8; stroke-width: 3.0; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .cad-bevel { stroke: #38bdf8; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .cad-dim { stroke: #94a3b8; stroke-width: 1.4; stroke-linecap: square; fill: none; }
+      .cad-center { stroke: #fbbf24; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
+      .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
+      .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
+      .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.5; rx: 6; ry: 6; }
+      .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+    </style>
+    
+  </defs>
+  <rect x="130" y="25" width="1487" height="1116" class="cad-bg" />
+  <g id="cad-hatch-layer">
+    <line x1="571.0" y1="840.0" x2="582.0" y2="829.0" class="cad-hatch" />
+<line x1="576.0" y1="846.0" x2="592.0" y2="829.0" class="cad-hatch" />
+<line x1="581.0" y1="851.0" x2="603.0" y2="829.0" class="cad-hatch" />
+<line x1="587.0" y1="856.0" x2="614.0" y2="829.0" class="cad-hatch" />
+<line x1="597.0" y1="857.0" x2="624.0" y2="829.0" class="cad-hatch" />
+<line x1="607.0" y1="857.0" x2="635.0" y2="829.0" class="cad-hatch" />
+<line x1="618.0" y1="857.0" x2="645.0" y2="829.0" class="cad-hatch" />
+<line x1="629.0" y1="857.0" x2="656.0" y2="829.0" class="cad-hatch" />
+<line x1="639.0" y1="857.0" x2="667.0" y2="829.0" class="cad-hatch" />
+<line x1="650.0" y1="857.0" x2="678.0" y2="828.0" class="cad-hatch" />
+<line x1="660.0" y1="857.0" x2="690.0" y2="827.0" class="cad-hatch" />
+<line x1="671.0" y1="857.0" x2="704.0" y2="824.0" class="cad-hatch" />
+<line x1="683.0" y1="856.0" x2="720.0" y2="819.0" class="cad-hatch" />
+<line x1="695.0" y1="854.0" x2="736.0" y2="813.0" class="cad-hatch" />
+<line x1="708.0" y1="852.0" x2="752.0" y2="808.0" class="cad-hatch" />
+<line x1="722.0" y1="848.0" x2="768.0" y2="802.0" class="cad-hatch" />
+<line x1="738.0" y1="842.0" x2="784.0" y2="797.0" class="cad-hatch" />
+<line x1="755.0" y1="837.0" x2="800.0" y2="792.0" class="cad-hatch" />
+<line x1="771.0" y1="831.0" x2="816.0" y2="786.0" class="cad-hatch" />
+<line x1="787.0" y1="826.0" x2="832.0" y2="781.0" class="cad-hatch" />
+<line x1="803.0" y1="820.0" x2="848.0" y2="775.0" class="cad-hatch" />
+<line x1="819.0" y1="815.0" x2="864.0" y2="770.0" class="cad-hatch" />
+<line x1="835.0" y1="809.0" x2="880.0" y2="764.0" class="cad-hatch" />
+<line x1="851.0" y1="804.0" x2="896.0" y2="759.0" class="cad-hatch" />
+<line x1="867.0" y1="798.0" x2="912.0" y2="753.0" class="cad-hatch" />
+<line x1="884.0" y1="793.0" x2="929.0" y2="748.0" class="cad-hatch" />
+<line x1="900.0" y1="787.0" x2="945.0" y2="742.0" class="cad-hatch" />
+<line x1="916.0" y1="782.0" x2="961.0" y2="737.0" class="cad-hatch" />
+<line x1="932.0" y1="776.0" x2="977.0" y2="731.0" class="cad-hatch" />
+<line x1="948.0" y1="771.0" x2="993.0" y2="726.0" class="cad-hatch" />
+<line x1="964.0" y1="765.0" x2="1009.0" y2="720.0" class="cad-hatch" />
+<line x1="980.0" y1="760.0" x2="1025.0" y2="715.0" class="cad-hatch" />
+<line x1="996.0" y1="754.0" x2="1040.0" y2="711.0" class="cad-hatch" />
+<line x1="1013.0" y1="749.0" x2="1053.0" y2="708.0" class="cad-hatch" />
+<line x1="1029.0" y1="743.0" x2="1066.0" y2="706.0" class="cad-hatch" />
+<line x1="1045.0" y1="738.0" x2="1077.0" y2="705.0" class="cad-hatch" />
+<line x1="1059.0" y1="734.0" x2="1088.0" y2="704.0" class="cad-hatch" />
+<line x1="1072.0" y1="731.0" x2="1099.0" y2="704.0" class="cad-hatch" />
+<line x1="1084.0" y1="730.0" x2="1110.0" y2="704.0" class="cad-hatch" />
+<line x1="1096.0" y1="729.0" x2="1120.0" y2="704.0" class="cad-hatch" />
+<line x1="1107.0" y1="729.0" x2="1131.0" y2="704.0" class="cad-hatch" />
+<line x1="1117.0" y1="729.0" x2="1142.0" y2="704.0" class="cad-hatch" />
+<line x1="1128.0" y1="729.0" x2="1152.0" y2="704.0" class="cad-hatch" />
+<line x1="1138.0" y1="729.0" x2="1163.0" y2="704.0" class="cad-hatch" />
+<line x1="1149.0" y1="729.0" x2="1165.0" y2="713.0" class="cad-hatch" />
+  </g>
+  <g id="cad-center-layer">
+    
+  </g>
+  <g id="cad-dim-layer">
+    <line x1="571.0" y1="427.0" x2="571.0" y2="305.0" class="cad-dim" />
+<line x1="1165.0" y1="549.0" x2="1165.0" y2="302.0" class="cad-dim" />
+<line x1="595.0" y1="315.0" x2="1141.0" y2="315.0" class="cad-dim" />
+    <polygon points="571.0,315.0 595.0,308.0 595.0,321.0" class="cad-arrow" />
+<polygon points="1141.0,308.0 1141.0,321.0 1165.0,315.0" class="cad-arrow" />
+  </g>
+  <g id="cad-part-layer">
+    <line x1="571.0" y1="443.0" x2="587.0" y2="427.0" class="cad-part" />
+<line x1="571.0" y1="642.0" x2="1165.0" y2="642.0" class="cad-part" />
+<line x1="587.0" y1="427.0" x2="667.0" y2="427.0" class="cad-part" />
+<line x1="1038.0" y1="541.0" x2="730.0" y2="438.0" class="cad-part" />
+<line x1="587.0" y1="642.0" x2="587.0" y2="427.0" class="cad-part" />
+<line x1="571.0" y1="829.0" x2="660.0" y2="829.0" class="cad-part" />
+<line x1="716.0" y1="820.0" x2="1020.0" y2="717.0" class="cad-part" />
+<line x1="1093.0" y1="704.0" x2="1165.0" y2="704.0" class="cad-part" />
+<line x1="1165.0" y1="716.0" x2="1150.0" y2="729.0" class="cad-part" />
+<line x1="1150.0" y1="729.0" x2="1104.0" y2="729.0" class="cad-part" />
+<line x1="587.0" y1="857.0" x2="571.0" y2="841.0" class="cad-part" />
+<line x1="663.0" y1="857.0" x2="587.0" y2="857.0" class="cad-part" />
+<line x1="1039.0" y1="740.0" x2="728.0" y2="846.0" class="cad-part" />
+<line x1="571.0" y1="841.0" x2="571.0" y2="642.0" class="cad-part" />
+<line x1="571.0" y1="642.0" x2="571.0" y2="443.0" class="cad-part" />
+<line x1="1165.0" y1="716.0" x2="1165.0" y2="642.0" class="cad-part" />
+<line x1="1165.0" y1="642.0" x2="1165.0" y2="567.0" class="cad-part" />
+<line x1="571.0" y1="443.0" x2="571.0" y2="597.0" class="cad-part" />
+<line x1="571.0" y1="678.0" x2="571.0" y2="829.0" class="cad-part" />
+<line x1="1165.0" y1="567.0" x2="1150.0" y2="551.0" class="cad-part" />
+<line x1="1150.0" y1="642.0" x2="1150.0" y2="551.0" class="cad-part" />
+<line x1="690.0" y1="827.0" x2="707.0" y2="823.0" class="cad-part" />
+<line x1="707.0" y1="823.0" x2="716.0" y2="820.0" class="cad-part" />
+<line x1="657.0" y1="829.0" x2="674.0" y2="829.0" class="cad-part" />
+<line x1="674.0" y1="829.0" x2="690.0" y2="827.0" class="cad-part" />
+<line x1="1104.0" y1="729.0" x2="1084.0" y2="730.0" class="cad-part" />
+<line x1="1084.0" y1="730.0" x2="1065.0" y2="733.0" class="cad-part" />
+<line x1="1065.0" y1="733.0" x2="1046.0" y2="737.0" class="cad-part" />
+<line x1="1046.0" y1="737.0" x2="1039.0" y2="740.0" class="cad-part" />
+<line x1="1093.0" y1="704.0" x2="1071.0" y2="706.0" class="cad-part" />
+<line x1="1071.0" y1="706.0" x2="1049.0" y2="709.0" class="cad-part" />
+<line x1="1049.0" y1="709.0" x2="1027.0" y2="714.0" class="cad-part" />
+<line x1="1027.0" y1="714.0" x2="1020.0" y2="717.0" class="cad-part" />
+<line x1="1038.0" y1="541.0" x2="1043.0" y2="543.0" class="cad-part" />
+<line x1="1043.0" y1="543.0" x2="1063.0" y2="548.0" class="cad-part" />
+<line x1="1063.0" y1="548.0" x2="1080.0" y2="551.0" class="cad-part" />
+<line x1="1150.0" y1="551.0" x2="1084.0" y2="551.0" class="cad-part" />
+<line x1="1080.0" y1="551.0" x2="1084.0" y2="551.0" class="cad-part" />
+<line x1="1084.0" y1="551.0" x2="1084.0" y2="551.0" class="cad-part" />
+<line x1="663.0" y1="857.0" x2="670.0" y2="857.0" class="cad-part" />
+<line x1="670.0" y1="857.0" x2="690.0" y2="855.0" class="cad-part" />
+<line x1="690.0" y1="855.0" x2="709.0" y2="851.0" class="cad-part" />
+<line x1="709.0" y1="851.0" x2="728.0" y2="846.0" class="cad-part" />
+<line x1="730.0" y1="438.0" x2="712.0" y2="432.0" class="cad-part" />
+<line x1="712.0" y1="432.0" x2="692.0" y2="429.0" class="cad-part" />
+<line x1="692.0" y1="429.0" x2="673.0" y2="427.0" class="cad-part" />
+<line x1="673.0" y1="427.0" x2="667.0" y2="427.0" class="cad-part" />
+  </g>
+  <g id="cad-text-layer">
+    
+        <g transform="translate(866, 288)">
+          <rect x="-48" y="-17" width="96" height="34" class="cad-badge-bg" />
+          <text class="cad-badge-text">[[5]]</text>
+        </g>
+  </g>
+</svg>
