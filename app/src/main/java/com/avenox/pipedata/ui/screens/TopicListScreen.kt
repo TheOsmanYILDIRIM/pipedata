@@ -80,16 +80,21 @@ fun TopicListScreen(
                 ) {
                     Text(
                         text = "PipeMatrix Pro",
-
                         color = colors.textPrimary,
-                        fontSize = (19 * fontScale).sp,
+                        fontSize = (18 * fontScale.coerceIn(0.85f, 1.15f)).sp,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace,
-                        letterSpacing = 1.sp
+                        letterSpacing = 0.5.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
 
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.wrapContentWidth(align = Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         // Unit badge button (mm / in)
@@ -104,7 +109,7 @@ fun TopicListScreen(
                             Text(
                                 text = currentUnit.symbol,
                                 color = colors.accent,
-                                fontSize = (12 * fontScale).sp,
+                                fontSize = (12 * fontScale.coerceIn(0.85f, 1.2f)).sp,
                                 fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Bold
                             )

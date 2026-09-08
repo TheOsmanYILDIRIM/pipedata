@@ -399,10 +399,11 @@ private fun CadDrawingStage(
         offsetY = 0f
     }
 
-    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$fontScale"
+    val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
+    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
 
     val svgBytes = remember(dynamicCacheKey) {
-        getThemedSvgBytes(context, svgAsset, theme, data, isMetric, fontScale)
+        getThemedSvgBytes(context, svgAsset, theme, data, isMetric, normScale)
     }
 
     val imageRequest = remember(dynamicCacheKey, svgBytes) {
@@ -591,7 +592,8 @@ private fun getThemedSvgBytes(
     isMetric: Boolean,
     fontScale: Float = 1.0f
 ): ByteArray? {
-    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$fontScale"
+    val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
+    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
     renderedSvgBytesCache[cacheKey]?.let { return it }
 
     return try {
@@ -599,10 +601,13 @@ private fun getThemedSvgBytes(
             context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
         }
 
-        // Dynamically scale font size with user's fontScale preference:
-        // Scaled smoothly between 15.5px and 22.0px so that dimension numbers grow noticeably
-        // but remain safely within badge boundaries and never overlap or obscure CAD drawings.
-        val badgeFontSize = (17.5f * (1.0f + (fontScale - 1.0f) * 0.70f)).coerceIn(15.5f, 22.0f)
+        // Calculate dynamic badge scale factor and font size based on user fontScale preference:
+        // Scaled visibly and proportionally so dimension numbers scale noticeably with font preference
+        // while expanding safely from the badge center without overlapping neighbors or obscuring CAD lines.
+        val badgeScale = (1.0f + (normScale - 1.0f) * 0.90f).coerceIn(0.85f, 1.40f)
+        val bs = String.format(java.util.Locale.US, "%.3f", badgeScale)
+
+        val badgeFontSize = (20.0f * (1.0f + (normScale - 1.0f) * 0.85f)).coerceIn(18.0f, 28.0f)
         val fs = String.format(java.util.Locale.US, "%.1f", badgeFontSize)
 
         val styleReplacement = when (theme) {
@@ -615,8 +620,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #dc2626; stroke-width: 1.3; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -629,8 +634,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #60a5fa; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -643,8 +648,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #ef4444; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
 
@@ -657,8 +662,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #fbbf24; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.88; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
 </style>
 """.trimIndent()
         }
@@ -669,6 +674,16 @@ private fun getThemedSvgBytes(
         } else {
             rawSvg
         }
+
+        // Apply scale factor to each badge group in cad-text-layer so text and badge container
+        // scale proportionally from the badge center point without shifting position or overlapping neighbors
+        if (Math.abs(normScale - 1.0f) > 0.02f) {
+            val translateRegex = Regex("""(<g\s+transform="translate\([^"]+\))"(\s*>)""")
+            themedSvg = translateRegex.replace(themedSvg) { m -> "${m.groupValues[1]} scale($bs)\"${m.groupValues[2]}" }
+        }
+
+        // Direct inline font-size replacement to guarantee AndroidSVG renderer scales numbers visibly
+        themedSvg = themedSvg.replace("<text class=\"cad-badge-text\">", "<text class=\"cad-badge-text\" font-size=\"${fs}px\">")
 
         // Build dimension lookup table from active component specifications
         val dimMap = mutableMapOf<String, String>()
