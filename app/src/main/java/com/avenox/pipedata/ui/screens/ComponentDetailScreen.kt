@@ -755,11 +755,11 @@ private fun getThemedSvgBytes(
 
             // Expand SVG viewBox so shifted dimensions and enlarged numbers never clip
             val viewBoxRegex = Regex("""viewBox="(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"""")
-            themedSvg = viewBoxRegex.replaceFirst(themedSvg) { m ->
-                val vx = m.groupValues[1].toFloatOrNull() ?: 0f
-                val vy = m.groupValues[2].toFloatOrNull() ?: 0f
-                val vw = m.groupValues[3].toFloatOrNull() ?: 1000f
-                val vh = m.groupValues[4].toFloatOrNull() ?: 800f
+            themedSvg = viewBoxRegex.find(themedSvg)?.let { match ->
+                val vx = match.groupValues[1].toFloatOrNull() ?: 0f
+                val vy = match.groupValues[2].toFloatOrNull() ?: 0f
+                val vw = match.groupValues[3].toFloatOrNull() ?: 1000f
+                val vh = match.groupValues[4].toFloatOrNull() ?: 800f
 
                 val padX = scaleRatio * 100f
                 val padY = scaleRatio * 180f
@@ -767,8 +767,9 @@ private fun getThemedSvgBytes(
                 val nvy = String.format(java.util.Locale.US, "%.1f", vy - padY / 2f)
                 val nvw = String.format(java.util.Locale.US, "%.1f", vw + padX)
                 val nvh = String.format(java.util.Locale.US, "%.1f", vh + padY)
-                """viewBox="$nvx $nvy $nvw $nvh""""
-            }
+                val newViewBox = """viewBox="$nvx $nvy $nvw $nvh""""
+                themedSvg.replaceFirst(match.value, newViewBox)
+            } ?: themedSvg
         }
 
         // Direct inline font-size replacement to guarantee AndroidSVG renderer scales numbers visibly

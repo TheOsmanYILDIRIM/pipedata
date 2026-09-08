@@ -263,7 +263,7 @@ fun TopicListScreen(
                                         .basicMarquee(
                                             iterations = Int.MAX_VALUE,
                                             initialDelayMillis = 1200,
-                                            delayMillis = 800,
+                                            repeatDelayMillis = 800,
                                             velocity = 35.dp
                                         )
                                 )
@@ -301,7 +301,7 @@ fun TopicListScreen(
                                     .basicMarquee(
                                         iterations = Int.MAX_VALUE,
                                         initialDelayMillis = 1500,
-                                        delayMillis = 800,
+                                        repeatDelayMillis = 800,
                                         velocity = 30.dp
                                     )
                             )
