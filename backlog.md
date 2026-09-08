@@ -65,3 +65,9 @@
 - [x] Ana Sekme Performans Optimizasyonu (Arka plan asenkron DB yükleme + Coil SVG bellek önbelleği ile 60/120 FPS akıcılık)
 - [x] Liste Görünümü Tipografi & Rozet İyileştirmesi (Kompakt 64dp kartlar, tek satırda taşmayan inline ASME rozetleri, tek satır açıklama)
 - [x] Tüm SQLite Veritabanının Uçtan Uca Entegrasyonu (Flanşlar, Borular, Alın Kaynaklı Fitingler, Dövme Fitingler, Vanalar, Contalar ve Körlemeler için dinamik ComponentDetailScreen ve sorgu motoru)
+
+## Son Düzeltmeler & Kullanıcı Geri Bildirimi Revizyonu (2026-09-08)
+- [x] **Tüm SQLite Tablolarının Entegrasyonu:** 7 kategorinin tamamı (`tbl_flanges_asme_b16_5`, `tbl_pipes`, `tbl_fittings_buttweld_b16_9`, `tbl_fittings_socketweld_b16_11`, `tbl_valves_asme_b16_10`, `tbl_gaskets_and_rtj`, `tbl_line_blanks_asme_b16_48`) `PipedataDbHelper` ve `ComponentDetailScreen` üzerinden gerçek verilerle bağlandı.
+- [x] **Ana Sekme Kasma Sorunu Çözüldü:** 23 MB veritabanının kopyalanması UI ana iş parçacığından (`onCreate`) `Dispatchers.IO` arka planına alındı. Coil SVG bellek önbelleği (`CachePolicy.ENABLED`, `crossfade=false`) ile 120 FPS akıcı kaydırma sağlandı.
+- [x] **Liste Modu ve ASME Etiket Düzeni Düzeltildi:** Hantal 110dp kartlar ve 2 satıra taşan biçimsiz ASME rozetleri kaldırıldı. 64dp kompakt, zarif ve tek satırda başlık + standart hapı (`B16.5`, `B36.10M` vb.) içeren endüstriyel liste görünümüne geçildi; 7 öğenin tamamı ekrana tek bakışta sığdırıldı.
+- [x] **Üst Tema Barı Kaldırıldı:** Ekran başlığını kalabalıklaştıran yatay tema barı kaldırıldı; tema değişimi kullanıcının talimatı doğrultusunda sadece Ayarlar çekmecesine (`SettingsBottomSheet`) devredildi.

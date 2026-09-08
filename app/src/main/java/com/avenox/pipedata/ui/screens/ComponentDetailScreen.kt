@@ -12,6 +12,7 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,18 +43,12 @@ import com.avenox.pipedata.ui.theme.LocalCadColors
 
 @Composable
 fun ComponentDetailScreen(
-    category: TopicCategory,
+    data: ComponentData,
     currentSubtypeIndex: Int,
     onSubtypeChange: (Int) -> Unit,
-    availableNps: List<String>,
-    selectedNps: String,
     onNpsChange: (String) -> Unit,
-    availableRatingsOrSch: List<String>,
-    selectedRatingOrSch: String,
-    onRatingOrSchChange: (String) -> Unit,
-    selectedFacing: String,
-    onFacingChange: (String) -> Unit,
-    specs: List<SpecItem>,
+    onPrimaryChange: (String) -> Unit,
+    onSecondaryChange: ((String) -> Unit)? = null,
     currentUnit: UnitSystem,
     fontScale: Float,
     currentLang: AppLanguage,
@@ -64,10 +59,8 @@ fun ComponentDetailScreen(
     val context = LocalContext.current
     val isTr = currentLang == AppLanguage.TR
 
-    val currentSubtype = category.defaultSubtypes.getOrElse(currentSubtypeIndex) {
-        category.defaultSubtypes.first()
-    }
-    val subtypeTitle = if (isTr) currentSubtype.titleTr else currentSubtype.titleEn
+    val currentSubtype = data.currentSubtype
+    val subtypeTitle = currentSubtype.title
 
     // CAD Canvas Interactive Zoom/Pan State
     var scale by remember { mutableFloatStateOf(1f) }
@@ -106,13 +99,13 @@ fun ComponentDetailScreen(
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "$subtypeTitle (${currentSubtype.abbr})",
+                            text = if (currentSubtype.abbr.isNotBlank()) "$subtypeTitle (${currentSubtype.abbr})" else subtypeTitle,
                             color = colors.textPrimary,
                             fontSize = (16.5 * fontScale).sp,
                             fontWeight = FontWeight.Bold
                         )
                         HelpQuestionButton(
-                            onClick = { onOpenHelp(category.helpTopicId) },
+                            onClick = { onOpenHelp(data.categoryId) },
                             fontScale = fontScale
                         )
                     }
@@ -124,7 +117,7 @@ fun ComponentDetailScreen(
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = category.std,
+                            text = currentSubtype.standard,
                             color = colors.accent,
                             fontSize = (10.5 * fontScale).sp,
                             fontFamily = FontFamily.Monospace,
@@ -200,7 +193,7 @@ fun ComponentDetailScreen(
                 }
 
                 // Mini Left Arrow
-                if (category.defaultSubtypes.size > 1) {
+                if (data.allSubtypes.size > 1) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterStart)
@@ -210,7 +203,7 @@ fun ComponentDetailScreen(
                             .background(colors.surface.copy(alpha = 0.8f))
                             .border(1.dp, colors.border, CircleShape)
                             .clickable {
-                                val newIdx = if (currentSubtypeIndex > 0) currentSubtypeIndex - 1 else category.defaultSubtypes.lastIndex
+                                val newIdx = if (currentSubtypeIndex > 0) currentSubtypeIndex - 1 else data.allSubtypes.lastIndex
                                 onSubtypeChange(newIdx)
                                 resetZoom()
                             },
@@ -234,7 +227,7 @@ fun ComponentDetailScreen(
                             .background(colors.surface.copy(alpha = 0.8f))
                             .border(1.dp, colors.border, CircleShape)
                             .clickable {
-                                val newIdx = if (currentSubtypeIndex < category.defaultSubtypes.lastIndex) currentSubtypeIndex + 1 else 0
+                                val newIdx = if (currentSubtypeIndex < data.allSubtypes.lastIndex) currentSubtypeIndex + 1 else 0
                                 onSubtypeChange(newIdx)
                                 resetZoom()
                             },
@@ -288,6 +281,41 @@ fun ComponentDetailScreen(
                 }
             }
 
+            // Subtypes Chips Strip (if multiple subtypes)
+            if (data.allSubtypes.size > 1) {
+                Spacer(modifier = Modifier.height(10.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp)
+                ) {
+                    itemsIndexed(data.allSubtypes) { idx, sub ->
+                        val isSelected = idx == currentSubtypeIndex
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (isSelected) colors.accent else colors.chipBg)
+                                .border(1.dp, if (isSelected) colors.accent else colors.border, RoundedCornerShape(8.dp))
+                                .clickable {
+                                    onSubtypeChange(idx)
+                                    resetZoom()
+                                }
+                                .padding(horizontal = 11.dp, vertical = 6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (sub.abbr.isNotBlank()) sub.abbr else sub.shortName,
+                                color = if (isSelected) colors.accentText else colors.textPrimary,
+                                fontSize = (11.5 * fontScale).sp,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             // ================================================================
@@ -306,7 +334,7 @@ fun ComponentDetailScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = if (isTr) "Anma Çapı (NPS)" else "Size (NPS)",
+                            text = if (isTr) "Anma Çapı (NPS / DN)" else "Size (NPS / DN)",
                             color = colors.textSecondary,
                             fontSize = (12.5 * fontScale).sp,
                             fontWeight = FontWeight.Bold
@@ -317,7 +345,7 @@ fun ComponentDetailScreen(
                         )
                     }
                     Text(
-                        text = selectedNps,
+                        text = "${data.selectedNps} (DN ${data.dn})",
                         color = colors.textPrimary,
                         fontSize = (13 * fontScale).sp,
                         fontFamily = FontFamily.Monospace,
@@ -332,8 +360,8 @@ fun ComponentDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(availableNps) { nps ->
-                        val isSelected = selectedNps == nps
+                    items(data.availableNps) { nps ->
+                        val isSelected = data.selectedNps == nps
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
@@ -356,19 +384,15 @@ fun ComponentDetailScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Secondary Selectors: Schedule / Rating and Facing (if Flanges)
+                // Primary Selector (Rating/Schedule) and Secondary Selector (Facing)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Rating / Schedule Selector
+                    // Primary Selector
                     Column(modifier = Modifier.weight(1f)) {
-                        val selectorLabel = if (category.id == "pipes" || category.id == "fittings_bw") {
-                            if (isTr) "Boru Et Kalınlığı (SCH)" else "Schedule (SCH)"
-                        } else {
-                            if (isTr) "Basınç Sınıfı" else "Class"
-                        }
-                        val helpTopic = if (category.id == "pipes" || category.id == "fittings_bw") "pipes" else "rating"
+                        val selectorLabel = if (isTr) data.primarySelectorLabelTr else data.primarySelectorLabelEn
+                        val helpTopic = if (data.categoryId == "pipes" || data.categoryId == "fittings_bw") "pipes" else "rating"
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -390,19 +414,19 @@ fun ComponentDetailScreen(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            items(availableRatingsOrSch) { r ->
-                                val sel = selectedRatingOrSch == r
+                            items(data.primaryOptions) { opt ->
+                                val sel = data.selectedPrimary == opt
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
                                         .background(if (sel) colors.accent else colors.chipBg)
                                         .border(0.8.dp, if (sel) colors.accent else colors.border, RoundedCornerShape(6.dp))
-                                        .clickable { onRatingOrSchChange(r) }
+                                        .clickable { onPrimaryChange(opt) }
                                         .padding(horizontal = 10.dp, vertical = 6.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = r,
+                                        text = opt,
                                         color = if (sel) colors.accentText else colors.textPrimary,
                                         fontSize = (11 * fontScale).sp,
                                         fontFamily = FontFamily.Monospace,
@@ -413,15 +437,16 @@ fun ComponentDetailScreen(
                         }
                     }
 
-                    // Facing Selector (Only if Flanges or Line Blanks)
-                    if (category.id == "flanges" || category.id == "blanks") {
+                    // Secondary Selector (e.g. Facing)
+                    if (data.secondaryOptions.isNotEmpty() && onSecondaryChange != null && data.selectedSecondary != null) {
                         Column(modifier = Modifier.width(130.dp)) {
+                            val secLabel = (if (isTr) data.secondarySelectorLabelTr else data.secondarySelectorLabelEn) ?: (if (isTr) "Yüzey" else "Facing")
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(bottom = 5.dp)
                             ) {
                                 Text(
-                                    text = if (isTr) "Yüzey" else "Facing",
+                                    text = secLabel,
                                     color = colors.textSecondary,
                                     fontSize = (12 * fontScale).sp,
                                     fontWeight = FontWeight.Bold
@@ -439,14 +464,14 @@ fun ComponentDetailScreen(
                                     .border(0.8.dp, colors.border, RoundedCornerShape(6.dp))
                                     .padding(2.dp)
                             ) {
-                                listOf("RF", "FF", "RTJ").forEach { f ->
-                                    val sel = selectedFacing == f
+                                data.secondaryOptions.forEach { f ->
+                                    val sel = data.selectedSecondary == f
                                     Box(
                                         modifier = Modifier
                                             .weight(1f)
                                             .clip(RoundedCornerShape(5.dp))
                                             .background(if (sel) colors.accent else colors.chipBg)
-                                            .clickable { onFacingChange(f) }
+                                            .clickable { onSecondaryChange(f) }
                                             .padding(vertical = 5.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -511,9 +536,9 @@ fun ComponentDetailScreen(
                     ) {
                         val isMetric = currentUnit == UnitSystem.METRIC
 
-                        specs.forEachIndexed { idx, item ->
-                            val label = if (isTr) item.labelTr else item.labelEn
-                            val value = if (isMetric) item.valMetric else item.valImperial
+                        data.dimensions.forEachIndexed { idx, row ->
+                            val label = if (isTr) row.nameTr else row.nameEn
+                            val value = if (isMetric) row.valueMetric else row.valueImperial
 
                             Row(
                                 modifier = Modifier
@@ -522,12 +547,23 @@ fun ComponentDetailScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = label,
-                                    color = colors.textSecondary,
-                                    fontSize = (13 * fontScale).sp,
-                                    fontWeight = FontWeight.Medium
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f, fill = false)
+                                ) {
+                                    Text(
+                                        text = label,
+                                        color = colors.textSecondary,
+                                        fontSize = (13 * fontScale).sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    if (!row.helpKey.isNullOrEmpty()) {
+                                        HelpQuestionButton(
+                                            onClick = { onOpenHelp(row.helpKey) },
+                                            fontScale = fontScale
+                                        )
+                                    }
+                                }
                                 Text(
                                     text = value,
                                     color = colors.textPrimary,
@@ -536,7 +572,7 @@ fun ComponentDetailScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            if (idx < specs.lastIndex) {
+                            if (idx < data.dimensions.lastIndex) {
                                 Divider(color = colors.border.copy(alpha = 0.5f), thickness = 0.7.dp)
                             }
                         }
@@ -549,10 +585,11 @@ fun ComponentDetailScreen(
                 Button(
                     onClick = {
                         val textToCopy = buildString {
-                            appendLine("${category.titleEn} - $subtypeTitle ($selectedNps, $selectedRatingOrSch)")
-                            specs.forEach { s ->
-                                val v = if (currentUnit == UnitSystem.METRIC) s.valMetric else s.valImperial
-                                appendLine("${s.labelEn}: $v")
+                            appendLine("${data.currentSubtype.title} (${data.selectedNps}, ${data.selectedPrimary}${if (data.selectedSecondary != null) " ${data.selectedSecondary}" else ""})")
+                            data.dimensions.forEach { d ->
+                                val v = if (currentUnit == UnitSystem.METRIC) d.valueMetric else d.valueImperial
+                                val l = if (isTr) d.nameTr else d.nameEn
+                                appendLine("$l: $v")
                             }
                         }
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
