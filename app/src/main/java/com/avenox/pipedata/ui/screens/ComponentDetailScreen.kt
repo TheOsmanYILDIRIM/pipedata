@@ -41,7 +41,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.avenox.pipedata.data.model.*
-import com.avenox.pipedata.ui.components.EngineeringDialSelector
+import com.avenox.pipedata.ui.components.HorizontalFluidSelector
 import com.avenox.pipedata.ui.theme.LocalCadColors
 
 @Composable
@@ -191,9 +191,9 @@ fun ComponentDetailScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // ================================================================
-            // INTEGRATED CLOCK-DIAL & PRECISION SELECTOR (SAAT KADRANI)
+            // HORIZONTAL FLUID ANIMATED SLIDER SELECTOR
             // ================================================================
-            EngineeringDialSelector(
+            HorizontalFluidSelector(
                 availableNps = data.availableNps,
                 selectedNps = data.selectedNps,
                 onNpsChange = onNpsChange,
