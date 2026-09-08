@@ -270,7 +270,8 @@ fun OrbitalSplashScreen(
             // BRANDING TYPOGRAPHY & TELEMETRY
             // ================================================================
             Text(
-                text = "AVENOX PIPECAD",
+                text = "PIPEMATRIX PRO",
+
                 color = colors.textPrimary,
                 fontSize = (22 * fontScale).sp,
                 fontWeight = FontWeight.ExtraBold,

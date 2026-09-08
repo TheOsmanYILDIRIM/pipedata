@@ -277,7 +277,9 @@ class PipedataDbHelper(private val context: Context) {
             DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"),
             DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"),
             DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"),
-            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "dimensions")
+            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions")
+
+
         )
 
         return ComponentData(
@@ -408,7 +410,8 @@ class PipedataDbHelper(private val context: Context) {
             DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "buttweld"),
             DimensionRow("center_end", "Center-to-End (A / C)", "Merkez-Uç Mesafesi (A)", "${fmt(centerEnd)} mm", "${fmt(centerEnd/25.4)}\"", "buttweld"),
             DimensionRow("radius", "Centerline Radius (R)", "Büküm Yarıçapı (R)", "${fmt(od * 1.5)} mm", "${fmt((od*1.5)/25.4)}\"", "buttweld"),
-            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "buttweld")
+            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "buttweld")
+
         )
 
         return ComponentData(
@@ -537,7 +540,8 @@ class PipedataDbHelper(private val context: Context) {
                 if (bodyWallThk > 0) rows.add(DimensionRow("wall_thk", "Body Wall (G)", "Gövde Et Kalınlığı (G)", "${fmt(bodyWallThk)} mm", "${fmt(bodyWallThk/25.4)}\"", "forged"))
             }
         }
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "forged"))
+        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
+
 
         return ComponentData(
             categoryId = "fittings_sw",
@@ -591,7 +595,8 @@ class PipedataDbHelper(private val context: Context) {
         val rows = listOf(
             DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
             DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def"),
-            DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "valves_def")
+            DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def")
+
         )
 
         return ComponentData(
@@ -712,7 +717,8 @@ class PipedataDbHelper(private val context: Context) {
             DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"),
             DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"),
             DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"),
-            DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "blanks_def")
+            DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def")
+
         )
 
         return ComponentData(
@@ -730,13 +736,21 @@ class PipedataDbHelper(private val context: Context) {
         )
     }
 
+    private val dfPrecision = java.text.DecimalFormat("0.####", java.text.DecimalFormatSymbols(java.util.Locale.US))
+    private val dfWeight = java.text.DecimalFormat("0.##", java.text.DecimalFormatSymbols(java.util.Locale.US))
+
     private fun fmt(d: Double): String {
-        return if (d == d.toLong().toDouble()) {
-            d.toLong().toString()
-        } else {
-            String.format("%.1f", d)
-        }
+        if (d.isNaN() || d.isInfinite()) return "—"
+        val rounded = Math.round(d * 10000.0) / 10000.0
+        return dfPrecision.format(rounded)
     }
+
+    private fun fmtWeight(d: Double): String {
+        if (d.isNaN() || d.isInfinite()) return "—"
+        val rounded = Math.round(d * 100.0) / 100.0
+        return dfWeight.format(rounded)
+    }
+
 
     private fun getNpsDn(nps: String): Int {
         return when (nps.replace("\"", "").trim()) {

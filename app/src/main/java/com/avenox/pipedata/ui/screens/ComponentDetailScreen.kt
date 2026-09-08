@@ -102,13 +102,15 @@ fun ComponentDetailScreen(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Text(
-                                text = if (currentSubtype.abbr.isNotBlank()) "$subtypeTitle (${currentSubtype.abbr})" else subtypeTitle,
+                                text = subtypeTitle,
                                 color = colors.textPrimary,
                                 fontSize = (16.5 * fontScale).sp,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
                             )
+
                             HelpQuestionButton(
                                 onClick = { onOpenHelp(data.categoryId) },
                                 fontScale = fontScale
@@ -543,7 +545,13 @@ fun HelpQuestionButton(
  * Reads the raw SVG asset and dynamically injects theme-calibrated CSS rules into its <style> block.
  * Adapts seamlessly to Engineering Paper White (crisp slate/blue/red), Classic Blueprint, OLED Amber, and CAD Dark.
  */
-private fun fmt(d: Double): String = if (d % 1.0 == 0.0) d.toInt().toString() else "%.1f".format(java.util.Locale.US, d)
+private val dfPrecision = java.text.DecimalFormat("0.####", java.text.DecimalFormatSymbols(java.util.Locale.US))
+private fun fmt(d: Double): String {
+    if (d.isNaN() || d.isInfinite()) return "—"
+    val rounded = Math.round(d * 10000.0) / 10000.0
+    return dfPrecision.format(rounded)
+}
+
 
 /**
  * Reads raw SVG asset, injects theme-calibrated CSS, and dynamically substitutes

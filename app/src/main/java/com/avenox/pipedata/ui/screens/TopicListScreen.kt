@@ -79,7 +79,8 @@ fun TopicListScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Avenox PipeCAD",
+                        text = "PipeMatrix Pro",
+
                         color = colors.textPrimary,
                         fontSize = (19 * fontScale).sp,
                         fontWeight = FontWeight.ExtraBold,
