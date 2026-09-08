@@ -15,9 +15,12 @@ import com.avenox.pipedata.ui.components.HelpBottomSheet
 import com.avenox.pipedata.ui.components.SettingsBottomSheet
 import com.avenox.pipedata.ui.screens.ComponentDetailScreen
 import com.avenox.pipedata.ui.screens.TopicListScreen
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.activity.compose.BackHandler
+import com.avenox.pipedata.ui.components.OrbitalSplashScreen
 import com.avenox.pipedata.ui.theme.LocalCadColors
 import com.avenox.pipedata.ui.theme.PipedataTheme
-import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -52,13 +55,16 @@ class MainActivity : ComponentActivity() {
             var selectedPrimary by remember { mutableStateOf("150#") }
             var selectedSecondary by remember { mutableStateOf<String?>("RF") }
 
-            // Modals
+            // Modals & Splash
+            var showSplash by remember { mutableStateOf(true) }
             var activeHelpTopicId by remember { mutableStateOf<String?>(null) }
             var isSettingsOpen by remember { mutableStateOf(false) }
 
             // Handle Android hardware/gesture Back Button
-            BackHandler(enabled = currentScreen == "detail" || isSettingsOpen || activeHelpTopicId != null) {
-                if (activeHelpTopicId != null) {
+            BackHandler(enabled = showSplash || currentScreen == "detail" || isSettingsOpen || activeHelpTopicId != null) {
+                if (showSplash) {
+                    showSplash = false
+                } else if (activeHelpTopicId != null) {
                     activeHelpTopicId = null
                 } else if (isSettingsOpen) {
                     isSettingsOpen = false
@@ -92,74 +98,113 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colors.background
                 ) {
-                    when (currentScreen) {
-                        "catalog" -> {
-                            TopicListScreen(
-                                categories = categories,
-                                currentUnit = currentUnit,
-                                onUnitToggle = {
-                                    currentUnit = if (currentUnit == UnitSystem.METRIC) UnitSystem.IMPERIAL else UnitSystem.METRIC
-                                },
-                                fontScale = fontScale,
-                                currentLang = currentLang,
-                                onOpenSettings = { isSettingsOpen = true },
-                                onSelectCategory = { cat ->
-                                    selectedCategory = cat
-                                    currentSubtypeIndex = 0
-                                    selectedNps = "2\""
-                                    when (cat.id) {
-                                        "flanges" -> {
-                                            selectedPrimary = "150#"
-                                            selectedSecondary = "RF"
-                                        }
-                                        "pipes" -> {
-                                            selectedPrimary = "40"
-                                            selectedSecondary = null
-                                        }
-                                        "fittings_bw" -> {
-                                            selectedPrimary = "STD"
-                                            selectedSecondary = null
-                                        }
-                                        "fittings_sw" -> {
-                                            selectedPrimary = "3000#"
-                                            selectedSecondary = null
-                                        }
-                                        "valves" -> {
-                                            selectedPrimary = "150#"
-                                            selectedSecondary = null
-                                        }
-                                        "gaskets" -> {
-                                            selectedPrimary = "150#"
-                                            selectedSecondary = null
-                                        }
-                                        "blanks" -> {
-                                            selectedPrimary = "150#"
-                                            selectedSecondary = null
-                                        }
-                                        else -> {
-                                            selectedPrimary = "150#"
-                                            selectedSecondary = null
-                                        }
-                                    }
-                                    currentScreen = "detail"
+                    if (showSplash) {
+                        OrbitalSplashScreen(
+                            colors = colors,
+                            fontScale = fontScale,
+                            isTr = currentLang == AppLanguage.TR,
+                            onSplashFinished = { showSplash = false }
+                        )
+                    } else {
+                        AnimatedContent(
+                            targetState = currentScreen,
+                            transitionSpec = {
+                                if (targetState == "detail") {
+                                    (slideInHorizontally(
+                                        initialOffsetX = { fullWidth -> (fullWidth * 0.22f).toInt() },
+                                        animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
+                                    ) + fadeIn(animationSpec = tween(220)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            targetOffsetX = { fullWidth -> (-fullWidth * 0.15f).toInt() },
+                                            animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
+                                        ) + fadeOut(animationSpec = tween(180))
+                                    )
+                                } else {
+                                    (slideInHorizontally(
+                                        initialOffsetX = { fullWidth -> (-fullWidth * 0.22f).toInt() },
+                                        animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
+                                    ) + fadeIn(animationSpec = tween(220)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            targetOffsetX = { fullWidth -> (fullWidth * 0.15f).toInt() },
+                                            animationSpec = tween(durationMillis = 260, easing = FastOutSlowInEasing)
+                                        ) + fadeOut(animationSpec = tween(180))
+                                    )
                                 }
-                            )
-                        }
-                        "detail" -> {
-                            ComponentDetailScreen(
-                                data = currentData,
-                                currentSubtypeIndex = currentSubtypeIndex,
-                                onSubtypeChange = { currentSubtypeIndex = it },
-                                onNpsChange = { selectedNps = it },
-                                onPrimaryChange = { selectedPrimary = it },
-                                onSecondaryChange = if (selectedSecondary != null) { { selectedSecondary = it } } else null,
-                                currentUnit = currentUnit,
-                                fontScale = fontScale,
-                                currentLang = currentLang,
-                                currentTheme = currentTheme,
-                                onOpenHelp = { topicId -> activeHelpTopicId = topicId },
-                                onBack = { currentScreen = "catalog" }
-                            )
+                            },
+                            label = "ScreenTransition"
+                        ) { screen ->
+                            when (screen) {
+                                "catalog" -> {
+                                    TopicListScreen(
+                                        categories = categories,
+                                        currentUnit = currentUnit,
+                                        onUnitToggle = {
+                                            currentUnit = if (currentUnit == UnitSystem.METRIC) UnitSystem.IMPERIAL else UnitSystem.METRIC
+                                        },
+                                        fontScale = fontScale,
+                                        currentLang = currentLang,
+                                        onOpenSettings = { isSettingsOpen = true },
+                                        onSelectCategory = { cat ->
+                                            selectedCategory = cat
+                                            currentSubtypeIndex = 0
+                                            selectedNps = "2\""
+                                            when (cat.id) {
+                                                "flanges" -> {
+                                                    selectedPrimary = "150#"
+                                                    selectedSecondary = "RF"
+                                                }
+                                                "pipes" -> {
+                                                    selectedPrimary = "40"
+                                                    selectedSecondary = null
+                                                }
+                                                "fittings_bw" -> {
+                                                    selectedPrimary = "STD"
+                                                    selectedSecondary = null
+                                                }
+                                                "fittings_sw" -> {
+                                                    selectedPrimary = "3000#"
+                                                    selectedSecondary = null
+                                                }
+                                                "valves" -> {
+                                                    selectedPrimary = "150#"
+                                                    selectedSecondary = null
+                                                }
+                                                "gaskets" -> {
+                                                    selectedPrimary = "150#"
+                                                    selectedSecondary = null
+                                                }
+                                                "blanks" -> {
+                                                    selectedPrimary = "150#"
+                                                    selectedSecondary = null
+                                                }
+                                                else -> {
+                                                    selectedPrimary = "150#"
+                                                    selectedSecondary = null
+                                                }
+                                            }
+                                            currentScreen = "detail"
+                                        }
+                                    )
+                                }
+                                "detail" -> {
+                                    ComponentDetailScreen(
+                                        data = currentData,
+                                        currentSubtypeIndex = currentSubtypeIndex,
+                                        onSubtypeChange = { currentSubtypeIndex = it },
+                                        onNpsChange = { selectedNps = it },
+                                        onPrimaryChange = { selectedPrimary = it },
+                                        onSecondaryChange = if (selectedSecondary != null) { { selectedSecondary = it } } else null,
+                                        currentUnit = currentUnit,
+                                        fontScale = fontScale,
+                                        currentLang = currentLang,
+                                        currentTheme = currentTheme,
+                                        onOpenHelp = { topicId -> activeHelpTopicId = topicId },
+                                        onBack = { currentScreen = "catalog" }
+                                    )
+                                }
+                            }
                         }
                     }
 

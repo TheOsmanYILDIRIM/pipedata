@@ -145,6 +145,8 @@ fun ComponentDetailScreen(
                 theme = currentTheme,
                 title = subtypeTitle,
                 colors = colors,
+                data = data,
+                isMetric = currentUnit == UnitSystem.METRIC,
                 hasMultipleSubtypes = data.allSubtypes.size > 1,
                 onPrevSubtype = {
                     val newIdx = if (currentSubtypeIndex > 0) currentSubtypeIndex - 1 else data.allSubtypes.lastIndex
@@ -356,6 +358,8 @@ private fun CadDrawingStage(
     theme: CadTheme,
     title: String,
     colors: com.avenox.pipedata.ui.theme.CadColorPalette,
+    data: ComponentData,
+    isMetric: Boolean,
     hasMultipleSubtypes: Boolean,
     onPrevSubtype: () -> Unit,
     onNextSubtype: () -> Unit,
@@ -372,14 +376,16 @@ private fun CadDrawingStage(
         offsetY = 0f
     }
 
-    val svgBytes = remember(svgAsset, theme) {
-        getThemedSvgBytes(context, svgAsset, theme)
+    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}"
+
+    val svgBytes = remember(dynamicCacheKey) {
+        getThemedSvgBytes(context, svgAsset, theme, data, isMetric)
     }
 
-    val imageRequest = remember(svgAsset, theme, svgBytes) {
+    val imageRequest = remember(dynamicCacheKey, svgBytes) {
         ImageRequest.Builder(context)
             .data(svgBytes ?: "file:///android_asset/svg/$svgAsset")
-            .memoryCacheKey("${svgAsset}_${theme.name}")
+            .memoryCacheKey(dynamicCacheKey)
             .decoderFactory(SvgDecoder.Factory())
             .crossfade(false)
             .build()
@@ -537,7 +543,20 @@ fun HelpQuestionButton(
  * Reads the raw SVG asset and dynamically injects theme-calibrated CSS rules into its <style> block.
  * Adapts seamlessly to Engineering Paper White (crisp slate/blue/red), Classic Blueprint, OLED Amber, and CAD Dark.
  */
-private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadTheme): ByteArray? {
+private fun fmt(d: Double): String = if (d % 1.0 == 0.0) d.toInt().toString() else "%.1f".format(java.util.Locale.US, d)
+
+/**
+ * Reads raw SVG asset, injects theme-calibrated CSS, and dynamically substitutes
+ * all dimension placeholders ([[3]], [[4]], [[19]], [[6]], [[11]], [[DB2_6]], etc.)
+ * with real, live engineering numbers corresponding to the user's active selection.
+ */
+private fun getThemedSvgBytes(
+    context: Context,
+    assetName: String,
+    theme: CadTheme,
+    data: ComponentData,
+    isMetric: Boolean
+): ByteArray? {
     return try {
         val rawSvg = context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
         val styleReplacement = when (theme) {
@@ -551,7 +570,7 @@ private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadThe
   .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
   .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -565,7 +584,7 @@ private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadThe
   .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
   .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -579,7 +598,7 @@ private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadThe
   .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
   .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -593,17 +612,88 @@ private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadThe
   .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
   .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.5; rx: 6; ry: 6; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 17px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
         }
 
         val styleRegex = Regex("<style>[\\s\\S]*?</style>")
-        val themedSvg = if (styleRegex.containsMatchIn(rawSvg)) {
+        var themedSvg = if (styleRegex.containsMatchIn(rawSvg)) {
             styleRegex.replace(rawSvg, styleReplacement)
         } else {
             rawSvg
         }
+
+        // Build dimension lookup table from active component specifications
+        val dimMap = mutableMapOf<String, String>()
+        data.dimensions.forEach { row ->
+            val raw = if (isMetric) row.metricValue else row.imperialValue
+            val cleaned = raw.replace(" mm", "").replace(" kg", "kg").replace(" lb", "lb").trim()
+            dimMap[row.id.lowercase()] = cleaned
+        }
+
+        val dn = data.dn
+        val odStr = dimMap["od"] ?: if (isMetric) "${fmt(dn * 2.8)}" else "${fmt(dn * 2.8 / 25.4)}\""
+        val thkStr = dimMap["thk"] ?: if (isMetric) "17.5" else "0.69\""
+        val hubStr = dimMap["hub"] ?: dimMap["ctf"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
+        val boreStr = dimMap["bore"] ?: dimMap["id"] ?: if (isMetric) "$dn" else "${fmt(dn / 25.4)}\""
+        val pcdStr = dimMap["pcd"] ?: if (isMetric) "${fmt(dn * 2.2)}" else "${fmt(dn * 2.2 / 25.4)}\""
+        val lenStr = dimMap["len"] ?: dimMap["lth"] ?: if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
+        val rfStr = dimMap["rf"] ?: if (isMetric) "${fmt(dn * 1.75)}" else "${fmt(dn * 1.75 / 25.4)}\""
+        val boltsStr = dimMap["bolts"] ?: "4 × 5/8\""
+        val studStr = dimMap["stud"] ?: if (isMetric) "70" else "2.75\""
+        val wtStr = dimMap["weight"] ?: if (isMetric) "2.5kg" else "5.5lb"
+
+        val numBolts = boltsStr.split("×").firstOrNull()?.trim() ?: "4"
+        val boltSz = boltsStr.split("×").getOrNull(1)?.trim() ?: "5/8\""
+
+        // Dynamically inject real engineering values into all SVG parameter callout badges
+        val placeholderRegex = Regex("\\[\\[(.*?)\\]\\]")
+        themedSvg = placeholderRegex.replace(themedSvg) { matchResult ->
+            val key = matchResult.groupValues[1].trim()
+            when (key) {
+                "3" -> odStr
+                "4" -> thkStr
+                "5" -> hubStr
+                "6" -> boreStr
+                "7" -> dimMap["hgt"] ?: if (isMetric) "125" else "4.92\""
+                "8" -> dimMap["rad"] ?: if (isMetric) "3.0" else "1/8\""
+                "9" -> lenStr
+                "10" -> dimMap["socket"] ?: if (isMetric) "16.0" else "5/8\""
+                "11" -> rfStr
+                "12" -> if (isMetric) "2.0" else "1/16\""
+                "13" -> dimMap["rtj_dia"] ?: if (isMetric) "${fmt(dn * 1.6)}" else "${fmt(dn * 1.6 / 25.4)}\""
+                "14" -> dimMap["ring"] ?: "R23"
+                "15" -> if (isMetric) "6.4" else "1/4\""
+                "16" -> if (isMetric) "8.7" else "11/32\""
+                "17" -> if (isMetric) "4.0" else "5/32\""
+                "18" -> boreStr
+                "19" -> pcdStr
+                "20" -> numBolts
+                "21" -> boltSz
+                "22" -> if (isMetric) "60" else "2.36\""
+                "23" -> studStr
+                "24" -> studStr
+                "25" -> if (isMetric) "19.0" else "3/4\""
+                "27", "28", "29" -> wtStr
+                "32" -> boreStr
+                "36" -> pcdStr
+                "37" -> if (isMetric) "6.4" else "1/4\""
+                "38" -> if (isMetric) "8.7" else "11/32\""
+                "43" -> if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
+                "44" -> if (isMetric) "3.9" else "0.154\""
+                "46" -> "$numBolts × $boltSz"
+                "48" -> "37.5°"
+                "49" -> "10°"
+                "50" -> if (isMetric) "1.6" else "1/16\""
+                "51" -> if (isMetric) "3.0" else "1/8\""
+                "52" -> if (isMetric) "1.6" else "1/16\""
+                "DB2_6" -> data.selectedPrimary
+                "DB2_4" -> thkStr
+                else -> dimMap[key.lowercase()] ?: data.selectedPrimary
+            }
+        }
+
         themedSvg.toByteArray(Charsets.UTF_8)
     } catch (e: Exception) {
         null

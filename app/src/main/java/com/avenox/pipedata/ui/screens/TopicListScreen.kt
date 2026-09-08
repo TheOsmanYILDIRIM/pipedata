@@ -1,12 +1,16 @@
 package com.avenox.pipedata.ui.screens
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
@@ -75,11 +79,12 @@ fun TopicListScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Pipedata",
+                        text = "Avenox PipeCAD",
                         color = colors.textPrimary,
-                        fontSize = (20 * fontScale).sp,
+                        fontSize = (19 * fontScale).sp,
                         fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = (-0.5).sp
+                        fontFamily = FontFamily.Monospace,
+                        letterSpacing = 1.sp
                     )
 
                     Row(
@@ -186,12 +191,31 @@ fun TopicListScreen(
                         .build()
                 }
 
+                val interactionSource = remember { MutableInteractionSource() }
+                val isPressed by interactionSource.collectIsPressedAsState()
+                val itemScale by animateFloatAsState(
+                    targetValue = if (isPressed) 0.975f else 1.0f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    ),
+                    label = "ItemScale"
+                )
+
                 Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .graphicsLayer {
+                                scaleX = itemScale
+                                scaleY = itemScale
+                            }
                             .clip(RoundedCornerShape(8.dp))
-                            .clickable { onSelectCategory(cat) }
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = ripple(color = colors.accent.copy(alpha = 0.2f)),
+                                onClick = { onSelectCategory(cat) }
+                            )
                             .padding(vertical = 10.dp, horizontal = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
