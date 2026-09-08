@@ -627,9 +627,9 @@ private fun getThemedSvgBytes(
         // Build dimension lookup table from active component specifications
         val dimMap = mutableMapOf<String, String>()
         data.dimensions.forEach { row ->
-            val raw = if (isMetric) row.metricValue else row.imperialValue
+            val raw = if (isMetric) row.valueMetric else row.valueImperial
             val cleaned = raw.replace(" mm", "").replace(" kg", "kg").replace(" lb", "lb").trim()
-            dimMap[row.id.lowercase()] = cleaned
+            dimMap[row.key.lowercase()] = cleaned
         }
 
         val dn = data.dn
