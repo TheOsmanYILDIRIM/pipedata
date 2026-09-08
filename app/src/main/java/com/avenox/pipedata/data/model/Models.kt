@@ -17,46 +17,6 @@ enum class AppLanguage(val code: String, val label: String) {
     TR("tr", "Türkçe")
 }
 
-data class FlangeTypeItem(
-    val id: String,
-    val title: String,
-    val shortName: String,
-    val abbr: String,
-    val facing: String,
-    val standard: String,
-    val descEn: String,
-    val descTr: String,
-    val svgAsset: String
-)
-
-data class FlangeSpec(
-    val nps: String,
-    val dn: Int,
-    val rating: Int,
-    val facing: String,
-    val odMm: Double,
-    val thkMm: Double,
-    val hubXMm: Double,
-    val lengthYMm: Double,
-    val boreBMm: Double,
-    val rfDiaMm: Double,
-    val pcdMm: Double,
-    val boltsCount: Int,
-    val boltSizeIn: String,
-    val studLengthMm: Double,
-    val weightKg: Double,
-    // Imperial values
-    val odIn: Double = odMm / 25.4,
-    val thkIn: Double = thkMm / 25.4,
-    val hubXIn: Double = hubXMm / 25.4,
-    val lengthYIn: Double = lengthYMm / 25.4,
-    val boreBIn: Double = boreBMm / 25.4,
-    val rfDiaIn: Double = rfDiaMm / 25.4,
-    val pcdIn: Double = pcdMm / 25.4,
-    val studLengthIn: Double = studLengthMm / 25.4,
-    val weightLb: Double = weightKg * 2.20462
-)
-
 data class TopicCategory(
     val id: String,
     val titleEn: String,
@@ -65,6 +25,44 @@ data class TopicCategory(
     val descEn: String,
     val descTr: String,
     val svgAsset: String
+)
+
+data class SubtypeItem(
+    val id: String,
+    val title: String,
+    val shortName: String,
+    val abbr: String,
+    val standard: String,
+    val descEn: String,
+    val descTr: String,
+    val svgAsset: String
+)
+
+data class DimensionRow(
+    val key: String,
+    val nameEn: String,
+    val nameTr: String,
+    val valueMetric: String,
+    val valueImperial: String,
+    val helpKey: String? = null
+)
+
+data class ComponentData(
+    val categoryId: String,
+    val currentSubtype: SubtypeItem,
+    val allSubtypes: List<SubtypeItem>,
+    val availableNps: List<String>,
+    val selectedNps: String,
+    val dn: Int,
+    val primarySelectorLabelEn: String, // e.g. "Class" or "Schedule"
+    val primarySelectorLabelTr: String,
+    val primaryOptions: List<String>,
+    val selectedPrimary: String,
+    val secondarySelectorLabelEn: String? = null, // e.g. "Facing"
+    val secondarySelectorLabelTr: String? = null,
+    val secondaryOptions: List<String> = emptyList(),
+    val selectedSecondary: String? = null,
+    val dimensions: List<DimensionRow>
 )
 
 data class HelpTopic(

@@ -41,17 +41,19 @@ import com.avenox.pipedata.data.model.*
 import com.avenox.pipedata.ui.theme.LocalCadColors
 
 @Composable
-fun FlangeDetailScreen(
-    flangeTypes: List<FlangeTypeItem>,
-    currentTypeIndex: Int,
-    onTypeChange: (Int) -> Unit,
+fun ComponentDetailScreen(
+    category: TopicCategory,
+    currentSubtypeIndex: Int,
+    onSubtypeChange: (Int) -> Unit,
+    availableNps: List<String>,
     selectedNps: String,
     onNpsChange: (String) -> Unit,
-    selectedRating: Int,
-    onRatingChange: (Int) -> Unit,
+    availableRatingsOrSch: List<String>,
+    selectedRatingOrSch: String,
+    onRatingOrSchChange: (String) -> Unit,
     selectedFacing: String,
     onFacingChange: (String) -> Unit,
-    spec: FlangeSpec,
+    specs: List<SpecItem>,
     currentUnit: UnitSystem,
     fontScale: Float,
     currentLang: AppLanguage,
@@ -61,16 +63,16 @@ fun FlangeDetailScreen(
     val colors = LocalCadColors.current
     val context = LocalContext.current
     val isTr = currentLang == AppLanguage.TR
-    val currentType = flangeTypes.getOrElse(currentTypeIndex) { flangeTypes.first() }
 
-    val npsList = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\"")
-    val ratingList = listOf(150, 300, 600)
-    val facingList = listOf("RF", "FF", "RTJ")
+    val currentSubtype = category.defaultSubtypes.getOrElse(currentSubtypeIndex) {
+        category.defaultSubtypes.first()
+    }
+    val subtypeTitle = if (isTr) currentSubtype.titleTr else currentSubtype.titleEn
 
     // CAD Canvas Interactive Zoom/Pan State
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
     fun resetZoom() {
         scale = 1f
@@ -104,14 +106,13 @@ fun FlangeDetailScreen(
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "${currentType.shortName} (${currentType.abbr})",
+                            text = "$subtypeTitle (${currentSubtype.abbr})",
                             color = colors.textPrimary,
-                            fontSize = (17 * fontScale).sp,
+                            fontSize = (16.5 * fontScale).sp,
                             fontWeight = FontWeight.Bold
                         )
-                        // Help question mark button for Flange Type
                         HelpQuestionButton(
-                            onClick = { onOpenHelp("flange_types") },
+                            onClick = { onOpenHelp(category.helpTopicId) },
                             fontScale = fontScale
                         )
                     }
@@ -123,15 +124,15 @@ fun FlangeDetailScreen(
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = currentType.standard,
+                            text = category.std,
                             color = colors.accent,
-                            fontSize = (11 * fontScale).sp,
+                            fontSize = (10.5 * fontScale).sp,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
-                Divider(color = colors.border, thickness = 1.dp)
+                Divider(color = colors.border, thickness = 0.8.dp)
             }
         }
     ) { paddingValues ->
@@ -148,7 +149,7 @@ fun FlangeDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(290.dp)
+                    .height(280.dp)
                     .background(colors.cadBg)
                     .border(1.dp, colors.border)
                     .pointerInput(Unit) {
@@ -162,7 +163,7 @@ fun FlangeDetailScreen(
                         detectTransformGestures { _, pan, zoom, _ ->
                             scale = (scale * zoom).coerceIn(1.0f, 4.0f)
                             if (scale > 1.0f) {
-                                val maxOffset = (scale - 1f) * 400f
+                                val maxOffset = (scale - 1f) * 350f
                                 offsetX = (offsetX + pan.x).coerceIn(-maxOffset, maxOffset)
                                 offsetY = (offsetY + pan.y).coerceIn(-maxOffset, maxOffset)
                             } else {
@@ -177,7 +178,7 @@ fun FlangeDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(14.dp)
                         .graphicsLayer(
                             scaleX = scale,
                             scaleY = scale,
@@ -188,74 +189,77 @@ fun FlangeDetailScreen(
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data("file:///android_asset/svg/${currentType.svgAsset}")
+                            .data("file:///android_asset/svg/${currentSubtype.svgAsset}")
                             .decoderFactory(SvgDecoder.Factory())
+                            .crossfade(false)
                             .build(),
-                        contentDescription = currentType.title,
+                        contentDescription = subtypeTitle,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 // Mini Left Arrow
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 8.dp)
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(colors.surface.copy(alpha = 0.75f))
-                        .border(1.dp, colors.border, CircleShape)
-                        .clickable {
-                            val newIdx = if (currentTypeIndex > 0) currentTypeIndex - 1 else flangeTypes.lastIndex
-                            onTypeChange(newIdx)
-                            resetZoom()
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ChevronLeft,
-                        contentDescription = "Previous",
-                        tint = colors.textPrimary,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
+                if (category.defaultSubtypes.size > 1) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 8.dp)
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(colors.surface.copy(alpha = 0.8f))
+                            .border(1.dp, colors.border, CircleShape)
+                            .clickable {
+                                val newIdx = if (currentSubtypeIndex > 0) currentSubtypeIndex - 1 else category.defaultSubtypes.lastIndex
+                                onSubtypeChange(newIdx)
+                                resetZoom()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronLeft,
+                            contentDescription = "Previous",
+                            tint = colors.textPrimary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
 
-                // Mini Right Arrow
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(colors.surface.copy(alpha = 0.75f))
-                        .border(1.dp, colors.border, CircleShape)
-                        .clickable {
-                            val newIdx = if (currentTypeIndex < flangeTypes.lastIndex) currentTypeIndex + 1 else 0
-                            onTypeChange(newIdx)
-                            resetZoom()
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = "Next",
-                        tint = colors.textPrimary,
-                        modifier = Modifier.size(22.dp)
-                    )
+                    // Mini Right Arrow
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 8.dp)
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(colors.surface.copy(alpha = 0.8f))
+                            .border(1.dp, colors.border, CircleShape)
+                            .clickable {
+                                val newIdx = if (currentSubtypeIndex < category.defaultSubtypes.lastIndex) currentSubtypeIndex + 1 else 0
+                                onSubtypeChange(newIdx)
+                                resetZoom()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = "Next",
+                            tint = colors.textPrimary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
 
                 // Zoom Level Indicator
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(12.dp)
+                        .padding(10.dp)
                         .background(colors.surface.copy(alpha = 0.85f), RoundedCornerShape(6.dp))
                         .border(1.dp, colors.border, RoundedCornerShape(6.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 7.dp, vertical = 3.dp)
                 ) {
                     Text(
-                        text = "${String.format("%.1f", scale)}x • Pinch to Zoom",
+                        text = "${String.format("%.1f", scale)}x • Zoom",
                         color = colors.textSecondary,
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace
@@ -267,12 +271,12 @@ fun FlangeDetailScreen(
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .padding(12.dp)
+                            .padding(10.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(colors.chipBg)
                             .border(1.dp, colors.accent, RoundedCornerShape(6.dp))
                             .clickable { resetZoom() }
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                            .padding(horizontal = 9.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "⟲ Reset",
@@ -284,7 +288,7 @@ fun FlangeDetailScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // ================================================================
             // SELECTORS CONTAINER
@@ -292,7 +296,7 @@ fun FlangeDetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 14.dp)
             ) {
                 // 1. NPS Row Header
                 Row(
@@ -313,7 +317,7 @@ fun FlangeDetailScreen(
                         )
                     }
                     Text(
-                        text = "$selectedNps (DN ${spec.dn})",
+                        text = selectedNps,
                         color = colors.textPrimary,
                         fontSize = (13 * fontScale).sp,
                         fontFamily = FontFamily.Monospace,
@@ -321,14 +325,14 @@ fun FlangeDetailScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 // NPS Chips Strip
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(npsList) { nps ->
+                    items(availableNps) { nps ->
                         val isSelected = selectedNps == nps
                         Box(
                             modifier = Modifier
@@ -336,7 +340,7 @@ fun FlangeDetailScreen(
                                 .background(if (isSelected) colors.accent else colors.chipBg)
                                 .border(1.dp, if (isSelected) colors.accent else colors.border, RoundedCornerShape(8.dp))
                                 .clickable { onNpsChange(nps) }
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                .padding(horizontal = 11.dp, vertical = 7.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -350,53 +354,57 @@ fun FlangeDetailScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                // Dual Selectors: Class and Facing
+                // Secondary Selectors: Schedule / Rating and Facing (if Flanges)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Class Selector
+                    // Rating / Schedule Selector
                     Column(modifier = Modifier.weight(1f)) {
+                        val selectorLabel = if (category.id == "pipes" || category.id == "fittings_bw") {
+                            if (isTr) "Boru Et Kalınlığı (SCH)" else "Schedule (SCH)"
+                        } else {
+                            if (isTr) "Basınç Sınıfı" else "Class"
+                        }
+                        val helpTopic = if (category.id == "pipes" || category.id == "fittings_bw") "pipes" else "rating"
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 6.dp)
+                            modifier = Modifier.padding(bottom = 5.dp)
                         ) {
                             Text(
-                                text = if (isTr) "Sınıf" else "Class",
+                                text = selectorLabel,
                                 color = colors.textSecondary,
-                                fontSize = (12.5 * fontScale).sp,
+                                fontSize = (12 * fontScale).sp,
                                 fontWeight = FontWeight.Bold
                             )
                             HelpQuestionButton(
-                                onClick = { onOpenHelp("rating") },
+                                onClick = { onOpenHelp(helpTopic) },
                                 fontScale = fontScale
                             )
                         }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(colors.chipBg, RoundedCornerShape(8.dp))
-                                .border(1.dp, colors.border, RoundedCornerShape(8.dp))
-                                .padding(2.dp)
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            ratingList.forEach { r ->
-                                val sel = selectedRating == r
+                            items(availableRatingsOrSch) { r ->
+                                val sel = selectedRatingOrSch == r
                                 Box(
                                     modifier = Modifier
-                                        .weight(1f)
                                         .clip(RoundedCornerShape(6.dp))
                                         .background(if (sel) colors.accent else colors.chipBg)
-                                        .clickable { onRatingChange(r) }
-                                        .padding(vertical = 7.dp),
+                                        .border(0.8.dp, if (sel) colors.accent else colors.border, RoundedCornerShape(6.dp))
+                                        .clickable { onRatingOrSchChange(r) }
+                                        .padding(horizontal = 10.dp, vertical = 6.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = "${r}#",
+                                        text = r,
                                         color = if (sel) colors.accentText else colors.textPrimary,
-                                        fontSize = (11.5 * fontScale).sp,
+                                        fontSize = (11 * fontScale).sp,
                                         fontFamily = FontFamily.Monospace,
                                         fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium
                                     )
@@ -405,49 +413,51 @@ fun FlangeDetailScreen(
                         }
                     }
 
-                    // Facing Selector
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        ) {
-                            Text(
-                                text = if (isTr) "Yüzey" else "Facing",
-                                color = colors.textSecondary,
-                                fontSize = (12.5 * fontScale).sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            HelpQuestionButton(
-                                onClick = { onOpenHelp("facing") },
-                                fontScale = fontScale
-                            )
-                        }
+                    // Facing Selector (Only if Flanges or Line Blanks)
+                    if (category.id == "flanges" || category.id == "blanks") {
+                        Column(modifier = Modifier.width(130.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(bottom = 5.dp)
+                            ) {
+                                Text(
+                                    text = if (isTr) "Yüzey" else "Facing",
+                                    color = colors.textSecondary,
+                                    fontSize = (12 * fontScale).sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                HelpQuestionButton(
+                                    onClick = { onOpenHelp("facing") },
+                                    fontScale = fontScale
+                                )
+                            }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(colors.chipBg, RoundedCornerShape(8.dp))
-                                .border(1.dp, colors.border, RoundedCornerShape(8.dp))
-                                .padding(2.dp)
-                        ) {
-                            facingList.forEach { f ->
-                                val sel = selectedFacing == f
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(if (sel) colors.accent else colors.chipBg)
-                                        .clickable { onFacingChange(f) }
-                                        .padding(vertical = 7.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = f,
-                                        color = if (sel) colors.accentText else colors.textPrimary,
-                                        fontSize = (11.5 * fontScale).sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium
-                                    )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(colors.chipBg, RoundedCornerShape(6.dp))
+                                    .border(0.8.dp, colors.border, RoundedCornerShape(6.dp))
+                                    .padding(2.dp)
+                            ) {
+                                listOf("RF", "FF", "RTJ").forEach { f ->
+                                    val sel = selectedFacing == f
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(5.dp))
+                                            .background(if (sel) colors.accent else colors.chipBg)
+                                            .clickable { onFacingChange(f) }
+                                            .padding(vertical = 5.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = f,
+                                            color = if (sel) colors.accentText else colors.textPrimary,
+                                            fontSize = (11 * fontScale).sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -455,7 +465,7 @@ fun FlangeDetailScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             // ================================================================
             // SPECIFICATION TABLE CARD
@@ -463,18 +473,18 @@ fun FlangeDetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 14.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
+                        .padding(bottom = 6.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = if (isTr) "Ölçüler ve PCD" else "Dimensions & PCD",
+                            text = if (isTr) "Mühendislik Ölçüleri" else "Engineering Specifications",
                             color = colors.textSecondary,
                             fontSize = (12.5 * fontScale).sp,
                             fontWeight = FontWeight.Bold
@@ -489,8 +499,10 @@ fun FlangeDetailScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = colors.surface),
-                    border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(colors.border)),
-                    shape = RoundedCornerShape(12.dp)
+                    border = CardDefaults.outlinedCardBorder().copy(
+                        brush = androidx.compose.ui.graphics.SolidColor(colors.border)
+                    ),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -499,47 +511,35 @@ fun FlangeDetailScreen(
                     ) {
                         val isMetric = currentUnit == UnitSystem.METRIC
 
-                        SpecTableRow(
-                            name = if (isTr) "Dış Çap (O)" else "Outside Diameter (O)",
-                            value = if (isMetric) "${spec.odMm} mm" else "${String.format("%.2f", spec.odIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Min. Kalınlık (T)" else "Min Thickness (T)",
-                            value = if (isMetric) "${spec.thkMm} mm" else "${String.format("%.2f", spec.thkIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Boyun Tabanı (X)" else "Base Hub (X)",
-                            value = if (isMetric) "${spec.hubXMm} mm" else "${String.format("%.2f", spec.hubXIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "İç Delik (B)" else "Inside Bore (B)",
-                            value = if (isMetric) "${spec.boreBMm} mm" else "${String.format("%.2f", spec.boreBIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Cıvata Dairesi (PCD)" else "Bolt Circle (PCD)",
-                            value = if (isMetric) "${spec.pcdMm} mm" else "${String.format("%.2f", spec.pcdIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Cıvata Adedi & Çap" else "Bolting",
-                            value = "${spec.boltsCount} × ${spec.boltSizeIn}",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Saplama Boyu" else "Stud Length",
-                            value = if (isMetric) "${spec.studLengthMm} mm" else "${String.format("%.2f", spec.studLengthIn)}\"",
-                            fontScale = fontScale
-                        )
-                        SpecTableRow(
-                            name = if (isTr) "Tahmini Ağırlık" else "Approx. Weight",
-                            value = if (isMetric) "${spec.weightKg} kg" else "${String.format("%.2f", spec.weightLb)} lb",
-                            fontScale = fontScale,
-                            isLast = true
-                        )
+                        specs.forEachIndexed { idx, item ->
+                            val label = if (isTr) item.labelTr else item.labelEn
+                            val value = if (isMetric) item.valMetric else item.valImperial
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 7.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = label,
+                                    color = colors.textSecondary,
+                                    fontSize = (13 * fontScale).sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = value,
+                                    color = colors.textPrimary,
+                                    fontSize = (13.5 * fontScale).sp,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            if (idx < specs.lastIndex) {
+                                Divider(color = colors.border.copy(alpha = 0.5f), thickness = 0.7.dp)
+                            }
+                        }
                     }
                 }
 
@@ -549,18 +549,24 @@ fun FlangeDetailScreen(
                 Button(
                     onClick = {
                         val textToCopy = buildString {
-                            appendLine("${currentType.title} - $selectedNps ${selectedRating}# $selectedFacing")
-                            appendLine("OD: ${spec.odMm} mm | T: ${spec.thkMm} mm | Hub: ${spec.hubXMm} mm | Bore: ${spec.boreBMm} mm")
-                            appendLine("PCD: ${spec.pcdMm} mm | Bolts: ${spec.boltsCount}x${spec.boltSizeIn} | Stud: ${spec.studLengthMm} mm | Weight: ${spec.weightKg} kg")
+                            appendLine("${category.titleEn} - $subtypeTitle ($selectedNps, $selectedRatingOrSch)")
+                            specs.forEach { s ->
+                                val v = if (currentUnit == UnitSystem.METRIC) s.valMetric else s.valImperial
+                                appendLine("${s.labelEn}: $v")
+                            }
                         }
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText("Flange Spec", textToCopy)
+                        val clip = ClipData.newPlainText("Pipedata Spec", textToCopy)
                         clipboard.setPrimaryClip(clip)
-                        Toast.makeText(context, if (isTr) "Ölçüler Panoya Kopyalandı! ✓" else "Specification Copied! ✓", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            if (isTr) "Ölçüler Panoya Kopyalandı! ✓" else "Specifications Copied! ✓",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(46.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colors.accent,
                         contentColor = colors.accentText
@@ -570,51 +576,17 @@ fun FlangeDetailScreen(
                     Icon(
                         imageVector = Icons.Default.ContentCopy,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(17.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = if (isTr) "Ölçüleri Kopyala" else "Copy Specification",
-                        fontSize = (14 * fontScale).sp,
+                        fontSize = (13.5 * fontScale).sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun SpecTableRow(
-    name: String,
-    value: String,
-    fontScale: Float,
-    isLast: Boolean = false
-) {
-    val colors = LocalCadColors.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = name,
-            color = colors.textSecondary,
-            fontSize = (13 * fontScale).sp,
-            fontWeight = FontWeight.Medium
-        )
-        Text(
-            text = value,
-            color = colors.textPrimary,
-            fontSize = (13.5 * fontScale).sp,
-            fontFamily = FontFamily.Monospace,
-            fontWeight = FontWeight.Bold
-        )
-    }
-    if (!isLast) {
-        Divider(color = colors.border.copy(alpha = 0.5f), thickness = 0.7.dp)
     }
 }
 

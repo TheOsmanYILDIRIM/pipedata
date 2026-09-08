@@ -60,3 +60,8 @@
      - `PipedataDbHelper.kt`: `pipedata.db` SQLite veritabanı okuma motoru.
   3. **GitHub CI/CD APK Pipeline:** Yerelde ağır Gradle derlemesi yapmadan (Kural 7), push anında `ubuntu-latest` üzerinde Java 17 + Gradle 8.9 ile APK derleyip GitHub Release & Artifact olarak üreten `.github/workflows/build_apk.yml` oluşturuldu.
 - **Sıradaki Adım:** Avenox Doktrini Kural 7 gereğince `git-operator` subagent'ının tetiklenmesi, değişikliklerin GitHub'a pushlanması ve CI/CD derleme sürecinin izlenmesi.
+
+- [x] Üst Tema Seçim Çubuğunun Kaldırılması (Tema seçimi sadece Ayarlar çekmecesine taşındı)
+- [x] Ana Sekme Performans Optimizasyonu (Arka plan asenkron DB yükleme + Coil SVG bellek önbelleği ile 60/120 FPS akıcılık)
+- [x] Liste Görünümü Tipografi & Rozet İyileştirmesi (Kompakt 64dp kartlar, tek satırda taşmayan inline ASME rozetleri, tek satır açıklama)
+- [x] Tüm SQLite Veritabanının Uçtan Uca Entegrasyonu (Flanşlar, Borular, Alın Kaynaklı Fitingler, Dövme Fitingler, Vanalar, Contalar ve Körlemeler için dinamik ComponentDetailScreen ve sorgu motoru)

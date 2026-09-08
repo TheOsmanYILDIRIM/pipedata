@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
@@ -21,10 +20,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.avenox.pipedata.data.model.*
 import com.avenox.pipedata.ui.theme.LocalCadColors
@@ -33,8 +34,6 @@ import com.avenox.pipedata.ui.theme.LocalCadColors
 @Composable
 fun TopicListScreen(
     categories: List<TopicCategory>,
-    currentTheme: CadTheme,
-    onThemeChange: (CadTheme) -> Unit,
     currentUnit: UnitSystem,
     onUnitToggle: () -> Unit,
     fontScale: Float,
@@ -67,6 +66,7 @@ fun TopicListScreen(
                     .background(colors.surface)
                     .statusBarsPadding()
             ) {
+                // Sleek Top App Bar: Brand on left, actions on right (NO THEMES HERE - ONLY IN SETTINGS)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,7 +86,7 @@ fun TopicListScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Unit badge button
+                        // Unit badge button (mm / in)
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
@@ -143,7 +143,7 @@ fun TopicListScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .padding(horizontal = 16.dp, vertical = 6.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = colors.accent,
@@ -157,35 +157,6 @@ fun TopicListScreen(
                     )
                 }
 
-                // Theme quick bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    CadTheme.values().forEach { theme ->
-                        val selected = currentTheme == theme
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(if (selected) colors.accent else colors.chipBg)
-                                .border(1.dp, if (selected) colors.accent else colors.border, RoundedCornerShape(6.dp))
-                                .clickable { onThemeChange(theme) }
-                                .padding(vertical = 6.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = theme.title,
-                                color = if (selected) colors.accentText else colors.textSecondary,
-                                fontSize = (10.5 * fontScale).sp,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-
                 Divider(color = colors.border, thickness = 1.dp)
             }
         }
@@ -193,66 +164,75 @@ fun TopicListScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(paddingValues),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
         ) {
             items(filteredCategories, key = { it.id }) { cat ->
                 val title = if (isTr) cat.titleTr else cat.titleEn
                 val desc = if (isTr) cat.descTr else cat.descEn
                 val context = LocalContext.current
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .clickable { onSelectCategory(cat) },
-                    colors = CardDefaults.cardColors(containerColor = colors.surface),
-                    border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(colors.border)),
-                    shape = RoundedCornerShape(14.dp)
-                ) {
+                // Compact standard label (e.g. B16.5, B36.10M, B16.9)
+                val cleanStd = cat.std.replace("ASME ", "").trim()
+
+                // Cached ImageRequest to avoid re-decoding SVG on every scroll frame
+                val imageRequest = remember(cat.svgAsset) {
+                    ImageRequest.Builder(context)
+                        .data("file:///android_asset/svg/${cat.svgAsset}")
+                        .decoderFactory(SvgDecoder.Factory())
+                        .memoryCachePolicy(CachePolicy.ENABLED)
+                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .crossfade(false)
+                        .build()
+                }
+
+                Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(14.dp),
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { onSelectCategory(cat) }
+                            .padding(vertical = 10.dp, horizontal = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Technical Drawing Box
+                        // Compact 42x42dp Technical Icon Box
                         Box(
                             modifier = Modifier
-                                .size(56.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(colors.cadBg)
-                                .border(1.dp, colors.border, RoundedCornerShape(10.dp))
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(colors.surface)
+                                .border(1.dp, colors.border, RoundedCornerShape(8.dp))
                                 .padding(4.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data("file:///android_asset/svg/${cat.svgAsset}")
-                                    .decoderFactory(SvgDecoder.Factory())
-                                    .build(),
+                                model = imageRequest,
                                 contentDescription = title,
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(14.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
 
-                        // Info Column
+                        // Text column: Title + Standard pill in 1 line; subtitle below
                         Column(modifier = Modifier.weight(1f)) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(
                                     text = title,
                                     color = colors.textPrimary,
                                     fontSize = (15 * fontScale).sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                // Single-line standard badge (no wrapping, compact & elegant)
                                 Box(
                                     modifier = Modifier
                                         .background(colors.chipBg, RoundedCornerShape(4.dp))
@@ -260,23 +240,25 @@ fun TopicListScreen(
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
                                     Text(
-                                        text = cat.std,
+                                        text = cleanStd,
                                         color = colors.accent,
-                                        fontSize = (10 * fontScale).sp,
+                                        fontSize = (10.5 * fontScale).sp,
                                         fontFamily = FontFamily.Monospace,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        softWrap = false
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(3.dp))
 
                             Text(
                                 text = desc,
                                 color = colors.textMuted,
                                 fontSize = (12 * fontScale).sp,
-                                maxLines = 2,
-                                lineHeight = (16 * fontScale).sp
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
 
@@ -286,9 +268,15 @@ fun TopicListScreen(
                             imageVector = Icons.Default.ChevronRight,
                             contentDescription = null,
                             tint = colors.textMuted,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
+
+                    // Clean thin separator line between items
+                    Divider(
+                        color = colors.border.copy(alpha = 0.5f),
+                        thickness = 0.7.dp
+                    )
                 }
             }
         }

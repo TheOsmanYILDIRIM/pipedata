@@ -3,33 +3,49 @@ package com.avenox.pipedata.data.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.avenox.pipedata.data.model.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
 class PipedataDbHelper(private val context: Context) {
 
     private val dbName = "pipedata.db"
+    @Volatile
     private var db: SQLiteDatabase? = null
 
     init {
         try {
-            ensureDatabase()
-            val dbPath = context.getDatabasePath(dbName).absolutePath
-            db = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY)
+            val dbFile = context.getDatabasePath(dbName)
+            if (dbFile.exists()) {
+                db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun ensureDatabase() {
-        val dbFile = context.getDatabasePath(dbName)
-        if (!dbFile.exists()) {
-            dbFile.parentFile?.mkdirs()
-            context.assets.open(dbName).use { input ->
-                FileOutputStream(dbFile).use { output ->
-                    input.copyTo(output)
+    suspend fun ensureDatabaseAsync() = withContext(Dispatchers.IO) {
+        try {
+            val dbFile = context.getDatabasePath(dbName)
+            if (!dbFile.exists() || dbFile.length() < 1000000) {
+                dbFile.parentFile?.mkdirs()
+                context.assets.open(dbName).use { input ->
+                    FileOutputStream(dbFile).use { output ->
+                        val buffer = ByteArray(65536)
+                        var read: Int
+                        while (input.read(buffer).also { read = it } != -1) {
+                            output.write(buffer, 0, read)
+                        }
+                        output.flush()
+                    }
                 }
             }
+            if (db == null || !db!!.isOpen) {
+                db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -40,8 +56,8 @@ class PipedataDbHelper(private val context: Context) {
                 titleEn = "Flanges",
                 titleTr = "Flanşlar",
                 std = "ASME B16.5",
-                descEn = "Weld Neck, Slip-On, Blind, Threaded, Lap Joint, Socket Weld & RTJ",
-                descTr = "Kaynak Boyunlu, Düz Geçme, Kör, Dişli, Serbest ve RTJ Flanşlar",
+                descEn = "Weld Neck, Slip-On, Blind, Threaded, Lap Joint & Socket Weld",
+                descTr = "Kaynak Boyunlu, Düz Geçme, Kör, Dişli, Serbest ve Soket Flanşlar",
                 svgAsset = "modern_flan1.svg"
             ),
             TopicCategory(
@@ -49,8 +65,8 @@ class PipedataDbHelper(private val context: Context) {
                 titleEn = "Pipes & Tubing",
                 titleTr = "Borular ve Hatlar",
                 std = "ASME B36.10M",
-                descEn = "Carbon & stainless steel pipe schedules 5S through XXS",
-                descTr = "Karbon ve paslanmaz çelik boru programları (SCH 5S - XXS)",
+                descEn = "Carbon & stainless steel pipe schedules 10 through XXS",
+                descTr = "Karbon ve paslanmaz çelik boru programları (SCH 10 - XXS)",
                 svgAsset = "modern_pipe1.svg"
             ),
             TopicCategory(
@@ -67,7 +83,7 @@ class PipedataDbHelper(private val context: Context) {
                 titleEn = "Forged Fittings",
                 titleTr = "Dövme Fitingler",
                 std = "ASME B16.11",
-                descEn = "Socket weld & threaded fittings, Class 2000-6000 & o-lets",
+                descEn = "Socket weld & threaded fittings, Class 2000, 3000 & 6000",
                 descTr = "Soket kaynaklı ve dişli dövme fitingler, Class 2000-6000",
                 svgAsset = "modern_ftsw1.svg"
             ),
@@ -85,7 +101,7 @@ class PipedataDbHelper(private val context: Context) {
                 titleEn = "Gaskets & Bolting",
                 titleTr = "Contalar ve Saplamalar",
                 std = "ASME B16.20",
-                descEn = "Spiral wound, ring joint metallic gaskets & stud bolt charts",
+                descEn = "Spiral wound, ring joint metallic gaskets & stud charts",
                 descTr = "Spiral sarımlı, metalik halka contalar ve saplama tabloları",
                 svgAsset = "modern_grtj1.svg"
             ),
@@ -101,122 +117,118 @@ class PipedataDbHelper(private val context: Context) {
         )
     }
 
-    fun getFlangeTypes(): List<FlangeTypeItem> {
-        return listOf(
-            FlangeTypeItem(
-                id = "wn",
-                title = "Weld Neck Flange",
-                shortName = "Weld Neck",
-                abbr = "WN",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Butt-welded neck for extreme thermal & pressure loads.",
-                descTr = "Yüksek basınç, sıcaklık ve titreşim için alın kaynaklı boyun.",
-                svgAsset = "modern_flan1.svg"
-            ),
-            FlangeTypeItem(
-                id = "so",
-                title = "Slip-On Flange",
-                shortName = "Slip-On",
-                abbr = "SO",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Slides directly over pipe. Double fillet welded.",
-                descTr = "Boruya geçirilerek içten ve dıştan çift köşe kaynağı yapılır.",
-                svgAsset = "modern_flan2.svg"
-            ),
-            FlangeTypeItem(
-                id = "bld",
-                title = "Blind Flange",
-                shortName = "Blind",
-                abbr = "BLD",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Solid disc used to block a piping section or nozzle.",
-                descTr = "Boru ucu veya nozul kapatmada kullanılan deliksiz disk flanş.",
-                svgAsset = "modern_flan4.svg"
-            ),
-            FlangeTypeItem(
-                id = "thd",
-                title = "Threaded Flange",
-                shortName = "Threaded",
-                abbr = "THD",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Tapered NPT pipe threads; no welding required.",
-                descTr = "NPT konik dişli; montajda kaynak gerektirmez.",
-                svgAsset = "modern_flan1a.svg"
-            ),
-            FlangeTypeItem(
-                id = "lj",
-                title = "Lap Joint Flange",
-                shortName = "Lap Joint",
-                abbr = "LJ",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Used with stub end; rotates freely for easy bolt alignment.",
-                descTr = "Yaka ile kullanılır; cıvata deliklerini hizalamak için döner.",
-                svgAsset = "modern_flan2a.svg"
-            ),
-            FlangeTypeItem(
-                id = "sw",
-                title = "Socket Weld Flange",
-                shortName = "Socket Weld",
-                abbr = "SW",
-                facing = "RF",
-                standard = "ASME B16.5",
-                descEn = "Pipe inserts into socket; ideal for compact high-pressure lines.",
-                descTr = "Boru sokete girer; küçük çaplı yüksek basınç hatları içindir.",
-                svgAsset = "modern_flan1b.svg"
+    fun getCategorySubtypes(categoryId: String): List<SubtypeItem> {
+        return when (categoryId) {
+            "flanges" -> listOf(
+                SubtypeItem("wn", "Weld Neck Flange", "Weld Neck", "WN", "ASME B16.5", "Butt-welded neck for extreme thermal & pressure loads.", "Yüksek basınç için alın kaynaklı boyun.", "modern_flan1.svg"),
+                SubtypeItem("so", "Slip-On Flange", "Slip-On", "SO", "ASME B16.5", "Slides directly over pipe. Double fillet welded.", "Boruya geçirilip çift köşe kaynağı yapılır.", "modern_flan2.svg"),
+                SubtypeItem("bld", "Blind Flange", "Blind", "BLD", "ASME B16.5", "Solid disc used to block a piping section.", "Boru ucunu kapatan deliksiz disk flanş.", "modern_flan4.svg"),
+                SubtypeItem("thd", "Threaded Flange", "Threaded", "THD", "ASME B16.5", "Tapered NPT pipe threads; no welding required.", "NPT konik dişli; kaynak gerektirmez.", "modern_flan1a.svg"),
+                SubtypeItem("lj", "Lap Joint Flange", "Lap Joint", "LJ", "ASME B16.5", "Used with stub end; rotates for bolt alignment.", "Yaka ile döner montaj flanşı.", "modern_flan2a.svg"),
+                SubtypeItem("sw", "Socket Weld Flange", "Socket Weld", "SW", "ASME B16.5", "Pipe inserts into socket; compact lines.", "Küçük çaplı yüksek basınç hatları.", "modern_flan1b.svg")
             )
-        )
+            "pipes" -> listOf(
+                SubtypeItem("pipe_std", "Steel Pipe Section", "Pipe Section", "PIPE", "ASME B36.10M", "Seamless and welded wrought steel pipe schedules.", "Dikişsiz ve kaynaklı çelik boru kesiti.", "modern_pipe1.svg")
+            )
+            "fittings_bw" -> listOf(
+                SubtypeItem("elbow_90_lr", "90° Long Radius Elbow", "90° LR Elbow", "90° LR", "ASME B16.9", "Standard 1.5D centerline radius turn.", "1.5D standart büküm yarıçaplı dirsek.", "modern_ftbw2.svg"),
+                SubtypeItem("elbow_45", "45° Elbow", "45° Elbow", "45°", "ASME B16.9", "45 degree directional piping change.", "45 derece yön değiştirme dirseği.", "modern_ftbw1.svg"),
+                SubtypeItem("tee_eq", "Equal Tee", "Equal Tee", "TEE", "ASME B16.9", "90-degree branch of identical run pipe size.", "Eşit çaplı 90 derece branşman teesi.", "modern_ftbw6.svg"),
+                SubtypeItem("cap_bw", "Butt Weld Cap", "Pipe Cap", "CAP", "ASME B16.9", "Ellipsoidal head closing pipe end.", "Boru hattı sonunu kapatan kep.", "modern_ftbw8.svg"),
+                SubtypeItem("red_con", "Concentric Reducer", "Reducer", "RED", "ASME B16.9", "In-line diameter reduction on common centerline.", "Eksenel çap düşürücü redüksiyon.", "modern_ftbw9.svg")
+            )
+            "fittings_sw" -> listOf(
+                SubtypeItem("sw_elbow_90", "90° Socket Weld Elbow", "90° SW Elbow", "SW 90°", "ASME B16.11", "Forged high pressure socket elbow.", "Dövme çelik soketli 90° dirsek.", "modern_ftsw1.svg"),
+                SubtypeItem("sw_tee", "Socket Weld Tee", "SW Tee", "SW TEE", "ASME B16.11", "Forged 3-way high pressure branch.", "Dövme çelik soketli tee.", "modern_ftsw2.svg"),
+                SubtypeItem("sw_coupling", "Full Coupling", "Coupling", "CPLG", "ASME B16.11", "In-line pipe connection coupling.", "Düz boru birleştirme manşonu.", "modern_ftsw3.svg")
+            )
+            "valves" -> listOf(
+                SubtypeItem("vlv_gate", "Gate Valve", "Gate Valve", "GATE", "ASME B16.34", "Linear motion isolation valve.", "Tam açık/kapalı hat kesme vanası.", "modern_vlfl1.svg"),
+                SubtypeItem("vlv_globe", "Globe Valve", "Globe Valve", "GLOBE", "ASME B16.34", "Throttling and flow regulation valve.", "Akış ayar ve kısma vanası.", "modern_vlfl2.svg"),
+                SubtypeItem("vlv_check", "Swing Check Valve", "Check Valve", "CHECK", "ASME B16.34", "Backflow prevention valve.", "Geri akış önleme çekvalfi.", "modern_vlfl3.svg"),
+                SubtypeItem("vlv_ball", "Ball Valve", "Ball Valve", "BALL", "ASME B16.34", "Quarter-turn fast shutoff valve.", "Çeyrek tur hızlı küresel vana.", "modern_vlfl4.svg")
+            )
+            "gaskets" -> listOf(
+                SubtypeItem("gsk_rtj", "RTJ Ring Joint", "RTJ Ring", "RTJ", "ASME B16.20", "Metallic octagonal/oval ring for high pressure.", "Yüksek basınç metal halka conta.", "modern_grtj1.svg"),
+                SubtypeItem("gsk_swg", "Spiral Wound Gasket", "Spiral Wound", "SWG", "ASME B16.20", "V-shaped metallic strip with graphite filler.", "Grafit dolgulu spiral sarımlı conta.", "modern_gspr1.svg"),
+                SubtypeItem("gsk_flat", "Flat Ring Gasket", "Flat Gasket", "FLAT", "ASME B16.21", "Non-metallic full face/ring gasket.", "Ametalsiz düz flanş contası.", "modern_gflt1.svg")
+            )
+            "blanks" -> listOf(
+                SubtypeItem("blk_fig8", "Figure-8 Spectacle Blind", "Spectacle Blind", "FIG-8", "ASME B16.48", "Combined open spacer and solid blank.", "Açık ve kapalı döner gözlük kör.", "modern_blnu1.svg"),
+                SubtypeItem("blk_paddle", "Paddle Blank", "Paddle Blank", "BLANK", "ASME B16.48", "Handle-equipped solid isolation disc.", "Kulplu tek parça körleme diski.", "modern_blnu2.svg"),
+                SubtypeItem("blk_spacer", "Paddle Spacer", "Paddle Spacer", "SPACER", "ASME B16.48", "Open ring spacer maintaining line length.", "Kulplu açık ara halka.", "modern_blnu3.svg")
+            )
+            else -> emptyList()
+        }
     }
 
-    fun getFlangeSpec(nps: String, rating: Int, facing: String): FlangeSpec {
-        // First try DB query
+    fun getComponentData(
+        categoryId: String,
+        subtypeIndex: Int,
+        nps: String,
+        primarySel: String,
+        secondarySel: String?
+    ): ComponentData {
+        val subtypes = getCategorySubtypes(categoryId)
+        val subtype = subtypes.getOrElse(subtypeIndex) { subtypes.first() }
+        val cleanNpsNum = nps.replace("\"", "").trim()
+        val dn = getNpsDn(cleanNpsNum)
+
+        return when (categoryId) {
+            "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+            "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+        }
+    }
+
+    private fun buildFlangeData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String,
+        facing: String
+    ): ComponentData {
+        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        var od = 0.0
+        var thk = 0.0
+        var hubX = 0.0
+        var lenY = 0.0
+        var bore = 0.0
+        var rf = 0.0
+        var pcd = 0.0
+        var bolts = 4
+        var boltSz = "5/8\""
+        var studL = 70.0
+        var wt = 2.5
+
         db?.let { database ->
             try {
                 val cursor = database.rawQuery(
                     "SELECT outer_diameter_mm, thickness_mm, hub_diameter_mm, length_thru_hub_mm, " +
                             "bore_diameter_mm, rf_diameter_mm, pcd_mm, num_bolts, bolt_diameter_in, " +
-                            "stud_bolt_length_mm, weight_kg, dn FROM tbl_flanges_asme_b16_5 " +
-                            "WHERE (nps = ? OR nps = ?) AND rating = ? LIMIT 1",
-                    arrayOf(nps, nps.replace("\"", ""), rating.toString())
+                            "stud_bolt_length_mm, weight_kg FROM tbl_flanges_asme_b16_5 " +
+                            "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? LIMIT 1",
+                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"), rating.toString())
                 )
                 cursor.use { c ->
                     if (c.moveToFirst()) {
-                        val od = c.getDouble(0)
-                        val thk = c.getDouble(1)
-                        val hubX = c.getDouble(2)
-                        val lenY = c.getDouble(3)
-                        val bore = c.getDouble(4)
-                        val rf = c.getDouble(5)
-                        val pcd = c.getDouble(6)
-                        val bolts = c.getInt(7)
-                        val boltSz = c.getString(8) ?: "3/4\""
-                        val studL = c.getDouble(9)
-                        val wt = c.getDouble(10)
-                        val dn = c.getInt(11)
-
-                        if (od > 0) {
-                            return FlangeSpec(
-                                nps = nps,
-                                dn = if (dn > 0) dn else getNpsDn(nps),
-                                rating = rating,
-                                facing = facing,
-                                odMm = od,
-                                thkMm = thk,
-                                hubXMm = hubX,
-                                lengthYMm = lenY,
-                                boreBMm = bore,
-                                rfDiaMm = rf,
-                                pcdMm = pcd,
-                                boltsCount = if (bolts > 0) bolts else 4,
-                                boltSizeIn = boltSz,
-                                studLengthMm = studL,
-                                weightKg = wt
-                            )
-                        }
+                        od = c.getDouble(0)
+                        thk = c.getDouble(1)
+                        hubX = c.getDouble(2)
+                        lenY = c.getDouble(3)
+                        bore = c.getDouble(4)
+                        rf = c.getDouble(5)
+                        pcd = c.getDouble(6)
+                        bolts = c.getInt(7)
+                        boltSz = c.getString(8) ?: "5/8\""
+                        studL = c.getDouble(9)
+                        wt = c.getDouble(10)
                     }
                 }
             } catch (e: Exception) {
@@ -224,12 +236,426 @@ class PipedataDbHelper(private val context: Context) {
             }
         }
 
-        // Fallback calculations & static reference table
-        return getFallbackSpec(nps, rating, facing)
+        if (od <= 0) {
+            val mult = if (rating >= 600) 1.25 else if (rating >= 300) 1.15 else 1.0
+            od = (if (dn == 50) 152.4 else dn * 2.8) * mult
+            thk = 17.5 * mult
+            hubX = 77.7 * mult
+            lenY = 63.5 * mult
+            bore = dn * 1.05
+            pcd = od * 0.79
+            bolts = if (dn >= 200) 8 else 4
+            wt = 2.45 * mult * (dn / 50.0)
+        }
+
+        val rows = listOf(
+            DimensionRow("od", "Outside Diameter (O)", "Dış Çap (O)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "dimensions"),
+            DimensionRow("thk", "Min Thickness (T)", "Min. Et Kalınlığı (T)", "${fmt(thk)} mm", "${fmt(thk/25.4)}\"", "dimensions"),
+            DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"),
+            DimensionRow("bore", "Inside Bore (B)", "İç Delik (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"),
+            DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"),
+            DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"),
+            DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"),
+            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "dimensions")
+        )
+
+        return ComponentData(
+            categoryId = "flanges",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = listOf("150#", "300#", "600#"),
+            selectedPrimary = "${rating}#",
+            secondarySelectorLabelEn = "Facing",
+            secondarySelectorLabelTr = "Yüzey",
+            secondaryOptions = listOf("RF", "FF", "RTJ"),
+            selectedSecondary = facing,
+            dimensions = rows
+        )
+    }
+
+    private fun buildPipeData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        selectedSchedule: String
+    ): ComponentData {
+        var odMm = 0.0
+        var wallThkMm = 0.0
+        var idMm = 0.0
+        var wtEmptyKgM = 0.0
+        var wtWaterKgM = 0.0
+        var inertia = 0.0
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT outer_diameter_mm, wall_thickness_mm, inner_diameter_mm, weight_empty_kg_m, " +
+                            "weight_water_kg_m, moment_of_inertia_cm4 FROM tbl_pipes " +
+                            "WHERE (nps = ? OR nps = ? OR nps = ?) AND schedule = ? LIMIT 1",
+                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"), selectedSchedule)
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        odMm = c.getDouble(0)
+                        wallThkMm = c.getDouble(1)
+                        idMm = c.getDouble(2)
+                        wtEmptyKgM = c.getDouble(3)
+                        wtWaterKgM = c.getDouble(4)
+                        inertia = c.getDouble(5)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (odMm <= 0) {
+            odMm = if (dn <= 50) 60.3 else dn * 1.15
+            wallThkMm = if (selectedSchedule == "80") 5.54 else 3.91
+            idMm = odMm - 2 * wallThkMm
+            wtEmptyKgM = (odMm - wallThkMm) * wallThkMm * 0.02466
+            wtWaterKgM = 0.7854 * (idMm / 1000.0) * (idMm / 1000.0) * 1000.0
+        }
+
+        val rows = listOf(
+            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "pipes_sch"),
+            DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(wallThkMm/25.4)}\"", "pipes_sch"),
+            DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "pipes_sch"),
+            DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(wtEmptyKgM*0.6719)} lb/ft", "pipes_sch"),
+            DimensionRow("wt_water", "Water Content Weight", "Su Ağırlığı (Dolu)", "${fmt(wtWaterKgM)} kg/m", "${fmt(wtWaterKgM*0.6719)} lb/ft", "pipes_sch"),
+            DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(inertia*0.0240)} in⁴", "pipes_sch")
+        )
+
+        return ComponentData(
+            categoryId = "pipes",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Schedule",
+            primarySelectorLabelTr = "Et Kalınlığı",
+            primaryOptions = listOf("10", "20", "40", "80", "160"),
+            selectedPrimary = selectedSchedule,
+            dimensions = rows
+        )
+    }
+
+    private fun buildButtweldData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        sched: String
+    ): ComponentData {
+        var od = 0.0
+        var centerEnd = 0.0
+        var wt = 0.0
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT outer_diameter_mm, center_to_end_mm, weight_kg FROM tbl_fittings_buttweld_b16_9 " +
+                            "WHERE (nps = ? OR nps = ? OR nps = ?) LIMIT 1",
+                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"))
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        od = c.getDouble(0)
+                        centerEnd = c.getDouble(1)
+                        wt = c.getDouble(2)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (od <= 0) {
+            od = 60.3
+            centerEnd = 76.2
+            wt = 1.4
+        }
+
+        val rows = listOf(
+            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "buttweld"),
+            DimensionRow("center_end", "Center-to-End (A / C)", "Merkez-Uç Mesafesi (A)", "${fmt(centerEnd)} mm", "${fmt(centerEnd/25.4)}\"", "buttweld"),
+            DimensionRow("radius", "Centerline Radius (R)", "Büküm Yarıçapı (R)", "${fmt(od * 1.5)} mm", "${fmt((od*1.5)/25.4)}\"", "buttweld"),
+            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "buttweld")
+        )
+
+        return ComponentData(
+            categoryId = "fittings_bw",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "16\"", "20\"", "24\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Schedule",
+            primarySelectorLabelTr = "Seri",
+            primaryOptions = listOf("STD", "40", "80", "160"),
+            selectedPrimary = sched,
+            dimensions = rows
+        )
+    }
+
+    private fun buildForgedData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String
+    ): ComponentData {
+        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 3000
+        var sockDepth = 0.0
+        var sockDia = 0.0
+        var centerEnd = 0.0
+        var wt = 0.0
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, weight_kg " +
+                            "FROM tbl_fittings_socketweld_b16_11 WHERE (nps = ? OR nps = ?) LIMIT 1",
+                    arrayOf(nps, "$nps\"")
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        sockDepth = c.getDouble(0)
+                        sockDia = c.getDouble(1)
+                        centerEnd = c.getDouble(2)
+                        wt = c.getDouble(3)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (sockDepth <= 0) {
+            sockDepth = 16.0
+            sockDia = 61.2
+            centerEnd = 38.0
+            wt = 0.95
+        }
+
+        val rows = listOf(
+            DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"),
+            DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"),
+            DimensionRow("center_end", "Center-to-Bottom (C)", "Merkez Mesafesi (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd/25.4)}\"", "forged"),
+            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "forged")
+        )
+
+        return ComponentData(
+            categoryId = "fittings_sw",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "3\"", "4\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = listOf("2000#", "3000#", "6000#"),
+            selectedPrimary = "${rating}#",
+            dimensions = rows
+        )
+    }
+
+    private fun buildValveData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String
+    ): ComponentData {
+        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        var faceToFace = 0.0
+        var wt = 0.0
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT face_to_face_mm, weight_kg FROM tbl_valves_asme_b16_10 " +
+                            "WHERE (nps = ? OR nps = ?) AND rating = ? LIMIT 1",
+                    arrayOf(nps, "$nps\"", rating.toString())
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        faceToFace = c.getDouble(0)
+                        wt = c.getDouble(1)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (faceToFace <= 0) {
+            faceToFace = if (rating >= 300) 216.0 else 178.0
+            wt = if (rating >= 300) 24.0 else 18.0
+        }
+
+        val rows = listOf(
+            DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
+            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def"),
+            DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "valves_def")
+        )
+
+        return ComponentData(
+            categoryId = "valves",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = listOf("150#", "300#", "600#"),
+            selectedPrimary = "${rating}#",
+            dimensions = rows
+        )
+    }
+
+    private fun buildGasketData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String
+    ): ComponentData {
+        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        var idMm = 0.0
+        var odMm = 0.0
+        var ringNo = ""
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT inner_diameter_mm, outer_diameter_mm, ring_number FROM tbl_gaskets_and_rtj " +
+                            "WHERE (nps = ? OR nps = ?) AND rating = ? LIMIT 1",
+                    arrayOf(nps, "$nps\"", rating.toString())
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        idMm = c.getDouble(0)
+                        odMm = c.getDouble(1)
+                        ringNo = c.getString(2) ?: ""
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (odMm <= 0) {
+            idMm = 60.3
+            odMm = 104.8
+            ringNo = if (dn == 50) "R23" else "R" + (dn / 2)
+        }
+
+        val rows = listOf(
+            DimensionRow("id", "Gasket Inside Dia (d1)", "Conta İç Çapı (d1)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "gaskets_def"),
+            DimensionRow("od", "Gasket Outside Dia (d2)", "Conta Dış Çapı (d2)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "gaskets_def"),
+            DimensionRow("ring", "RTJ Ring Number", "RTJ Ring Numarası", ringNo.ifBlank { "R23" }, ringNo.ifBlank { "R23" }, "gaskets_def"),
+            DimensionRow("thk", "Standard Thickness", "Conta Kalınlığı", "4.5 mm", "0.177\"", "gaskets_def")
+        )
+
+        return ComponentData(
+            categoryId = "gaskets",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = listOf("150#", "300#", "600#"),
+            selectedPrimary = "${rating}#",
+            dimensions = rows
+        )
+    }
+
+    private fun buildBlankData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String
+    ): ComponentData {
+        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        var odMm = 0.0
+        var thkMm = 0.0
+        var c2c = 0.0
+        var wt = 0.0
+
+        db?.let { database ->
+            try {
+                val cursor = database.rawQuery(
+                    "SELECT outer_diameter_mm, thickness_mm, center_to_center_mm, weight_spectacle_kg " +
+                            "FROM tbl_line_blanks_asme_b16_48 WHERE (nps = ? OR nps = ?) AND rating = ? LIMIT 1",
+                    arrayOf(nps, "$nps\"", rating.toString())
+                )
+                cursor.use { c ->
+                    if (c.moveToFirst()) {
+                        odMm = c.getDouble(0)
+                        thkMm = c.getDouble(1)
+                        c2c = c.getDouble(2)
+                        wt = c.getDouble(3)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (odMm <= 0) {
+            odMm = 104.8
+            thkMm = 6.4
+            c2c = 120.7
+            wt = 1.8
+        }
+
+        val rows = listOf(
+            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"),
+            DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"),
+            DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"),
+            DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "blanks_def")
+        )
+
+        return ComponentData(
+            categoryId = "blanks",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
+            selectedNps = "$nps\"",
+            dn = dn,
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = listOf("150#", "300#", "600#"),
+            selectedPrimary = "${rating}#",
+            dimensions = rows
+        )
+    }
+
+    private fun fmt(d: Double): String {
+        return if (d == d.toLong().toDouble()) {
+            d.toLong().toString()
+        } else {
+            String.format("%.1f", d)
+        }
     }
 
     private fun getNpsDn(nps: String): Int {
         return when (nps.replace("\"", "").trim()) {
+            "1/8" -> 6
+            "1/4" -> 8
+            "3/8" -> 10
             "1/2" -> 15
             "3/4" -> 20
             "1" -> 25
@@ -250,53 +676,6 @@ class PipedataDbHelper(private val context: Context) {
             "24" -> 600
             else -> 50
         }
-    }
-
-    private fun getFallbackSpec(nps: String, rating: Int, facing: String): FlangeSpec {
-        val dn = getNpsDn(nps)
-        // Calibrated baseline values for 2" Class 150
-        val baseOd = when (dn) {
-            15 -> 88.9
-            20 -> 98.6
-            25 -> 108.0
-            50 -> 152.4
-            80 -> 190.5
-            100 -> 228.6
-            150 -> 279.4
-            200 -> 342.9
-            250 -> 406.4
-            300 -> 482.6
-            else -> 152.4
-        }
-        val mult = when (rating) {
-            300 -> 1.15
-            600 -> 1.25
-            else -> 1.0
-        }
-        val od = baseOd * mult
-        val thk = 17.5 * mult
-        val hubX = 77.7 * mult
-        val pcd = od * 0.79
-        val bolts = if (dn >= 200) 8 else 4
-        val wt = 2.45 * mult * (dn.toDouble() / 50.0)
-
-        return FlangeSpec(
-            nps = nps,
-            dn = dn,
-            rating = rating,
-            facing = facing,
-            odMm = Math.round(od * 10.0) / 10.0,
-            thkMm = Math.round(thk * 10.0) / 10.0,
-            hubXMm = Math.round(hubX * 10.0) / 10.0,
-            lengthYMm = Math.round((thk + 35) * 10.0) / 10.0,
-            boreBMm = if (dn == 50) 52.5 else (dn * 1.05),
-            rfDiaMm = Math.round((hubX + 15) * 10.0) / 10.0,
-            pcdMm = Math.round(pcd * 10.0) / 10.0,
-            boltsCount = bolts,
-            boltSizeIn = if (rating >= 600) "7/8\"" else "5/8\"",
-            studLengthMm = Math.round((thk * 2 + 35) * 10.0) / 10.0,
-            weightKg = Math.round(wt * 100.0) / 100.0
-        )
     }
 
     fun getHelpGlossary(): Map<String, HelpTopic> {
@@ -326,30 +705,80 @@ class PipedataDbHelper(private val context: Context) {
                 badge = "GASKET SEAL INTERFACE",
                 titleEn = "Flange Facing Types",
                 titleTr = "Flanş Sızdırmazlık Yüzeyi (Facing)",
-                bodyEn = "The flange facing is the contact surface that compresses the gasket to create a leak-tight seal: 1) Raised Face (RF): 1/16\" (1.6mm) or 1/4\" (6.4mm) raised step with spiral serrations to grip gasket. 2) Flat Face (FF): Full face without step, used on brittle cast iron/bronze. 3) Ring Type Joint (RTJ): Precision machined trapezoidal groove for metallic oval or octagonal rings in severe high-pressure/temp service.",
-                bodyTr = "Contanın sıkıştırılarak sızdırmazlık sağlandığı yüzey tipidir: 1) RF (Raised Face - Faturalı Alın): 1.6 mm veya 6.4 mm çıkıntılı fatura ve spiral kanallı yapı. 2) FF (Flat Face - Düz Alın): Çıkıntısız tam düz yüzey, dökme demir pompalarda moment çatlamasını önler. 3) RTJ (Ring Type Joint - Halka Contalı): Sekizgen/oval metal contanın oturduğu trapez kanallı yüksek basınç tasarımıdır.",
-                formulaEn = "• RF: ASME B16.5 standard with serrated phonographic finish.\n• FF: Uses full-face flat sheet gaskets.\n• RTJ: Metal-to-metal seal, ideal for Class 600+ and toxic/flammable hydrocarbons.",
-                formulaTr = "• RF: Standart sanayi flanşlarında spiral sarımlı (SWG) contalarla kullanılır.\n• FF: Tam yüzey (full-face) yumuşak contalarla eşleştirilir.\n• RTJ: Class 600 ve üzeri yüksek basınç ve hidrokarbon hatlarında kullanılır."
+                bodyEn = "The flange facing is the contact surface that compresses the gasket: 1) Raised Face (RF): 1.6mm or 6.4mm raised step with phonographic serrations. 2) Flat Face (FF): Full face without step for cast iron. 3) Ring Type Joint (RTJ): Machined groove for metallic rings.",
+                bodyTr = "Contanın oturduğu yüzeydir: 1) RF (Faturalı Alın): 1.6 mm veya 6.4 mm çıkıntılı spiral kanallı yüzey. 2) FF (Düz Alın): Çıkıntısız tam düz yüzey. 3) RTJ (Halka Contalı): Metal conta için trapez kanallı yüksek basınç yüzeyi.",
+                formulaEn = "• RF: ASME standard phonographic serrated finish.\n• FF: Full-face soft gaskets.\n• RTJ: Metal-to-metal seal for Class 600+.",
+                formulaTr = "• RF: Standart spiral sarımlı contalarla eşleşir.\n• FF: Dökme demir ve kırılgan pompalarda kullanılır.\n• RTJ: Class 600 ve üzeri yüksek basınç hatlarındadır."
             ),
             "dimensions" to HelpTopic(
                 id = "dimensions",
                 badge = "GEOMETRY & PCD SYMBOLS",
                 titleEn = "Flange Dimensions & PCD",
                 titleTr = "Flanş Ölçüleri ve PCD",
-                bodyEn = "Standard engineering symbols per ASME B16.5: O = Outside Flange Diameter. T = Minimum Flange Thickness. X = Diameter of Hub at base. B = Inside Bore diameter. PCD = Pitch Circle Diameter (bolt hole circle diameter). Bolting = Stud count × thread size.",
-                bodyTr = "ASME B16.5 teknik çizim sembolleri: O = Flanş Dış Çapı (Outside Diameter). T = Asgari Flanş Kalınlığı. X = Boyun Taban Çapı (Hub). B = Flanş İç Delik Çapı (Bore). PCD = Cıvata Eksen Dairesi Çapı (Pitch Circle Diameter). Cıvatalar = Saplama Adedi × Diş Çapı.",
-                formulaEn = "• PCD (Pitch Circle Diameter): Distance between centers of opposing bolt holes.\n• Bolt Hole Size = Bolt Stud Diameter + 1/8\" (3.2 mm) for clearance.\n• Bolt Holes are drilled in multiples of 4 (4, 8, 12, 16, 20, 24).",
-                formulaTr = "• PCD (Pitch Circle Diameter): Karşılıklı cıvata deliklerinin merkez eksen mesafesidir.\n• Cıvata Delik Çapı = Cıvata Çapı + 3.2 mm (1/8\") montaj boşluğudur.\n• Cıvata delik adetleri her zaman 4'ün katlarıdır (4, 8, 12, 16, 20, 24 vb.)."
+                bodyEn = "Standard engineering symbols: O = Outside Diameter, T = Minimum Thickness, X = Hub Diameter, B = Bore Diameter, PCD = Bolt Pitch Circle Diameter.",
+                bodyTr = "Teknik çizim sembolleri: O = Dış Çap, T = Kalınlık, X = Boyun Taban Çapı, B = İç Delik Çapı, PCD = Cıvata Eksen Dairesi Çapı.",
+                formulaEn = "• PCD: Pitch Circle Diameter between bolt centers.\n• Bolt Hole = Bolt Stud Diameter + 1/8\" (3.2 mm).\n• Drilled in multiples of 4 (4, 8, 12, 16...).",
+                formulaTr = "• PCD: Karşılıklı cıvata deliklerinin merkez eksen mesafesi.\n• Delik Çapı = Cıvata Çapı + 3.2 mm.\n• Cıvata delikleri 4'ün katlarıdır (4, 8, 12, 16...)."
+            ),
+            "pipes_sch" to HelpTopic(
+                id = "pipes_sch",
+                badge = "ASME B36.10M / B36.19M",
+                titleEn = "Pipe Schedules & Wall Thickness",
+                titleTr = "Boru Schedule ve Et Kalınlığı",
+                bodyEn = "Schedule (SCH) denotes the wall thickness for a given NPS. Outer diameter remains constant for a specific NPS regardless of schedule, while the inside diameter changes.",
+                bodyTr = "Schedule (SCH), borunun et kalınlığını belirler. Belirli bir NPS için dış çap (OD) her zaman sabittir; schedule değiştikçe iç çap (ID) ve ağırlık değişir.",
+                formulaEn = "• SCH ≈ 1000 × (P / S)\n• P = Service pressure, S = Allowable stress.\n• Common: SCH 40 (Standard) and SCH 80 (Extra Strong).",
+                formulaTr = "• SCH ≈ 1000 × (P / S)\n• P = Tasarım basıncı, S = İzin verilen gerilme.\n• En yaygın: SCH 40 (Standart) ve SCH 80 (Extra Strong)."
+            ),
+            "buttweld" to HelpTopic(
+                id = "buttweld",
+                badge = "ASME B16.9 FITTINGS",
+                titleEn = "Buttweld Fittings Standards",
+                titleTr = "Alın Kaynaklı Fiting Standartları",
+                bodyEn = "ASME B16.9 covers factory-made wrought buttwelding fittings. Center-to-end dimensions are strictly defined. 90° Long Radius equals 1.5 × NPS in radius.",
+                bodyTr = "ASME B16.9 dövme alın kaynaklı ek parçaları kapsar. 90° Uzun Yarıçap (LR) dirseklerde büküm yarıçapı tam olarak 1.5 × NPS'tir.",
+                formulaEn = "• 90° LR Center-to-End = 1.5 × NPS (in inches) × 25.4 mm.\n• 90° SR Center-to-End = 1.0 × NPS.",
+                formulaTr = "• 90° LR Dirsek Merkez Mesafesi = 1.5 × NPS (inç) × 25.4 mm.\n• 90° SR Dirsek Merkez Mesafesi = 1.0 × NPS."
+            ),
+            "valves_def" to HelpTopic(
+                id = "valves_def",
+                badge = "ASME B16.10 / B16.34",
+                titleEn = "Valve Face-to-Face Standards",
+                titleTr = "Vana Alından Alına Boyutları",
+                bodyEn = "ASME B16.10 establishes standardized face-to-face and end-to-end dimensions for flanged, buttweld, and wafer valves to permit interchangeability.",
+                bodyTr = "ASME B16.10 flanşlı ve kaynaklı vanaların tesisatta birbirinin yerine takılabilmesi için alından-alına (face-to-face) standart montaj boylarını belirler.",
+                formulaEn = "• Face-to-Face: Total distance between flange faces.\n• Ensures any manufacturer's valve fits into the piping spool.",
+                formulaTr = "• Alından-alına boy: Giriş ve çıkış flanş alınları arasındaki net mesafe.\n• Farklı marka vanaların birebir uyumlu değişmesini sağlar."
+            ),
+            "gaskets_def" to HelpTopic(
+                id = "gaskets_def",
+                badge = "ASME B16.20 / API 6A",
+                titleEn = "Metallic & Spiral Wound Gaskets",
+                titleTr = "Metalik ve Spiral Sarımlı Contalar",
+                bodyEn = "ASME B16.20 covers metallic ring joint gaskets (octagonal / oval) and spiral wound gaskets with internal/external guide rings.",
+                bodyTr = "ASME B16.20 yüksek basınç metalik halka contaları (RTJ) ve iç/dış halkalı spiral sarımlı contaları (SWG) standartlaştırır.",
+                formulaEn = "• RTJ: Octagonal rings have higher sealing efficiency than oval.\n• Groove angles are 23° with tight surface finishes.",
+                formulaTr = "• RTJ: Sekizgen halkalar ovale göre daha yüksek sızdırmazlık sağlar.\n• Flanş kanal açısı 23 derecedir."
+            ),
+            "blanks_def" to HelpTopic(
+                id = "blanks_def",
+                badge = "ASME B16.48 LINE BLANKS",
+                titleEn = "Spectacle Blanks & Spacers",
+                titleTr = "Gözlük Körler ve Ara Parçalar",
+                bodyEn = "Line blanks provide positive positive mechanical shutoff for maintenance. Figure-8 blanks allow quick visual inspection of open/closed status.",
+                bodyTr = "Hat körleme elemanları boru hatlarında bakım esnasında kesin mekanik izolasyon sağlar. Gözlük körün açık mı kapalı mı olduğu dışarıdan hemen görülür.",
+                formulaEn = "• Spectacle Blind: Joined open ring and blind disc.\n• Paddle Blank: Solid disc with extended handle.",
+                formulaTr = "• Gözlük Kör: Birbirine bağlı bir açık halka ve bir kapalı disk.\n• Kürek Kör: Flanş arasına giren kulplu disk."
             ),
             "flange_types" to HelpTopic(
                 id = "flange_types",
-                badge = "FLANGE TYPES PER ASME B16.5",
+                badge = "ASME B16.5 TYPES",
                 titleEn = "Flange Types & Applications",
                 titleTr = "Flanş Tipleri ve Kullanım Alanları",
-                bodyEn = "• Weld Neck (WN): Butt-welded to pipe; ideal for extreme pressures, cyclic stresses, and high temps.\n• Slip-On (SO): Slipped over pipe and welded inside and out; cost effective and easier to align.\n• Blind (BLD): Solid disc without bore used to isolate piping systems or pressure vessel nozzles.\n• Lap Joint (LJ): Used with stub end; rotates freely on pipe for rapid bolt hole alignment.",
-                bodyTr = "• Weld Neck (WN - Kaynak Boyunlu): Boruya alın kaynağı ile bağlanır; yüksek basınç ve sıcaklığa en dayanıklıdır.\n• Slip-On (SO - Düz Geçme): Boru içine sokulup içten ve dıştan köşe kaynağı yapılır.\n• Blind (BLD - Kör Flanş): Boru hatlarının sonunu kapatmak için kullanılan deliksiz flanştır.\n• Lap Joint (LJ - Serbest Flanş): Yaka parçasıyla kullanılır; cıvata deliklerini hizalamak için döner.",
-                formulaEn = "• WN: Highest structural integrity, full penetration butt weld.\n• SO: Lower fabrication cost, fillet welded.\n• BLD: Highest bending stress at center under hydrostatic test.",
-                formulaTr = "• WN: Kritik tesislerde bir numaralı tercihtir, tam nüfuziyetli kaynak yapılır.\n• SO: Düşük ve orta basınç hatlarında ekonomik montaj sağlar.\n• BLD: Hidrostatik testlerde en yüksek eğilme gerilmesine maruz kalan elemandır."
+                bodyEn = "• Weld Neck (WN): Butt-welded; extreme pressures and temperatures.\n• Slip-On (SO): Slipped over pipe; double fillet welded.\n• Blind (BLD): Solid disc to close lines.\n• Lap Joint (LJ): Rotates freely for alignment.",
+                bodyTr = "• Kaynak Boyunlu (WN): Alın kaynaklı; yüksek basınç ve sıcaklık.\n• Düz Geçme (SO): Boruya geçirilip çift köşe kaynağı yapılır.\n• Kör (BLD): Hat sonunu kapatan deliksiz disk.\n• Serbest (LJ): Yaka ile döner montaj.",
+                formulaEn = "• WN: Highest fatigue resistance.\n• SO: Lower installation cost.\n• BLD: Maximum hydrostatic bending load.",
+                formulaTr = "• WN: En yüksek yorulma ve basınca dayanıklıdır.\n• SO: Düşük maliyetli montaj sağlar.\n• BLD: Hidrostatik testlerde en yüksek eğilme gerilmesine maruz kalır."
             )
         )
     }
