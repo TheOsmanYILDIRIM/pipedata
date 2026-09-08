@@ -27,12 +27,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -52,6 +54,7 @@ fun ComponentDetailScreen(
     currentUnit: UnitSystem,
     fontScale: Float,
     currentLang: AppLanguage,
+    currentTheme: CadTheme = CadTheme.CAD_DARK,
     onOpenHelp: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -85,44 +88,52 @@ fun ComponentDetailScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = onBack, modifier = Modifier.size(36.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                                tint = colors.textPrimary
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = if (currentSubtype.abbr.isNotBlank()) "$subtypeTitle (${currentSubtype.abbr})" else subtypeTitle,
-                            color = colors.textPrimary,
-                            fontSize = (16.5 * fontScale).sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        HelpQuestionButton(
-                            onClick = { onOpenHelp(data.categoryId) },
-                            fontScale = fontScale
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.size(38.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = colors.textPrimary
                         )
                     }
-
-                    Box(
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Column(
                         modifier = Modifier
-                            .background(colors.chipBg, RoundedCornerShape(6.dp))
-                            .border(1.dp, colors.border, RoundedCornerShape(6.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .weight(1f)
+                            .padding(end = 6.dp)
                     ) {
-                        Text(
-                            text = currentSubtype.standard,
-                            color = colors.accent,
-                            fontSize = (10.5 * fontScale).sp,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = if (currentSubtype.abbr.isNotBlank()) "$subtypeTitle (${currentSubtype.abbr})" else subtypeTitle,
+                                color = colors.textPrimary,
+                                fontSize = (16.5 * fontScale).sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            HelpQuestionButton(
+                                onClick = { onOpenHelp(data.categoryId) },
+                                fontScale = fontScale
+                            )
+                        }
+                        if (currentSubtype.standard.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = currentSubtype.standard,
+                                color = colors.accent,
+                                fontSize = (11.5 * fontScale).sp,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
                 Divider(color = colors.border, thickness = 0.8.dp)
@@ -136,13 +147,19 @@ fun ComponentDetailScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 24.dp)
         ) {
+            // Load SVG with dynamic theme styling (crisp black/blue/red on white, dark cyan on dark, etc.)
+            val svgBytes = remember(currentSubtype.svgAsset, currentTheme) {
+                getThemedSvgBytes(context, currentSubtype.svgAsset, currentTheme)
+            }
+
             // ================================================================
             // MAXIMIZED EXPANSIVE CAD DRAWING STAGE
             // ================================================================
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp)
+                    .height(290.dp)
+                    .clipToBounds()
                     .background(colors.cadBg)
                     .border(1.dp, colors.border)
                     .pointerInput(Unit) {
@@ -171,7 +188,8 @@ fun ComponentDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(14.dp)
+                        .clipToBounds()
+                        .padding(6.dp)
                         .graphicsLayer(
                             scaleX = scale,
                             scaleY = scale,
@@ -182,7 +200,8 @@ fun ComponentDetailScreen(
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data("file:///android_asset/svg/${currentSubtype.svgAsset}")
+                            .data(svgBytes ?: "file:///android_asset/svg/${currentSubtype.svgAsset}")
+                            .memoryCacheKey("${currentSubtype.svgAsset}_${currentTheme.name}")
                             .decoderFactory(SvgDecoder.Factory())
                             .crossfade(false)
                             .build(),
@@ -652,3 +671,81 @@ fun HelpQuestionButton(
         )
     }
 }
+
+/**
+ * Reads the raw SVG asset and dynamically injects theme-calibrated CSS rules into its <style> block.
+ * Adapts seamlessly to Engineering Paper White (crisp slate/blue/red), Classic Blueprint, OLED Amber, and CAD Dark.
+ */
+private fun getThemedSvgBytes(context: Context, assetName: String, theme: CadTheme): ByteArray? {
+    return try {
+        val rawSvg = context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
+        val styleReplacement = when (theme) {
+            CadTheme.ENGINEERING_WHITE -> """
+<style>
+  .cad-bg { fill: #ffffff; }
+  .cad-part { stroke: #0f172a; stroke-width: 3.0; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-bevel { stroke: #0f172a; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-dim { stroke: #2563eb; stroke-width: 1.5; stroke-linecap: square; fill: none; }
+  .cad-center { stroke: #dc2626; stroke-width: 1.3; stroke-dasharray: 14, 4, 3, 4; fill: none; }
+  .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
+  .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
+  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.5; rx: 6; ry: 6; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
+</style>
+""".trimIndent()
+
+            CadTheme.CLASSIC_BLUEPRINT -> """
+<style>
+  .cad-bg { fill: #071c33; }
+  .cad-part { stroke: #ffffff; stroke-width: 3.0; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-bevel { stroke: #ffffff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-dim { stroke: #93c5fd; stroke-width: 1.4; stroke-linecap: square; fill: none; }
+  .cad-center { stroke: #60a5fa; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
+  .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
+  .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
+  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.5; rx: 6; ry: 6; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+</style>
+""".trimIndent()
+
+            CadTheme.OLED_AMBER -> """
+<style>
+  .cad-bg { fill: #000000; }
+  .cad-part { stroke: #ffb000; stroke-width: 3.0; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-bevel { stroke: #ffb000; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-dim { stroke: #f59e0b; stroke-width: 1.4; stroke-linecap: square; fill: none; }
+  .cad-center { stroke: #ef4444; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
+  .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
+  .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
+  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.5; rx: 6; ry: 6; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; }
+</style>
+""".trimIndent()
+
+            CadTheme.CAD_DARK -> """
+<style>
+  .cad-bg { fill: #0b111e; }
+  .cad-part { stroke: #38bdf8; stroke-width: 3.0; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-bevel { stroke: #38bdf8; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .cad-dim { stroke: #94a3b8; stroke-width: 1.4; stroke-linecap: square; fill: none; }
+  .cad-center { stroke: #fbbf24; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
+  .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
+  .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
+  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.5; rx: 6; ry: 6; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: 20px; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+</style>
+""".trimIndent()
+        }
+
+        val styleRegex = Regex("<style>[\\s\\S]*?</style>")
+        val themedSvg = if (styleRegex.containsMatchIn(rawSvg)) {
+            styleRegex.replace(rawSvg, styleReplacement)
+        } else {
+            rawSvg
+        }
+        themedSvg.toByteArray(Charsets.UTF_8)
+    } catch (e: Exception) {
+        null
+    }
+}
+

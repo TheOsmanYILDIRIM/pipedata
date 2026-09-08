@@ -144,6 +144,7 @@ class MainActivity : ComponentActivity() {
                                 currentUnit = currentUnit,
                                 fontScale = fontScale,
                                 currentLang = currentLang,
+                                currentTheme = currentTheme,
                                 onOpenHelp = { topicId -> activeHelpTopicId = topicId },
                                 onBack = { currentScreen = "catalog" }
                             )

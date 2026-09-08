@@ -488,6 +488,15 @@
       text-align: right;
     }
 
+    .active-component-std {
+      font-size: calc(11px * var(--font-scale));
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent);
+      text-align: right;
+      letter-spacing: 0.02em;
+    }
+
     /* MAXIMIZED EXPANSIVE CAD DRAWING CONTAINER */
     .cad-stage-wrap {
       position: relative;
@@ -4383,9 +4392,12 @@
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
           <span data-i18n="back">Catalog</span>
         </button>
-        <div style="display:flex; align-items:center;">
-          <span class="active-component-heading" id="componentHeading">Weld Neck (WN)</span>
-          <button class="help-q-btn" onclick="openHelp('flange_types')" title="What is this flange?">?</button>
+        <div style="display:flex; flex-direction:column; align-items:flex-end;">
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span class="active-component-heading" id="componentHeading">Weld Neck (WN)</span>
+            <button class="help-q-btn" onclick="openHelp('flange_types')" title="What is this flange?">?</button>
+          </div>
+          <span class="active-component-std" id="componentStandard">ASME B16.5</span>
         </div>
       </div>
 
