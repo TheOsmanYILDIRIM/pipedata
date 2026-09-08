@@ -214,14 +214,22 @@ class PipedataDbHelper(private val context: Context) {
         var studL = 70.0
         var wt = 2.5
 
+        val flgTypeQuery = when (subtype.id) {
+            "so" -> "%Slip On%"
+            "bld" -> "%Blind%"
+            "wn" -> "%Welding Neck%"
+            else -> "%"
+        }
+
         db?.let { database ->
             try {
                 val cursor = database.rawQuery(
                     "SELECT outer_diameter_mm, thickness_mm, hub_diameter_mm, length_thru_hub_mm, " +
                             "bore_diameter_mm, rf_diameter_mm, pcd_mm, num_bolts, bolt_diameter_in, " +
                             "stud_bolt_length_mm, weight_kg FROM tbl_flanges_asme_b16_5 " +
-                            "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? LIMIT 1",
-                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"), rating.toString())
+                            "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? AND flange_type LIKE ? AND outer_diameter_mm > 0 " +
+                            "ORDER BY thickness_mm DESC LIMIT 1",
+                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"), rating.toString(), flgTypeQuery)
                 )
                 cursor.use { c ->
                     if (c.moveToFirst()) {
