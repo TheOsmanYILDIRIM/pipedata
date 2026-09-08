@@ -601,13 +601,9 @@ private fun getThemedSvgBytes(
             context.assets.open("svg/$assetName").bufferedReader().use { it.readText() }
         }
 
-        // Calculate dynamic badge scale factor and font size based on user fontScale preference:
-        // Scaled visibly and proportionally so dimension numbers scale noticeably with font preference
-        // while expanding safely from the badge center without overlapping neighbors or obscuring CAD lines.
-        val badgeScale = (1.0f + (normScale - 1.0f) * 0.90f).coerceIn(0.85f, 1.40f)
-        val bs = String.format(java.util.Locale.US, "%.3f", badgeScale)
-
-        val badgeFontSize = (20.0f * (1.0f + (normScale - 1.0f) * 0.85f)).coerceIn(18.0f, 28.0f)
+        // Calculate massive font size based on user fontScale preference (5x previous growth for elderly accessibility)
+        val growth = (normScale - 1.0f) * 65.0f
+        val badgeFontSize = (26.0f + growth).coerceIn(22.0f, 54.0f)
         val fs = String.format(java.util.Locale.US, "%.1f", badgeFontSize)
 
         val styleReplacement = when (theme) {
@@ -620,8 +616,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #dc2626; stroke-width: 1.3; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #f1f5f9; stroke: #0f172a; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #ffffff; stroke-width: 5.5px; stroke-linejoin: round; }
 </style>
 """.trimIndent()
 
@@ -634,8 +630,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #60a5fa; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0b294a; stroke: #60a5fa; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #071c33; stroke-width: 5.5px; stroke-linejoin: round; }
 </style>
 """.trimIndent()
 
@@ -648,8 +644,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #ef4444; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #1a1200; stroke: #ffb000; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #000000; stroke-width: 5.5px; stroke-linejoin: round; }
 </style>
 """.trimIndent()
 
@@ -662,8 +658,8 @@ private fun getThemedSvgBytes(
   .cad-center { stroke: #fbbf24; stroke-width: 1.2; stroke-dasharray: 14, 4, 3, 4; fill: none; }
   .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
-  .cad-badge-bg { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.4; rx: 6; ry: 6; fill-opacity: 0.84; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.3px; }
+  .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #38bdf8; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #0b111e; stroke-width: 5.5px; stroke-linejoin: round; }
 </style>
 """.trimIndent()
         }
@@ -675,11 +671,104 @@ private fun getThemedSvgBytes(
             rawSvg
         }
 
-        // Apply scale factor to each badge group in cad-text-layer so text and badge container
-        // scale proportionally from the badge center point without shifting position or overlapping neighbors
-        if (Math.abs(normScale - 1.0f) > 0.02f) {
-            val translateRegex = Regex("""(<g\s+transform="translate\([^"]+\))"(\s*>)""")
-            themedSvg = translateRegex.replace(themedSvg) { m -> "${m.groupValues[1]} scale($bs)\"${m.groupValues[2]}" }
+        // 1. Remove all rectangular background boxes from SVG
+        themedSvg = themedSvg.replace(Regex("""<rect[^>]*class="cad-badge-bg"[^>]*/>\s*"""), "")
+
+        // 2. Dynamic Spreading and Dimension Shifting when fontScale increases
+        if (normScale > 1.02f) {
+            val scaleRatio = normScale - 1.0f
+
+            // Shift and stagger text labels
+            val translateRegex = Regex("""<g\s+transform="translate\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)\)">""")
+            var tagCounter = 0
+            themedSvg = translateRegex.replace(themedSvg) { matchResult ->
+                var x = matchResult.groupValues[1].toFloatOrNull() ?: 800f
+                var y = matchResult.groupValues[2].toFloatOrNull() ?: 550f
+
+                // Vertical Spreading: Alt ölçüleri aşağıya, üst ölçüleri yukarıya it
+                if (y > 600f) {
+                    val dist = y - 550f
+                    y += scaleRatio * (dist * 0.40f)
+                } else if (y < 500f) {
+                    val dist = 550f - y
+                    y -= scaleRatio * (dist * 0.40f)
+                }
+
+                // Horizontal Staggering: Aynı dikey eksendeki sayıları sağa sola basamakla
+                if (Math.abs(x - 800f) < 45f) {
+                    tagCounter++
+                    val offset = if (tagCounter % 3 == 1) -75f else if (tagCounter % 3 == 2) 75f else 0f
+                    x += scaleRatio * offset
+                }
+
+                val newXStr = String.format(java.util.Locale.US, "%.1f", x)
+                val newYStr = String.format(java.util.Locale.US, "%.1f", y)
+                """<g transform="translate($newXStr, $newYStr)">"""
+            }
+
+            // Shift dimension lines (cad-dim) to follow the expanded labels
+            val dimLineRegex = Regex("""<line\s+x1="([^"]+)"\s+y1="([^"]+)"\s+x2="([^"]+)"\s+y2="([^"]+)"\s+class="cad-dim"\s*/>""")
+            themedSvg = dimLineRegex.replace(themedSvg) { m ->
+                val x1 = m.groupValues[1].toFloatOrNull() ?: 0f
+                var y1 = m.groupValues[2].toFloatOrNull() ?: 0f
+                val x2 = m.groupValues[3].toFloatOrNull() ?: 0f
+                var y2 = m.groupValues[4].toFloatOrNull() ?: 0f
+
+                if (Math.abs(y1 - y2) < 2f) {
+                    if (y1 > 600f) {
+                        val dist = y1 - 550f
+                        val delta = scaleRatio * (dist * 0.40f)
+                        y1 += delta
+                        y2 += delta
+                    } else if (y1 < 500f) {
+                        val dist = 550f - y1
+                        val delta = scaleRatio * (dist * 0.40f)
+                        y1 -= delta
+                        y2 -= delta
+                    }
+                } else if (Math.abs(x1 - x2) < 2f) {
+                    if (Math.max(y1, y2) > 600f) {
+                        if (y2 > y1) {
+                            val dist = y2 - 550f
+                            y2 += scaleRatio * (dist * 0.40f)
+                        } else {
+                            val dist = y1 - 550f
+                            y1 += scaleRatio * (dist * 0.40f)
+                        }
+                    } else if (Math.min(y1, y2) < 500f) {
+                        if (y2 < y1) {
+                            val dist = 550f - y2
+                            y2 -= scaleRatio * (dist * 0.40f)
+                        } else {
+                            val dist = 550f - y1
+                            y1 -= scaleRatio * (dist * 0.40f)
+                        }
+                    }
+                }
+
+                val nx1 = String.format(java.util.Locale.US, "%.1f", x1)
+                val ny1 = String.format(java.util.Locale.US, "%.1f", y1)
+                val nx2 = String.format(java.util.Locale.US, "%.1f", x2)
+                val ny2 = String.format(java.util.Locale.US, "%.1f", y2)
+                """<line x1="$nx1" y1="$ny1" x2="$nx2" y2="$ny2" class="cad-dim" />"""
+            }
+
+            // Expand SVG viewBox so shifted dimensions and enlarged numbers never clip
+            val viewBoxRegex = Regex("""viewBox="(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"""")
+            themedSvg = viewBoxRegex.replaceFirst(themedSvg) { m ->
+                val vx = m.groupValues[1].toFloatOrNull() ?: 0f
+                val vy = m.groupValues[2].toFloatOrNull() ?: 0f
+                val vw = m.groupValues[3].toFloatOrNull() ?: 1000f
+                val vh = m.groupValues[4].toFloatOrNull() ?: 800f
+
+                val padX = scaleRatio * 100f
+                val padY = scaleRatio * 180f
+                val nvx = String.format(java.util.Locale.US, "%.1f", vx - padX / 2f)
+                val nvy = String.format(java.util.Locale.US, "%.1f", vy - padY / 2f)
+                val nvw = String.format(java.util.Locale.US, "%.1f", vw + padX)
+                val nvh = String.format(java.util.Locale.US, "%.1f", vh + padY)
+                """viewBox="$nvx $nvy $nvw $nvh""""
+            }
         }
 
         // Direct inline font-size replacement to guarantee AndroidSVG renderer scales numbers visibly

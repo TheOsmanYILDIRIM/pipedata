@@ -2,6 +2,7 @@ package com.avenox.pipedata.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -257,7 +258,14 @@ fun TopicListScreen(
                                     fontSize = (15 * fontScale).sp,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    modifier = Modifier
+                                        .weight(1f, fill = false)
+                                        .basicMarquee(
+                                            iterations = Int.MAX_VALUE,
+                                            initialDelayMillis = 1200,
+                                            delayMillis = 800,
+                                            velocity = 35.dp
+                                        )
                                 )
 
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -288,7 +296,14 @@ fun TopicListScreen(
                                 color = colors.textMuted,
                                 fontSize = (12 * fontScale).sp,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .basicMarquee(
+                                        iterations = Int.MAX_VALUE,
+                                        initialDelayMillis = 1500,
+                                        delayMillis = 800,
+                                        velocity = 30.dp
+                                    )
                             )
                         }
 
