@@ -138,9 +138,15 @@ class PipedataDbHelper(private val context: Context) {
                 SubtypeItem("red_con", "Concentric Reducer", "Reducer", "RED", "ASME B16.9", "In-line diameter reduction on common centerline.", "Eksenel çap düşürücü redüksiyon.", "modern_ftbw9.svg")
             )
             "fittings_sw" -> listOf(
-                SubtypeItem("sw_elbow_90", "90° Socket Weld Elbow", "90° SW Elbow", "SW 90°", "ASME B16.11", "Forged high pressure socket elbow.", "Dövme çelik soketli 90° dirsek.", "modern_ftsw1.svg"),
-                SubtypeItem("sw_tee", "Socket Weld Tee", "SW Tee", "SW TEE", "ASME B16.11", "Forged 3-way high pressure branch.", "Dövme çelik soketli tee.", "modern_ftsw2.svg"),
-                SubtypeItem("sw_coupling", "Full Coupling", "Coupling", "CPLG", "ASME B16.11", "In-line pipe connection coupling.", "Düz boru birleştirme manşonu.", "modern_ftsw3.svg")
+                SubtypeItem("sw_elbow_90", "90° Socket Weld Elbow", "90° SW Elbow", "SW 90°", "ASME B16.11", "Forged high pressure 90° socket elbow.", "Dövme çelik yüksek basınç soketli 90° dirsek.", "modern_ftsw1.svg"),
+                SubtypeItem("sw_elbow_45", "45° Socket Weld Elbow", "45° SW Elbow", "SW 45°", "ASME B16.11", "Forged high pressure 45° socket elbow.", "Dövme çelik yüksek basınç soketli 45° dirsek.", "modern_ftsw2.svg"),
+                SubtypeItem("sw_tee", "Socket Weld Tee", "SW Tee", "SW TEE", "ASME B16.11", "Forged 3-way high pressure branch tee.", "Dövme çelik yüksek basınç soketli tee.", "modern_ftsw3.svg"),
+                SubtypeItem("sw_cross", "Socket Weld Cross", "SW Cross", "SW CROSS", "ASME B16.11", "Forged 4-way high pressure cross fitting.", "Dövme çelik yüksek basınç soketli istavroz.", "modern_ftsw4.svg"),
+                SubtypeItem("sw_coupling", "Full Coupling", "Full Coupling", "CPLG", "ASME B16.11", "In-line high pressure socket coupling.", "Yüksek basınç soketli tam manşon.", "modern_ftsw5.svg"),
+                SubtypeItem("sw_half_coupling", "Half Coupling", "Half Coupling", "HALF-C", "ASME B16.11", "Single socket high pressure branch coupling.", "Tek taraf soketli yarım manşon.", "modern_ftsw6.svg"),
+                SubtypeItem("sw_cap", "Socket Weld Cap", "SW Cap", "SW CAP", "ASME B16.11", "High pressure socket end closure cap.", "Soketli boru sonlandırma kepi.", "modern_ftsw7.svg"),
+                SubtypeItem("sw_red_coupling", "Reducing Coupling", "Red Coupling", "RED-C", "ASME B16.11", "Diameter reducing socket coupling.", "Soketli çap düşürücü redüksiyon.", "modern_ftsw8.svg"),
+                SubtypeItem("sw_union", "Socket Weld Union", "SW Union", "UNION", "ASME B16.11", "High pressure 3-piece socket weld union.", "Dövme çelik soketli konik rakor.", "modern_ftsw9.svg")
             )
             "valves" -> listOf(
                 SubtypeItem("vlv_gate", "Gate Valve", "Gate Valve", "GATE", "ASME B16.34", "Linear motion isolation valve.", "Tam açık/kapalı hat kesme vanası.", "modern_vlfl1.svg"),
@@ -427,25 +433,50 @@ class PipedataDbHelper(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 3000
+        val ratingStrClean = if (ratingStr in listOf("3000#", "6000#", "9000#")) ratingStr else "3000#"
+        val rating = ratingStrClean.replace("#", "").toIntOrNull() ?: 3000
         var sockDepth = 0.0
         var sockDia = 0.0
         var centerEnd = 0.0
+        var bore = 0.0
+        var sockThk = 0.0
+        var bodyWallThk = 0.0
+        var lenVal = 0.0
         var wt = 0.0
+
+        val compTypeLike = when (subtype.id) {
+            "sw_elbow_90" -> "%90%"
+            "sw_elbow_45" -> "%45%"
+            "sw_tee" -> "%Tee%"
+            "sw_cross" -> "%Cross%"
+            "sw_coupling" -> "%Full Coupling%"
+            "sw_half_coupling" -> "%Half Coupling%"
+            "sw_cap" -> "%Cap%"
+            "sw_red_coupling" -> "%Reduc%"
+            "sw_union" -> "%Union%"
+            else -> "%"
+        }
 
         db?.let { database ->
             try {
                 val cursor = database.rawQuery(
-                    "SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, weight_kg " +
-                            "FROM tbl_fittings_socketweld_b16_11 WHERE (nps = ? OR nps = ?) LIMIT 1",
-                    arrayOf(nps, "$nps\"")
+                    "SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, bore_diameter_mm, " +
+                            "socket_wall_thickness_mm, body_wall_thickness_mm, length_mm, weight_kg " +
+                            "FROM tbl_fittings_socketweld_b16_11 " +
+                            "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? AND component_type LIKE ? " +
+                            "ORDER BY socket_depth_mm DESC LIMIT 1",
+                    arrayOf(nps, "$nps\"", "0+$nps", rating.toString(), compTypeLike)
                 )
                 cursor.use { c ->
                     if (c.moveToFirst()) {
                         sockDepth = c.getDouble(0)
                         sockDia = c.getDouble(1)
                         centerEnd = c.getDouble(2)
-                        wt = c.getDouble(3)
+                        bore = c.getDouble(3)
+                        sockThk = c.getDouble(4)
+                        bodyWallThk = c.getDouble(5)
+                        lenVal = c.getDouble(6)
+                        wt = c.getDouble(7)
                     }
                 }
             } catch (e: Exception) {
@@ -453,30 +484,71 @@ class PipedataDbHelper(private val context: Context) {
             }
         }
 
-        if (sockDepth <= 0) {
-            sockDepth = 16.0
-            sockDia = 61.2
-            centerEnd = 38.0
-            wt = 0.95
+        // Fallback to general socketweld table query if specific subtype row wasn't found
+        if (sockDia <= 0.0) {
+            db?.let { database ->
+                try {
+                    val cursor = database.rawQuery(
+                        "SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, bore_diameter_mm, " +
+                                "socket_wall_thickness_mm, body_wall_thickness_mm, length_mm, weight_kg " +
+                                "FROM tbl_fittings_socketweld_b16_11 " +
+                                "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? " +
+                                "ORDER BY socket_depth_mm DESC LIMIT 1",
+                        arrayOf(nps, "$nps\"", "0+$nps", rating.toString())
+                    )
+                    cursor.use { c ->
+                        if (c.moveToFirst()) {
+                            sockDepth = c.getDouble(0)
+                            sockDia = c.getDouble(1)
+                            centerEnd = c.getDouble(2)
+                            bore = c.getDouble(3)
+                            sockThk = c.getDouble(4)
+                            bodyWallThk = c.getDouble(5)
+                            lenVal = c.getDouble(6)
+                            wt = c.getDouble(7)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
 
-        val rows = listOf(
-            DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"),
-            DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"),
-            DimensionRow("center_end", "Center-to-Bottom (C)", "Merkez Mesafesi (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd/25.4)}\"", "forged"),
-            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "forged")
-        )
+        val rows = mutableListOf<DimensionRow>()
+        rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
+        rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
+
+        when (subtype.id) {
+            "sw_coupling", "sw_half_coupling", "sw_union", "sw_red_coupling" -> {
+                val effectiveLen = if (lenVal > 0) lenVal else if (centerEnd > 0) centerEnd else sockDepth * 2.0
+                rows.add(DimensionRow("length", "Overall Length (L)", "Toplam Boy (L)", "${fmt(effectiveLen)} mm", "${fmt(effectiveLen/25.4)}\"", "forged"))
+                if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
+                if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
+            }
+            "sw_cap" -> {
+                val capThk = if (lenVal > 0) lenVal else if (sockThk > 0) sockThk else 6.4
+                rows.add(DimensionRow("cap_thk", "End Wall Thk (E)", "Taban Kalınlığı (E)", "${fmt(capThk)} mm", "${fmt(capThk/25.4)}\"", "forged"))
+                if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
+            }
+            else -> {
+                rows.add(DimensionRow("center_end", "Center-to-End (A)", "Eksen-Alın Mesafesi (A)", "${fmt(centerEnd)} mm", "${fmt(centerEnd/25.4)}\"", "forged"))
+                if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
+                if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
+                if (bodyWallThk > 0) rows.add(DimensionRow("wall_thk", "Body Wall (G)", "Gövde Et Kalınlığı (G)", "${fmt(bodyWallThk)} mm", "${fmt(bodyWallThk/25.4)}\"", "forged"))
+            }
+        }
+        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmt(wt)} kg", "${fmt(wt*2.20462)} lb", "forged"))
 
         return ComponentData(
             categoryId = "fittings_sw",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "3\"", "4\""),
+            availableNps = listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\""),
             selectedNps = "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("2000#", "3000#", "6000#"),
+            primaryOptions = listOf("3000#", "6000#", "9000#"),
             selectedPrimary = "${rating}#",
             dimensions = rows
         )

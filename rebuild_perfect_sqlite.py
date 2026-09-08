@@ -228,18 +228,117 @@ def build_full_sqlite():
                         (ctype, "ASME B16.20", raw_nps, int(dn_val) if dn_val else 0, rating_val, getv('id'), od_val, getv('thickness', 'thk'), gets('ring no', 'ring'), getv('wt', 'weight'), fname, unit_sys, raw_json))
 
                 elif tname == "tbl_fittings_threaded_b16_11":
-                    rm = re.search(r'(2000|3000|6000)', fname)
+                    if "90deg_street_elbow" in fname or "street" in fname:
+                        ctype = "Street Elbow"
+                    elif "90deg_elbow" in fname or fname.startswith("ftsc1_"):
+                        ctype = "90° Elbow"
+                    elif "45deg_elbow" in fname or fname.startswith("ftsc4_"):
+                        ctype = "45° Elbow"
+                    elif "tee" in fname or fname.startswith("ftsc2_"):
+                        ctype = "Tee"
+                    elif "cross" in fname or fname.startswith("ftsc3_"):
+                        ctype = "Cross"
+                    elif "half_coupling" in fname or fname.startswith("ftsc7_"):
+                        ctype = "Half Coupling"
+                    elif "coupling" in fname or fname.startswith("ftsc6_"):
+                        ctype = "Full Coupling"
+                    elif "cap" in fname or fname.startswith("ftsc8_"):
+                        ctype = "Cap"
+                    elif "plug" in fname:
+                        ctype = "Plug"
+                    elif "bushing" in fname:
+                        ctype = "Bushing"
+                    else:
+                        ctype = "Threaded Fitting"
+
+                    rm = re.search(r'(2000|3000|6000|9000)', fname)
                     rating_val = int(rm.group(1)) if rm else 3000
-                    wt_val = parse_float(row[-1]) if row else 0.0
-                    cur.execute('''INSERT INTO tbl_fittings_threaded_b16_11 (component_type, nps, dn, rating, center_to_end_mm, weight_kg, source_file, unit_system, raw_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                        ("Threaded Fitting", raw_nps, int(dn_val) if dn_val else 0, rating_val, getv('a', 'center to end'), wt_val, fname, unit_sys, raw_json))
+                    scale = 25.4 if unit_sys == "Imperial" else 1.0
+
+                    c2e = getv('a', 'ctrtoend', 'ctr to end', 'center to end', 'fmctrtoend', 'a - fmctrtoend')
+                    if c2e is not None: c2e *= scale
+                    len_val = getv('length', 'oa length', 'thread length')
+                    if len_val is not None: len_val *= scale
+                    wt_val = getv('wt', 'weight', 'kg') or (parse_float(row[-1]) if row else 0.0)
+                    wt_kg = wt_val if wt_val else 0.0
+                    wt_lb = wt_kg * 2.20462 if wt_kg else 0.0
+
+                    cur.execute('''INSERT INTO tbl_fittings_threaded_b16_11 (component_type, nps, dn, nps_small, rating, center_to_end_mm, length_mm, weight_kg, weight_lb, source_file, unit_system, raw_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                        (ctype, raw_nps, int(dn_val) if dn_val else 0, None, rating_val, c2e, len_val, wt_kg, wt_lb, fname, unit_sys, raw_json))
 
                 elif tname == "tbl_fittings_socketweld_b16_11":
+                    if "90_deg_elbow" in fname or fname.startswith("ftsw1_") or "90deg" in fname:
+                        ctype = "90° Elbow"
+                    elif "45_deg_elbow" in fname or fname.startswith("ftsw2_") or "45deg" in fname:
+                        ctype = "45° Elbow"
+                    elif "tee" in fname or fname.startswith("ftsw3_"):
+                        ctype = "Tee"
+                    elif "cross" in fname or fname.startswith("ftsw4_"):
+                        ctype = "Cross"
+                    elif "half_coupling" in fname or fname.startswith("ftsw6_"):
+                        ctype = "Half Coupling"
+                    elif "coupling" in fname or fname.startswith("ftsw5_"):
+                        ctype = "Full Coupling"
+                    elif "cap" in fname or fname.startswith("ftsw7_"):
+                        ctype = "Cap"
+                    elif "red_cplg" in fname or fname.startswith("ftsw8"):
+                        ctype = "Reducing Coupling"
+                    elif fname.startswith("ftsw9"):
+                        ctype = "Union"
+                    else:
+                        ctype = "Socket Weld Fitting"
+
                     rm = re.search(r'(3000|6000|9000)', fname)
-                    rating_val = int(rm.group(1)) if rm else 3000
-                    wt_val = parse_float(row[-1]) if row else 0.0
-                    cur.execute('''INSERT INTO tbl_fittings_socketweld_b16_11 (component_type, nps, dn, rating, center_to_end_mm, weight_kg, source_file, unit_system, raw_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                        ("Socketweld Fitting", raw_nps, int(dn_val) if dn_val else 0, rating_val, getv('a', 'center to end'), wt_val, fname, unit_sys, raw_json))
+                    if rm:
+                        rating_val = int(rm.group(1))
+                    elif "30" in fname:
+                        rating_val = 3000
+                    elif "60" in fname:
+                        rating_val = 6000
+                    else:
+                        rating_val = 3000
+
+                    scale = 25.4 if unit_sys == "Imperial" else 1.0
+
+                    sock_dia = getv('socketdia', 'b-socket id', 'b', 'socket dia large end')
+                    if sock_dia is not None: sock_dia *= scale
+                    sock_depth = getv('socket depth', 'j-socket depth', 'j', 'socket depth large end')
+                    if sock_depth is not None: sock_depth *= scale
+                    bore = getv('bore', 'd-bore', 'd')
+                    if bore is not None: bore *= scale
+                    sock_thk = getv('socket thk', 'c-diagonal thicknes', 'c')
+                    if sock_thk is not None: sock_thk *= scale
+                    wall_thk = getv('wall thk', 'body wall thk', 'g-thickness', 'g')
+                    if wall_thk is not None: wall_thk *= scale
+
+                    if ctype == "45° Elbow":
+                        c2e = getv('45degell_ctoe', 'ctrtoend', 'ctr to end', 'a')
+                    elif ctype in ["Full Coupling", "Half Coupling", "Cap", "Reducing Coupling", "Union"]:
+                        c2e = None
+                    else:
+                        c2e = getv('ctr to end', 'ctrtoend', 'a', 'center to end')
+                    if c2e is not None: c2e *= scale
+
+                    if ctype == "Full Coupling":
+                        len_val = getv('cplglen', 'e cplglen', 'k=length', 'length')
+                    elif ctype == "Half Coupling":
+                        len_val = getv('halfcplglen', 'f halfcplglen', 'length')
+                    elif ctype == "Cap":
+                        len_val = getv('capendwallthk', 'length')
+                    elif ctype == "Union":
+                        len_val = getv('k=length', 'length')
+                    elif ctype == "Reducing Coupling":
+                        len_val = getv('a', 'q-len', 'length')
+                    else:
+                        len_val = None
+                    if len_val is not None: len_val *= scale
+
+                    wt_val = getv('kg', 'wt', 'weight') or (parse_float(row[-1]) if row else 0.0)
+                    wt_kg = wt_val if wt_val else 0.0
+                    wt_lb = wt_kg * 2.20462 if wt_kg else 0.0
+
+                    cur.execute('''INSERT INTO tbl_fittings_socketweld_b16_11 (component_type, nps, dn, nps_small, rating, socket_depth_mm, socket_diameter_mm, bore_diameter_mm, socket_wall_thickness_mm, body_wall_thickness_mm, center_to_end_mm, length_mm, weight_kg, weight_lb, source_file, unit_system, raw_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                        (ctype, raw_nps, int(dn_val) if dn_val else 0, None, rating_val, sock_depth, sock_dia, bore, sock_thk, wall_thk, c2e, len_val, wt_kg, wt_lb, fname, unit_sys, raw_json))
 
                 elif tname == "tbl_flanges_asme_b16_47":
                     rm = re.search(r'(75|150|300|400|600|900|1500|2500)', fname)

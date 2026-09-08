@@ -92,3 +92,20 @@
 - Properly mapped headers and fixed missing OD/ID/WT mapping across pipes and caps.
 - Handled imperial/metric conversion for `tbl_pipes`.
 - Executed test suite successfully, producing `17/17 OK`.
+
+## ASME B16.11 Socket Weld & Threaded Audit Notes (2026-09-08 Phase 3)
+- **Class 2000 Removal for Socket Weld:** Confirmed ASME B16.11 standard specification: Socket Weld fittings strictly exist in Class 3000, 6000, and 9000. Class 2000 only applies to Threaded fittings. Class 2000 has been completely purged from Socket Weld options.
+- **Misrouted CSV Fix:** Reassigned 25 `ftsw*` files and 26 `ftsc*` files from `tbl_fittings_buttweld_b16_9` to `tbl_fittings_socketweld_b16_11` and `tbl_fittings_threaded_b16_11`.
+- **Complete Socket Weld Dimensions Ingestion:** Populated `socket_depth_mm`, `socket_diameter_mm`, `bore_diameter_mm`, `socket_wall_thickness_mm`, `body_wall_thickness_mm`, `center_to_end_mm`, `length_mm`, and `weight_kg` directly from raw CSVs for all socket weld components.
+- **All 9 Socket Weld Subtypes Wired:**
+  1. `sw_elbow_90`: 90° Socket Weld Elbow (`modern_ftsw1.svg`)
+  2. `sw_elbow_45`: 45° Socket Weld Elbow (`modern_ftsw2.svg`)
+  3. `sw_tee`: Socket Weld Tee (`modern_ftsw3.svg`)
+  4. `sw_cross`: Socket Weld Cross (`modern_ftsw4.svg`)
+  5. `sw_coupling`: Full Coupling (`modern_ftsw5.svg`)
+  6. `sw_half_coupling`: Half Coupling (`modern_ftsw6.svg`)
+  7. `sw_cap`: Socket Weld Cap (`modern_ftsw7.svg`)
+  8. `sw_red_coupling`: Reducing Coupling (`modern_ftsw8.svg`)
+  9. `sw_union`: Socket Weld Union (`modern_ftsw9.svg`)
+- **SVG Dimension Callout Live Binding:** Fixed `ComponentDetailScreen.kt` to bind `[[3]]`..`[[12]]` to exact socket weld parameters (`center_end`, `sock_dia`, `sock_thk`, `bore`, `sock_depth`, `wall_thk`, `length`, `cap_thk`, `weight`).
+- **Database Synchronization:** `pipedata.db` recompiled and copied to `app/src/main/assets/pipedata.db` and `/storage/emulated/0/Download/pipedata.db`. All 17 unit tests verified PASS.

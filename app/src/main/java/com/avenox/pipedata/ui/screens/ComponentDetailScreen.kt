@@ -651,46 +651,71 @@ private fun getThemedSvgBytes(
         val placeholderRegex = Regex("\\[\\[(.*?)\\]\\]")
         themedSvg = placeholderRegex.replace(themedSvg) { matchResult ->
             val key = matchResult.groupValues[1].trim()
-            when (key) {
-                "3" -> odStr
-                "4" -> thkStr
-                "5" -> hubStr
-                "6" -> boreStr
-                "7" -> dimMap["hgt"] ?: if (isMetric) "125" else "4.92\""
-                "8" -> dimMap["rad"] ?: if (isMetric) "3.0" else "1/8\""
-                "9" -> lenStr
-                "10" -> dimMap["socket"] ?: if (isMetric) "16.0" else "5/8\""
-                "11" -> rfStr
-                "12" -> if (isMetric) "2.0" else "1/16\""
-                "13" -> dimMap["rtj_dia"] ?: if (isMetric) "${fmt(dn * 1.6)}" else "${fmt(dn * 1.6 / 25.4)}\""
-                "14" -> dimMap["ring"] ?: "R23"
-                "15" -> if (isMetric) "6.4" else "1/4\""
-                "16" -> if (isMetric) "8.7" else "11/32\""
-                "17" -> if (isMetric) "4.0" else "5/32\""
-                "18" -> boreStr
-                "19" -> pcdStr
-                "20" -> numBolts
-                "21" -> boltSz
-                "22" -> if (isMetric) "60" else "2.36\""
-                "23" -> studStr
-                "24" -> studStr
-                "25" -> if (isMetric) "19.0" else "3/4\""
-                "27", "28", "29" -> wtStr
-                "32" -> boreStr
-                "36" -> pcdStr
-                "37" -> if (isMetric) "6.4" else "1/4\""
-                "38" -> if (isMetric) "8.7" else "11/32\""
-                "43" -> if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
-                "44" -> if (isMetric) "3.9" else "0.154\""
-                "46" -> "$numBolts × $boltSz"
-                "48" -> "37.5°"
-                "49" -> "10°"
-                "50" -> if (isMetric) "1.6" else "1/16\""
-                "51" -> if (isMetric) "3.0" else "1/8\""
-                "52" -> if (isMetric) "1.6" else "1/16\""
-                "DB2_6" -> data.selectedPrimary
-                "DB2_4" -> thkStr
-                else -> dimMap[key.lowercase()] ?: data.selectedPrimary
+            if (data.categoryId == "fittings_sw") {
+                val swSockDia = dimMap["sock_dia"] ?: if (isMetric) "22.2" else "0.88\""
+                val swSockDepth = dimMap["sock_depth"] ?: if (isMetric) "9.5" else "0.38\""
+                val swCenterEnd = dimMap["center_end"] ?: if (isMetric) "15.5" else "0.62\""
+                val swSockThk = dimMap["sock_thk"] ?: if (isMetric) "4.7" else "0.18\""
+                val swBore = dimMap["bore"] ?: if (isMetric) "16.6" else "0.65\""
+                val swWallThk = dimMap["wall_thk"] ?: if (isMetric) "3.7" else "0.15\""
+                val swLen = dimMap["length"] ?: if (isMetric) "22.5" else "0.88\""
+                val swCapThk = dimMap["cap_thk"] ?: if (isMetric) "6.4" else "0.25\""
+                when (key) {
+                    "3" -> swCenterEnd
+                    "4" -> swSockDia
+                    "5" -> swSockThk
+                    "6" -> swBore
+                    "7" -> swSockDepth
+                    "8" -> swWallThk
+                    "9" -> swCenterEnd
+                    "10" -> swLen
+                    "11" -> swLen
+                    "12" -> swCapThk
+                    "13", "14", "15", "16" -> wtStr
+                    else -> dimMap[key.lowercase()] ?: data.selectedPrimary
+                }
+            } else {
+                when (key) {
+                    "3" -> odStr
+                    "4" -> thkStr
+                    "5" -> hubStr
+                    "6" -> boreStr
+                    "7" -> dimMap["hgt"] ?: if (isMetric) "125" else "4.92\""
+                    "8" -> dimMap["rad"] ?: if (isMetric) "3.0" else "1/8\""
+                    "9" -> lenStr
+                    "10" -> dimMap["socket"] ?: if (isMetric) "16.0" else "5/8\""
+                    "11" -> rfStr
+                    "12" -> if (isMetric) "2.0" else "1/16\""
+                    "13" -> dimMap["rtj_dia"] ?: if (isMetric) "${fmt(dn * 1.6)}" else "${fmt(dn * 1.6 / 25.4)}\""
+                    "14" -> dimMap["ring"] ?: "R23"
+                    "15" -> if (isMetric) "6.4" else "1/4\""
+                    "16" -> if (isMetric) "8.7" else "11/32\""
+                    "17" -> if (isMetric) "4.0" else "5/32\""
+                    "18" -> boreStr
+                    "19" -> pcdStr
+                    "20" -> numBolts
+                    "21" -> boltSz
+                    "22" -> if (isMetric) "60" else "2.36\""
+                    "23" -> studStr
+                    "24" -> studStr
+                    "25" -> if (isMetric) "19.0" else "3/4\""
+                    "27", "28", "29" -> wtStr
+                    "32" -> boreStr
+                    "36" -> pcdStr
+                    "37" -> if (isMetric) "6.4" else "1/4\""
+                    "38" -> if (isMetric) "8.7" else "11/32\""
+                    "43" -> if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
+                    "44" -> if (isMetric) "3.9" else "0.154\""
+                    "46" -> "$numBolts × $boltSz"
+                    "48" -> "37.5°"
+                    "49" -> "10°"
+                    "50" -> if (isMetric) "1.6" else "1/16\""
+                    "51" -> if (isMetric) "3.0" else "1/8\""
+                    "52" -> if (isMetric) "1.6" else "1/16\""
+                    "DB2_6" -> data.selectedPrimary
+                    "DB2_4" -> thkStr
+                    else -> dimMap[key.lowercase()] ?: data.selectedPrimary
+                }
             }
         }
 

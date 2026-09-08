@@ -87,6 +87,10 @@
   - Sabit indeksler kaldırılarak dinamik semantik başlık haritası (`hmap`) kuruldu; önceden `NULL` olan boyun tabanı, fatura çapı, delik çapı, saplama boyları ve gerçek cıvata adetleri %100 kurtarıldı.
   - Tüm 17 tablo (`tbl_flanges_asme_b16_5`, `tbl_flanges_asme_b16_47`, `tbl_flanges_din_en_1092`, `tbl_flanges_api_6a`, `tbl_flanges_orifice_b16_36`, `tbl_flanges_branch_connections`, `tbl_pipes`, `tbl_fittings_buttweld_b16_9`, `tbl_fittings_socketweld_b16_11`, `tbl_fittings_threaded_b16_11`, `tbl_fittings_swages_nipples`, `tbl_branch_outlets_mss_sp_97`, `tbl_valves_asme_b16_10`, `tbl_gaskets_and_rtj`, `tbl_line_blanks_asme_b16_48`, `tbl_bolting_and_fasteners`, `tbl_misc_data`) tek tek denetlenerek dosya adı ve başlık regex'leri ile rating/schedule/PN değerleri eksiksiz bağlandı.
   - `SQLITE_MASTER_AUDIT_CHECKLIST.md` dosyası oluşturuldu ve her tablonun denetimi adım adım belgelendi.
-  - `test_suite.py` 17/17 test ile %100 PASS verdi.
-  - `PipedataDbHelper.kt` sorguları yeni kusursuz şema ile tam uyumlu hale getirildi.
-
+  - [x] **ASME B16.11 Soket Kaynaklı & Vidalı Fitingler Master Denetimi & Düzeltmesi:**
+  - Kullanıcının haklı uyarısı: ASME B16.11 Soket Kaynaklı fitinglerde Class 2000# standarda göre mevcut DEĞİLDİR (yalnızca vidalı fitinglerde vardır). Class 2000# soket kaynaklı fiting seçeneklerinden tamamen kaldırıldı; standart gereği yalnızca 3000#, 6000#, 9000# sınıfları bırakıldı.
+  - Yanlışlıkla `tbl_fittings_buttweld_b16_9` tablosuna aktarılmış olan 25 `ftsw*` ve 26 `ftsc*` dosyası tespit edilip ait oldukları `tbl_fittings_socketweld_b16_11` ve `tbl_fittings_threaded_b16_11` tablolarına taşındı.
+  - `tbl_fittings_socketweld_b16_11` şemasına ve SQLite veri tabanına soket derinliği (`socket_depth_mm`), soket çapı (`socket_diameter_mm`), iç delik (`bore_diameter_mm`), soket et kalınlığı (`socket_wall_thickness_mm`), gövde et kalınlığı (`body_wall_thickness_mm`), merkezden uca boy (`center_to_end_mm`), boy (`length_mm`) ve ağırlık (`weight_kg`) ham CSV'lerden semantik olarak %100 doğrulukla aktarıldı.
+  - Kategori altında eksik olan 45° Dirsek, İstavroz (Cross), Yarım Manşon (Half Coupling), Kep (Cap), Redüksiyon Manşonu (Reducing Coupling) ve Rakor (Union) olmak üzere toplam 9 alt tip ve karşılık gelen `modern_ftsw1.svg` - `modern_ftsw9.svg` teknik çizimleri bağlandı.
+  - `ComponentDetailScreen.kt` içerisindeki SVG canlı parametre enjektörü (`[[3]]`..`[[12]]`) dövme soket fiting parametrelerine göre kalibre edildi.
+  - `pipedata.db` yeniden derlenip `app/src/main/assets/` ve `/storage/emulated/0/Download/` yollarına kopyalandı; 17/17 otomatik test başarıyla geçti.

@@ -8555,964 +8555,6 @@
           ]
         },
         {
-          "filename": "ftsc1_threaded_90deg_elbow_2000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 12,
-          "file_size_bytes": 514,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc1_threaded_90deg_elbow_2000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 475,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc1_threaded_90deg_elbow_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 542,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc1_threaded_90deg_elbow_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 477,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc1_threaded_90deg_elbow_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 545,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc1_threaded_90deg_elbow_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 487,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_2000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 552,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_2000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 479,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 544,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 480,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 547,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc2_threaded_tee_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 489,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_2000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 552,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_2000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 475,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 544,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 477,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 542,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc4_threaded_45deg_elbow_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 483,
-          "headers": [
-            "NB",
-            "DN",
-            "A",
-            "H",
-            "G",
-            "B",
-            "L2",
-            "WT"
-          ]
-        },
-        {
-          "filename": "ftsc5_threaded_90deg_street_elbow_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 9,
-          "file_size_bytes": 246,
-          "headers": [
-            "NB",
-            "DN",
-            "FMCtrToEnd",
-            "MCtrToEnd",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 9,
-          "file_size_bytes": 221,
-          "headers": [
-            "NB",
-            "DN",
-            "FMCtrToEnd",
-            "MCtrToEnd",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc5_threaded_90deg_street_elbow_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 9,
-          "file_size_bytes": 254,
-          "headers": [
-            "NB",
-            "DN",
-            "A - FMCtrToEnd",
-            "J - MCtrToEnd",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 9,
-          "file_size_bytes": 228,
-          "headers": [
-            "NB",
-            "DN",
-            "A - FMCtrToEnd",
-            "J - MCtrToEnd",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc8_threaded_cap_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 410,
-          "headers": [
-            "NB",
-            "DN",
-            "Length",
-            "Diameter",
-            "Thickness",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc8_threaded_cap_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 367,
-          "headers": [
-            "NB",
-            "DN",
-            "Length",
-            "Diameter",
-            "Thickness",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc8_threaded_cap_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 394,
-          "headers": [
-            "NB",
-            "DN",
-            "Length",
-            "Diameter",
-            "Thickness",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsc8_threaded_cap_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 362,
-          "headers": [
-            "NB",
-            "DN",
-            "Length",
-            "Diameter",
-            "Thickness",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_2000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 0,
-          "file_size_bytes": 0,
-          "headers": []
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 986,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 883,
-          "headers": [
-            "NB",
-            "DN",
-            "Ctr To End",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 968,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 869,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_9000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 932,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw1_socketwelded_90_deg_elbow_9000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 865,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 987,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 877,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 961,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 871,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_9000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 930,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw2_socketwelded_45_deg_elbow_9000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 872,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 984,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 879,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 965,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 866,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_9000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 932,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw3_socketwelded_tee_9000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 862,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_3000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 994,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_3000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 884,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_6000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 971,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_6000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 872,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_9000_inches.csv",
-          "unit_system": "Imperial",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 932,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
-          "filename": "ftsw7_socketwelded_cap_9000_millimetres.csv",
-          "unit_system": "Metric",
-          "rating_or_sch": "Sch S",
-          "row_count": 13,
-          "file_size_bytes": 868,
-          "headers": [
-            "NB",
-            "DN",
-            "CtrToEnd",
-            "SocketDia",
-            "Socket Thk",
-            "Bore",
-            "Socket Depth",
-            "Wall Thk",
-            "45degEll_CtoE",
-            "CplgLen",
-            "HalfCplgLen",
-            "CapEndWallThk",
-            "Kg"
-          ]
-        },
-        {
           "filename": "piwt1_carbonsteel_imperial.csv",
           "unit_system": "Imperial",
           "rating_or_sch": "Sch Standard",
@@ -19523,6 +18565,428 @@
             "Head Length",
             "Kg"
           ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_2000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 12,
+          "file_size_bytes": 514,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_2000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 475,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 542,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 477,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 545,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc1_threaded_90deg_elbow_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 487,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_2000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 552,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_2000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 479,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 544,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 480,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 547,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc2_threaded_tee_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 489,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_2000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 552,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_2000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 475,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 544,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 477,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 542,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc4_threaded_45deg_elbow_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 483,
+          "headers": [
+            "NB",
+            "DN",
+            "A",
+            "H",
+            "G",
+            "B",
+            "L2",
+            "WT"
+          ]
+        },
+        {
+          "filename": "ftsc5_threaded_90deg_street_elbow_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 9,
+          "file_size_bytes": 246,
+          "headers": [
+            "NB",
+            "DN",
+            "FMCtrToEnd",
+            "MCtrToEnd",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 9,
+          "file_size_bytes": 221,
+          "headers": [
+            "NB",
+            "DN",
+            "FMCtrToEnd",
+            "MCtrToEnd",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc5_threaded_90deg_street_elbow_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 9,
+          "file_size_bytes": 254,
+          "headers": [
+            "NB",
+            "DN",
+            "A - FMCtrToEnd",
+            "J - MCtrToEnd",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 9,
+          "file_size_bytes": 228,
+          "headers": [
+            "NB",
+            "DN",
+            "A - FMCtrToEnd",
+            "J - MCtrToEnd",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc8_threaded_cap_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 410,
+          "headers": [
+            "NB",
+            "DN",
+            "Length",
+            "Diameter",
+            "Thickness",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc8_threaded_cap_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 367,
+          "headers": [
+            "NB",
+            "DN",
+            "Length",
+            "Diameter",
+            "Thickness",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc8_threaded_cap_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 394,
+          "headers": [
+            "NB",
+            "DN",
+            "Length",
+            "Diameter",
+            "Thickness",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsc8_threaded_cap_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 362,
+          "headers": [
+            "NB",
+            "DN",
+            "Length",
+            "Diameter",
+            "Thickness",
+            "Kg"
+          ]
         }
       ],
       "total_source_rows": 1084
@@ -19568,7 +19032,23 @@
           "type": "REAL"
         },
         {
+          "name": "bore_diameter_mm",
+          "type": "REAL"
+        },
+        {
+          "name": "socket_wall_thickness_mm",
+          "type": "REAL"
+        },
+        {
+          "name": "body_wall_thickness_mm",
+          "type": "REAL"
+        },
+        {
           "name": "center_to_end_mm",
+          "type": "REAL"
+        },
+        {
+          "name": "length_mm",
           "type": "REAL"
         },
         {
@@ -20461,6 +19941,542 @@
             "B-Socket ID",
             "D-Bore",
             "J-Socket Depth"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_2000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 0,
+          "file_size_bytes": 0,
+          "headers": []
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 986,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 883,
+          "headers": [
+            "NB",
+            "DN",
+            "Ctr To End",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 968,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 869,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_9000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 932,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw1_socketwelded_90_deg_elbow_9000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 865,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 987,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 877,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 961,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 871,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_9000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 930,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw2_socketwelded_45_deg_elbow_9000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 872,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 984,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 879,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 965,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 866,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_9000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 932,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw3_socketwelded_tee_9000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 862,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_3000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 994,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_3000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 884,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_6000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 971,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_6000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 872,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_9000_inches.csv",
+          "unit_system": "Imperial",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 932,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
+          ]
+        },
+        {
+          "filename": "ftsw7_socketwelded_cap_9000_millimetres.csv",
+          "unit_system": "Metric",
+          "rating_or_sch": "Sch S",
+          "row_count": 13,
+          "file_size_bytes": 868,
+          "headers": [
+            "NB",
+            "DN",
+            "CtrToEnd",
+            "SocketDia",
+            "Socket Thk",
+            "Bore",
+            "Socket Depth",
+            "Wall Thk",
+            "45degEll_CtoE",
+            "CplgLen",
+            "HalfCplgLen",
+            "CapEndWallThk",
+            "Kg"
           ]
         }
       ],
