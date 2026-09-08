@@ -94,3 +94,9 @@
   - Kategori altında eksik olan 45° Dirsek, İstavroz (Cross), Yarım Manşon (Half Coupling), Kep (Cap), Redüksiyon Manşonu (Reducing Coupling) ve Rakor (Union) olmak üzere toplam 9 alt tip ve karşılık gelen `modern_ftsw1.svg` - `modern_ftsw9.svg` teknik çizimleri bağlandı.
   - `ComponentDetailScreen.kt` içerisindeki SVG canlı parametre enjektörü (`[[3]]`..`[[12]]`) dövme soket fiting parametrelerine göre kalibre edildi.
   - `pipedata.db` yeniden derlenip `app/src/main/assets/` ve `/storage/emulated/0/Download/` yollarına kopyalandı; 17/17 otomatik test başarıyla geçti.
+- [x] **Anti-Macro Fallacy & Kapsamlı Çapraz Tablo Semantik Denetimi (Phase 4):**
+  - Tüm 956 CSV ve 17 SQLite tablosu satır satır denetlendi; 13 tabloda CSV başlık varyasyonları yüzünden %100 NULL kalan kolonlar tespit edilerek çözüldü.
+  - Vanalar (`face_to_face_mm`, el çarkı ölçüleri, ağırlıklar), flanşlar (saplama boyları, PCD, cıvata adetleri), contalar (RTJ halka numaraları, boyut ve ağırlıklar), hat körlemeleri (Figure-8, Paddle Blank, Spacer merkezler arası mesafe ve ağırlıklar), branşman çıkışları (MSS SP-97 Weldolet/Sockolet boy ve ağırlıklar), dövme nipeller, API 6A ve DIN EN 1092 flanş ağırlıkları eksiksiz dolduruldu.
+  - Borular tablosunda (`tbl_pipes`) Atalet Momenti, Kesit Mukavemet Modülü, Atalet Yarıçapı ve Su Dolu Ağırlık formülleri sıfır sessiz fallback ile doğrudan fiziksel prensiplere göre hesaplandı.
+  - `test_suite.py` 22 teste genişletildi; tüm tablolar için derin semantik kolon doğrulaması ve ground-truth kontrolleriyle 22/22 %100 PASS elde edildi.
+

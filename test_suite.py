@@ -392,6 +392,73 @@ class TestPipedataIntegrity(unittest.TestCase):
             svg_path = os.path.join(assets_svg_dir, svg_name)
             self.assertTrue(os.path.exists(svg_path), f"Gerekli teknik cizim '{svg_name}' assets klasorunde bulunamadi!")
 
+
+    def test_5_7_sqlite_valves_b16_10_deep_integrity(self):
+        """Test 5.7: Anti-Macro Fallacy - tbl_valves_asme_b16_10 semantik kolon butunlugu"""
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        
+        # 100% NULL kontrolu (hicbir kritik kolon tamamen bos olmamali)
+        for col in ["face_to_face_mm", "handwheel_height_mm", "handwheel_diameter_mm", "weight_kg"]:
+            null_count = cur.execute(f"SELECT count(*) FROM tbl_valves_asme_b16_10 WHERE {col} IS NULL;").fetchone()[0]
+            total_count = cur.execute("SELECT count(*) FROM tbl_valves_asme_b16_10;").fetchone()[0]
+            self.assertLess(null_count, total_count, f"{col} kolonu 100% NULL olamaz!")
+
+        # Ground-truth kayit dogrulama: 2" 150# Gate Valve
+        row = cur.execute("""
+            SELECT face_to_face_mm, handwheel_height_mm, handwheel_diameter_mm, weight_kg 
+            FROM tbl_valves_asme_b16_10 
+            WHERE valve_type = 'Gate Valve' AND (nps = '2' OR nps = '2.0') AND rating = 150 LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row[0], 178.0, "2in 150# Gate Valve F-to-F 178.0 mm olmali")
+        self.assertEqual(row[1], 409.0, "2in 150# Gate Valve El carki yuksekligi 409.0 mm olmali")
+        self.assertEqual(row[2], 200.0, "2in 150# Gate Valve El carki capi 200.0 mm olmali")
+        self.assertEqual(row[3], 18.0, "2in 150# Gate Valve Agirligi 18.0 kg olmali")
+        conn.close()
+
+    def test_5_8_sqlite_flanges_b16_5_deep_integrity(self):
+        """Test 5.8: Anti-Macro Fallacy - tbl_flanges_asme_b16_5 stud bolt length ve semantik kolon butunlugu"""
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        # Ground-truth: 2" 150# Welding Neck Flange
+        row = cur.execute("""
+            SELECT outer_diameter_mm, pcd_mm, num_bolts, stud_bolt_length_mm, weight_kg 
+            FROM tbl_flanges_asme_b16_5 
+            WHERE flange_type = 'Welding Neck' AND (nps = '2' OR nps = '2.0') AND rating = 150 LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row[0], 152.0, "2in 150# WN Flans dis capi 152.0 mm olmali")
+        self.assertEqual(row[1], 120.6, "2in 150# WN Flans PCD 120.6 mm olmali")
+        self.assertEqual(row[2], 4, "2in 150# WN Flans civata adedi 4 olmali")
+        self.assertEqual(row[3], 85.0, "2in 150# WN Flans saplama boyu 85.0 mm olmali")
+        self.assertEqual(row[4], 2.7, "2in 150# WN Flans agirligi 2.7 kg olmali")
+        conn.close()
+
+    def test_5_9_sqlite_pipes_engineering_properties_deep_integrity(self):
+        """Test 5.9: Anti-Macro Fallacy - tbl_pipes Atalet Momenti, Kesit Modulu ve Dolu Agirlik butunlugu"""
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        # Ground-truth: 2" Sch 40 Boru
+        row = cur.execute("""
+            SELECT outer_diameter_mm, wall_thickness_mm, inner_diameter_mm, weight_empty_kg_m, weight_total_kg_m, moment_of_inertia_cm4 
+            FROM tbl_pipes 
+            WHERE (nps = '2' OR nps = '2.0') AND schedule = '40' LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row[0], 60.3, "2in Sch 40 Boru OD 60.3 mm olmali")
+        self.assertEqual(row[1], 3.91, "2in Sch 40 Boru WT 3.91 mm olmali")
+        self.assertEqual(row[2], 52.48, "2in Sch 40 Boru ID 52.48 mm olmali")
+        self.assertEqual(row[3], 5.44, "2in Sch 40 Boru bos agirlik 5.44 kg/m olmali")
+        self.assertEqual(row[4], 13.04, "2in Sch 40 Boru su dolu toplam agirlik 13.04 kg/m olmali")
+        self.assertEqual(row[5], 27.65, "2in Sch 40 Boru atalet momenti 27.65 cm4 olmali")
+        conn.close()
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 
