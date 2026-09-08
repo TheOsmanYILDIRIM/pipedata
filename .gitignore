@@ -19,3 +19,4 @@ local.properties
 .cxx/
 *.apk
 !gradle/wrapper/gradle-wrapper.jar
+scratch/
