@@ -17,6 +17,7 @@ import com.avenox.pipedata.ui.screens.ComponentDetailScreen
 import com.avenox.pipedata.ui.screens.TopicListScreen
 import com.avenox.pipedata.ui.theme.LocalCadColors
 import com.avenox.pipedata.ui.theme.PipedataTheme
+import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,6 +55,17 @@ class MainActivity : ComponentActivity() {
             // Modals
             var activeHelpTopicId by remember { mutableStateOf<String?>(null) }
             var isSettingsOpen by remember { mutableStateOf(false) }
+
+            // Handle Android hardware/gesture Back Button
+            BackHandler(enabled = currentScreen == "detail" || isSettingsOpen || activeHelpTopicId != null) {
+                if (activeHelpTopicId != null) {
+                    activeHelpTopicId = null
+                } else if (isSettingsOpen) {
+                    isSettingsOpen = false
+                } else if (currentScreen == "detail") {
+                    currentScreen = "catalog"
+                }
+            }
 
             val currentData = remember(
                 selectedCategory.id,

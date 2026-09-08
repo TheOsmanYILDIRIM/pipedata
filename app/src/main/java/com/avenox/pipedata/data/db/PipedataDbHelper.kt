@@ -162,6 +162,8 @@ class PipedataDbHelper(private val context: Context) {
         }
     }
 
+    private val dataCache = java.util.concurrent.ConcurrentHashMap<String, ComponentData>()
+
     fun getComponentData(
         categoryId: String,
         subtypeIndex: Int,
@@ -169,12 +171,15 @@ class PipedataDbHelper(private val context: Context) {
         primarySel: String,
         secondarySel: String?
     ): ComponentData {
+        val cacheKey = "$categoryId|$subtypeIndex|$nps|$primarySel|$secondarySel"
+        dataCache[cacheKey]?.let { return it }
+
         val subtypes = getCategorySubtypes(categoryId)
         val subtype = subtypes.getOrElse(subtypeIndex) { subtypes.first() }
         val cleanNpsNum = nps.replace("\"", "").trim()
         val dn = getNpsDn(cleanNpsNum)
 
-        return when (categoryId) {
+        val result = when (categoryId) {
             "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel)
@@ -184,6 +189,8 @@ class PipedataDbHelper(private val context: Context) {
             "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
         }
+        dataCache[cacheKey] = result
+        return result
     }
 
     private fun buildFlangeData(
