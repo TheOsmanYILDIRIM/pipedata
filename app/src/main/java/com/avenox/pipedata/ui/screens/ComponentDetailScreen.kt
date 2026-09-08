@@ -59,6 +59,7 @@ fun ComponentDetailScreen(
     onOpenHelp: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val colors = LocalCadColors.current
     val isTr = currentLang == AppLanguage.TR
 
@@ -135,6 +136,7 @@ fun ComponentDetailScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 24.dp)
+        ) {
             // ================================================================
             // ISOLATED CAD DRAWING STAGE (Skips recomposition on dial clicks!)
             // ================================================================
@@ -344,6 +346,7 @@ fun ComponentDetailScreen(
                     )
                 }
             }
+        }
     }
 }
 
