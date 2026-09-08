@@ -617,7 +617,7 @@ private fun getThemedSvgBytes(
   .cad-hatch { stroke: #475569; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #2563eb; stroke: #2563eb; stroke-width: 0.5; }
   .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #0f172a; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #ffffff; stroke-width: 5.5px; stroke-linejoin: round; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold !important; fill: #0f172a !important; stroke: none !important; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -631,7 +631,7 @@ private fun getThemedSvgBytes(
   .cad-hatch { stroke: #ffffff; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #93c5fd; stroke: #93c5fd; stroke-width: 0.5; }
   .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #ffffff; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #071c33; stroke-width: 5.5px; stroke-linejoin: round; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold !important; fill: #ffffff !important; stroke: none !important; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -645,7 +645,7 @@ private fun getThemedSvgBytes(
   .cad-hatch { stroke: #ffb000; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #f59e0b; stroke: #f59e0b; stroke-width: 0.5; }
   .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #ffb000; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #000000; stroke-width: 5.5px; stroke-linejoin: round; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold !important; fill: #ffb000 !important; stroke: none !important; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
 
@@ -659,7 +659,7 @@ private fun getThemedSvgBytes(
   .cad-hatch { stroke: #38bdf8; stroke-width: 1.2; stroke-opacity: 0.65; fill: none; }
   .cad-arrow { fill: #38bdf8; stroke: #38bdf8; stroke-width: 0.5; }
   .cad-badge-bg { display: none !important; fill: none !important; stroke: none !important; opacity: 0 !important; }
-  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: 900 !important; fill: #38bdf8; text-anchor: middle; dominant-baseline: central; letter-spacing: -0.5px; paint-order: stroke fill; stroke: #0b111e; stroke-width: 5.5px; stroke-linejoin: round; }
+  .cad-badge-text { font-family: 'DejaVu Sans', 'Liberation Sans', monospace; font-size: ${fs}px !important; font-weight: bold !important; fill: #ffffff !important; stroke: none !important; text-anchor: middle; dominant-baseline: central; }
 </style>
 """.trimIndent()
         }
@@ -772,8 +772,8 @@ private fun getThemedSvgBytes(
             } ?: themedSvg
         }
 
-        // Direct inline font-size replacement to guarantee AndroidSVG renderer scales numbers visibly
-        themedSvg = themedSvg.replace("<text class=\"cad-badge-text\">", "<text class=\"cad-badge-text\" font-size=\"${fs}px\">")
+        // Direct inline font-size replacement to guarantee AndroidSVG renderer scales numbers visibly with clean solid fill
+        themedSvg = themedSvg.replace("<text class=\"cad-badge-text\">", "<text class=\"cad-badge-text\" font-size=\"${fs}px\" stroke=\"none\">")
 
         // Build dimension lookup table from active component specifications
         val dimMap = mutableMapOf<String, String>()
