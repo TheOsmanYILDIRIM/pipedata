@@ -665,8 +665,53 @@ class PipedataDbHelper(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val ratingStrClean = if (ratingStr in listOf("3000#", "6000#", "9000#")) ratingStr else "3000#"
-        val rating = ratingStrClean.replace("#", "").toIntOrNull() ?: 3000
+        // 1. ASME B16.11 Pressure Ratings per Subtype:
+        // Union and Reducing Coupling only exist in Class 3000# and 6000# (No 9000#)
+        val primaryOptions = when (subtype.id) {
+            "sw_union", "sw_red_coupling" -> listOf("3000#", "6000#")
+            else -> listOf("3000#", "6000#", "9000#")
+        }
+        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 3000
+
+        // 2. ASME B16.11 NPS Size Ranges per Subtype and Rating:
+        val availableNps = when (subtype.id) {
+            "sw_union" -> listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
+            "sw_red_coupling" -> {
+                if (rating == 6000) {
+                    listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"")
+                } else {
+                    listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
+                }
+            }
+            "sw_elbow_90", "sw_elbow_45", "sw_tee", "sw_cross" -> {
+                when (rating) {
+                    9000 -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"")
+                    6000 -> listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"")
+                    else -> listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
+                }
+            }
+            "sw_cap" -> {
+                when (rating) {
+                    9000 -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"")
+                    6000 -> listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"")
+                    else -> listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
+                }
+            }
+            else -> { // sw_coupling, sw_half_coupling
+                if (rating == 9000) {
+                    listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
+                } else {
+                    listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
+                }
+            }
+        }
+
+        // Clamp NPS to available range
+        val cleanNpsWithQuote = if (nps.endsWith("\"")) nps else "$nps\""
+        val effectiveNpsWithQuote = if (cleanNpsWithQuote in availableNps) cleanNpsWithQuote else availableNps.first()
+        val effectiveNps = effectiveNpsWithQuote.replace("\"", "")
+
         var sockDepth = 0.0
         var sockDia = 0.0
         var centerEnd = 0.0
@@ -697,7 +742,7 @@ class PipedataDbHelper(private val context: Context) {
                             "FROM tbl_fittings_socketweld_b16_11 " +
                             "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? AND component_type LIKE ? " +
                             "ORDER BY socket_depth_mm DESC LIMIT 1",
-                    arrayOf(nps, "$nps\"", "0+$nps", rating.toString(), compTypeLike)
+                    arrayOf(effectiveNps, "$effectiveNps\"", "0+$effectiveNps", rating.toString(), compTypeLike)
                 )
                 cursor.use { c ->
                     if (c.moveToFirst()) {
@@ -726,7 +771,7 @@ class PipedataDbHelper(private val context: Context) {
                                 "FROM tbl_fittings_socketweld_b16_11 " +
                                 "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? " +
                                 "ORDER BY socket_depth_mm DESC LIMIT 1",
-                        arrayOf(nps, "$nps\"", "0+$nps", rating.toString())
+                        arrayOf(effectiveNps, "$effectiveNps\"", "0+$effectiveNps", rating.toString())
                     )
                     cursor.use { c ->
                         if (c.moveToFirst()) {
@@ -751,7 +796,18 @@ class PipedataDbHelper(private val context: Context) {
         rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
 
         when (subtype.id) {
-            "sw_coupling", "sw_half_coupling", "sw_union", "sw_red_coupling" -> {
+            "sw_coupling" -> {
+                // ASME B16.11: lenVal is Center Gap E. Overall length W = 2*J + E.
+                val centerGap = lenVal
+                val overallLen = if (centerGap > 0) sockDepth * 2.0 + centerGap else sockDepth * 2.0
+                rows.add(DimensionRow("overall_len", "Overall Length (W)", "Toplam Boy (W)", "${fmt(overallLen)} mm", "${fmt(overallLen/25.4)}\"", "forged"))
+                if (centerGap > 0) {
+                    rows.add(DimensionRow("center_gap", "Center Gap (E)", "Merkez Boşluğu (E)", "${fmt(centerGap)} mm", "${fmt(centerGap/25.4)}\"", "forged"))
+                }
+                if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
+                if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
+            }
+            "sw_half_coupling", "sw_union", "sw_red_coupling" -> {
                 val effectiveLen = if (lenVal > 0) lenVal else if (centerEnd > 0) centerEnd else sockDepth * 2.0
                 rows.add(DimensionRow("length", "Overall Length (L)", "Toplam Boy (L)", "${fmt(effectiveLen)} mm", "${fmt(effectiveLen/25.4)}\"", "forged"))
                 if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
@@ -771,19 +827,12 @@ class PipedataDbHelper(private val context: Context) {
         }
         rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
 
-
-        val primaryOptions = when (subtype.id) {
-            "sw_union" -> listOf("3000#")
-            else -> listOf("3000#", "6000#", "9000#")
-        }
-        val effectiveRatingStr = if ("${rating}#" in primaryOptions) "${rating}#" else primaryOptions.first()
-
         return ComponentData(
             categoryId = "fittings_sw",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\""),
-            selectedNps = "$nps\"",
+            availableNps = availableNps,
+            selectedNps = effectiveNpsWithQuote,
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",

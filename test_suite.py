@@ -494,7 +494,82 @@ class TestPipedataIntegrity(unittest.TestCase):
 
         conn.close()
 
+    def test_5_11_sqlite_forged_fittings_b16_11_deep_integrity(self):
+        """Test 5.11: ASME B16.11 Dovme Soket Kaynakli fitinglerin tum siniflar (3000, 6000, 9000) ve alt tipler semantik dogrulanmasi"""
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        # 1. Sinif kontrolu: Soket kaynaklida 3000, 6000, 9000 vardir; 2000 kesinlikle OLMAMALIDIR (B16.11)
+        ratings = set(r[0] for r in cur.execute("SELECT DISTINCT rating FROM tbl_fittings_socketweld_b16_11;").fetchall())
+        self.assertIn(3000, ratings, "Class 3000# Soket Kaynakli fiting tablosunda olmali")
+        self.assertIn(6000, ratings, "Class 6000# Soket Kaynakli fiting tablosunda olmali")
+        self.assertIn(9000, ratings, "Class 9000# Soket Kaynakli fiting tablosunda olmali")
+        self.assertNotIn(2000, ratings, "Class 2000# Soket Kaynaklida olmamali (Class 2000 sadece disli fitinglerde vardir)")
+
+        # 2. Ground-Truth: 1" 3000#, 6000#, 9000# 90° Dirsek
+        # ASME B16.11 Center-to-end: 3000# = 22.35mm (7/8"), 6000# = 26.92mm (1-1/16"), 9000# = 31.75mm (1-1/4")
+        for rtg, min_center_end in [(3000, 22.0), (6000, 26.0), (9000, 31.0)]:
+            row_elbow = cur.execute("""
+                SELECT socket_depth_mm, socket_diameter_mm, center_to_end_mm, socket_wall_thickness_mm
+                FROM tbl_fittings_socketweld_b16_11
+                WHERE component_type LIKE '%90%' AND (nps = '1' OR nps = '1.0' OR nps = '0+1') AND rating = ?
+                ORDER BY socket_depth_mm DESC LIMIT 1;
+            """, (rtg,)).fetchone()
+            self.assertIsNotNone(row_elbow, f"1in {rtg}# 90 Dirsek veritabaninda bulunamadi!")
+            self.assertGreaterEqual(row_elbow[0], 12.5, f"1in {rtg}# 90 Dirsek soket derinligi >= 12.5 mm olmali")
+            self.assertGreater(row_elbow[1], 34.0, f"1in {rtg}# 90 Dirsek soket capi > 34 mm olmali")
+            self.assertGreater(row_elbow[2], min_center_end, f"1in {rtg}# 90 Dirsek eksen mesafesi > {min_center_end} olmali")
+
+        # 3. Ground-Truth: Union (Rakor) Class 3000# ve 6000#
+        for rtg in [3000, 6000]:
+            row_union = cur.execute("""
+                SELECT socket_depth_mm, socket_diameter_mm, length_mm, weight_kg
+                FROM tbl_fittings_socketweld_b16_11
+                WHERE component_type LIKE '%Union%' AND (nps = '1' OR nps = '1.0') AND rating = ? LIMIT 1;
+            """, (rtg,)).fetchone()
+            self.assertIsNotNone(row_union, f"1in {rtg}# Union veritabaninda bulunamadi!")
+            self.assertGreaterEqual(row_union[0], 12.5, f"1in {rtg}# Union soket derinligi >= 12.5 mm olmali")
+            self.assertGreater(row_union[2], 40.0, f"1in {rtg}# Union toplam boyu > 40 mm olmali")
+
+        # 4. Ground-Truth: Reducing Coupling (Reduksiyon Manson) - Populated socket dims
+        row_red = cur.execute("""
+            SELECT socket_depth_mm, socket_diameter_mm, length_mm, weight_kg
+            FROM tbl_fittings_socketweld_b16_11
+            WHERE component_type LIKE '%Reduc%' AND (nps = '1' OR nps = '1.0') AND rating = 3000
+            ORDER BY socket_depth_mm DESC LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row_red, "1in 3000# Reduksiyon manson bulunamadi!")
+        self.assertGreaterEqual(row_red[0], 12.5, "1in 3000# Reduksiyon manson soket derinligi >= 12.5 mm olmali")
+        self.assertGreater(row_red[1], 34.0, "1in 3000# Reduksiyon manson soket capi > 34 mm olmali")
+        self.assertGreater(row_red[2], 20.0, "1in 3000# Reduksiyon manson boyu > 20 mm olmali")
+
+        # 5. Ground-Truth: Full Coupling (Manson E ve W)
+        row_cplg = cur.execute("""
+            SELECT socket_depth_mm, length_mm, weight_kg
+            FROM tbl_fittings_socketweld_b16_11
+            WHERE component_type LIKE '%Full Coupling%' AND (nps = '1' OR nps = '1.0') AND rating = 3000 LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row_cplg, "1in 3000# Full Coupling bulunamadi!")
+        self.assertGreaterEqual(row_cplg[0], 12.5, "1in 3000# Full Coupling soket derinligi >= 12.5 mm olmali")
+        self.assertGreaterEqual(row_cplg[1], 12.0, "1in 3000# Full Coupling orta bosluk E >= 12.0 mm olmali")
+
+        # 6. Ground-Truth: Cap (Kep)
+        row_cap = cur.execute("""
+            SELECT socket_depth_mm, socket_wall_thickness_mm, length_mm
+            FROM tbl_fittings_socketweld_b16_11
+            WHERE component_type LIKE '%Cap%' AND (nps = '1' OR nps = '1.0') AND rating = 3000
+            ORDER BY socket_depth_mm DESC LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row_cap, "1in 3000# Cap bulunamadi!")
+        self.assertGreaterEqual(row_cap[0], 12.5, "1in 3000# Cap soket derinligi >= 12.5 mm olmali")
+        self.assertGreater(row_cap[1], 5.0, "1in 3000# Cap et kalinligi > 5 mm olmali")
+        self.assertGreater(row_cap[2], 9.0, "1in 3000# Cap taban kalinligi E > 9 mm olmali")
+
+        conn.close()
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
 
 
