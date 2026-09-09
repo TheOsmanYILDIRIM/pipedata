@@ -32,6 +32,12 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x gradlew
 
+      - name: Verify Canonical CSV <-> DB Reconciliation (CSV-First Gate)
+        run: |
+          python3 build_canonical_csv.py --app-only
+          python3 csv_vs_db_audit.py --fail-on-diff
+          echo "==> Kanonik CSV, pipedata.db ile 0 fark (app CSV'den okuyacak)"
+
       - name: Build Signed APKs with Gradle
         run: ./gradlew assembleRelease assembleDebug --no-daemon --stacktrace
 

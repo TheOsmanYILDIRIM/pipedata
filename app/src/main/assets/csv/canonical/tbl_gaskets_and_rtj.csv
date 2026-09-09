@@ -1,0 +1,1427 @@
+gasket_type,applicable_standard,nps,dn,rating,inner_diameter_mm,outer_diameter_mm,thickness_mm,ring_number,weight_kg,source_file,unit_system
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1/2,15,150,21.0,48.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,3/4,20,150,27.0,57.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1,25,150,33.0,67.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1 1/4,32,150,42.0,76.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1 1/2,40,150,48.0,86.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,2,50,150,60.0,105.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,2 1/2,65,150,73.0,124.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,3,80,150,89.0,137.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,3 1/2,90,150,102.0,162.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,4,100,150,114.0,175.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,5,125,150,141.0,197.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,6,150,150,168.0,222.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,8,200,150,219.0,279.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,10,250,150,273.0,340.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,12,300,150,324.0,410.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,14,350,150,356.0,451.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,16,400,150,406.0,514.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,18,450,150,457.0,549.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,20,500,150,508.0,606.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,24,600,150,610.0,718.0,,,,gflt1.csv,Metric
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/2,15,150,21.336,47.751999999999995,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/4,20,150,26.924,57.15,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1,25,150,33.274,66.548,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/4,32,150,42.163999999999994,76.19999999999999,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/2,40,150,48.513999999999996,85.85199999999999,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2,50,150,60.45199999999999,104.648,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2 1/2,65,150,73.15199999999999,123.95199999999998,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3,80,150,88.89999999999999,136.652,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3 1/2,90,150,101.6,162.052,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,4,100,150,114.3,174.75199999999998,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,5,125,150,141.224,196.85,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,6,150,150,168.148,222.25,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,8,200,150,15.748,279.4,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,10,250,150,273.05,339.852,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,12,300,150,323.84999999999997,409.70199999999994,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,14,350,150,355.59999999999997,450.84999999999997,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,16,400,150,406.4,514.35,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,18,450,150,457.2,549.148,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,20,500,150,508.0,606.5519999999999,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,24,600,150,609.5999999999999,717.55,,,,gflt1_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1/2,15,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,3/4,20,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1,25,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1 1/4,32,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1 1/2,40,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,2,50,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,2 1/2,65,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,3,80,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,3 1/2,90,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,4,100,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,5,125,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,6,150,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,8,200,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,10,250,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,12,300,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,14,350,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,16,400,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,18,450,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,20,500,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,24,600,150,,,,,,gflt2.csv,Metric
+Flat Ring,ASME B16.20,26,650,150,660.0,775.0,,,0.47,gflt2.csv,Metric
+Flat Ring,ASME B16.20,28,700,150,711.0,832.0,,,0.532,gflt2.csv,Metric
+Flat Ring,ASME B16.20,30,750,150,762.0,883.0,,,0.567,gflt2.csv,Metric
+Flat Ring,ASME B16.20,32,800,150,813.0,940.0,,,0.637,gflt2.csv,Metric
+Flat Ring,ASME B16.20,34,850,150,864.0,991.0,,,0.67,gflt2.csv,Metric
+Flat Ring,ASME B16.20,36,900,150,914.0,1048.0,,,0.755,gflt2.csv,Metric
+Flat Ring,ASME B16.20,38,950,150,965.0,1111.0,,,0.878,gflt2.csv,Metric
+Flat Ring,ASME B16.20,40,1000,150,1016.0,1162.0,,,0.921,gflt2.csv,Metric
+Flat Ring,ASME B16.20,42,1050,150,1067.0,1219.0,,,1.01,gflt2.csv,Metric
+Flat Ring,ASME B16.20,44,1100,150,1118.0,1276.0,,,1.098,gflt2.csv,Metric
+Flat Ring,ASME B16.20,46,1150,150,1168.0,1327.0,,,1.156,gflt2.csv,Metric
+Flat Ring,ASME B16.20,48,1200,150,1219.0,1384.0,,,1.249,gflt2.csv,Metric
+Flat Ring,ASME B16.20,50,1250,150,1270.0,1435.0,,,1.292,gflt2.csv,Metric
+Flat Ring,ASME B16.20,52,1300,150,1321.0,1492.0,,,1.389,gflt2.csv,Metric
+Flat Ring,ASME B16.20,54,1350,150,1372.0,1549.0,,,1.499,gflt2.csv,Metric
+Flat Ring,ASME B16.20,56,1400,150,1422.0,1607.0,,,1.625,gflt2.csv,Metric
+Flat Ring,ASME B16.20,58,1450,150,1473.0,1664.0,,,1.735,gflt2.csv,Metric
+Flat Ring,ASME B16.20,60,1500,150,1524.0,1715.0,,,1.792,gflt2.csv,Metric
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/2,15,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/4,20,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1,25,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/4,32,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/2,40,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2,50,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2 1/2,65,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3,80,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3 1/2,90,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,4,100,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,5,125,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,6,150,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,8,200,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,10,250,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,12,300,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,14,350,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,16,400,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,18,450,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,20,500,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,24,600,150,,,,,,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,26,650,150,660.4,774.6999999999999,,,0.47,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,28,700,150,711.1999999999999,831.8499999999999,,,0.532,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,30,750,150,762.0,882.65,,,0.567,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,32,800,150,812.8,939.8,,,0.637,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,34,850,150,863.5999999999999,990.5999999999999,,,0.67,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,36,900,150,914.4,1047.75,,,0.755,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,38,950,150,965.1999999999999,1111.25,,,0.878,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,40,1000,150,1016.0,1162.05,,,0.921,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,42,1050,150,1066.8,1219.1999999999998,,,1.01,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,44,1100,150,1117.6,1276.35,,,1.098,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,46,1150,150,1168.3999999999999,1327.1499999999999,,,1.156,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,48,1200,150,1219.1999999999998,1384.3,,,1.249,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,50,1250,150,1270.0,1435.1,,,1.292,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,52,1300,150,1320.8,1492.25,,,1.389,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,54,1350,150,1371.6,1549.3999999999999,,,1.499,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,56,1400,150,1422.3999999999999,1606.55,,,1.625,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,58,1450,150,1473.1999999999998,1663.6999999999998,,,1.735,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,60,1500,150,1524.0,1714.5,,,1.792,gflt2_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1/2,15,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,3/4,20,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1,25,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1 1/4,32,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1 1/2,40,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,2,50,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,2 1/2,65,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,3,80,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,3 1/2,90,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,4,100,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,5,125,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,6,150,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,8,200,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,10,250,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,12,300,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,14,350,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,16,400,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,18,450,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,20,500,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,24,600,150,,,,,,gflt3.csv,Metric
+Flat Ring,ASME B16.20,26,650,150,660.0,725.0,,,0.47,gflt3.csv,Metric
+Flat Ring,ASME B16.20,28,700,150,711.0,776.0,,,0.532,gflt3.csv,Metric
+Flat Ring,ASME B16.20,30,750,150,762.0,827.0,,,0.567,gflt3.csv,Metric
+Flat Ring,ASME B16.20,32,800,150,813.0,881.0,,,0.637,gflt3.csv,Metric
+Flat Ring,ASME B16.20,34,850,150,864.0,935.0,,,0.67,gflt3.csv,Metric
+Flat Ring,ASME B16.20,36,900,150,914.0,987.0,,,0.755,gflt3.csv,Metric
+Flat Ring,ASME B16.20,38,950,150,965.0,1045.0,,,0.878,gflt3.csv,Metric
+Flat Ring,ASME B16.20,40,1000,150,1016.0,1095.0,,,0.921,gflt3.csv,Metric
+Flat Ring,ASME B16.20,42,1050,150,1067.0,1146.0,,,1.01,gflt3.csv,Metric
+Flat Ring,ASME B16.20,44,1100,150,1118.0,1197.0,,,1.098,gflt3.csv,Metric
+Flat Ring,ASME B16.20,46,1150,150,1168.0,1256.0,,,1.156,gflt3.csv,Metric
+Flat Ring,ASME B16.20,48,1200,150,1219.0,1307.0,,,1.249,gflt3.csv,Metric
+Flat Ring,ASME B16.20,50,1250,150,1270.0,1357.0,,,1.292,gflt3.csv,Metric
+Flat Ring,ASME B16.20,52,1300,150,1321.0,1408.0,,,1.389,gflt3.csv,Metric
+Flat Ring,ASME B16.20,54,1350,150,1372.0,1464.0,,,1.499,gflt3.csv,Metric
+Flat Ring,ASME B16.20,56,1400,150,1422.0,1514.0,,,1.625,gflt3.csv,Metric
+Flat Ring,ASME B16.20,58,1450,150,1473.0,1580.0,,,1.735,gflt3.csv,Metric
+Flat Ring,ASME B16.20,60,1500,150,1524.0,1630.0,,,1.792,gflt3.csv,Metric
+Flat Ring,ASME B16.20,1/8,6,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/4,8,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/8,10,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1/2,15,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3/4,20,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1,25,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/4,32,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,1 1/2,40,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2,50,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,2 1/2,65,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3,80,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,3 1/2,90,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,4,100,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,5,125,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,6,150,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,8,200,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,10,250,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,12,300,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,14,350,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,16,400,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,18,450,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,20,500,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,22,550,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,24,600,150,,,,,,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,26,650,150,660.4,725.424,,,0.47,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,28,700,150,711.1999999999999,776.2239999999999,,,0.532,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,30,750,150,762.0,827.024,,,0.567,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,32,800,150,812.8,881.1259999999999,,,0.637,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,34,850,150,863.5999999999999,934.974,,,0.67,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,36,900,150,914.4,987.552,,,0.755,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,38,950,150,965.1999999999999,1044.4479999999999,,,0.878,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,40,1000,150,1016.0,1095.2479999999998,,,0.921,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,42,1050,150,1066.8,1146.0479999999998,,,1.01,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,44,1100,150,1117.6,1196.848,,,1.098,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,46,1150,150,1168.3999999999999,1255.7759999999998,,,1.156,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,48,1200,150,1219.1999999999998,1306.5759999999998,,,1.249,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,50,1250,150,1270.0,1357.376,,,1.292,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,52,1300,150,1320.8,1408.176,,,1.389,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,54,1350,150,1371.6,1463.5479999999998,,,1.499,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,56,1400,150,1422.3999999999999,1514.348,,,1.625,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,58,1450,150,1473.1999999999998,1579.6259999999997,,,1.735,gflt3_imperial.csv,Imperial
+Flat Ring,ASME B16.20,60,1500,150,1524.0,1630.426,,,1.792,gflt3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-11,0,150,,34.14,11.2,R-11,0.028,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-12,0,150,,39.7,14.2,R-12,0.038,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-13,0,150,,42.88,14.2,R-13,0.045,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-14,0,150,,44.45,14.2,R-14,0.048,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-15,0,150,,47.63,14.2,R-15,0.055,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-16,0,150,,50.8,14.2,R-16,0.063,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-17,0,150,,57.15,14.2,R-17,0.079,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-18,0,150,,60.33,14.2,R-18,0.089,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-19,0,150,,65.1,14.2,R-19,0.103,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-20,0,150,,68.28,14.2,R-20,0.114,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-21,0,150,,72.24,17.5,R-21,0.127,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-22,0,150,,82.55,14.2,R-22,0.166,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-23,0,150,,82.55,17.5,R-23,0.166,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-24,0,150,,95.25,17.5,R-24,0.222,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-25,0,150,,101.6,14.2,R-25,0.252,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-26,0,150,,101.6,17.5,R-26,0.252,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-27,0,150,,107.95,17.5,R-27,0.285,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-28,0,150,,111.13,19.1,R-28,0.302,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-29,0,150,,114.3,14.2,R-29,0.319,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-30,0,150,,117.48,17.5,R-30,0.338,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-31,0,150,,123.83,17.5,R-31,0.375,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-32,0,150,,127.0,19.1,R-32,0.395,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-33,0,150,,131.78,14.2,R-33,0.425,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-34,0,150,,131.78,17.5,R-34,0.425,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-35,0,150,,136.53,17.5,R-35,0.456,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-36,0,150,,149.23,14.2,R-36,0.545,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-37,0,150,,149.23,17.5,R-37,0.545,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-38,0,150,,157.18,22.4,R-38,0.605,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-39,0,150,,161.93,17.5,R-39,0.642,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-40,0,150,,171.45,14.2,R-40,0.719,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-41,0,150,,180.98,17.5,R-41,0.802,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-42,0,150,,190.5,25.4,R-42,0.888,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-43,0,150,,193.68,14.2,R-43,0.918,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-44,0,150,,193.68,17.5,R-44,0.918,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-45,0,150,,211.15,17.5,R-45,1.091,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-46,0,150,,211.15,19.1,R-46,1.091,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-47,0,150,,228.6,25.4,R-47,1.279,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-48,0,150,,247.65,14.2,R-48,1.502,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-49,0,150,,269.88,17.5,R-49,1.783,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-50,0,150,,269.88,22.4,R-50,1.783,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-51,0,150,,279.4,28.7,R-51,1.911,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-52,0,150,,304.8,14.2,R-52,2.275,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-53,0,150,,323.85,17.5,R-53,2.568,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-54,0,150,,323.85,22.4,R-54,2.568,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-55,0,150,,342.9,36.6,R-55,2.879,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-56,0,150,,381.0,14.2,R-56,3.555,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-57,0,150,,381.0,17.5,R-57,3.555,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-58,0,150,,381.0,28.7,R-58,3.555,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-59,0,150,,396.88,14.2,R-59,3.857,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-60,0,150,,406.4,39.6,R-60,4.045,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-61,0,150,,419.1,17.5,R-61,4.301,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-62,0,150,,419.1,22.4,R-62,4.301,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-63,0,150,,419.1,33.3,R-63,4.301,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-64,0,150,,454.03,14.2,R-64,5.048,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-65,0,150,,469.9,17.5,R-65,5.407,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-66,0,150,,469.9,22.4,R-66,5.407,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-67,0,150,,469.9,36.6,R-67,5.407,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-68,0,150,,517.53,14.2,R-68,6.559,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-69,0,150,,533.4,17.5,R-69,6.968,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-70,0,150,,533.4,25.4,R-70,6.968,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-71,0,150,,533.4,36.6,R-71,6.968,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-72,0,150,,558.8,14.2,R-72,7.647,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-73,0,150,,584.2,19.1,R-73,8.358,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-74,0,150,,584.2,25.4,R-74,8.358,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-75,0,150,,584.2,39.6,R-75,8.358,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-76,0,150,,673.1,14.2,R-76,11.096,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-77,0,150,,692.15,22.4,R-77,11.733,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-78,0,150,,692.15,33.3,R-78,11.733,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-79,0,150,,692.15,44.5,R-79,11.733,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-80,0,150,,615.95,12.7,R-80,9.292,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-81,0,150,,635.0,19.1,R-81,9.875,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-82,0,150,,57.15,16.0,R-82,0.079,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-84,0,150,,63.5,16.0,R-84,0.098,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-85,0,150,,79.38,17.5,R-85,0.154,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-86,0,150,,90.5,20.6,R-86,0.2,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-87,0,150,,100.03,20.6,R-87,0.245,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-88,0,150,,123.83,23.9,R-88,0.375,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-89,0,150,,114.3,23.9,R-89,0.319,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-90,0,150,,155.58,26.9,R-90,0.592,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-91,0,150,,260.35,38.1,R-91,1.66,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-92,0,150,,228.6,17.5,R-92,1.279,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-93,0,150,,749.3,23.9,R-93,13.751,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-94,0,150,,800.1,23.9,R-94,15.678,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-95,0,150,,857.25,23.9,R-95,17.998,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-96,0,150,,914.4,26.9,R-96,20.478,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-97,0,150,,965.2,26.9,R-97,22.817,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-98,0,150,,1022.35,26.9,R-98,25.599,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-99,0,150,,234.95,16.0,R-99,1.351,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-100,0,150,,749.3,35.1,R-100,13.751,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-101,0,150,,800.1,38.1,R-101,15.678,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-102,0,150,,857.25,38.1,R-102,17.998,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-103,0,150,,914.4,38.1,R-103,20.478,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-104,0,150,,965.2,41.4,R-104,22.817,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-105,0,150,,1022.35,41.4,R-105,25.599,grtj1.csv,Metric
+RTJ Ring,ASME B16.20,R-11,0,150,,34.1376,9.652,R-11,0.028,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-12,0,150,,39.700199999999995,12.7,R-12,0.038,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-13,0,150,,42.8752,12.7,R-13,0.045,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-14,0,150,,44.449999999999996,12.7,R-14,0.048,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-15,0,150,,47.625,12.7,R-15,0.055,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-16,0,150,,50.8,12.7,R-16,0.063,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-17,0,150,,57.15,12.7,R-17,0.079,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-18,0,150,,60.324999999999996,12.7,R-18,0.089,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-19,0,150,,65.1002,12.7,R-19,0.103,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-20,0,150,,68.2752,12.7,R-20,0.114,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-21,0,150,,72.23759999999999,16.002,R-21,0.127,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-22,0,150,,82.55,12.7,R-22,0.166,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-23,0,150,,82.55,16.002,R-23,0.166,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-24,0,150,,95.25,16.002,R-24,0.222,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-25,0,150,,101.6,12.7,R-25,0.252,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-26,0,150,,101.6,16.002,R-26,0.252,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-27,0,150,,107.94999999999999,16.002,R-27,0.285,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-28,0,150,,111.125,17.525999999999996,R-28,0.302,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-29,0,150,,114.3,12.7,R-29,0.319,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-30,0,150,,117.475,16.002,R-30,0.338,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-31,0,150,,123.82499999999999,16.002,R-31,0.375,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-32,0,150,,127.0,17.525999999999996,R-32,0.395,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-33,0,150,,131.77519999999998,12.7,R-33,0.425,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-34,0,150,,131.77519999999998,16.002,R-34,0.425,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-35,0,150,,136.525,16.002,R-35,0.456,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-36,0,150,,149.225,12.7,R-36,0.545,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-37,0,150,,149.225,16.002,R-37,0.545,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-38,0,150,,157.1752,20.574,R-38,0.605,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-39,0,150,,161.92499999999998,16.002,R-39,0.642,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-40,0,150,,171.45,12.7,R-40,0.719,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-41,0,150,,180.975,16.002,R-41,0.802,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-42,0,150,,190.5,23.875999999999998,R-42,0.888,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-43,0,150,,193.67499999999998,12.7,R-43,0.918,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-44,0,150,,193.67499999999998,16.002,R-44,0.918,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-45,0,150,,211.1502,16.002,R-45,1.091,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-46,0,150,,211.1502,17.525999999999996,R-46,1.091,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-47,0,150,,228.6,23.875999999999998,R-47,1.279,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-48,0,150,,247.64999999999998,12.7,R-48,1.502,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-49,0,150,,269.875,16.002,R-49,1.783,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-50,0,150,,269.875,20.574,R-50,1.783,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-51,0,150,,279.4,26.924,R-51,1.911,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-52,0,150,,304.79999999999995,12.7,R-52,2.275,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-53,0,150,,323.84999999999997,16.002,R-53,2.568,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-54,0,150,,323.84999999999997,20.574,R-54,2.568,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-55,0,150,,342.9,35.05199999999999,R-55,2.879,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-56,0,150,,381.0,12.7,R-56,3.555,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-57,0,150,,381.0,16.002,R-57,3.555,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-58,0,150,,381.0,26.924,R-58,3.555,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-59,0,150,,396.875,12.7,R-59,3.857,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-60,0,150,,406.4,38.099999999999994,R-60,4.045,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-61,0,150,,419.09999999999997,16.002,R-61,4.301,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-62,0,150,,419.09999999999997,20.574,R-62,4.301,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-63,0,150,,419.09999999999997,31.75,R-63,4.301,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-64,0,150,,454.025,12.7,R-64,5.048,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-65,0,150,,469.9,16.002,R-65,5.407,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-66,0,150,,469.9,20.574,R-66,5.407,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-67,0,150,,469.9,35.05199999999999,R-67,5.407,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-68,0,150,,517.525,12.7,R-68,6.559,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-69,0,150,,533.4,16.002,R-69,6.968,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-70,0,150,,533.4,23.875999999999998,R-70,6.968,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-71,0,150,,533.4,35.05199999999999,R-71,6.968,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-72,0,150,,558.8,12.7,R-72,7.647,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-73,0,150,,584.1999999999999,17.525999999999996,R-73,8.358,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-74,0,150,,584.1999999999999,23.875999999999998,R-74,8.358,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-75,0,150,,584.1999999999999,38.099999999999994,R-75,8.358,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-76,0,150,,673.0999999999999,12.7,R-76,11.096,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-77,0,150,,692.15,20.574,R-77,11.733,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-78,0,150,,692.15,31.75,R-78,11.733,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-79,0,150,,692.15,41.401999999999994,R-79,11.733,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-80,0,150,,615.9499999999999,12.7,R-80,9.292,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-81,0,150,,635.0,19.049999999999997,R-81,9.875,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-82,0,150,,57.15,16.002,R-82,0.079,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-84,0,150,,63.5,16.002,R-84,0.098,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-85,0,150,,79.375,17.525999999999996,R-85,0.154,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-86,0,150,,90.50019999999999,20.574,R-86,0.2,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-87,0,150,,100.0252,20.574,R-87,0.245,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-88,0,150,,123.82499999999999,23.875999999999998,R-88,0.375,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-89,0,150,,114.3,23.875999999999998,R-89,0.319,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-90,0,150,,155.575,26.924,R-90,0.592,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-91,0,150,,260.34999999999997,38.099999999999994,R-91,1.66,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-92,0,150,,228.6,16.002,R-92,1.279,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-93,0,150,,749.3,23.875999999999998,R-93,13.751,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-94,0,150,,800.0999999999999,23.875999999999998,R-94,15.678,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-95,0,150,,857.25,23.875999999999998,R-95,17.998,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-96,0,150,,914.4,26.924,R-96,20.478,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-97,0,150,,965.1999999999999,26.924,R-97,22.817,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-98,0,150,,1022.3499999999999,26.924,R-98,25.599,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-99,0,150,,234.95,16.002,R-99,1.351,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-100,0,150,,749.3,35.05199999999999,R-100,13.751,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-101,0,150,,800.0999999999999,38.099999999999994,R-101,15.678,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-102,0,150,,857.25,38.099999999999994,R-102,17.998,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-103,0,150,,914.4,38.099999999999994,R-103,20.478,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-104,0,150,,965.1999999999999,41.401999999999994,R-104,22.817,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,R-105,0,150,,1022.3499999999999,41.401999999999994,R-105,25.599,grtj1_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-20,0,150,58.72,76.2,19.05,,0.239,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-23,0,150,69.45,93.27,25.4,,0.514,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-24,0,150,82.15,105.97,25.4,,0.608,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-25,0,150,92.07,109.55,19.05,,0.375,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-26,0,150,88.09,111.91,25.4,,0.652,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-27,0,150,94.44,118.26,25.4,,0.699,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-31,0,150,110.72,134.54,25.4,,0.82,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-35,0,150,123.42,147.24,25.4,,0.914,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-37,0,150,136.12,159.94,25.4,,1.008,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-39,0,150,148.82,172.64,25.4,,1.102,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-41,0,150,167.87,191.69,25.4,,1.243,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-44,0,150,180.57,204.39,25.4,,1.337,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-45,0,150,198.02,221.84,25.4,,1.467,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-46,0,150,195.27,222.25,28.58,,1.843,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-47,0,150,205.58,245.26,41.28,,4.123,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-49,0,150,256.77,280.59,25.4,,1.902,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-50,0,150,250.04,283.36,31.75,,3.239,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-53,0,150,310.75,334.57,25.4,,2.302,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-54,0,150,304.02,337.34,31.75,,3.938,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-57,0,150,367.9,391.72,25.4,,2.725,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-63,0,150,387.73,441.73,50.8,,13.025,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-65,0,150,456.8,480.62,25.4,,3.384,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-66,0,150,424.67,457.99,31.75,,5.501,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-69,0,150,520.3,544.12,25.4,,3.854,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-70,0,150,510.38,550.06,41.28,,10.237,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-73,0,150,569.13,596.11,31.75,,5.97,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-74,0,150,561.18,600.86,41.28,,11.256,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-82,0,150,44.05,67.87,25.4,,0.326,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-84,0,150,50.4,74.22,25.4,,0.373,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-85,0,150,63.11,90.09,25.4,,0.529,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-86,0,150,73.4,103.58,28.58,,0.775,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-87,0,150,82.93,113.11,28.58,,0.875,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-88,0,150,104.33,139.29,31.75,,1.418,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-89,0,150,93.25,129.77,31.75,,1.324,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-90,0,150,134.95,174.63,44.45,,2.914,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-91,0,150,226.58,286.94,45.24,,7.576,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-99,0,150,221.85,245.67,25.4,,1.643,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-201,0,150,39.98,51.46,11.3,,0.063,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-205,0,150,51.19,62.31,11.1,,0.077,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-210,0,150,78.58,97.64,19.05,,0.349,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-215,0,150,117.07,140.89,25.4,,0.867,grtj2.csv,Metric
+RTJ Ring,ASME B16.20,RX-20,0,150,58.674,76.19999999999999,19.049999999999997,,0.239,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-23,0,150,69.342,93.2688,25.4,,0.514,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-24,0,150,82.042,105.96879999999999,25.4,,0.608,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-25,0,150,91.948,109.55019999999999,19.049999999999997,,0.375,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-26,0,150,87.884,111.91239999999999,25.4,,0.652,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-27,0,150,94.234,118.26239999999999,25.4,,0.699,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-31,0,150,110.48999999999998,134.54379999999998,25.4,,0.82,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-35,0,150,123.18999999999998,147.2438,25.4,,0.914,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-37,0,150,135.89,159.94379999999998,25.4,,1.008,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-39,0,150,148.58999999999997,172.64379999999997,25.4,,1.102,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-41,0,150,167.64,191.69379999999998,25.4,,1.243,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-44,0,150,180.33999999999997,204.3938,25.4,,1.337,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-45,0,150,197.86599999999999,221.84359999999998,25.4,,1.467,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-46,0,150,195.07199999999997,222.25,28.575,,1.843,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-47,0,150,205.486,245.2624,41.275,,4.123,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-49,0,150,256.53999999999996,280.5938,25.4,,1.902,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-50,0,150,249.93599999999998,283.3624,31.75,,3.239,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-53,0,150,310.642,334.5688,25.4,,2.302,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-54,0,150,303.784,337.3374,31.75,,3.938,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-57,0,150,367.792,391.7188,25.4,,2.725,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-63,0,150,387.604,441.73139999999995,50.8,,13.025,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-65,0,150,456.692,480.61879999999996,25.4,,3.384,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-66,0,150,424.434,457.9873999999999,31.75,,5.501,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-69,0,150,520.192,544.1188,25.4,,3.854,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-70,0,150,510.28599999999994,550.0623999999999,41.275,,10.237,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-73,0,150,568.9599999999999,596.1126,31.75,,5.97,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-74,0,150,561.086,600.8624,41.275,,11.256,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-82,0,150,43.942,67.8688,25.4,,0.326,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-84,0,150,50.291999999999994,74.2188,25.4,,0.373,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-85,0,150,62.992,90.0938,25.4,,0.529,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-86,0,150,73.406,103.5812,28.575,,0.775,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-87,0,150,82.80399999999999,113.1062,28.575,,0.875,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-88,0,150,104.13999999999999,139.2936,31.75,,1.418,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-89,0,150,93.21799999999999,129.7686,31.75,,1.324,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-90,0,150,134.874,174.625,44.449999999999996,,2.914,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-91,0,150,226.56799999999998,286.9438,45.237399999999994,,7.576,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-99,0,150,221.742,245.6688,25.4,,1.643,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-201,0,150,39.878,51.46039999999999,11.302999999999999,,0.063,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-205,0,150,51.053999999999995,62.30619999999999,11.0998,,0.077,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-210,0,150,78.48599999999999,97.63759999999999,19.049999999999997,,0.349,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,RX-215,0,150,116.83999999999999,140.8938,25.4,,0.867,grtj2_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-150,0,150,53.59,72.19,9.3,,0.14,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-151,0,150,57.14,76.4,9.63,,0.16,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-152,0,150,64.2,84.68,10.24,,0.2,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-153,0,150,78.18,100.94,11.38,,0.3,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-154,0,150,92.04,116.84,12.4,,0.41,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-155,0,150,119.52,147.96,14.22,,0.69,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-156,0,150,200.68,237.92,18.62,,1.94,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-157,0,150,252.5,294.46,20.98,,3.06,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-158,0,150,305.76,352.04,23.14,,4.46,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-159,0,150,375.32,426.72,25.7,,6.69,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-160,0,150,375.11,402.59,23.83,,3.17,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-161,0,150,458.99,491.41,28.07,,5.38,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-162,0,150,447.05,475.49,14.22,,2.31,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-163,0,150,521.42,556.16,30.1,,7.01,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-164,0,150,521.38,570.56,30.1,,10.12,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-165,0,150,587.73,624.71,32.03,,8.92,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-166,0,150,587.75,640.03,32.03,,12.85,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-167,0,150,733.14,759.36,35.86,,8.66,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-168,0,150,733.15,765.25,35.86,,10.67,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-169,0,150,147.65,173.51,15.85,,0.83,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-170,0,150,189.59,218.03,14.22,,1.04,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-171,0,150,239.0,267.44,14.22,,1.28,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-172,0,150,304.63,333.07,14.22,,1.61,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-303,0,150,818.81,852.75,37.95,,13.31,grtj3.csv,Metric
+RTJ Ring,ASME B16.20,BX-150,0,150,53.593999999999994,72.18679999999999,9.296399999999998,,0.14,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-151,0,150,57.15,76.4032,9.6266,,0.16,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-152,0,150,64.21119999999999,84.6836,10.2362,,0.2,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-153,0,150,78.18119999999999,100.9396,11.379199999999999,,0.3,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-154,0,150,92.0496,116.83999999999999,12.395199999999999,,0.41,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-155,0,150,119.50699999999999,147.95499999999998,14.224,,0.69,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-156,0,150,200.6854,237.92180000000002,18.618199999999998,,1.94,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-157,0,150,252.50140000000002,294.4622,20.9804,,3.06,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-158,0,150,305.7652,352.044,23.1394,,4.46,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-159,0,150,375.31039999999996,426.71999999999997,25.7048,,6.69,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-160,0,150,375.1072,402.59,23.8252,,3.17,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-161,0,150,459.0034,491.4138,28.066999999999997,,5.38,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-162,0,150,447.04,475.48799999999994,14.224,,2.31,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-163,0,150,521.4111999999999,556.1584,30.099,,7.01,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-164,0,150,521.3858,570.5602,30.099,,10.12,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-165,0,150,587.7306,624.713,32.029399999999995,,8.92,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-166,0,150,587.756,640.0292,32.029399999999995,,12.85,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-167,0,150,733.1456,759.3584,35.864799999999995,,8.66,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-168,0,150,733.1456,765.2511999999999,35.864799999999995,,10.67,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-169,0,150,147.65019999999998,173.5074,15.849599999999999,,0.83,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-170,0,150,189.5856,218.03359999999998,14.224,,1.04,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-171,0,150,238.9886,267.4366,14.224,,1.28,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-172,0,150,304.62219999999996,333.07019999999994,14.224,,1.61,grtj3_imperial.csv,Imperial
+RTJ Ring,ASME B16.20,BX-303,0,150,818.8198,852.7542,37.947599999999994,,13.31,grtj3_imperial.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr1.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr1.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr1.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,14.2,63.5,3.3,,0.025,gspr1.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,20.6,69.9,3.3,,0.035,gspr1.csv,Metric
+Gasket,ASME B16.20,1,25,150,26.9,79.5,3.3,,0.047,gspr1.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,38.1,88.9,3.3,,0.053,gspr1.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,44.5,98.6,3.3,,0.066,gspr1.csv,Metric
+Gasket,ASME B16.20,2,50,150,55.6,143.0,3.3,,0.097,gspr1.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,150,66.5,165.1,3.3,,0.133,gspr1.csv,Metric
+Gasket,ASME B16.20,3,80,150,81.0,174.8,3.3,,0.148,gspr1.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr1.csv,Metric
+Gasket,ASME B16.20,4,100,150,106.4,209.6,3.3,,0.235,gspr1.csv,Metric
+Gasket,ASME B16.20,5,125,150,131.8,254.0,3.3,,0.262,gspr1.csv,Metric
+Gasket,ASME B16.20,6,150,150,157.2,282.7,3.3,,0.302,gspr1.csv,Metric
+Gasket,ASME B16.20,8,200,150,215.9,352.6,3.3,,0.434,gspr1.csv,Metric
+Gasket,ASME B16.20,10,250,150,268.2,435.1,3.3,,0.598,gspr1.csv,Metric
+Gasket,ASME B16.20,12,300,150,317.5,520.7,3.3,,0.905,gspr1.csv,Metric
+Gasket,ASME B16.20,14,350,150,349.3,577.9,3.3,,1.102,gspr1.csv,Metric
+Gasket,ASME B16.20,16,400,150,400.1,641.4,3.3,,1.432,gspr1.csv,Metric
+Gasket,ASME B16.20,18,450,150,449.3,704.9,3.3,,1.411,gspr1.csv,Metric
+Gasket,ASME B16.20,20,500,150,500.1,755.7,3.3,,1.658,gspr1.csv,Metric
+Gasket,ASME B16.20,22,350,150,,,,,,gspr1.csv,Metric
+Gasket,ASME B16.20,24,600,150,603.3,901.7,3.3,,2.216,gspr1.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,14.224,63.5,3.302,,0.025,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,20.574,69.85,3.302,,0.035,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1,25,150,26.924,79.502,3.302,,0.047,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,38.099999999999994,88.89999999999999,3.302,,0.053,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,44.449999999999996,98.55199999999999,3.302,,0.066,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,2,50,150,55.626,143.00199999999998,3.302,,0.097,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,66.548,165.1,3.302,,0.133,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,3,80,150,81.026,174.75199999999998,3.302,,0.148,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,4,100,150,106.426,209.54999999999998,3.302,,0.235,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,5,125,150,131.826,254.0,3.302,,0.262,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,6,150,150,157.226,282.702,3.302,,0.302,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,8,200,150,215.89999999999998,352.552,3.302,,0.434,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,10,250,150,268.224,435.102,3.302,,0.598,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,12,300,150,317.5,520.6999999999999,3.302,,0.905,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,14,350,150,349.25,577.85,3.302,,1.102,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,16,400,150,400.04999999999995,641.3499999999999,3.302,,1.432,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,18,450,150,449.326,704.8499999999999,3.302,,1.411,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,20,500,150,500.126,755.65,3.302,,1.658,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,24,600,150,603.25,901.6999999999999,3.302,,2.216,gspr1_imperial.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,5,125,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,14,350,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,16,400,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,18,450,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,20,500,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,22,550,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,24,600,150,,,,,,gspr2.csv,Metric
+Gasket,ASME B16.20,26,650,150,654.1,774.7,3.3,,1.801,gspr2.csv,Metric
+Gasket,ASME B16.20,28,700,150,704.9,831.9,3.3,,2.057,gspr2.csv,Metric
+Gasket,ASME B16.20,30,750,150,755.7,882.7,3.3,,2.191,gspr2.csv,Metric
+Gasket,ASME B16.20,32,800,150,806.5,939.8,3.3,,2.471,gspr2.csv,Metric
+Gasket,ASME B16.20,34,850,150,857.3,990.6,3.3,,2.613,gspr2.csv,Metric
+Gasket,ASME B16.20,36,900,150,908.1,1047.8,3.3,,2.918,gspr2.csv,Metric
+Gasket,ASME B16.20,38,950,150,958.9,1111.3,3.3,,3.412,gspr2.csv,Metric
+Gasket,ASME B16.20,40,1000,150,1009.7,1162.1,3.3,,3.578,gspr2.csv,Metric
+Gasket,ASME B16.20,42,1050,150,1060.5,1219.2,3.3,,3.933,gspr2.csv,Metric
+Gasket,ASME B16.20,44,1100,150,1111.3,1276.4,3.3,,4.304,gspr2.csv,Metric
+Gasket,ASME B16.20,46,1150,150,1162.1,1327.2,3.3,,4.486,gspr2.csv,Metric
+Gasket,ASME B16.20,48,1200,150,1212.9,1384.3,3.3,,4.883,gspr2.csv,Metric
+Gasket,ASME B16.20,50,1250,150,1263.7,1435.1,3.3,,5.072,gspr2.csv,Metric
+Gasket,ASME B16.20,52,1300,150,1314.5,1492.3,3.3,,5.493,gspr2.csv,Metric
+Gasket,ASME B16.20,54,1350,150,1358.9,1549.4,3.3,,5.931,gspr2.csv,Metric
+Gasket,ASME B16.20,56,1400,150,1409.7,1606.6,3.3,,6.386,gspr2.csv,Metric
+Gasket,ASME B16.20,58,1450,150,1460.5,1663.7,3.3,,6.858,gspr2.csv,Metric
+Gasket,ASME B16.20,60,1500,150,1511.3,1714.5,3.3,,7.079,gspr2.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,18,450,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,20,500,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,24,600,150,,,,,,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,26,26,150,654.05,774.6999999999999,3.302,,1.801,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,28,28,150,704.8499999999999,831.8499999999999,3.302,,2.057,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,30,30,150,755.65,882.65,3.302,,2.191,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,32,32,150,806.4499999999999,939.8,3.302,,2.471,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,34,34,150,857.25,990.5999999999999,3.302,,2.613,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,36,36,150,908.05,1047.75,3.302,,2.918,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,38,38,150,958.8499999999999,1111.25,3.302,,3.412,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,40,40,150,1009.65,1162.05,3.302,,3.578,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,42,42,150,1060.45,1219.1999999999998,3.302,,3.933,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,44,44,150,1111.25,1276.35,3.302,,4.304,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,46,46,150,1162.05,1327.1499999999999,3.302,,4.486,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,48,48,150,1212.85,1384.3,3.302,,4.883,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,50,50,150,1263.6499999999999,1435.1,3.302,,5.072,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,52,52,150,1314.4499999999998,1492.25,3.302,,5.493,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,54,54,150,1358.8999999999999,1549.3999999999999,3.302,,5.931,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,56,56,150,1409.6999999999998,1606.55,3.302,,6.386,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,58,58,150,1460.5,1663.6999999999998,3.302,,6.858,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,60,60,150,1511.3,1714.5,3.302,,7.079,gspr2_imperial.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,5,125,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,14,350,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,16,400,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,18,450,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,20,500,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,22,550,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,24,600,150,,,,,,gspr3.csv,Metric
+Gasket,ASME B16.20,26,650,150,654.1,725.4,3.3,,0.897,gspr3.csv,Metric
+Gasket,ASME B16.20,28,700,150,704.9,776.2,3.3,,0.962,gspr3.csv,Metric
+Gasket,ASME B16.20,30,750,150,755.7,827.0,3.3,,1.028,gspr3.csv,Metric
+Gasket,ASME B16.20,32,800,150,806.5,881.1,3.3,,1.161,gspr3.csv,Metric
+Gasket,ASME B16.20,34,850,150,857.3,935.0,3.3,,1.303,gspr3.csv,Metric
+Gasket,ASME B16.20,36,900,150,908.1,987.6,3.3,,1.414,gspr3.csv,Metric
+Gasket,ASME B16.20,38,950,150,958.9,1044.7,3.3,,1.727,gspr3.csv,Metric
+Gasket,ASME B16.20,40,1000,150,1009.7,1095.5,3.3,,1.894,gspr3.csv,Metric
+Gasket,ASME B16.20,42,1050,150,1060.5,1146.3,3.3,,1.817,gspr3.csv,Metric
+Gasket,ASME B16.20,44,1100,150,1111.3,1197.1,3.3,,2.076,gspr3.csv,Metric
+Gasket,ASME B16.20,46,1150,150,1162.1,1255.8,3.3,,2.227,gspr3.csv,Metric
+Gasket,ASME B16.20,48,1200,150,1212.9,1306.6,3.3,,2.319,gspr3.csv,Metric
+Gasket,ASME B16.20,50,1250,150,1263.7,1357.4,3.3,,2.412,gspr3.csv,Metric
+Gasket,ASME B16.20,52,1300,150,1314.5,1408.2,3.3,,2.505,gspr3.csv,Metric
+Gasket,ASME B16.20,54,1350,150,1365.3,1463.8,3.3,,2.768,gspr3.csv,Metric
+Gasket,ASME B16.20,56,1400,150,1422.4,1514.6,3.3,,2.867,gspr3.csv,Metric
+Gasket,ASME B16.20,58,1450,150,1478.0,1579.6,3.3,,3.516,gspr3.csv,Metric
+Gasket,ASME B16.20,60,1500,150,1535.2,1630.4,3.3,,3.633,gspr3.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,18,450,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,20,500,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,24,600,150,,,,,,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,26,26,150,654.05,725.424,3.302,,0.897,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,28,28,150,704.8499999999999,776.2239999999999,3.302,,0.962,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,30,30,150,755.65,827.024,3.302,,1.028,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,32,32,150,806.4499999999999,881.1259999999999,3.302,,1.161,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,34,34,150,857.25,934.974,3.302,,1.303,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,36,36,150,908.05,987.552,3.302,,1.414,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,38,38,150,958.8499999999999,1044.702,3.302,,1.727,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,40,40,150,1009.65,1095.502,3.302,,1.894,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,42,42,150,1060.45,1146.302,3.302,,1.817,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,44,44,150,1111.25,1197.102,3.302,,2.076,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,46,46,150,1162.05,1255.7759999999998,3.302,,2.227,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,48,48,150,1212.85,1306.5759999999998,3.302,,2.319,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,50,50,150,1263.6499999999999,1357.376,3.302,,2.412,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,52,52,150,1314.4499999999998,1408.176,3.302,,2.505,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,54,54,150,1365.25,1463.802,3.302,,2.768,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,56,56,150,1422.3999999999999,1514.602,3.302,,2.867,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,58,58,150,1478.0259999999998,1579.6259999999997,3.302,,3.516,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,60,60,150,1535.176,1630.426,3.302,,3.633,gspr3_imperial.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,3.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,3.5,srra1_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,5.5,srra1_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,10.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,16.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,30.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,50.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,92.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,180.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,340.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,385.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,14,350,150,,,,,610.0,srra1_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,3.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,,,,4.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,,,,6.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,,,,11.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,,,,18.0,srra1_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,,,,35.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,,,,65.5,srra1_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,,,,,srra1_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,,,,125.0,srra1_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,,,,233.0,srra1_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,,,,420.0,srra1_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,,,,445.0,srra1_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,1/4,8,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,3/8,10,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,1/2,15,400,,,,,3.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,3/4,20,400,,,,,4.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,1,25,400,,,,,6.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,400,,,,,11.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,2,50,400,,,,,18.0,srra1_400.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,3,80,400,,,,,35.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,4,100,400,,,,,65.5,srra1_400.csv,Metric
+Gasket,ASME B16.20,5,125,400,,,,,,srra1_400.csv,Metric
+Gasket,ASME B16.20,6,150,400,,,,,125.0,srra1_400.csv,Metric
+Gasket,ASME B16.20,8,200,400,,,,,233.0,srra1_400.csv,Metric
+Gasket,ASME B16.20,10,250,400,,,,,420.0,srra1_400.csv,Metric
+Gasket,ASME B16.20,12,300,400,,,,,445.0,srra1_400.csv,Metric
+Gasket,ASME B16.20,1/8,6,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,1/4,8,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,3/8,10,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,1/2,15,600,,,,,3.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,3/4,20,600,,,,,4.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,1,25,600,,,,,6.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,600,,,,,11.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,2,50,600,,,,,18.0,srra1_600.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,3,80,600,,,,,35.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,4,100,600,,,,,65.5,srra1_600.csv,Metric
+Gasket,ASME B16.20,5,125,600,,,,,,srra1_600.csv,Metric
+Gasket,ASME B16.20,6,150,600,,,,,125.0,srra1_600.csv,Metric
+Gasket,ASME B16.20,8,200,600,,,,,233.0,srra1_600.csv,Metric
+Gasket,ASME B16.20,10,250,600,,,,,420.0,srra1_600.csv,Metric
+Gasket,ASME B16.20,12,300,600,,,,,445.0,srra1_600.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,3.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,3.5,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,5.5,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,10.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,16.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,30.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,50.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,92.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,180.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,340.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,385.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,,,,610.0,srra1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,3.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,,,,4.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,,,,6.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,,,,11.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,,,,18.0,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,,,,35.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,,,,65.5,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,,,,,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,,,,125.0,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,,,,233.0,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,,,,420.0,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,,,,445.0,srra1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/8,6,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1/4,8,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,3/8,10,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1/2,15,400,,,,,3.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,3/4,20,400,,,,,4.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1,25,400,,,,,6.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,400,,,,,11.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,2,50,400,,,,,18.0,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,3,80,400,,,,,35.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,4,100,400,,,,,65.5,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,5,125,400,,,,,,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,6,150,400,,,,,125.0,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,8,200,400,,,,,233.0,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,10,250,400,,,,,420.0,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,12,300,400,,,,,445.0,srra1_imperial_400.csv,Imperial
+Gasket,ASME B16.20,1/8,6,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1/4,8,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,3/8,10,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1/2,15,600,,,,,3.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,3/4,20,600,,,,,4.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1,25,600,,,,,6.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,600,,,,,11.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,2,50,600,,,,,18.0,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,3,80,600,,,,,35.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,4,100,600,,,,,65.5,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,5,125,600,,,,,,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,6,150,600,,,,,125.0,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,8,200,600,,,,,233.0,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,10,250,600,,,,,420.0,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,12,300,600,,,,,445.0,srra1_imperial_600.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,8.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,16.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,22.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,5,125,150,,,,,,srra2_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,39.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,68.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,106.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,153.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,14,350,150,,,,,207.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,16,400,150,,,,,266.0,srra2_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,,,,10.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,,,,19.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,,,,31.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,,,,,srra2_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,,,,58.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,,,,96.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,,,,151.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,,,,213.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,14,350,300,,,,,294.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,16,400,300,,,,,383.0,srra2_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,8.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,16.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,22.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,39.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,68.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,106.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,153.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,,,,207.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,,,,266.0,srra2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,,,,10.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,,,,19.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,,,,31.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,,,,,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,,,,58.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,,,,96.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,,,,151.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,,,,213.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,14,350,300,,,,,294.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,16,400,300,,,,,383.0,srra2_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra3_150.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra3_150.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra3_150.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,0.55,srra3_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,0.7,srra3_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,1.0,srra3_150.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,1.6,srra3_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,2.0,srra3_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,4.5,srra3_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,0.55,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,0.7,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,1.0,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,1.6,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,2.0,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,4.5,srra3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra4_150.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra4_150.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra4_150.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,0.55,srra4_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,0.7,srra4_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,1.0,srra4_150.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,1.6,srra4_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,2.0,srra4_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,4.5,srra4_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,0.55,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,0.7,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,1.0,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,1.6,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,2.0,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,4.5,srra4_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,7.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,13.5,srrb1_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,19.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,27.5,srrb1_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,46.5,srrb1_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,70.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,167.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,310.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,550.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,600.0,srrb1_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,,,,7.5,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,,,,14.5,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,,,,21.5,srrb1_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,,,,29.5,srrb1_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,,,,49.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,,,,92.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,,,,,srrb1_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,,,,225.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,,,,405.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,,,,655.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,,,,700.0,srrb1_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,7.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,13.5,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,19.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,27.5,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,46.5,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,70.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,167.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,310.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,550.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,600.0,srrb1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,,,,7.5,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,,,,14.5,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,,,,21.5,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,,,,29.5,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,,,,49.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,,,,92.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,,,,,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,,,,225.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,,,,405.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,,,,655.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,,,,700.0,srrb1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/8,6,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1/4,8,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,3/8,10,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1/2,15,150,,,,,18.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,,,,18.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,,,,20.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,,,,37.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,57.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,132.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srrb2_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,240.0,srrb2_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,18.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,18.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,20.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,37.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,57.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,132.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,240.0,srrb2_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,32.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,60.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,100.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,184.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,360.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,680.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,770.0,srrb3_150.csv,Metric
+Gasket,ASME B16.20,2,50,300,,,,,64.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,,,,120.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,,,,200.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,,,,364.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,,,,720.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,,,,1360.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,,,,1540.0,srrb3_300.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,32.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,60.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,100.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,184.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,360.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,680.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,770.0,srrb3_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,,,,64.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,,,,120.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,,,,200.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,,,,364.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,,,,720.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,,,,1360.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,,,,1540.0,srrb3_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,52.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,62.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,79.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,98.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,130.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,168.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,5,125,150,,190.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,215.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,273.0,3.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,333.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,403.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,14,350,150,,444.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,16,400,150,,508.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,18,450,150,,542.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,20,500,150,,600.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,24,600,150,,711.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,30,750,150,,870.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,36,900,150,,1035.0,5.0,,,srrc1_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,62.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,68.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,88.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,104.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,142.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,174.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,209.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,244.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,301.0,3.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,355.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,415.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,14,350,300,,479.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,16,400,300,,533.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,18,450,300,,590.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,20,500,300,,647.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,22,550,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,24,600,300,,768.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,26,650,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,28,700,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,30,750,300,,943.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,32,800,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,34,850,300,,,,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,36,900,300,,1104.0,5.0,,,srrc1_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,50.8,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,63.5,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,79.375,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,98.425,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,130.17499999999998,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,168.27499999999998,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,190.5,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,215.89999999999998,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,273.05,3.175,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,333.375,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,403.22499999999997,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,444.5,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,508.0,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,18,450,150,,540.3849999999999,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,20,500,150,,600.0749999999999,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,24,600,150,,711.1999999999999,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,26,650,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,28,700,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,30,750,150,,869.9499999999999,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,32,800,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,34,850,150,,,,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,36,900,150,,1035.05,6.35,,,srrc1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,61.97599999999999,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,67.818,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,87.884,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,103.886,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,141.986,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,173.98999999999998,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,208.788,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,243.83999999999997,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,300.98999999999995,3.175,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,354.838,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,414.7819999999999,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,14,350,300,,478.79,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,16,400,300,,532.8919999999999,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,18,450,300,,589.7879999999999,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,20,500,300,,646.938,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,22,550,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,24,600,300,,767.842,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,26,650,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,28,700,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,30,750,300,,942.8479999999998,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,32,800,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,34,850,300,,,,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,36,900,300,,1103.884,6.35,,,srrc1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,3/4,20,150,,52.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,1,25,150,,62.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,150,,79.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,98.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,130.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,168.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,5,125,150,,190.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,215.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,273.0,3.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,333.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,403.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,14,350,150,,444.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,16,400,150,,508.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,18,450,150,,542.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,20,500,150,,600.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,24,600,150,,711.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,30,750,150,,870.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,36,900,150,,1036.0,5.0,,,srrd1_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,62.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,68.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,88.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,104.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,142.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,174.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,209.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,244.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,301.0,3.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,355.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,415.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,14,350,300,,479.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,16,400,300,,533.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,18,450,300,,590.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,20,500,300,,647.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,22,550,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,24,600,300,,768.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,26,650,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,28,700,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,30,750,300,,943.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,32,800,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,34,850,300,,,,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,36,900,300,,1104.0,5.0,,,srrd1_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,50.8,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,63.5,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,76.19999999999999,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,98.425,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,130.17499999999998,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,168.27499999999998,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,190.5,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,215.89999999999998,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,273.05,3.175,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,333.375,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,403.22499999999997,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,444.5,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,508.0,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,18,450,150,,542.925,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,20,500,150,,600.0749999999999,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,24,600,150,,711.1999999999999,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,26,650,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,28,700,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,30,750,150,,869.9499999999999,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,32,800,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,34,850,150,,,,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,36,900,150,,1035.05,6.35,,,srrd1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,63.5,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,66.675,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,88.89999999999999,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,101.6,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,139.7,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,174.625,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,209.54999999999998,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,244.475,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,301.625,3.175,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,355.59999999999997,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,415.92499999999995,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,14,350,300,,479.42499999999995,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,16,400,300,,533.4,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,18,450,300,,590.55,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,20,500,300,,647.6999999999999,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,22,550,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,24,600,300,,768.3499999999999,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,26,650,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,28,700,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,30,750,300,,942.9749999999999,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,32,800,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,34,850,300,,,,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,36,900,300,,1104.8999999999999,6.35,,,srrd1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,srre1_150.csv,Metric
+Gasket,ASME B16.20,2,50,150,,,,,8.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,3,80,150,,,,,16.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,4,100,150,,,,,22.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,6,150,150,,,,,39.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,8,200,150,,,,,68.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,10,250,150,,,,,106.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,12,300,150,,,,,153.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,14,350,150,,,,,207.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,16,400,150,,,,,266.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,18,450,150,,,,,330.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,20,500,150,,,,,400.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,24,600,150,,,,,560.0,srre1_150.csv,Metric
+Gasket,ASME B16.20,1/8,6,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,1/4,8,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,3/8,10,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,1/2,15,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,3/4,20,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,1,25,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,1 1/2,40,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,2,50,300,,,,,10.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,3,80,300,,,,,19.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,4,100,300,,,,,31.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,5,125,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,6,150,300,,,,,58.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,8,200,300,,,,,96.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,10,250,300,,,,,151.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,12,300,300,,,,,213.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,14,350,300,,,,,294.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,16,400,300,,,,,383.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,18,450,300,,,,,490.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,20,500,300,,,,,590.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,22,550,300,,,,,,srre1_300.csv,Metric
+Gasket,ASME B16.20,24,600,300,,,,,840.0,srre1_300.csv,Metric
+Gasket,ASME B16.20,1/8,6,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/4,8,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/8,10,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/2,15,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3/4,20,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1,25,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2,50,150,,,,,8.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3,80,150,,,,,16.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,4,100,150,,,,,22.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,5,125,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,6,150,150,,,,,39.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,8,200,150,,,,,68.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,10,250,150,,,,,106.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,12,300,150,,,,,153.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,14,350,150,,,,,207.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,16,400,150,,,,,266.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,18,450,150,,,,,330.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,20,500,150,,,,,400.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,22,550,150,,,,,,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,24,600,150,,,,,560.0,srre1_imperial_150.csv,Imperial
+Gasket,ASME B16.20,1/8,6,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/4,8,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/8,10,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1/2,15,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3/4,20,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1,25,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/4,32,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,1 1/2,40,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2,50,300,,,,,10.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,2 1/2,65,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3,80,300,,,,,19.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,3 1/2,90,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,4,100,300,,,,,31.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,5,125,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,6,150,300,,,,,58.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,8,200,300,,,,,96.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,10,250,300,,,,,151.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,12,300,300,,,,,213.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,14,350,300,,,,,294.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,16,400,300,,,,,383.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,18,450,300,,,,,490.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,20,500,300,,,,,590.0,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,22,550,300,,,,,,srre1_imperial_300.csv,Imperial
+Gasket,ASME B16.20,24,600,300,,,,,840.0,srre1_imperial_300.csv,Imperial

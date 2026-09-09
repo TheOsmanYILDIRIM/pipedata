@@ -20,3 +20,6 @@ local.properties
 *.apk
 !gradle/wrapper/gradle-wrapper.jar
 scratch/
+
+# Generated canonical CSVs (regenerable from build_canonical_csv.py)
+data/csv/canonical/

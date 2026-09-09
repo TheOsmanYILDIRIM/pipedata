@@ -780,6 +780,87 @@ class TestPhase6CanonicalMerge(unittest.TestCase):
         self.assertEqual(num_bolts, 4, "T8: 1/2in 1500# WN flans civata adedi 4 olmali")
         conn.close()
 
+class TestPhase7CsvFirst(unittest.TestCase):
+    """Faz 7 — CSV-First Mimarisi Dogrulama (SQLite DB artik APK'da YOK; app kanonik CSV'den okuyor).
+
+    Kapilar:
+    - test_7_1: Kanonik CSV dosyalari app assets'te MEVCUT (app'in okudugu kaynak).
+    - test_7_2: Ham 956 orijinal CSV app assets'te MEVCUT (sadakat kaniti).
+    - test_7_3: Kanonik CSV <-> pipedata.db mutabakat = 0 fark (csv_vs_db_audit).
+    - test_7_4: SQLite DB art*m app assets'te YOK (yanlis veri kaynagi kaldirildi).
+    - test_7_5: Kotlin CsvDataStore.kt referanslari (PipedataDbHelper sadece gecis donemi adi).
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.project_dir = os.path.expanduser("~/projects/pipedata")
+        cls.app_assets = os.path.join(cls.project_dir, "app", "src", "main", "assets")
+        cls.canonical_dir = os.path.join(cls.app_assets, "csv", "canonical")
+        cls.raw_dir = os.path.join(cls.app_assets, "csv", "raw")
+        cls.csv_vs_db = os.path.join(cls.project_dir, "csv_vs_db_audit.py")
+
+    def test_7_1_canonical_csvs_present_in_app_assets(self):
+        """Kanonik CSV'ler app asset'inde olmali (app'in TEK veri kaynagi)."""
+        required = [
+            "tbl_flanges_asme_b16_5.csv", "tbl_pipes.csv",
+            "tbl_fittings_buttweld_b16_9.csv", "tbl_fittings_socketweld_b16_11.csv",
+            "tbl_fittings_threaded_b16_11.csv", "tbl_valves_asme_b16_10.csv",
+            "tbl_gaskets_and_rtj.csv", "tbl_line_blanks_asme_b16_48.csv",
+        ]
+        for f in required:
+            p = os.path.join(self.canonical_dir, f)
+            self.assertTrue(os.path.isfile(p), f"Kanonik CSV app asset'inde yok: {f}")
+            with open(p, encoding="utf-8") as fh:
+                lines = fh.readlines()
+            self.assertGreater(len(lines), 2, f"{f} en az baslik+1 veri satiri olmali")
+
+    def test_7_2_raw_956_csvs_present_in_app_assets(self):
+        """Orijinal 956 CSV app asset/csv/raw altinda birebir gomulu olmali."""
+        csv_files = [f for f in os.listdir(self.raw_dir) if f.endswith(".csv")]
+        self.assertEqual(len(csv_files), 956, "Orijinal 956 CSV app assets/csv/raw altinda olmali")
+
+        # Anomali kontrol (AGENTS.md "Oddity Investigation"): orijinal APK'ta 0-bayt
+        # olarak gelen tek dosya `ftsw1_socketwelded_90_deg_elbow_2000_millimetres.csv`
+        # ASME B16.11'de Class 2000# soket kaynakli fitting standartta YOKTUR; bu yuzden
+        # rebuild'de socketweld tablosuna veri saglamamis ve Faz 6'da belgelenmistir.
+        # APK'ya gomulen ham set orijinalin BIREBIR kopyasi oldugu icin bu dosya da sadikca korunur.
+        known_zero = {"ftsw1_socketwelded_90_deg_elbow_2000_millimetres.csv"}
+        zero = [f for f in csv_files if os.path.getsize(os.path.join(self.raw_dir, f)) == 0]
+        unexpected_zero = [f for f in zero if f not in known_zero]
+        self.assertEqual(len(unexpected_zero), 0, f"Beklenmeyen 0-bayt CSV: {unexpected_zero}")
+
+    def test_7_3_canonical_csv_matches_db_zero_diff(self):
+        """Kanonik CSV <-> pipedata.db her satir/kolon birebir eslesmeli (0 fark)."""
+        import subprocess
+        r = subprocess.run(
+            ["python3", self.csv_vs_db, "--fail-on-diff"],
+            capture_output=True, text=True, cwd=self.project_dir
+        )
+        if r.returncode != 0:
+            self.fail(f"csv_vs_db_audit basarisiz:\n{r.stdout}\n{r.stderr}")
+        self.assertIn("0 fark", r.stdout, "Mutabakat raporu '0 fark' icermeli")
+
+    def test_7_4_sqlite_db_removed_from_app_assets(self):
+        """pipedata.db artik app asset'inde YOK olmali (CSV-First mimarisi)."""
+        db_app = os.path.join(self.app_assets, "pipedata.db")
+        self.assertFalse(os.path.exists(db_app),
+                         "SQLite DB app asset'inden kaldirilmali (CSV-First)")
+
+    def test_7_5_csv_data_store_wired_in_kotlin(self):
+        """MainActivity CsvDataStore kullanmali; klasik PipedataDbHelper.kt kalmamali."""
+        main_activity = os.path.join(
+            self.project_dir, "app", "src", "main", "java",
+            "com", "avenox", "pipedata", "MainActivity.kt")
+        with open(main_activity, encoding="utf-8") as f:
+            src = f.read()
+        self.assertIn("CsvDataStore", src, "MainActivity CsvDataStore kullanmali")
+
+        old_helper = os.path.join(
+            self.project_dir, "app", "src", "main", "java",
+            "com", "avenox", "pipedata", "data", "db", "PipedataDbHelper.kt")
+        self.assertFalse(os.path.exists(old_helper),
+                         "Eski SQLite tabanli PipedataDbHelper.kt silinmeli")
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 

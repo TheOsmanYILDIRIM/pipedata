@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.avenox.pipedata.data.db.PipedataDbHelper
+import com.avenox.pipedata.data.db.CsvDataStore
 import com.avenox.pipedata.data.model.*
 import com.avenox.pipedata.data.prefs.PreferencesManager
 import com.avenox.pipedata.ui.components.HelpBottomSheet
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val dbHelper = PipedataDbHelper(this)
+        val dbHelper = CsvDataStore(this)
         val categories = dbHelper.getFlangeCategories()
         val helpGlossary = dbHelper.getHelpGlossary()
 
