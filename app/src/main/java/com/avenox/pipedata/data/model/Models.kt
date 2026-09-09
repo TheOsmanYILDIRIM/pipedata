@@ -35,7 +35,9 @@ data class SubtypeItem(
     val standard: String,
     val descEn: String,
     val descTr: String,
-    val svgAsset: String
+    val svgAsset: String,
+    val titleTr: String = title,
+    val shortNameTr: String = shortName
 )
 
 data class DimensionRow(

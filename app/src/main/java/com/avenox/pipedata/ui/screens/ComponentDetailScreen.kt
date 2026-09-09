@@ -65,7 +65,7 @@ fun ComponentDetailScreen(
     val isTr = currentLang == AppLanguage.TR
 
     val currentSubtype = data.currentSubtype
-    val subtypeTitle = currentSubtype.title
+    val subtypeTitle = if (isTr && currentSubtype.titleTr.isNotBlank()) currentSubtype.titleTr else currentSubtype.title
 
     Scaffold(
         containerColor = colors.background,
@@ -200,8 +200,9 @@ fun ComponentDetailScreen(
                                 .padding(horizontal = 11.dp, vertical = 6.dp),
                             contentAlignment = Alignment.Center
                         ) {
+                            val chipText = if (sub.abbr.isNotBlank()) sub.abbr else if (isTr && sub.shortNameTr.isNotBlank()) sub.shortNameTr else sub.shortName
                             Text(
-                                text = if (sub.abbr.isNotBlank()) sub.abbr else sub.shortName,
+                                text = chipText,
                                 color = if (isSelected) colors.accentText else colors.textPrimary,
                                 fontSize = (11.5 * fontScale).sp,
                                 fontFamily = FontFamily.Monospace,
@@ -332,7 +333,7 @@ fun ComponentDetailScreen(
                 Button(
                     onClick = {
                         val textToCopy = buildString {
-                            appendLine("${data.currentSubtype.title} (${data.selectedNps}, ${data.selectedPrimary}${if (data.selectedSecondary != null) " ${data.selectedSecondary}" else ""})")
+                            appendLine("$subtypeTitle (${data.selectedNps}, ${data.selectedPrimary}${if (data.selectedSecondary != null) " ${data.selectedSecondary}" else ""})")
                             data.dimensions.forEach { d ->
                                 val v = if (currentUnit == UnitSystem.METRIC) d.valueMetric else d.valueImperial
                                 val l = if (isTr) d.nameTr else d.nameEn
@@ -823,6 +824,27 @@ private fun getThemedSvgBytes(
                     "11" -> swLen
                     "12" -> swCapThk
                     "13", "14", "15", "16" -> wtStr
+                    else -> dimMap[key.lowercase()] ?: data.selectedPrimary
+                }
+            } else if (data.categoryId == "fittings_bw") {
+                val bwOd = dimMap["od"] ?: if (isMetric) "60.3" else "2.375\""
+                val bwCenterEnd = dimMap["center_end"] ?: dimMap["length"] ?: if (isMetric) "76.2" else "3.00\""
+                val bwCenterCenter = dimMap["center_center"] ?: if (isMetric) "${fmt(dn * 3.0)}" else "${fmt(dn * 3.0 / 25.4)}\""
+                val bwBackFace = dimMap["back_to_face"] ?: if (isMetric) "${fmt(dn * 2.1)}" else "${fmt(dn * 2.1 / 25.4)}\""
+                val bwLen = dimMap["length"] ?: dimMap["center_end"] ?: if (isMetric) "63.5" else "2.50\""
+                val bwSmallOd = dimMap["small_od"] ?: dimMap["branch_center_end"] ?: if (isMetric) "${fmt(dn * 0.75)}" else "${fmt(dn * 0.75 / 25.4)}\""
+                val bwLapDia = dimMap["lap_dia"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
+                val bwRadius = dimMap["radius"] ?: if (isMetric) "8.0" else "5/16\""
+                when (key) {
+                    "3" -> bwOd
+                    "4" -> if (dimMap.containsKey("center_center")) bwCenterCenter else bwCenterEnd
+                    "5" -> if (dimMap.containsKey("back_to_face")) bwBackFace else bwCenterEnd
+                    "6" -> if (dimMap.containsKey("lap_dia")) bwLapDia else bwCenterEnd
+                    "7" -> bwRadius
+                    "10" -> data.selectedPrimary
+                    "13", "14", "15" -> wtStr
+                    "39" -> bwSmallOd
+                    "DB2_4" -> if (isMetric) "3.9" else "0.15\""
                     else -> dimMap[key.lowercase()] ?: data.selectedPrimary
                 }
             } else {
