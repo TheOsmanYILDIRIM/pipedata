@@ -228,7 +228,47 @@ class PipedataDbHelper(private val context: Context) {
         ratingStr: String,
         facing: String
     ): ComponentData {
-        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        // ASME B16.5 Pressure Classes per Subtype:
+        // - Socket Weld (SW): 150#, 300#, 600#, 1500# (No 400# or 2500# in standard)
+        // - Slip-On (SO): 150#, 300#, 400#, 600#, 900#, 1500# (No 2500# in standard)
+        // - Weld Neck (WN), Blind (BLD), Threaded (THD), Lap Joint (LJ): 150#, 300#, 400#, 600#, 900#, 1500#, 2500#
+        val primaryOptions = when (subtype.id) {
+            "sw" -> listOf("150#", "300#", "600#", "1500#")
+            "so" -> listOf("150#", "300#", "400#", "600#", "900#", "1500#")
+            else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        }
+        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+
+        // ASME B16.5 NPS Ranges:
+        // - Socket Weld: 1/2" to 3"
+        // - Class 2500: 1/2" to 12"
+        // - Standard: 1/2" to 24"
+        val availableNps = when {
+            subtype.id == "sw" -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
+            rating == 2500 -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"")
+            else -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\"")
+        }
+        val rawNpsWithQuotes = if (nps.endsWith("\"")) nps else "$nps\""
+        val effectiveNps = if (rawNpsWithQuotes in availableNps) rawNpsWithQuotes else if (availableNps.contains("2\"")) "2\"" else availableNps.first()
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+        val effectiveDn = getNpsDn(cleanNps)
+
+        // ASME B16.5 Facings:
+        // - Lap Joint: Flat face (mates with back of stub end)
+        // - Class 150: RF, FF (No RTJ in B16.5 Class 150)
+        // - Class 300: RF, FF, RTJ
+        // - Class 400, 600, 900, 1500: RF, RTJ
+        // - Class 2500: RTJ, RF (RTJ standard primary)
+        val secondaryOptions = when {
+            subtype.id == "lj" -> listOf("Flat (Stub End)")
+            rating == 150 -> listOf("RF", "FF")
+            rating == 300 -> listOf("RF", "FF", "RTJ")
+            rating == 2500 -> listOf("RTJ", "RF")
+            else -> listOf("RF", "RTJ")
+        }
+        val effectiveFacing = if (facing in secondaryOptions) facing else secondaryOptions.first()
+
         var od = 0.0
         var thk = 0.0
         var hubX = 0.0
@@ -240,12 +280,16 @@ class PipedataDbHelper(private val context: Context) {
         var boltSz = "5/8\""
         var studL = 70.0
         var wt = 2.5
+        var ringNumber = ""
 
+        // Subtype dimension query mapping:
+        // - SO, THD, LJ, SW share identical ASME B16.5 external envelope (OD, T, PCD, X, Y)
+        // - BLD has solid face with no bore and no hub
+        // - WN has tapered hub for welding
         val flgTypeQuery = when (subtype.id) {
-            "so" -> "%Slip On%"
             "bld" -> "%Blind%"
             "wn" -> "%Welding Neck%"
-            else -> "%"
+            else -> "%Slip On%"
         }
 
         db?.let { database ->
@@ -253,10 +297,10 @@ class PipedataDbHelper(private val context: Context) {
                 val cursor = database.rawQuery(
                     "SELECT outer_diameter_mm, thickness_mm, hub_diameter_mm, length_thru_hub_mm, " +
                             "bore_diameter_mm, rf_diameter_mm, pcd_mm, num_bolts, bolt_diameter_in, " +
-                            "stud_bolt_length_mm, weight_kg FROM tbl_flanges_asme_b16_5 " +
+                            "stud_bolt_length_mm, weight_kg, rtj_ring_number FROM tbl_flanges_asme_b16_5 " +
                             "WHERE (nps = ? OR nps = ? OR nps = ?) AND rating = ? AND flange_type LIKE ? AND outer_diameter_mm > 0 " +
                             "ORDER BY thickness_mm DESC LIMIT 1",
-                    arrayOf(nps, "$nps\"", nps.replace(" ", "+"), rating.toString(), flgTypeQuery)
+                    arrayOf(cleanNps, "$cleanNps\"", cleanNps.replace(" ", "+"), rating.toString(), flgTypeQuery)
                 )
                 cursor.use { c ->
                     if (c.moveToFirst()) {
@@ -268,9 +312,15 @@ class PipedataDbHelper(private val context: Context) {
                         rf = c.getDouble(5)
                         pcd = c.getDouble(6)
                         bolts = c.getInt(7)
-                        boltSz = c.getString(8) ?: "5/8\""
+                        val rawBolt = c.getString(8) ?: "5/8\""
+                        boltSz = rawBolt.replace("0+", "").replace("\"", "").trim() + "\""
                         studL = c.getDouble(9)
                         wt = c.getDouble(10)
+                        val rawRing = c.getString(11)
+                        ringNumber = if (!rawRing.isNullOrBlank()) {
+                            val r = rawRing.trim().replace("'", "")
+                            if (r.startsWith("R", ignoreCase = true)) r else "R$r"
+                        } else ""
                     }
                 }
             } catch (e: Exception) {
@@ -280,44 +330,87 @@ class PipedataDbHelper(private val context: Context) {
 
         if (od <= 0) {
             val mult = if (rating >= 600) 1.25 else if (rating >= 300) 1.15 else 1.0
-            od = (if (dn == 50) 152.4 else dn * 2.8) * mult
+            od = (if (effectiveDn == 50) 152.4 else effectiveDn * 2.8) * mult
             thk = 17.5 * mult
             hubX = 77.7 * mult
             lenY = 63.5 * mult
-            bore = dn * 1.05
+            bore = effectiveDn * 1.05
             pcd = od * 0.79
-            bolts = if (dn >= 200) 8 else 4
-            wt = 2.45 * mult * (dn / 50.0)
+            bolts = if (effectiveDn >= 200) 8 else 4
+            wt = 2.45 * mult * (effectiveDn / 50.0)
         }
 
-        val rows = listOf(
-            DimensionRow("od", "Outside Diameter (O)", "Dış Çap (O)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "dimensions"),
-            DimensionRow("thk", "Min Thickness (T)", "Min. Et Kalınlığı (T)", "${fmt(thk)} mm", "${fmt(thk/25.4)}\"", "dimensions"),
-            DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"),
-            DimensionRow("bore", "Inside Bore (B)", "İç Delik (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"),
-            DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"),
-            DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"),
-            DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"),
-            DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions")
+        val rows = mutableListOf<DimensionRow>()
+        rows.add(DimensionRow("od", "Outside Diameter (O)", "Dış Çap (O)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "dimensions"))
+        rows.add(DimensionRow("thk", "Min Thickness (T)", "Min. Et Kalınlığı (T)", "${fmt(thk)} mm", "${fmt(thk/25.4)}\"", "dimensions"))
 
+        if (subtype.id != "bld") {
+            rows.add(DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"))
+            rows.add(DimensionRow("len", "Length Thru Hub (Y)", "Toplam Boyun Boyu (Y)", "${fmt(lenY)} mm", "${fmt(lenY/25.4)}\"", "dimensions"))
+        }
 
-        )
+        when (subtype.id) {
+            "bld" -> {
+                rows.add(DimensionRow("bore", "Inside Bore (B)", "İç Delik (B)", "N/A (Solid Disc)", "N/A (Kör Disk)", "dimensions"))
+            }
+            "thd" -> {
+                rows.add(DimensionRow("bore", "Thread Standard", "Diş Standardı", "$cleanNps\" NPT (ASME B1.20.1)", "$cleanNps\" NPT (ASME B1.20.1)", "dimensions"))
+            }
+            "sw" -> {
+                rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
+                val socketDepth = when (cleanNps) {
+                    "1/2" -> 9.5; "3/4" -> 11.0; "1" -> 12.5; "1 1/4" -> 14.5; "1 1/2" -> 16.0; "2" -> 17.5; "2 1/2" -> 19.0; "3" -> 20.5; else -> 17.5
+                }
+                rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
+            }
+            "lj" -> {
+                rows.add(DimensionRow("bore", "Bore Clearance (B)", "Yaka Boşluk Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
+                val cornerRadius = when {
+                    effectiveDn <= 50 -> 8.0
+                    effectiveDn <= 100 -> 10.0
+                    effectiveDn <= 150 -> 11.0
+                    else -> 13.0
+                }
+                rows.add(DimensionRow("radius", "Corner Radius (r)", "Köşe Radyüsü (r)", "${fmt(cornerRadius)} mm", "${fmt(cornerRadius/25.4)}\"", "dimensions"))
+            }
+            else -> {
+                rows.add(DimensionRow("bore", "Inside Bore (B)", "İç Delik (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
+            }
+        }
+
+        if (subtype.id == "lj") {
+            rows.add(DimensionRow("rf", "Flange Facing", "Flanş Alnı", "Flat (Mates with Stub End)", "Düz (Yaka ile Temas)", "dimensions"))
+        } else if (effectiveFacing == "RTJ") {
+            rows.add(DimensionRow("rf", "Facing Type", "Conta Yüzeyi", "RTJ Groove", "RTJ Halka Kanalı", "dimensions"))
+            if (ringNumber.isNotBlank()) {
+                rows.add(DimensionRow("ring", "RTJ Ring Number", "RTJ Halka No", ringNumber, ringNumber, "dimensions"))
+            }
+        } else if (effectiveFacing == "FF") {
+            rows.add(DimensionRow("rf", "Flange Facing", "Conta Yüzeyi", "Flat Face (FF)", "Düz Alın (FF)", "dimensions"))
+        } else {
+            rows.add(DimensionRow("rf", "Raised Face Dia (R)", "Conta Yüzeyi Çapı (R)", "${fmt(rf)} mm", "${fmt(rf/25.4)}\"", "dimensions"))
+        }
+
+        rows.add(DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"))
+        rows.add(DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"))
+        rows.add(DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"))
+        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions"))
 
         return ComponentData(
             categoryId = "flanges",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = effectiveDn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("150#", "300#", "600#"),
-            selectedPrimary = "${rating}#",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRatingStr,
             secondarySelectorLabelEn = "Facing",
             secondarySelectorLabelTr = "Yüzey",
-            secondaryOptions = listOf("RF", "FF", "RTJ"),
-            selectedSecondary = facing,
+            secondaryOptions = secondaryOptions,
+            selectedSecondary = effectiveFacing,
             dimensions = rows
         )
     }
@@ -543,6 +636,13 @@ class PipedataDbHelper(private val context: Context) {
 
         rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
 
+        val primaryOptions = when (subtype.id) {
+            "stub_end" -> listOf("10S", "40S", "STD", "5S", "80S")
+            "red_con", "red_ecc" -> listOf("STD", "40", "80", "160", "XS")
+            else -> listOf("STD", "40", "80", "160", "XXS")
+        }
+        val effectiveSched = if (sched in primaryOptions) sched else primaryOptions.first()
+
         return ComponentData(
             categoryId = "fittings_bw",
             currentSubtype = subtype,
@@ -552,8 +652,8 @@ class PipedataDbHelper(private val context: Context) {
             dn = dn,
             primarySelectorLabelEn = "Schedule",
             primarySelectorLabelTr = "Seri",
-            primaryOptions = listOf("STD", "40", "80", "160", "XXS"),
-            selectedPrimary = sched,
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveSched,
             dimensions = rows
         )
     }
@@ -672,6 +772,12 @@ class PipedataDbHelper(private val context: Context) {
         rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
 
 
+        val primaryOptions = when (subtype.id) {
+            "sw_union" -> listOf("3000#")
+            else -> listOf("3000#", "6000#", "9000#")
+        }
+        val effectiveRatingStr = if ("${rating}#" in primaryOptions) "${rating}#" else primaryOptions.first()
+
         return ComponentData(
             categoryId = "fittings_sw",
             currentSubtype = subtype,
@@ -681,8 +787,8 @@ class PipedataDbHelper(private val context: Context) {
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("3000#", "6000#", "9000#"),
-            selectedPrimary = "${rating}#",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRatingStr,
             dimensions = rows
         )
     }

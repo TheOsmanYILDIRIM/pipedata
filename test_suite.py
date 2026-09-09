@@ -459,6 +459,41 @@ class TestPipedataIntegrity(unittest.TestCase):
         self.assertEqual(row[5], 27.65, "2in Sch 40 Boru atalet momenti 27.65 cm4 olmali")
         conn.close()
 
+    def test_5_10_sqlite_flanges_all_ratings_and_subtypes_integrity(self):
+        """Test 5.10: ASME B16.5 tum 7 basincli flans siniflarinin (150, 300, 400, 600, 900, 1500, 2500) semantik dogrulanmasi"""
+        db_path = os.path.join(self.project_dir, "pipedata.db")
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        ratings = set(r[0] for r in cur.execute("SELECT DISTINCT rating FROM tbl_flanges_asme_b16_5;").fetchall())
+        expected_ratings = {150, 300, 400, 600, 900, 1500, 2500}
+        for exp in expected_ratings:
+            self.assertIn(exp, ratings, f"ASME B16.5 Class {exp}# veritabaninda eksik!")
+
+        # Class 1500# Ground-Truth: 2" WN
+        row_1500 = cur.execute("""
+            SELECT outer_diameter_mm, thickness_mm, hub_diameter_mm, length_thru_hub_mm, num_bolts, weight_kg 
+            FROM tbl_flanges_asme_b16_5 
+            WHERE flange_type LIKE '%Welding Neck%' AND (nps = '2' OR nps = '2.0') AND rating = 1500 LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row_1500, "2in 1500# WN Flans veritabaninda bulunamadi!")
+        self.assertEqual(row_1500[0], 216.0, "2in 1500# WN Flans dis capi 216.0 mm olmali")
+        self.assertEqual(row_1500[1], 38.1, "2in 1500# WN Flans kalinligi 38.1 mm olmali")
+        self.assertEqual(row_1500[4], 8, "2in 1500# WN Flans civata adedi 8 olmali")
+
+        # Class 2500# Ground-Truth: 2" WN
+        row_2500 = cur.execute("""
+            SELECT outer_diameter_mm, thickness_mm, hub_diameter_mm, length_thru_hub_mm, num_bolts, weight_kg 
+            FROM tbl_flanges_asme_b16_5 
+            WHERE flange_type LIKE '%Welding Neck%' AND (nps = '2' OR nps = '2.0') AND rating = 2500 LIMIT 1;
+        """).fetchone()
+        self.assertIsNotNone(row_2500, "2in 2500# WN Flans veritabaninda bulunamadi!")
+        self.assertEqual(row_2500[0], 235.0, "2in 2500# WN Flans dis capi 235.0 mm olmali")
+        self.assertEqual(row_2500[1], 50.8, "2in 2500# WN Flans kalinligi 50.8 mm olmali")
+        self.assertEqual(row_2500[4], 8, "2in 2500# WN Flans civata adedi 8 olmali")
+
+        conn.close()
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 

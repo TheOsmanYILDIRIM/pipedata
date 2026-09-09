@@ -111,6 +111,25 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
+            LaunchedEffect(currentData) {
+                if (selectedPrimary != currentData.selectedPrimary) {
+                    selectedPrimary = currentData.selectedPrimary
+                }
+                if (selectedSecondary != currentData.selectedSecondary) {
+                    selectedSecondary = currentData.selectedSecondary
+                }
+                if (selectedNps != currentData.selectedNps) {
+                    selectedNps = currentData.selectedNps
+                }
+                prefsManager.saveCategorySelection(
+                    categoryId = selectedCategory.id,
+                    subtypeIndex = currentSubtypeIndex,
+                    nps = currentData.selectedNps,
+                    primary = currentData.selectedPrimary,
+                    secondary = currentData.selectedSecondary
+                )
+            }
+
             PipedataTheme(
                 cadTheme = currentTheme,
                 highContrast = highContrast
