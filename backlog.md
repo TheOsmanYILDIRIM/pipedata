@@ -1,5 +1,20 @@
 # Pipedata Modern Alternatifi - Backlog
 
+## Aktif Faz: Faz 6 — Kanonik Veri Mutabakatı (2026-09-09, KAPANDI ✅)
+- [x] **BUG-1:** Valve rating soldan-eşleşme bug'ı — `infer_rating()` (son sayı grubu + birim-sonek temizliği) ile düzeltildi. Kanıt: 800#=108, 1500#=432; `vlv11500.csv` hatalı=0.
+- [x] **BUG-2:** Buttweld imperial kolon kaosu — ftbw DEX etiket relabel (ftbw1..11 filename-prefix, 'red' substring kaldırıldı) + stubend imperial OD ×25.4 + wt short/long kolonları. Kanıt: Reducer=1012, Tee C2E=57.15, od<3mm=0.
+- [x] **BUG-3:** piwt* 1534 sahte satır — rebuild'da atlama (counter'lı). Kanıt: `piwt%`=0, skip=1534.
+- [x] **BUG-4:** Pipe 1/8" STD içsel tutarsızlık — fizik-doğrulamalı kolon fusion (ID=OD−2t sağlayan kaynak kazanır; bozuk metrik kaynak anomali raporuna loglandı). Kanıt: WT=1.7272 ✓.
+- [x] **BUG-5:** Metrik+İmperial çift kayıtlar — `canonical_merge.py` (pipe: Imperial öncelik + ID=OD−2t + MoI π/64 formül doğrulamalı fusion; flanş/vana: Metric önceliği). Kanıt: 757→379, 1734→654, 2841→1148; mükerrer grup=0. Fusion çelişkileri **ana-ajan adversarial yeniden-inşasıyla** doğrulandı: kazanan vs düşürülen satırlar arası **4473 kolon-çelişkisi** (`reports/canonical_merge_fusion_conflicts.md`, eski DB backup kanıtı) + merge-anomali raporu (`reports/canonical_merge_anomaly_report.md`) — sessiz seçim denetlenebilir.
+- [x] **BUG-6:** Line Blanks NULL/OD — test_6_7 iki bağımsız kaynak kanıtıyla (OD=146.0/146.05) kanonik doğrulandı; NULL cepleri meşru N/A olarak korundu.
+- [x] **BUG-7 + borç:** ftsw8 soket-weld master-audit yaması (eski DB'de elle duruyordu, rebuild'e gomülmemişti) — ASME B16.11 referans tablosu (12 boyut 3000#, 9 boyut 6000#) rebuild'e gömüldü. Kanıt: ftsw8 dolu=30. Audit rapor başlığı bu raporla tazelendi.
+- [x] **Test kapısı:** test_6_1..test_6_8 (TDD: önce 8/8 FAIL kanıtlandı) + tam suite **32/32 OK**; `pipedata.db` ↔ `app/src/main/assets/pipedata.db` md5 senkron (3df2f12d...).
+- Ayrıntılı kanıt tablosu ve doğrulama komutları: `PHASE6_CANONICAL_MERGE_CHECKLIST.md`
+- **Not (tekrar-rebuild disiplini):** Gelecek rebuild'larda zincir sırası `rebuild_perfect_sqlite.py` → `canonical_merge.py` → `test_suite.py`; asset kopyası unutulmamalı.
+- [ ] **Faz 7 adayı — PSV model-çöküşü:** psv.csv içindeki farklı PSV modelleri (aynı nps/rating altında 6 satır; weight 31/56 kg) `valve_type,nps,rating,end_connection` doğal anahtarına çöküyor; model ayrımı için `raw_json.legacy` satır-farkı veya yeni bir `model` kolonu değerlendirilmeli (şema değişikliği → app tarafı da etkilenir).
+
+# Pipedata Modern Alternatifi - Backlog
+
 ## Tamamlanan Fazlar
 - [x] APK Varlıklarının Tersine Mühendislikle Çıkarılması (956 CSV, 122 SVG, 214 DXF)
 - [x] Telif Hakkı ve Standardizasyon Denetimi (Telif riski %0 izolasyon)
@@ -100,3 +115,5 @@
   - Borular tablosunda (`tbl_pipes`) Atalet Momenti, Kesit Mukavemet Modülü, Atalet Yarıçapı ve Su Dolu Ağırlık formülleri sıfır sessiz fallback ile doğrudan fiziksel prensiplere göre hesaplandı.
   - `test_suite.py` 22 teste genişletildi; tüm tablolar için derin semantik kolon doğrulaması ve ground-truth kontrolleriyle 22/22 %100 PASS elde edildi.
 
+
+- [x] **Faz 6 Standart Uyumluluk Denetimi (2026-09-09):** Yayinlanmis ASME degerleriyle bagimsiz kiyaslama (standards_compliance.py) -> **49 PASS / 0 FAIL / 3 WARN**. PASS: B36.10M (Wikipedia indirmesi, kanit-kaynak [W]) 38/38; B16.9 90LR/Tee A kurali 5/5; B16.5+B16.10+B16.48 4/4. WARN (orijinal-veri-sapmasi, pipeline hatasi DEGIL - iki bagimsiz CSV hemfikir): 45e 2in C2E=35mm (standart ~38.1), gate 3in 150# F2F=203mm, gate 2.5in 190mm. Karar kullaniciya birakildi: CSVs degistirilmeden DB orijinal uygulama verisini sadakatle tasir (backlog notu).

@@ -568,6 +568,218 @@ class TestPipedataIntegrity(unittest.TestCase):
 
         conn.close()
 
+# ------------------------------------------------------------
+# FAZ A - TDD REGESYON TESTLERI (CANONICAL MERGE ONCESI KIRMIZI ASAMA)
+# BUG-1..BUG-6 + T8 regresyon testleri. Bu testlerin mevcut (bozuk)
+# veritabaninda FAIL etmesi BEKLENIR (TDD kirmizi asama); canonical merge
+# sonrasi YESIL donmeleri hedeflenir.
+# Anti-Macro Fallacy: her assert semantik degerleri (>0, dogru birim, dogru
+# aralik, dogru kayit) kontrol eder; makro satir sayilari kanit degildir.
+# ------------------------------------------------------------
+class TestPhase6CanonicalMerge(unittest.TestCase):
+    """Faz A: Canonical merge regresyon testleri (BUG-1..BUG-6, T8)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.db_path = os.path.join(os.path.expanduser("~/projects/pipedata"), "pipedata.db")
+
+    # BUG-1: vlv11/vlv12 vana rating etiketleme hatasi
+    def test_6_1_valve_ratings_800_1500_and_vlv11500_label(self):
+        """BUG-1: B16.10'da 800# ve 1500# vana siniflari dolu olmali; vlv11500.csv kaynakli TUM satirlarin rating'i tam 1500 olmali."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        count_800 = cur.execute(
+            "SELECT COUNT(*) FROM tbl_valves_asme_b16_10 WHERE rating = 800;"
+        ).fetchone()[0]
+        self.assertGreater(count_800, 0, "BUG-1: rating=800 vana satiri > 0 olmali (ASME B16.10 Class 800# eksik)")
+
+        count_1500 = cur.execute(
+            "SELECT COUNT(*) FROM tbl_valves_asme_b16_10 WHERE rating = 1500;"
+        ).fetchone()[0]
+        self.assertGreater(count_1500, 0, "BUG-1: rating=1500 vana satiri > 0 olmali (ASME B16.10 Class 1500# eksik)")
+
+        total_vlv11 = cur.execute(
+            "SELECT COUNT(*) FROM tbl_valves_asme_b16_10 WHERE source_file = 'vlv11500.csv';"
+        ).fetchone()[0]
+        self.assertGreater(total_vlv11, 0, "vlv11500.csv kaynakli en az 1 vana satiri bulunmali (kaynak haritasi kaniti)")
+
+        mislabeled = cur.execute(
+            "SELECT COUNT(*) FROM tbl_valves_asme_b16_10 "
+            "WHERE source_file = 'vlv11500.csv' AND (rating IS NULL OR rating <> 1500);"
+        ).fetchone()[0]
+        self.assertEqual(mislabeled, 0, "BUG-1: vlv11500.csv kaynakli TUM satirlarin rating'i 1500 olmali (150 OLAMAZ)")
+        conn.close()
+
+    # BUG-3: piwt* imperial kaynaklari B16.9 tablosuna yanlis birimle sizdi
+    def test_6_2_buttweld_piwt_sources_removed(self):
+        """BUG-3: tbl_fittings_buttweld_b16_9'da source_file LIKE 'piwt%' -> 0 satir."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        total = cur.execute("SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9;").fetchone()[0]
+        self.assertGreater(total, 500, "B16.9 tablosu veri icermeli (bos tabloda bu test sahte YESIL olur)")
+
+        piwt_rows = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 WHERE source_file LIKE 'piwt%';"
+        ).fetchone()[0]
+        self.assertEqual(piwt_rows, 0, "BUG-3: piwt* kaynakli satir KALMAMALI (in/mm birim kirilmasi regesyonu)")
+        conn.close()
+
+    # BUG-2: in->mm sizma + fiziksel agirlik ust siniri + B16.9 gercek kayit kaniti
+    # NOT: weight esigi 5000 kg — 22"/24" STD return140/return160 kaynakli 2040-2540 kg
+    # satirlari MESRU (B16.9 kalin duvar); 2000 kg esigi bunlari haksiz yere yakalar.
+    def test_6_3_buttweld_unit_sanity_and_tee_ground_truth(self):
+        """BUG-2: OD<3mm=0, weight>5000kg=0; 1.5in STD Tee C2E 30-40mm (B16.9 nominal 38.1mm)."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        od_leak = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 WHERE outer_diameter_mm < 3.0;"
+        ).fetchone()[0]
+        self.assertEqual(od_leak, 0, "BUG-2: outer_diameter_mm < 3.0 OLAMAZ (inç degeri mm kolonuna sizma; 1/8in OD=10.3mm)")
+
+        absurd_weight = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 WHERE weight_kg > 5000;"
+        ).fetchone()[0]
+        self.assertEqual(absurd_weight, 0, "BUG-2: weight_kg > 5000 OLAMAZ (fiziksel ust sinir; mevcut tablo max=2540 kg meşru)")
+
+        tee_total = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 "
+            "WHERE component_type = 'Tee' AND nps = '1 1/2' AND schedule = 'STD';"
+        ).fetchone()[0]
+        self.assertGreater(tee_total, 0, "1.5in STD Straight Tee kaydi bulunamali (B16.9: Tee C2E nominal 57.15mm)")
+
+        bad_tee = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 "
+            "WHERE component_type = 'Tee' AND nps = '1 1/2' AND schedule = 'STD' "
+            "AND (center_to_end_mm IS NULL OR center_to_end_mm < 52.0 OR center_to_end_mm > 60.0);"
+        ).fetchone()[0]
+        self.assertEqual(bad_tee, 0, "BUG-2: 1.5in STD Tee center_to_end_mm 52-60 araliginda olmali "
+                                     "(B16.9 Table 1 Tee A=2.25in=57.15mm; iki bagimsiz kaynak kaniti: "
+                                     "straightteestd.csv=57.0 + straighttee_imperial_std.csv=57.15. "
+                                     "Onceki 38.1 sabiti 90° elbow A boyutuydu, Tee icin YANLISTIR)")
+        conn.close()
+
+    # BUG-4: tbl_pipes 1/8in STD mukerrer/yanlis unit kayitlari
+    def test_6_4_pipe_1_8_std_canonical_row(self):
+        """BUG-4: nps='1/8' + schedule='STD' TAM 1 satir; wt=1.7272mm, OD~10.3mm, ID=OD-2t butunlugu."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        cnt = cur.execute(
+            "SELECT COUNT(*) FROM tbl_pipes WHERE nps = '1/8' AND schedule = 'STD';"
+        ).fetchone()[0]
+        self.assertEqual(cnt, 1, "BUG-4: 1/8in STD icin TAM 1 kanonik satir olmali (Imperial+Metric mukerrer kayit var)")
+
+        row = cur.execute(
+            "SELECT outer_diameter_mm, wall_thickness_mm, inner_diameter_mm "
+            "FROM tbl_pipes WHERE nps = '1/8' AND schedule = 'STD';"
+        ).fetchone()
+        self.assertIsNotNone(row, "1/8in STD boru satiri bulunamadi")
+        od_mm, wt_mm, id_mm = row
+
+        self.assertAlmostEqual(wt_mm, 1.7272, delta=0.03, msg="BUG-4: 1/8in STD et kalinligi 1.7272 mm (0.068in) olmali")
+        self.assertAlmostEqual(od_mm, 10.3, delta=0.1, msg="BUG-4: 1/8in STD dis cap ~10.3 mm (0.405in) olmali")
+        self.assertLessEqual(
+            abs(id_mm - (od_mm - 2.0 * wt_mm)), 0.3,
+            "BUG-4: ID = OD - 2t butunlugu bozulmus (|ID-(OD-2*WT)| <= 0.3 mm olmali)"
+        )
+        conn.close()
+
+    # BUG-5: uc dogal anahtarda mukerrer gruplar (canonical merge tekil satir uretmeli)
+    def test_6_5_natural_key_duplicate_groups_zero(self):
+        """BUG-5: tbl_pipes(nps,schedule), tbl_flanges_b16_5(nps,rating,flange_type), tbl_valves_b16_10(valve_type,nps,rating,end_connection) dogal anahtarlarinda 0 mukerrer grup."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        dup_pipes = cur.execute(
+            "SELECT COUNT(*) FROM (SELECT nps, schedule FROM tbl_pipes "
+            "GROUP BY nps, schedule HAVING COUNT(*) > 1);"
+        ).fetchone()[0]
+        self.assertEqual(dup_pipes, 0, "BUG-5: tbl_pipes(nps,schedule) mukerrer grup sayisi 0 olmali")
+
+        dup_flanges = cur.execute(
+            "SELECT COUNT(*) FROM (SELECT nps, rating, flange_type FROM tbl_flanges_asme_b16_5 "
+            "GROUP BY nps, rating, flange_type HAVING COUNT(*) > 1);"
+        ).fetchone()[0]
+        self.assertEqual(dup_flanges, 0, "BUG-5: tbl_flanges_asme_b16_5(nps,rating,flange_type) mukerrer grup sayisi 0 olmali")
+
+        dup_valves = cur.execute(
+            "SELECT COUNT(*) FROM (SELECT valve_type, nps, rating, end_connection FROM tbl_valves_asme_b16_10 "
+            "GROUP BY valve_type, nps, rating, end_connection HAVING COUNT(*) > 1);"
+        ).fetchone()[0]
+        self.assertEqual(dup_valves, 0, "BUG-5: tbl_valves_asme_b16_10(valve_type,nps,rating,end_connection) mukerrer grup sayisi 0 olmali")
+        conn.close()
+
+    # BUG-2 (devam): reducers*.csv relabel sonrasi Reducer alt tipi dolu olmali
+    def test_6_6_buttweld_reducer_subtype_populated(self):
+        """BUG-2: tbl_fittings_buttweld_b16_9'da component_type='Reducer' satir sayisi > 100 olmali (ftbw9/ftbw10 + reducers*.csv relabel sonrasi)."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        total = cur.execute("SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9;").fetchone()[0]
+        self.assertGreater(total, 500, "B16.9 tablosu veri icermeli (makro esik: alt test anlamliligini korur)")
+
+        reducer_count = cur.execute(
+            "SELECT COUNT(*) FROM tbl_fittings_buttweld_b16_9 WHERE component_type = 'Reducer';"
+        ).fetchone()[0]
+        self.assertGreater(reducer_count, 100, "BUG-2: Reducer alt tipi > 100 satir olmali (mevcut: reducers*.csv relabel edilmemis)")
+        conn.close()
+
+    # BUG-6: line blank agirlik dolulugu + gercek kayit kaniti (B16.48)
+    def test_6_7_line_blanks_weight_coverage_and_ground_truth(self):
+        """BUG-6: weight_blank_kg NULL orani <= %30; nps='3' AND rating=300'de en az 1 satirda outer_diameter_mm > 300 olmali (B16.48)."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        total = cur.execute("SELECT COUNT(*) FROM tbl_line_blanks_asme_b16_48;").fetchone()[0]
+        self.assertGreater(total, 500, "B16.48 tablosu veri icermeli (makro esik anlamliligini korur)")
+
+        null_count = cur.execute(
+            "SELECT COUNT(*) FROM tbl_line_blanks_asme_b16_48 WHERE weight_blank_kg IS NULL;"
+        ).fetchone()[0]
+
+        self.assertLessEqual(
+            null_count * 100.0 / total, 30.0,
+            "BUG-6: weight_blank_kg NULL orani %30'u asamaz (mevcut: 300/1304 = %23.0; merge sonrasi bozulmamali)"
+        )
+
+        od_valid = cur.execute(
+            "SELECT COUNT(*) FROM tbl_line_blanks_asme_b16_48 "
+            "WHERE nps = '3' AND rating = 300 AND outer_diameter_mm IS NOT NULL "
+            "AND outer_diameter_mm > 140 AND outer_diameter_mm < 152;"
+        ).fetchone()[0]
+
+        self.assertGreater(od_valid, 0, "BUG-6: nps='3' AND rating=300'de en az 1 satirda outer_diameter_mm 140-152 olmali "
+                                         "(KANIT: blnu1a_3_300_millimetres.csv OD=146.0 + blnu1a_2_300_inches.csv OD=146.05=5.75in "
+                                         "iki bagimsiz kaynak hemfikir; onceki 311.15 sabiti veri-gercekligine aykiriydi)")
+        conn.close()
+
+    # T8: B16.5 1/2in 1500# WN flans tekil ve tam dogruluk (PCD 82.55mm, 4 civata)
+    def test_6_8_flange_1_2_1500_wn_canonical(self):
+        """T8: nps='1/2' AND rating=1500 AND flange_type='Welding Neck' TAM 1 satir; pcd_mm 82.55-82.60; num_bolts=4."""
+        conn = sqlite3.connect(self.db_path)
+        cur = conn.cursor()
+
+        cnt = cur.execute(
+            "SELECT COUNT(*) FROM tbl_flanges_asme_b16_5 "
+            "WHERE nps = '1/2' AND rating = 1500 AND flange_type = 'Welding Neck';"
+        ).fetchone()[0]
+        self.assertEqual(cnt, 1, "T8: 1/2in 1500# WN flans TAM 1 satir olmali (mevcut: Imperial+Metric mukerrer)")
+
+        row = cur.execute(
+            "SELECT pcd_mm, num_bolts FROM tbl_flanges_asme_b16_5 "
+            "WHERE nps = '1/2' AND rating = 1500 AND flange_type = 'Welding Neck';"
+        ).fetchone()
+        self.assertIsNotNone(row, "1/2in 1500# WN flans kaydi bulunamadi")
+        pcd_mm, num_bolts = row
+
+        self.assertGreaterEqual(pcd_mm, 82.55, "T8: PCD >= 82.55 mm olmali (B16.5 1/2in 1500#: 82.55mm)")
+        self.assertLessEqual(pcd_mm, 82.60, "T8: PCD <= 82.60 mm olmali (B16.5 1/2in 1500#: 82.55mm)")
+        self.assertEqual(num_bolts, 4, "T8: 1/2in 1500# WN flans civata adedi 4 olmali")
+        conn.close()
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 

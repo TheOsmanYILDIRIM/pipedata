@@ -1,5 +1,7 @@
 # Orijinal Uygulama (Pipedata Pro) vs. SQLite Kapsamlı Mutabakat Raporu
 
+> ⚠️ **DURUM UYARISI (2026-09-09):** Bu rapordaki sayılar **FAZ 3 sonrası** ölçülmüştür ve **bayat** kabul edilir. Sonraki commit'lerde (ASME B16.5/B16.11 hizalama, soket kaynak ağırlıkları vb.) birçok eksik kapatılmıştır — ör. rapordaki "Flanges B16.5 1/2" 1500# WN MISSING_IN_DB" satırları bugün artık DOLUDUR (bağımsız sqlite3 sorgusuyla doğrulandı: od_mm=121.0, pcd_mm=82.6, num_bolts=4). Güncel eksik/ujuşmazlık durumu için `PHASE6_CANONICAL_MERGE_CHECKLIST.md` ve `reports/canonical_merge_anomaly_report.md` dosyalarına bakınız. Bu dosya geçmiş referans olarak korunmaktadır.
+
 **Tarih:** 2026-09-08
 **Toplam Karşılaştırılan Semantik Değer:** 5,726
 **Birebir Eşleşme (Match):** 4,963 (%86.67)

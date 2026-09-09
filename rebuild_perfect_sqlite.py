@@ -40,6 +40,25 @@ def get_col(row, idx):
         return v if v != "" and v.upper() != "N/A" and v.upper() != "SPA" else None
     return None
 
+RATING_CLASSES_DESC = (9000, 6000, 3000, 2500, 2000, 1500, 900, 800, 600, 400, 300, 150)
+
+def infer_rating(fname):
+    """Faz6 BUG-1: dosya adindaki SON rating sinifini bulur (soldan-eslesme fix: vlv11500.csv -> 150 DEGIL 1500).
+    Kenar vakalar: vlv1400_.csv -> 400 (sondaki '_' temizlenir); *_inches/_millimetres sonekleri atilir;
+    ftsc1430 gibi serisiz tablolar None dondurur (3000/6000 e zorlama YASAK - No Silent Fallback)."""
+    base = fname.lower().strip()
+    if base.endswith(".csv"):
+        base = base[:-4]
+    base = re.sub(r'(_|_(inches|millimetres|imperial|metric))+$', '', base)
+    m = re.search(r'([0-9]+)$', base)
+    if not m:
+        return None
+    tail = m.group(1)
+    for cls in RATING_CLASSES_DESC:
+        if tail.endswith(str(cls)):
+            return cls
+    return None
+
 def extract_headers_and_data(rows):
     if not rows: return [], []
     if len(rows) == 1: return [c.strip() for c in rows[0]], []
@@ -117,6 +136,7 @@ def build_full_sqlite():
                 VALUES (?, ?, ?, ?, ?, ?, ?)''', (sf, title, "General", len(unique_ph), json.dumps(unique_ph), content, content))
 
     tables_def = manifest["tables"]
+    skipped_piwt = 0
     for tname, tdef in tables_def.items():
         for sf in tdef.get("source_files", []):
             fname = sf["filename"]
@@ -229,22 +249,43 @@ def build_full_sqlite():
                 # 2. tbl_fittings_buttweld_b16_9
                 # ----------------------------------------------------
                 elif tname == "tbl_fittings_buttweld_b16_9":
-                    ctype = "Buttweld Fitting"
                     fl = fname.lower()
-                    if "cap" in fl: ctype = "Cap"
-                    elif "45elbow" in fl or "bw3" in fl: ctype = "45° Elbow"
-                    elif "90elbow" in fl or "bw1" in fl or "elbow" in fl: ctype = "90° Elbow"
-                    elif "reducing" in fl or "red" in fl or "bw7" in fl or "bw8" in fl: ctype = "Reducing Tee"
-                    elif "straight" in fl or "tee" in fl: ctype = "Tee"
-                    elif "reducer" in fl or "bw5" in fl or "bw6" in fl: ctype = "Reducer"
+                    # Faz6 BUG-3: piwt* dosyalari boru agirlik tablolaridir (NPS, OD, Wall, Weight);
+                    # fitting degildir. B16.9 tablosuna sahte satir sokulamaz (1534 satir kanitli).
+                    if fl.startswith("piwt"):
+                        skipped_piwt += 1
+                        continue
+                    ctype = "Buttweld Fitting"
+                    # Faz6 relabel (DEX dogrulamali notes.md:79-91; filename-prefix once, 'red' substring KALDIRILDI:
+                    # onceki zincir reducers*.csv'yi 'Reducing Tee' yapiyordu - app'in red_con/red_ecc filtresi bos kaliyordu):
+                    if fl.startswith("reducers"): ctype = "Reducer"
+                    elif fl.startswith("ftbw1"): ctype = "45° Elbow"
+                    elif fl.startswith("ftbw2"): ctype = "90° Elbow"
+                    elif fl.startswith("ftbw3"): ctype = "Return 180° LR"
+                    elif fl.startswith("ftbw5"): ctype = "Return 180° SR"
+                    elif fl.startswith("ftbw6"): ctype = "Tee"
+                    elif fl.startswith("ftbw7"): ctype = "Reducing Tee"
+                    elif fl.startswith("ftbw8"): ctype = "Cap"
+                    elif fl.startswith("ftbw9") or fl.startswith("ftbw10"): ctype = "Reducer"
+                    elif fl.startswith("ftbw11"): ctype = "Lap Joint Stub End"
+                    elif "cap" in fl: ctype = "Cap"
+                    elif "45elbow" in fl: ctype = "45° Elbow"
+                    elif "shortradiuselbow" in fl or "90elbow" in fl or "elbow" in fl: ctype = "90° Elbow"
+                    elif "reducing" in fl: ctype = "Reducing Tee"
+                    elif "straighttee" in fl or "tee" in fl: ctype = "Tee"
+                    elif "reducer" in fl: ctype = "Reducer"
                     sm = re.search(r'(?:elbow|tee|cap|reducer|reducers|stubend)(?:_imperial)?_?([0-9]+[a-z]?|std|xs|xxs)', fl)
                     sch_val = sm.group(1).upper() if sm else "STD"
                     scale = 25.4 if unit_sys == "Imperial" else 1.0
 
                     od_val = getv('od', 'diameter') or parse_float(get_col(row, 2))
-                    od_mm = od_val  # OD is consistently in mm across both metric and imperial files in raw Pipedata CSVs
+                    # Faz6 BUG-2: OD genelde mm; YALNIZCA stubend imperial dosyalarinda od inç (0.84 = 21.34mm)
+                    if fl.startswith("stubend") and unit_sys == "Imperial" and od_val:
+                        od_mm = od_val * 25.4
+                    else:
+                        od_mm = od_val  # OD is consistently in mm across both metric and imperial files in raw Pipedata CSVs
 
-                    wt_val = parse_float(row[-1]) if ('cap' in fl and row) else getv('wt kg', 'weight kg', 'mass', 'weight', 'wt')
+                    wt_val = parse_float(row[-1]) if ('cap' in fl and row) else getv('wt kg', 'weight kg', 'mass', 'weight', 'wt short', 'wt long', 'wt')
                     wt_kg = wt_val  # Weight is consistently in kg in raw Pipedata CSVs
                     wt_lb = (wt_kg * 2.20462) if wt_kg else None
 
@@ -264,10 +305,9 @@ def build_full_sqlite():
                 # 3. tbl_flanges_asme_b16_5
                 # ----------------------------------------------------
                 elif tname == "tbl_flanges_asme_b16_5":
-                    rm = re.search(r'(150|300|400|600|900|1500|2500)', fname)
-                    if not rm:
+                    rating_val = infer_rating(fname)
+                    if not rating_val:
                         continue
-                    rating_val = int(rm.group(1))
                     scale = 25.4 if unit_sys == "Imperial" else 1.0
 
                     od_val = getv('od', 'o/d a', 'o/d j')
@@ -327,8 +367,7 @@ def build_full_sqlite():
                     elif "butterfly" in fl or "vlv5" in fl: ctype = "Butterfly Valve"
                     elif "psv" in fl or "vlv6" in fl: ctype = "Safety Valve"
 
-                    rm = re.search(r'(150|300|400|600|900|1500|2500)', fname)
-                    rating_val = int(rm.group(1)) if rm else 150
+                    rating_val = infer_rating(fname) or 150
                     scale = 25.4 if unit_sys == "Imperial" else 1.0
 
                     f2f = getv('rf-f/f', 'rf-face to face', 'rf face to face', 'f to f', 'face to face', 'a f to f', 'rf-f/f short pattern', 'bw-f/f', 'bw-f/f short pattern', 'rtj f/f', 'rtj face to face', 'rtj-f/f', 'length', 'len', 'l (rf/bw)', 'l')
@@ -363,8 +402,7 @@ def build_full_sqlite():
                     if "paddle" in fl or "blank" in fl: ctype = "Paddle Blank"
                     elif "spacer" in fl: ctype = "Paddle Spacer"
 
-                    rm = re.search(r'(150|300|400|600|900|1500|2500)', fname)
-                    rating_val = int(rm.group(1)) if rm else 150
+                    rating_val = infer_rating(fname) or 150
                     scale = 25.4 if unit_sys == "Imperial" else 1.0
 
                     od_val = getv('od')
@@ -392,8 +430,7 @@ def build_full_sqlite():
                     elif "sw" in fl or "spw" in fl: ctype = "Spiral Wound"
                     elif "flt" in fl: ctype = "Flat Ring"
 
-                    rm = re.search(r'(150|300|400|600|900|1500|2500)', fname)
-                    rating_val = int(rm.group(1)) if rm else 150
+                    rating_val = infer_rating(fname) or 150
                     scale = 25.4 if unit_sys == "Imperial" else 1.0
 
                     id_val = getv('id', 'id 150', 'id 300', 'id 600', 'id 900', 'id 1500', 'id 2500', 'landing id 150#')
@@ -497,6 +534,46 @@ def build_full_sqlite():
                     elif ctype == "Reducing Coupling": len_val = getv('a', 'q-len', 'length')
                     else: len_val = None
                     if len_val is not None: len_val *= scale
+
+                    # Faz6 borc kapatma: ftsw8 (Reducing Coupling) dosyalari (ftsw830/ftsw860) odakli basliklar
+                    # (Q-Len/R-Dia/Socket Dia Large End) kullanir; gecmis oturumun ASME B16.11 standart soket
+                    # olculeri elle girilmis ama rebuild'e gomulmemisti (Adversarial denetim kaniti: eski DB'de
+                    # 30 satir dolu [21x3000# + 9x6000#], taze rebuild'da NULL). Referans: ASME B16.11 Fig.7
+                    # (inç cevrimli mm). Soket capi/derinligi sinifa gore degismez; bore/thk sinifa gore degisir.
+                    # 2 1/2+ (6000#) icin eski DB'de veri YOK — uydurulamaz (No Silent Fallback).
+                    if fl.startswith("ftsw8") and rating_val in (3000, 6000) and sock_depth is None and sock_dia is None:
+                        _sw8_sock = {
+                            "1/8": (9.652, 11.176), "1/4": (9.652, 14.605), "3/8": (9.652, 18.034),
+                            "1/2": (9.652, 22.225), "3/4": (12.7, 27.559), "1": (12.7, 34.29),
+                            "1 1/4": (12.7, 43.053), "1 1/2": (12.7, 49.149), "2": (15.748, 61.6204),
+                            "2 1/2": (15.748, 74.4474), "3": (15.748, 90.424), "4": (19.05, 116.078),
+                        }
+                        _sw8_3000 = {  # (bore, socket_wall_thk, length)
+                            "1/8": (7.5946, 3.175, 15.875), "1/4": (10.0076, 3.7846, 15.875),
+                            "3/8": (13.2842, 4.0132, 15.875), "1/2": (16.5608, 4.6736, 17.4625),
+                            "3/4": (21.6916, 4.9022, 22.225), "1": (27.4066, 5.6896, 24.60625),
+                            "1 1/4": (35.814, 6.0706, 26.19375), "1 1/2": (41.656, 6.35, 27.78125),
+                            "2": (53.2638, 6.9342, 34.13125), "2 1/2": (64.2366, 8.763, 37.30625),
+                            "3": (79.4512, 9.525, 39.6875), "4": (103.7844, 10.6934, 45.24375),
+                        }
+                        _sw8_6000 = {  # (bore, socket_wall_thk) — 9 boyut kanitli
+                            "1/8": (4.8006, 3.9624), "1/4": (7.112, 4.5974), "3/8": (9.8806, 5.0292),
+                            "1/2": (12.5476, 5.969), "3/4": (16.3068, 6.9596), "1": (21.463, 7.9248),
+                            "1 1/4": (30.226, 7.9248), "1 1/2": (34.7472, 8.9154), "2": (43.6118, 10.922),
+                        }
+                        _sock = _sw8_sock.get(raw_nps)
+                        if _sock:
+                            sock_depth, sock_dia = _sock
+                            if rating_val == 3000:
+                                _r = _sw8_3000.get(raw_nps)
+                                if _r:
+                                    bore, sock_thk, _len_ref = _r
+                                    if len_val is None:
+                                        len_val = _len_ref
+                            else:
+                                _r = _sw8_6000.get(raw_nps)
+                                if _r:
+                                    bore, sock_thk = _r
 
                     kg_val = getv('kg')
                     if kg_val is not None:
@@ -646,6 +723,7 @@ def build_full_sqlite():
     ''')
     conn.commit()
     conn.close()
+    print(f"Faz6 ozet: piwt dosyalarindan atlanan satir = {skipped_piwt}")
     print("Database built perfectly with all headers mapped.")
 
 if __name__ == "__main__":
