@@ -56,7 +56,6 @@ class CsvDataStore(private val context: Context) {
         }
     }
 
-    /** Basit RFC4180-uyumlu CSV parser (baslikli). Asset stream'den okur. */
     private fun parseCsv(path: String): List<Map<String, String>> {
         val text = context.assets.open(path).bufferedReader().use { it.readText() }
         val rows = mutableListOf<Map<String, String>>()
@@ -67,7 +66,7 @@ class CsvDataStore(private val context: Context) {
             val line = lines[li].trim()
             if (line.isEmpty()) continue
             val values = splitCsvLine(line)
-            val map = java.util.LinkedHashMap<String, String>()
+            val map = LinkedHashMap<String, String>()
             for (ci in 0 until Math.max(headers.size, values.size)) {
                 if (ci < headers.size) {
                     map[headers[ci]] = if (ci < values.size) values[ci].trim() else ""
@@ -78,8 +77,8 @@ class CsvDataStore(private val context: Context) {
         return rows
     }
 
-    private fun splitCsvLine(line: String): java.util.List<String> {
-        val out = java.util.ArrayList<String>()
+    private fun splitCsvLine(line: String): List<String> {
+        val out = ArrayList<String>()
         val sb = StringBuilder()
         var inQuotes = false
         var i = 0
@@ -105,13 +104,13 @@ class CsvDataStore(private val context: Context) {
     }
 
     /** Yuklu tablodan satirlari doner; tablo yuklenmediyse bos liste (sorgu fallback'e duser). */
-    private fun tableData(table: String): List<Map<String, String>> = tables[table] ?? emptyList()
+    private fun tableData(table: String): List<Map<String, String>> = tables[table] ?: emptyList()
 
     private fun d(row: Map<String, String>, col: String): Double {
-        return row[col]?.trim().toDoubleOrNull() ?? 0.0
+        return row[col]?.trim()?.toDoubleOrNull() ?: 0.0
     }
 
-    private fun s(row: Map<String, String>, col: String): String = row[col] ?? ""
+    private fun s(row: Map<String, String>, col: String): String = row[col] ?: ""
 
     fun prewarmCache() {
         try {
