@@ -1,17 +1,19 @@
 # Pipedata Modern Alternatifi - Backlog
 
-## Aktif Faz: Faz 6 — Kanonik Veri Mutabakatı (2026-09-09, KAPANDI ✅)
-- [x] **BUG-1:** Valve rating soldan-eşleşme bug'ı — `infer_rating()` (son sayı grubu + birim-sonek temizliği) ile düzeltildi. Kanıt: 800#=108, 1500#=432; `vlv11500.csv` hatalı=0.
-- [x] **BUG-2:** Buttweld imperial kolon kaosu — ftbw DEX etiket relabel (ftbw1..11 filename-prefix, 'red' substring kaldırıldı) + stubend imperial OD ×25.4 + wt short/long kolonları. Kanıt: Reducer=1012, Tee C2E=57.15, od<3mm=0.
-- [x] **BUG-3:** piwt* 1534 sahte satır — rebuild'da atlama (counter'lı). Kanıt: `piwt%`=0, skip=1534.
-- [x] **BUG-4:** Pipe 1/8" STD içsel tutarsızlık — fizik-doğrulamalı kolon fusion (ID=OD−2t sağlayan kaynak kazanır; bozuk metrik kaynak anomali raporuna loglandı). Kanıt: WT=1.7272 ✓.
-- [x] **BUG-5:** Metrik+İmperial çift kayıtlar — `canonical_merge.py` (pipe: Imperial öncelik + ID=OD−2t + MoI π/64 formül doğrulamalı fusion; flanş/vana: Metric önceliği). Kanıt: 757→379, 1734→654, 2841→1148; mükerrer grup=0. Fusion çelişkileri **ana-ajan adversarial yeniden-inşasıyla** doğrulandı: kazanan vs düşürülen satırlar arası **4473 kolon-çelişkisi** (`reports/canonical_merge_fusion_conflicts.md`, eski DB backup kanıtı) + merge-anomali raporu (`reports/canonical_merge_anomaly_report.md`) — sessiz seçim denetlenebilir.
-- [x] **BUG-6:** Line Blanks NULL/OD — test_6_7 iki bağımsız kaynak kanıtıyla (OD=146.0/146.05) kanonik doğrulandı; NULL cepleri meşru N/A olarak korundu.
-- [x] **BUG-7 + borç:** ftsw8 soket-weld master-audit yaması (eski DB'de elle duruyordu, rebuild'e gomülmemişti) — ASME B16.11 referans tablosu (12 boyut 3000#, 9 boyut 6000#) rebuild'e gömüldü. Kanıt: ftsw8 dolu=30. Audit rapor başlığı bu raporla tazelendi.
-- [x] **Test kapısı:** test_6_1..test_6_8 (TDD: önce 8/8 FAIL kanıtlandı) + tam suite **32/32 OK**; `pipedata.db` ↔ `app/src/main/assets/pipedata.db` md5 senkron (3df2f12d...).
-- Ayrıntılı kanıt tablosu ve doğrulama komutları: `PHASE6_CANONICAL_MERGE_CHECKLIST.md`
-- **Not (tekrar-rebuild disiplini):** Gelecek rebuild'larda zincir sırası `rebuild_perfect_sqlite.py` → `canonical_merge.py` → `test_suite.py`; asset kopyası unutulmamalı.
-- [ ] **Faz 7 adayı — PSV model-çöküşü:** psv.csv içindeki farklı PSV modelleri (aynı nps/rating altında 6 satır; weight 31/56 kg) `valve_type,nps,rating,end_connection` doğal anahtarına çöküyor; model ayrımı için `raw_json.legacy` satır-farkı veya yeni bir `model` kolonu değerlendirilmeli (şema değişikliği → app tarafı da etkilenir).
+## RESET (2026-09-10) — Turetilmis veri sifirlandi, tablolar bastan cikarilacak
+- [x] Silinenler: `pipedata.db` (23M), `data/csv/` tamami (raw kopya+categorized+canonical), `app/src/main/assets/csv/` tamami, `schema_manifest.json`, tureten scriptler (`rebuild_perfect_sqlite.py`, `canonical_merge.py`, `migrate_to_sqlite.py`, `build_full_sqlite.py`, `organize_data.py`, `build_canonical_csv.py`, `csv_vs_db_audit.py`).
+- [x] Kalanlar: `raw_apk/assets/` 956 orijinal CSV + Kotlin kodu (`CsvDataStore.kt` dahil) + `test_suite.py` + `reports/` + SVG varliklari.
+- [ ] Yeni tablo cikarma pipeline'i (tek script, test kapili) bastan yazilacak. NOT: `CsvDataStore.kt` su an asset bulamayacagi icin app/tests kirmizi — beklenen durum.
+
+## Aktif Faz: Faz 7 — CSV-First Mimarisi Geçişi (2026-09-09, TAMAMLANDI ✅)
+- [x] **Mimari:** SQLite `pipedata.db` (23MB) app asset'inden kaldırıldı; yerine `CsvDataStore.kt` (CSV okuyan) yazıldı. PipedataDbHelper.kt (SQLite) silindi.
+- [x] **Kanonik CSV üretimi:** `build_canonical_csv.py` — DB'den 8 kritik tablo (tbl_flanges_asme_b16_5, tbl_pipes, tbl_fittings_buttweld_b16_9, tbl_fittings_socketweld_b16_11, tbl_fittings_threaded_b16_11, tbl_valves_asme_b16_10, tbl_gaskets_and_rtj, tbl_line_blanks_asme_b16_48) kanonik CSV'ye döküldü. 15.929 satır, DB ile **0 fark** (`csv_vs_db_audit.py` kanıtı).
+- [x] **Asset paketleme:** Kanonik 8 CSV → `app/assets/csv/canonical/`, ham 956 CSV → `app/assets/csv/raw/` (sadakat kanıtı). APK 32MB → 9.8MB.
+- [x] **CI kapısı:** `build_apk.yml`'e `csv_vs_db_audit.py --fail-on-diff` doğrulama adımı eklendi — kanonik CSV DB ile uyuşmazsa APK üretilmez.
+- [x] **Test grubu:** `test_suite.py`'ye `TestPhase7CsvFirst` (5 test: asset varlığı, 0-bayt anomali kontrolü, mutabakat, DB yokluğu, Kotlin wiring) eklendi. Toplam **37/37 OK**.
+- [x] **Kotlin sorgu mantığı:** 7 SQL sorgusu satır-filtreleme ile değiştirildi (`LIKE %x%` → `contains`, `ORDER BY col DESC LIMIT 1` → `maxByOrNull`, `LIMIT 1` → `firstOrNull`). Sıra/davranış DB rowid sırasıyla birebir eşleşiyor.
+- [x] **Git:** `79443d6` commit ve push tamamlandı. `data/csv/canonical/` .gitignore'a eklendi (regene edilebilir).
+- [ ] **Faz 8 adayı — PSV model-çöküşü:** psv.csv içindeki farklı PSV modelleri (aynı nps/rating altında 6 satır; weight 31/56 kg) `valve_type,nps,rating,end_connection` doğal anahtarına çöküyor; model ayrımı için `raw_json.legacy` satır-farkı veya yeni bir `model` kolonu değerlendirilmeli.
 
 # Pipedata Modern Alternatifi - Backlog
 

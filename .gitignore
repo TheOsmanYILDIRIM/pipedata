@@ -21,5 +21,4 @@ local.properties
 !gradle/wrapper/gradle-wrapper.jar
 scratch/
 
-# Generated canonical CSVs (regenerable from build_canonical_csv.py)
-data/csv/canonical/
+# Faz 7 reset (2026-09-10): turetilmis tum veri silindi; yeni cikarma pipeline'i buraya eklenecek
