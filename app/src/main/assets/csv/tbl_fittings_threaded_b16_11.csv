@@ -1,0 +1,1239 @@
+nps,rating,component_type,center_to_end_mm,bore_diameter_mm,body_wall_thickness_mm,length_mm,weight_kg,source_file
+1/8,2000,Plug,9.652,,,9.652,0.0091,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1/4,2000,Plug,11.176,,,11.176,0.0091,ftsc10_threaded_hex_head_plug_2000_inches.csv
+3/8,2000,Plug,12.7,,,12.7,0.0227,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1/2,2000,Plug,14.224,,,14.224,0.0363,ftsc10_threaded_hex_head_plug_2000_inches.csv
+3/4,2000,Plug,15.748,,,15.748,0.0635,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1,2000,Plug,19.05,,,19.05,0.0998,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1 1/4,2000,Plug,20.574,,,20.574,0.2313,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1 1/2,2000,Plug,20.574,,,20.574,0.2812,ftsc10_threaded_hex_head_plug_2000_inches.csv
+2,2000,Plug,22.352,,,22.352,0.4627,ftsc10_threaded_hex_head_plug_2000_inches.csv
+2 1/2,2000,Plug,26.924,,,26.924,0.7938,ftsc10_threaded_hex_head_plug_2000_inches.csv
+3,2000,Plug,28.448,,,28.448,1.2066,ftsc10_threaded_hex_head_plug_2000_inches.csv
+4,2000,Plug,31.75,,,31.75,2.6717,ftsc10_threaded_hex_head_plug_2000_inches.csv
+1/8,2000,Plug,10.0,,,10.0,0.02,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1/4,2000,Plug,11.0,,,11.0,0.02,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+3/8,2000,Plug,13.0,,,13.0,0.05,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1/2,2000,Plug,14.0,,,14.0,0.08,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+3/4,2000,Plug,16.0,,,16.0,0.14,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1,2000,Plug,19.0,,,19.0,0.22,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1 1/4,2000,Plug,21.0,,,21.0,0.51,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1 1/2,2000,Plug,21.0,,,21.0,0.62,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+2,2000,Plug,22.0,,,22.0,1.02,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+2 1/2,2000,Plug,27.0,,,27.0,1.75,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+3,2000,Plug,28.0,,,28.0,2.66,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+4,2000,Plug,32.0,,,32.0,5.89,ftsc10_threaded_hex_head_plug_2000_millimetres.csv
+1/8,3000,Plug,9.652,,,9.652,0.0091,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1/4,3000,Plug,11.176,,,11.176,0.0091,ftsc10_threaded_hex_head_plug_3000_inches.csv
+3/8,3000,Plug,12.7,,,12.7,0.0227,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1/2,3000,Plug,14.224,,,14.224,0.0363,ftsc10_threaded_hex_head_plug_3000_inches.csv
+3/4,3000,Plug,15.748,,,15.748,0.0635,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1,3000,Plug,19.05,,,19.05,0.0998,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1 1/4,3000,Plug,20.574,,,20.574,0.2313,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1 1/2,3000,Plug,20.574,,,20.574,0.2812,ftsc10_threaded_hex_head_plug_3000_inches.csv
+2,3000,Plug,22.352,,,22.352,0.4627,ftsc10_threaded_hex_head_plug_3000_inches.csv
+2 1/2,3000,Plug,26.924,,,26.924,0.7938,ftsc10_threaded_hex_head_plug_3000_inches.csv
+3,3000,Plug,28.448,,,28.448,1.2066,ftsc10_threaded_hex_head_plug_3000_inches.csv
+4,3000,Plug,31.75,,,31.75,2.6717,ftsc10_threaded_hex_head_plug_3000_inches.csv
+1/8,3000,Plug,10.0,,,10.0,0.02,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1/4,3000,Plug,11.0,,,11.0,0.02,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+3/8,3000,Plug,13.0,,,13.0,0.05,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1/2,3000,Plug,14.0,,,14.0,0.08,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+3/4,3000,Plug,16.0,,,16.0,0.14,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1,3000,Plug,19.0,,,19.0,0.22,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1 1/4,3000,Plug,21.0,,,21.0,0.51,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1 1/2,3000,Plug,21.0,,,21.0,0.62,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+2,3000,Plug,22.0,,,22.0,1.02,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+2 1/2,3000,Plug,27.0,,,27.0,1.75,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+3,3000,Plug,28.0,,,28.0,2.66,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+4,3000,Plug,32.0,,,32.0,5.89,ftsc10_threaded_hex_head_plug_3000_millimetres.csv
+1/8,6000,Plug,9.652,,,9.652,0.0091,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1/4,6000,Plug,11.176,,,11.176,0.0091,ftsc10_threaded_hex_head_plug_6000_inches.csv
+3/8,6000,Plug,12.7,,,12.7,0.0227,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1/2,6000,Plug,14.224,,,14.224,0.0363,ftsc10_threaded_hex_head_plug_6000_inches.csv
+3/4,6000,Plug,15.748,,,15.748,0.0635,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1,6000,Plug,19.05,,,19.05,0.0998,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1 1/4,6000,Plug,20.574,,,20.574,0.2313,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1 1/2,6000,Plug,20.574,,,20.574,0.2812,ftsc10_threaded_hex_head_plug_6000_inches.csv
+2,6000,Plug,22.352,,,22.352,0.4627,ftsc10_threaded_hex_head_plug_6000_inches.csv
+2 1/2,6000,Plug,26.924,,,26.924,0.7938,ftsc10_threaded_hex_head_plug_6000_inches.csv
+3,6000,Plug,28.448,,,28.448,1.2066,ftsc10_threaded_hex_head_plug_6000_inches.csv
+4,6000,Plug,31.75,,,31.75,2.6717,ftsc10_threaded_hex_head_plug_6000_inches.csv
+1/8,6000,Plug,10.0,,,10.0,0.02,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1/4,6000,Plug,11.0,,,11.0,0.02,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+3/8,6000,Plug,13.0,,,13.0,0.05,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1/2,6000,Plug,14.0,,,14.0,0.08,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+3/4,6000,Plug,16.0,,,16.0,0.14,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1,6000,Plug,19.0,,,19.0,0.22,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1 1/4,6000,Plug,21.0,,,21.0,0.51,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1 1/2,6000,Plug,21.0,,,21.0,0.62,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+2,6000,Plug,22.0,,,22.0,1.02,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+2 1/2,6000,Plug,27.0,,,27.0,1.75,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+3,6000,Plug,28.0,,,28.0,2.66,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+4,6000,Plug,32.0,,,32.0,5.89,ftsc10_threaded_hex_head_plug_6000_millimetres.csv
+1/8,3000,Plug,9.652,,,9.652,0.0091,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1/4,3000,Plug,11.176,,,11.176,0.0091,ftsc10_threaded_hex_head_plug_9000_inches.csv
+3/8,3000,Plug,12.7,,,12.7,0.0227,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1/2,3000,Plug,14.224,,,14.224,0.0363,ftsc10_threaded_hex_head_plug_9000_inches.csv
+3/4,3000,Plug,15.748,,,15.748,0.0635,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1,3000,Plug,19.05,,,19.05,0.0998,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1 1/4,3000,Plug,20.574,,,20.574,0.2313,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1 1/2,3000,Plug,20.574,,,20.574,0.2812,ftsc10_threaded_hex_head_plug_9000_inches.csv
+2,3000,Plug,22.352,,,22.352,0.4627,ftsc10_threaded_hex_head_plug_9000_inches.csv
+2 1/2,3000,Plug,26.924,,,26.924,0.7938,ftsc10_threaded_hex_head_plug_9000_inches.csv
+3,3000,Plug,28.448,,,28.448,1.2066,ftsc10_threaded_hex_head_plug_9000_inches.csv
+4,3000,Plug,31.75,,,31.75,2.6717,ftsc10_threaded_hex_head_plug_9000_inches.csv
+1/8,3000,Plug,10.0,,,10.0,0.02,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1/4,3000,Plug,11.0,,,11.0,0.02,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+3/8,3000,Plug,13.0,,,13.0,0.05,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1/2,3000,Plug,14.0,,,14.0,0.08,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+3/4,3000,Plug,16.0,,,16.0,0.14,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1,3000,Plug,19.0,,,19.0,0.22,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1 1/4,3000,Plug,21.0,,,21.0,0.51,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1 1/2,3000,Plug,21.0,,,21.0,0.62,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+2,3000,Plug,22.0,,,22.0,1.02,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+2 1/2,3000,Plug,27.0,,,27.0,1.75,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+3,3000,Plug,28.0,,,28.0,2.66,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+4,3000,Plug,32.0,,,32.0,5.89,ftsc10_threaded_hex_head_plug_9000_millimetres.csv
+1/8,2000,Plug,9.652,10.414,,9.652,0.0227,ftsc11_threaded_round_head_plug_2000_inches.csv
+1/4,2000,Plug,11.176,13.462,,11.176,0.0227,ftsc11_threaded_round_head_plug_2000_inches.csv
+3/8,2000,Plug,12.7,17.526,,12.7,0.0363,ftsc11_threaded_round_head_plug_2000_inches.csv
+1/2,2000,Plug,14.224,21.336,,14.224,0.0499,ftsc11_threaded_round_head_plug_2000_inches.csv
+3/4,2000,Plug,15.748,26.924,,15.748,0.0771,ftsc11_threaded_round_head_plug_2000_inches.csv
+1,2000,Plug,19.05,33.274,,19.05,0.1542,ftsc11_threaded_round_head_plug_2000_inches.csv
+1 1/4,2000,Plug,20.574,42.926,,20.574,0.2313,ftsc11_threaded_round_head_plug_2000_inches.csv
+1 1/2,2000,Plug,20.574,48.514,,20.574,0.3175,ftsc11_threaded_round_head_plug_2000_inches.csv
+2,2000,Plug,22.352,60.452,,22.352,0.6169,ftsc11_threaded_round_head_plug_2000_inches.csv
+2 1/2,2000,Plug,26.924,73.152,,26.924,0.9752,ftsc11_threaded_round_head_plug_2000_inches.csv
+3,2000,Plug,28.448,88.9,,28.448,1.5649,ftsc11_threaded_round_head_plug_2000_inches.csv
+4,2000,Plug,31.75,114.3,,31.75,2.6444,ftsc11_threaded_round_head_plug_2000_inches.csv
+1/8,2000,Plug,10.0,10.0,,10.0,0.05,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1/4,2000,Plug,11.0,14.0,,11.0,0.05,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+3/8,2000,Plug,13.0,18.0,,13.0,0.08,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1/2,2000,Plug,14.0,21.0,,14.0,0.11,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+3/4,2000,Plug,16.0,27.0,,16.0,0.17,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1,2000,Plug,19.0,33.0,,19.0,0.34,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1 1/4,2000,Plug,21.0,43.0,,21.0,0.51,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1 1/2,2000,Plug,21.0,48.0,,21.0,0.7,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+2,2000,Plug,22.0,60.0,,22.0,1.36,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+2 1/2,2000,Plug,27.0,73.0,,27.0,2.15,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+3,2000,Plug,28.0,89.0,,28.0,3.45,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+4,2000,Plug,32.0,114.0,,32.0,5.83,ftsc11_threaded_round_head_plug_2000_millimetres.csv
+1/8,3000,Plug,9.652,10.414,,9.652,0.0227,ftsc11_threaded_round_head_plug_3000_inches.csv
+1/4,3000,Plug,11.176,13.462,,11.176,0.0227,ftsc11_threaded_round_head_plug_3000_inches.csv
+3/8,3000,Plug,12.7,17.526,,12.7,0.0363,ftsc11_threaded_round_head_plug_3000_inches.csv
+1/2,3000,Plug,14.224,21.336,,14.224,0.0499,ftsc11_threaded_round_head_plug_3000_inches.csv
+3/4,3000,Plug,15.748,26.924,,15.748,0.0771,ftsc11_threaded_round_head_plug_3000_inches.csv
+1,3000,Plug,19.05,33.274,,19.05,0.1542,ftsc11_threaded_round_head_plug_3000_inches.csv
+1 1/4,3000,Plug,20.574,42.926,,20.574,0.2313,ftsc11_threaded_round_head_plug_3000_inches.csv
+1 1/2,3000,Plug,20.574,48.514,,20.574,0.3175,ftsc11_threaded_round_head_plug_3000_inches.csv
+2,3000,Plug,22.352,60.452,,22.352,0.6169,ftsc11_threaded_round_head_plug_3000_inches.csv
+2 1/2,3000,Plug,26.924,73.152,,26.924,0.9752,ftsc11_threaded_round_head_plug_3000_inches.csv
+3,3000,Plug,28.448,88.9,,28.448,1.5649,ftsc11_threaded_round_head_plug_3000_inches.csv
+4,3000,Plug,31.75,114.3,,31.75,2.6444,ftsc11_threaded_round_head_plug_3000_inches.csv
+1/8,3000,Plug,10.0,10.0,,10.0,0.05,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1/4,3000,Plug,11.0,14.0,,11.0,0.05,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+3/8,3000,Plug,13.0,18.0,,13.0,0.08,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1/2,3000,Plug,14.0,21.0,,14.0,0.11,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+3/4,3000,Plug,16.0,27.0,,16.0,0.17,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1,3000,Plug,19.0,33.0,,19.0,0.34,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1 1/4,3000,Plug,21.0,43.0,,21.0,0.51,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1 1/2,3000,Plug,21.0,48.0,,21.0,0.7,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+2,3000,Plug,22.0,60.0,,22.0,1.36,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+2 1/2,3000,Plug,27.0,73.0,,27.0,2.15,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+3,3000,Plug,28.0,89.0,,28.0,3.45,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+4,3000,Plug,32.0,114.0,,32.0,5.83,ftsc11_threaded_round_head_plug_3000_millimetres.csv
+1/8,6000,Plug,9.652,10.414,,9.652,0.0227,ftsc11_threaded_round_head_plug_6000_inches.csv
+1/4,6000,Plug,11.176,13.462,,11.176,0.0227,ftsc11_threaded_round_head_plug_6000_inches.csv
+3/8,6000,Plug,12.7,17.526,,12.7,0.0363,ftsc11_threaded_round_head_plug_6000_inches.csv
+1/2,6000,Plug,14.224,21.336,,14.224,0.0499,ftsc11_threaded_round_head_plug_6000_inches.csv
+3/4,6000,Plug,15.748,26.924,,15.748,0.0771,ftsc11_threaded_round_head_plug_6000_inches.csv
+1,6000,Plug,19.05,33.274,,19.05,0.1542,ftsc11_threaded_round_head_plug_6000_inches.csv
+1 1/4,6000,Plug,20.574,42.926,,20.574,0.2313,ftsc11_threaded_round_head_plug_6000_inches.csv
+1 1/2,6000,Plug,20.574,48.514,,20.574,0.3175,ftsc11_threaded_round_head_plug_6000_inches.csv
+2,6000,Plug,22.352,60.452,,22.352,0.6169,ftsc11_threaded_round_head_plug_6000_inches.csv
+2 1/2,6000,Plug,26.924,73.152,,26.924,0.9752,ftsc11_threaded_round_head_plug_6000_inches.csv
+3,6000,Plug,28.448,88.9,,28.448,1.5649,ftsc11_threaded_round_head_plug_6000_inches.csv
+4,6000,Plug,31.75,114.3,,31.75,2.6444,ftsc11_threaded_round_head_plug_6000_inches.csv
+1/8,6000,Plug,10.0,10.0,,10.0,0.05,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1/4,6000,Plug,11.0,14.0,,11.0,0.05,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+3/8,6000,Plug,13.0,18.0,,13.0,0.08,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1/2,6000,Plug,14.0,21.0,,14.0,0.11,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+3/4,6000,Plug,16.0,27.0,,16.0,0.17,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1,6000,Plug,19.0,33.0,,19.0,0.34,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1 1/4,6000,Plug,21.0,43.0,,21.0,0.51,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1 1/2,6000,Plug,21.0,48.0,,21.0,0.7,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+2,6000,Plug,22.0,60.0,,22.0,1.36,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+2 1/2,6000,Plug,27.0,73.0,,27.0,2.15,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+3,6000,Plug,28.0,89.0,,28.0,3.45,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+4,6000,Plug,32.0,114.0,,32.0,5.83,ftsc11_threaded_round_head_plug_6000_millimetres.csv
+1/8,3000,Plug,9.652,10.414,,9.652,0.0227,ftsc11_threaded_round_head_plug_9000_inches.csv
+1/4,3000,Plug,11.176,13.462,,11.176,0.0227,ftsc11_threaded_round_head_plug_9000_inches.csv
+3/8,3000,Plug,12.7,17.526,,12.7,0.0363,ftsc11_threaded_round_head_plug_9000_inches.csv
+1/2,3000,Plug,14.224,21.336,,14.224,0.0499,ftsc11_threaded_round_head_plug_9000_inches.csv
+3/4,3000,Plug,15.748,26.924,,15.748,0.0771,ftsc11_threaded_round_head_plug_9000_inches.csv
+1,3000,Plug,19.05,33.274,,19.05,0.1542,ftsc11_threaded_round_head_plug_9000_inches.csv
+1 1/4,3000,Plug,20.574,42.926,,20.574,0.2313,ftsc11_threaded_round_head_plug_9000_inches.csv
+1 1/2,3000,Plug,20.574,48.514,,20.574,0.3175,ftsc11_threaded_round_head_plug_9000_inches.csv
+2,3000,Plug,22.352,60.452,,22.352,0.6169,ftsc11_threaded_round_head_plug_9000_inches.csv
+2 1/2,3000,Plug,26.924,73.152,,26.924,0.9752,ftsc11_threaded_round_head_plug_9000_inches.csv
+3,3000,Plug,28.448,88.9,,28.448,1.5649,ftsc11_threaded_round_head_plug_9000_inches.csv
+4,3000,Plug,31.75,114.3,,31.75,2.6444,ftsc11_threaded_round_head_plug_9000_inches.csv
+1/8,3000,Plug,10.0,10.0,,10.0,0.05,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1/4,3000,Plug,11.0,14.0,,11.0,0.05,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+3/8,3000,Plug,13.0,18.0,,13.0,0.08,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1/2,3000,Plug,14.0,21.0,,14.0,0.11,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+3/4,3000,Plug,16.0,27.0,,16.0,0.17,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1,3000,Plug,19.0,33.0,,19.0,0.34,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1 1/4,3000,Plug,21.0,43.0,,21.0,0.51,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1 1/2,3000,Plug,21.0,48.0,,21.0,0.7,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+2,3000,Plug,22.0,60.0,,22.0,1.36,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+2 1/2,3000,Plug,27.0,73.0,,27.0,2.15,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+3,3000,Plug,28.0,89.0,,28.0,3.45,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+4,3000,Plug,32.0,114.0,,32.0,5.83,ftsc11_threaded_round_head_plug_9000_millimetres.csv
+1/8,2000,Bushing,9.652,,,9.652,0.0091,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1/4,2000,Bushing,11.176,,,11.176,0.0091,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+3/8,2000,Bushing,12.7,,,12.7,0.0091,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1/2,2000,Bushing,14.224,,,14.224,0.0091,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+3/4,2000,Bushing,15.748,,,15.748,0.0227,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1,2000,Bushing,19.05,,,19.05,0.0363,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1 1/4,2000,Bushing,20.574,,,20.574,0.0771,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1 1/2,2000,Bushing,20.574,,,20.574,0.1406,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+2,2000,Bushing,22.352,,,22.352,0.3311,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+2 1/2,2000,Bushing,26.924,,,26.924,0.4853,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+3,2000,Bushing,28.448,,,28.448,0.7167,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+4,2000,Bushing,31.75,,,31.75,1.7055,ftsc12_threaded_hex_head_bushing_2000_inches.csv
+1/8,2000,Bushing,10.0,,,10.0,0.02,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1/4,2000,Bushing,11.0,,,11.0,0.02,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+3/8,2000,Bushing,13.0,,,13.0,0.02,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1/2,2000,Bushing,14.0,,,14.0,0.02,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+3/4,2000,Bushing,16.0,,,16.0,0.05,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1,2000,Bushing,19.0,,,19.0,0.08,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1 1/4,2000,Bushing,21.0,,,21.0,0.17,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1 1/2,2000,Bushing,21.0,,,21.0,0.31,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+2,2000,Bushing,22.0,,,22.0,0.73,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+2 1/2,2000,Bushing,27.0,,,27.0,1.07,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+3,2000,Bushing,28.0,,,28.0,1.58,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+4,2000,Bushing,32.0,,,32.0,3.76,ftsc12_threaded_hex_head_bushing_2000_millimetres.csv
+1/8,3000,Bushing,9.652,,,9.652,0.0091,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1/4,3000,Bushing,11.176,,,11.176,0.0091,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+3/8,3000,Bushing,12.7,,,12.7,0.0091,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1/2,3000,Bushing,14.224,,,14.224,0.0091,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+3/4,3000,Bushing,15.748,,,15.748,0.0227,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1,3000,Bushing,19.05,,,19.05,0.0363,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1 1/4,3000,Bushing,20.574,,,20.574,0.0771,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1 1/2,3000,Bushing,20.574,,,20.574,0.1406,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+2,3000,Bushing,22.352,,,22.352,0.3311,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+2 1/2,3000,Bushing,26.924,,,26.924,0.4853,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+3,3000,Bushing,28.448,,,28.448,0.7167,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+4,3000,Bushing,31.75,,,31.75,1.7055,ftsc12_threaded_hex_head_bushing_3000_inches.csv
+1/8,3000,Bushing,10.0,,,10.0,0.02,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1/4,3000,Bushing,11.0,,,11.0,0.02,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+3/8,3000,Bushing,13.0,,,13.0,0.02,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1/2,3000,Bushing,14.0,,,14.0,0.02,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+3/4,3000,Bushing,16.0,,,16.0,0.05,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1,3000,Bushing,19.0,,,19.0,0.08,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1 1/4,3000,Bushing,21.0,,,21.0,0.17,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1 1/2,3000,Bushing,21.0,,,21.0,0.31,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+2,3000,Bushing,22.0,,,22.0,0.73,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+2 1/2,3000,Bushing,27.0,,,27.0,1.07,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+3,3000,Bushing,28.0,,,28.0,1.58,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+4,3000,Bushing,32.0,,,32.0,3.76,ftsc12_threaded_hex_head_bushing_3000_millimetres.csv
+1/8,6000,Bushing,9.652,,,9.652,0.0091,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1/4,6000,Bushing,11.176,,,11.176,0.0091,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+3/8,6000,Bushing,12.7,,,12.7,0.0091,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1/2,6000,Bushing,14.224,,,14.224,0.0091,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+3/4,6000,Bushing,15.748,,,15.748,0.0227,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1,6000,Bushing,19.05,,,19.05,0.0363,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1 1/4,6000,Bushing,20.574,,,20.574,0.0771,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1 1/2,6000,Bushing,20.574,,,20.574,0.1406,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+2,6000,Bushing,22.352,,,22.352,0.3311,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+2 1/2,6000,Bushing,26.924,,,26.924,0.4853,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+3,6000,Bushing,28.448,,,28.448,0.7167,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+4,6000,Bushing,31.75,,,31.75,1.7055,ftsc12_threaded_hex_head_bushing_6000_inches.csv
+1/8,6000,Bushing,10.0,,,10.0,0.02,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1/4,6000,Bushing,11.0,,,11.0,0.02,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+3/8,6000,Bushing,13.0,,,13.0,0.02,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1/2,6000,Bushing,14.0,,,14.0,0.02,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+3/4,6000,Bushing,16.0,,,16.0,0.05,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1,6000,Bushing,19.0,,,19.0,0.08,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1 1/4,6000,Bushing,21.0,,,21.0,0.17,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1 1/2,6000,Bushing,21.0,,,21.0,0.31,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+2,6000,Bushing,22.0,,,22.0,0.73,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+2 1/2,6000,Bushing,27.0,,,27.0,1.07,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+3,6000,Bushing,28.0,,,28.0,1.58,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+4,6000,Bushing,32.0,,,32.0,3.76,ftsc12_threaded_hex_head_bushing_6000_millimetres.csv
+1/8,3000,Bushing,9.652,,,9.652,0.0091,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1/4,3000,Bushing,11.176,,,11.176,0.0091,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+3/8,3000,Bushing,12.7,,,12.7,0.0091,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1/2,3000,Bushing,14.224,,,14.224,0.0091,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+3/4,3000,Bushing,15.748,,,15.748,0.0227,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1,3000,Bushing,19.05,,,19.05,0.0363,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1 1/4,3000,Bushing,20.574,,,20.574,0.0771,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1 1/2,3000,Bushing,20.574,,,20.574,0.1406,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+2,3000,Bushing,22.352,,,22.352,0.3311,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+2 1/2,3000,Bushing,26.924,,,26.924,0.4853,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+3,3000,Bushing,28.448,,,28.448,0.7167,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+4,3000,Bushing,31.75,,,31.75,1.7055,ftsc12_threaded_hex_head_bushing_9000_inches.csv
+1/8,3000,Bushing,10.0,,,10.0,0.02,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1/4,3000,Bushing,11.0,,,11.0,0.02,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+3/8,3000,Bushing,13.0,,,13.0,0.02,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1/2,3000,Bushing,14.0,,,14.0,0.02,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+3/4,3000,Bushing,16.0,,,16.0,0.05,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1,3000,Bushing,19.0,,,19.0,0.08,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1 1/4,3000,Bushing,21.0,,,21.0,0.17,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1 1/2,3000,Bushing,21.0,,,21.0,0.31,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+2,3000,Bushing,22.0,,,22.0,0.73,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+2 1/2,3000,Bushing,27.0,,,27.0,1.07,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+3,3000,Bushing,28.0,,,28.0,1.58,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+4,3000,Bushing,32.0,,,32.0,3.76,ftsc12_threaded_hex_head_bushing_9000_millimetres.csv
+1/8,2000,Bushing,9.652,,,9.652,0.0091,ftsc13_threaded_flush_bushing_2000_inches.csv
+1/4,2000,Bushing,11.176,,,11.176,0.0091,ftsc13_threaded_flush_bushing_2000_inches.csv
+3/8,2000,Bushing,12.7,,,12.7,0.0091,ftsc13_threaded_flush_bushing_2000_inches.csv
+1/2,2000,Bushing,14.224,,,14.224,0.0091,ftsc13_threaded_flush_bushing_2000_inches.csv
+3/4,2000,Bushing,15.748,,,15.748,0.0227,ftsc13_threaded_flush_bushing_2000_inches.csv
+1,2000,Bushing,19.05,,,19.05,0.0227,ftsc13_threaded_flush_bushing_2000_inches.csv
+1 1/4,2000,Bushing,20.574,,,20.574,0.0227,ftsc13_threaded_flush_bushing_2000_inches.csv
+1 1/2,2000,Bushing,20.574,,,20.574,0.0363,ftsc13_threaded_flush_bushing_2000_inches.csv
+2,2000,Bushing,22.352,,,22.352,0.0726,ftsc13_threaded_flush_bushing_2000_inches.csv
+2 1/2,2000,Bushing,26.924,,,26.924,0.127,ftsc13_threaded_flush_bushing_2000_inches.csv
+3,2000,Bushing,28.448,,,28.448,0.2041,ftsc13_threaded_flush_bushing_2000_inches.csv
+4,2000,Bushing,31.75,,,31.75,0.4082,ftsc13_threaded_flush_bushing_2000_inches.csv
+1/8,2000,Bushing,10.0,,,10.0,0.02,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1/4,2000,Bushing,11.0,,,11.0,0.02,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+3/8,2000,Bushing,13.0,,,13.0,0.02,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1/2,2000,Bushing,14.0,,,14.0,0.02,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+3/4,2000,Bushing,16.0,,,16.0,0.05,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1,2000,Bushing,19.0,,,19.0,0.05,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1 1/4,2000,Bushing,21.0,,,21.0,0.05,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1 1/2,2000,Bushing,21.0,,,21.0,0.08,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+2,2000,Bushing,22.0,,,22.0,0.16,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+2 1/2,2000,Bushing,27.0,,,27.0,0.28,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+3,2000,Bushing,28.0,,,28.0,0.45,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+4,2000,Bushing,32.0,,,32.0,0.9,ftsc13_threaded_flush_bushing_2000_millimetres.csv
+1/8,3000,Bushing,9.652,,,9.652,0.0091,ftsc13_threaded_flush_bushing_3000_inches.csv
+1/4,3000,Bushing,11.176,,,11.176,0.0091,ftsc13_threaded_flush_bushing_3000_inches.csv
+3/8,3000,Bushing,12.7,,,12.7,0.0091,ftsc13_threaded_flush_bushing_3000_inches.csv
+1/2,3000,Bushing,14.224,,,14.224,0.0091,ftsc13_threaded_flush_bushing_3000_inches.csv
+3/4,3000,Bushing,15.748,,,15.748,0.0227,ftsc13_threaded_flush_bushing_3000_inches.csv
+1,3000,Bushing,19.05,,,19.05,0.0227,ftsc13_threaded_flush_bushing_3000_inches.csv
+1 1/4,3000,Bushing,20.574,,,20.574,0.0227,ftsc13_threaded_flush_bushing_3000_inches.csv
+1 1/2,3000,Bushing,20.574,,,20.574,0.0363,ftsc13_threaded_flush_bushing_3000_inches.csv
+2,3000,Bushing,22.352,,,22.352,0.0726,ftsc13_threaded_flush_bushing_3000_inches.csv
+2 1/2,3000,Bushing,26.924,,,26.924,0.127,ftsc13_threaded_flush_bushing_3000_inches.csv
+3,3000,Bushing,28.448,,,28.448,0.2041,ftsc13_threaded_flush_bushing_3000_inches.csv
+4,3000,Bushing,31.75,,,31.75,0.4082,ftsc13_threaded_flush_bushing_3000_inches.csv
+1/8,3000,Bushing,10.0,,,10.0,0.02,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1/4,3000,Bushing,11.0,,,11.0,0.02,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+3/8,3000,Bushing,13.0,,,13.0,0.02,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1/2,3000,Bushing,14.0,,,14.0,0.02,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+3/4,3000,Bushing,16.0,,,16.0,0.05,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1,3000,Bushing,19.0,,,19.0,0.05,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1 1/4,3000,Bushing,21.0,,,21.0,0.05,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1 1/2,3000,Bushing,21.0,,,21.0,0.08,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+2,3000,Bushing,22.0,,,22.0,0.16,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+2 1/2,3000,Bushing,27.0,,,27.0,0.28,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+3,3000,Bushing,28.0,,,28.0,0.45,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+4,3000,Bushing,32.0,,,32.0,0.9,ftsc13_threaded_flush_bushing_3000_millimetres.csv
+1/8,6000,Bushing,9.652,,,9.652,0.0091,ftsc13_threaded_flush_bushing_6000_inches.csv
+1/4,6000,Bushing,11.176,,,11.176,0.0091,ftsc13_threaded_flush_bushing_6000_inches.csv
+3/8,6000,Bushing,12.7,,,12.7,0.0091,ftsc13_threaded_flush_bushing_6000_inches.csv
+1/2,6000,Bushing,14.224,,,14.224,0.0091,ftsc13_threaded_flush_bushing_6000_inches.csv
+3/4,6000,Bushing,15.748,,,15.748,0.0227,ftsc13_threaded_flush_bushing_6000_inches.csv
+1,6000,Bushing,19.05,,,19.05,0.0227,ftsc13_threaded_flush_bushing_6000_inches.csv
+1 1/4,6000,Bushing,20.574,,,20.574,0.0227,ftsc13_threaded_flush_bushing_6000_inches.csv
+1 1/2,6000,Bushing,20.574,,,20.574,0.0363,ftsc13_threaded_flush_bushing_6000_inches.csv
+2,6000,Bushing,22.352,,,22.352,0.0726,ftsc13_threaded_flush_bushing_6000_inches.csv
+2 1/2,6000,Bushing,26.924,,,26.924,0.127,ftsc13_threaded_flush_bushing_6000_inches.csv
+3,6000,Bushing,28.448,,,28.448,0.2041,ftsc13_threaded_flush_bushing_6000_inches.csv
+4,6000,Bushing,31.75,,,31.75,0.4082,ftsc13_threaded_flush_bushing_6000_inches.csv
+1/8,6000,Bushing,10.0,,,10.0,0.02,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1/4,6000,Bushing,11.0,,,11.0,0.02,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+3/8,6000,Bushing,13.0,,,13.0,0.02,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1/2,6000,Bushing,14.0,,,14.0,0.02,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+3/4,6000,Bushing,16.0,,,16.0,0.05,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1,6000,Bushing,19.0,,,19.0,0.05,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1 1/4,6000,Bushing,21.0,,,21.0,0.05,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1 1/2,6000,Bushing,21.0,,,21.0,0.08,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+2,6000,Bushing,22.0,,,22.0,0.16,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+2 1/2,6000,Bushing,27.0,,,27.0,0.28,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+3,6000,Bushing,28.0,,,28.0,0.45,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+4,6000,Bushing,32.0,,,32.0,0.9,ftsc13_threaded_flush_bushing_6000_millimetres.csv
+1/8,3000,Bushing,9.652,,,9.652,0.0091,ftsc13_threaded_flush_bushing_9000_inches.csv
+1/4,3000,Bushing,11.176,,,11.176,0.0091,ftsc13_threaded_flush_bushing_9000_inches.csv
+3/8,3000,Bushing,12.7,,,12.7,0.0091,ftsc13_threaded_flush_bushing_9000_inches.csv
+1/2,3000,Bushing,14.224,,,14.224,0.0091,ftsc13_threaded_flush_bushing_9000_inches.csv
+3/4,3000,Bushing,15.748,,,15.748,0.0227,ftsc13_threaded_flush_bushing_9000_inches.csv
+1,3000,Bushing,19.05,,,19.05,0.0227,ftsc13_threaded_flush_bushing_9000_inches.csv
+1 1/4,3000,Bushing,20.574,,,20.574,0.0227,ftsc13_threaded_flush_bushing_9000_inches.csv
+1 1/2,3000,Bushing,20.574,,,20.574,0.0363,ftsc13_threaded_flush_bushing_9000_inches.csv
+2,3000,Bushing,22.352,,,22.352,0.0726,ftsc13_threaded_flush_bushing_9000_inches.csv
+2 1/2,3000,Bushing,26.924,,,26.924,0.127,ftsc13_threaded_flush_bushing_9000_inches.csv
+3,3000,Bushing,28.448,,,28.448,0.2041,ftsc13_threaded_flush_bushing_9000_inches.csv
+4,3000,Bushing,31.75,,,31.75,0.4082,ftsc13_threaded_flush_bushing_9000_inches.csv
+1/8,3000,Bushing,10.0,,,10.0,0.02,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1/4,3000,Bushing,11.0,,,11.0,0.02,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+3/8,3000,Bushing,13.0,,,13.0,0.02,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1/2,3000,Bushing,14.0,,,14.0,0.02,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+3/4,3000,Bushing,16.0,,,16.0,0.05,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1,3000,Bushing,19.0,,,19.0,0.05,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1 1/4,3000,Bushing,21.0,,,21.0,0.05,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1 1/2,3000,Bushing,21.0,,,21.0,0.08,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+2,3000,Bushing,22.0,,,22.0,0.16,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+2 1/2,3000,Bushing,27.0,,,27.0,0.28,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+3,3000,Bushing,28.0,,,28.0,0.45,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+4,3000,Bushing,32.0,,,32.0,0.9,ftsc13_threaded_flush_bushing_9000_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0136,ftsc1430_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0245,ftsc1430_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.0476,ftsc1430_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.0726,ftsc1430_inches.csv
+1,3000,Threaded Fitting,,,,,0.1451,ftsc1430_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.2223,ftsc1430_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.3039,ftsc1430_inches.csv
+2,3000,Threaded Fitting,,,,,0.4309,ftsc1430_inches.csv
+2 1/2,3000,Threaded Fitting,,,,,0.9752,ftsc1430_inches.csv
+3,3000,Threaded Fitting,,,,,1.2247,ftsc1430_inches.csv
+4,3000,Threaded Fitting,,,,,2.277,ftsc1430_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.03,ftsc1430_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.054,ftsc1430_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.105,ftsc1430_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.16,ftsc1430_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.32,ftsc1430_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,0.49,ftsc1430_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,0.67,ftsc1430_millimetres.csv
+2,3000,Threaded Fitting,,,,,0.95,ftsc1430_millimetres.csv
+2 1/2,3000,Threaded Fitting,,,,,2.15,ftsc1430_millimetres.csv
+3,3000,Threaded Fitting,,,,,2.7,ftsc1430_millimetres.csv
+4,3000,Threaded Fitting,,,,,5.02,ftsc1430_millimetres.csv
+1/4,3000,Threaded Fitting,14.986,,,,0.0136,ftsc1530_inches.csv
+3/8,3000,Threaded Fitting,17.78,,,,0.0227,ftsc1530_inches.csv
+1/2,3000,Threaded Fitting,21.844,,,,0.0363,ftsc1530_inches.csv
+3/4,3000,Threaded Fitting,26.924,,,,0.0454,ftsc1530_inches.csv
+1,3000,Threaded Fitting,34.798,,,,0.0907,ftsc1530_inches.csv
+1 1/2,3000,Threaded Fitting,49.784,,,,0.2722,ftsc1530_inches.csv
+2,3000,Threaded Fitting,61.976,,,,0.3856,ftsc1530_inches.csv
+1/4,3000,Threaded Fitting,15.0,,,,0.03,ftsc1530_millimetres.csv
+3/8,3000,Threaded Fitting,18.0,,,,0.05,ftsc1530_millimetres.csv
+1/2,3000,Threaded Fitting,22.0,,,,0.08,ftsc1530_millimetres.csv
+3/4,3000,Threaded Fitting,27.0,,,,0.1,ftsc1530_millimetres.csv
+1,3000,Threaded Fitting,35.0,,,,0.2,ftsc1530_millimetres.csv
+1 1/2,3000,Threaded Fitting,50.0,,,,0.6,ftsc1530_millimetres.csv
+2,3000,Threaded Fitting,62.0,,,,0.85,ftsc1530_millimetres.csv
+1/4,3000,Threaded Fitting,14.986,,,,0.0181,ftsc1560_inches.csv
+3/8,3000,Threaded Fitting,17.78,,,,0.0272,ftsc1560_inches.csv
+1/2,3000,Threaded Fitting,21.844,,,,0.0454,ftsc1560_inches.csv
+3/4,3000,Threaded Fitting,26.924,,,,0.0544,ftsc1560_inches.csv
+1,3000,Threaded Fitting,34.798,,,,0.2722,ftsc1560_inches.csv
+1 1/2,3000,Threaded Fitting,49.784,,,,0.3357,ftsc1560_inches.csv
+2,3000,Threaded Fitting,61.976,,,,0.5897,ftsc1560_inches.csv
+1/4,3000,Threaded Fitting,15.0,,,,0.05,ftsc1560_millimetres.csv
+3/8,3000,Threaded Fitting,18.0,,,,0.06,ftsc1560_millimetres.csv
+1/2,3000,Threaded Fitting,22.0,,,,0.1,ftsc1560_millimetres.csv
+3/4,3000,Threaded Fitting,27.0,,,,0.12,ftsc1560_millimetres.csv
+1,3000,Threaded Fitting,35.0,,,,0.6,ftsc1560_millimetres.csv
+1 1/2,3000,Threaded Fitting,50.0,,,,0.74,ftsc1560_millimetres.csv
+2,3000,Threaded Fitting,62.0,,,,1.3,ftsc1560_millimetres.csv
+1/8,3000,Threaded Fitting,,,,,0.0227,ftsc1630_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.0227,ftsc1630_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0499,ftsc1630_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.0499,ftsc1630_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.0862,ftsc1630_inches.csv
+1,3000,Threaded Fitting,,,,,0.127,ftsc1630_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.3175,ftsc1630_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.4491,ftsc1630_inches.csv
+2,3000,Threaded Fitting,,,,,0.6396,ftsc1630_inches.csv
+2 1/2,3000,Threaded Fitting,,,,,0.821,ftsc1630_inches.csv
+3,3000,Threaded Fitting,,,,,1.388,ftsc1630_inches.csv
+4,3000,Threaded Fitting,,,,,3.4428,ftsc1630_inches.csv
+1/8,3000,Threaded Fitting,,,,,0.05,ftsc1630_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.05,ftsc1630_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.11,ftsc1630_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.11,ftsc1630_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.19,ftsc1630_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.28,ftsc1630_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,0.7,ftsc1630_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,0.99,ftsc1630_millimetres.csv
+2,3000,Threaded Fitting,,,,,1.41,ftsc1630_millimetres.csv
+2 1/2,3000,Threaded Fitting,,,,,1.81,ftsc1630_millimetres.csv
+3,3000,Threaded Fitting,,,,,3.06,ftsc1630_millimetres.csv
+4,3000,Threaded Fitting,,,,,7.59,ftsc1630_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0363,ftsc1660_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0499,ftsc1660_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.0998,ftsc1660_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.2041,ftsc1660_inches.csv
+1,3000,Threaded Fitting,,,,,0.4354,ftsc1660_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.4853,ftsc1660_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.8981,ftsc1660_inches.csv
+2,3000,Threaded Fitting,,,,,1.5921,ftsc1660_inches.csv
+2 1/2,3000,Threaded Fitting,,,,,2.209,ftsc1660_inches.csv
+3,3000,Threaded Fitting,,,,,2.776,ftsc1660_inches.csv
+4,3000,Threaded Fitting,,,,,5.0394,ftsc1660_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.08,ftsc1660_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.11,ftsc1660_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.22,ftsc1660_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.45,ftsc1660_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.96,ftsc1660_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,1.07,ftsc1660_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,1.98,ftsc1660_millimetres.csv
+2,3000,Threaded Fitting,,,,,3.51,ftsc1660_millimetres.csv
+2 1/2,3000,Threaded Fitting,,,,,4.87,ftsc1660_millimetres.csv
+3,3000,Threaded Fitting,,,,,6.12,ftsc1660_millimetres.csv
+4,3000,Threaded Fitting,,,,,11.11,ftsc1660_millimetres.csv
+1/8,3000,Threaded Fitting,11.43,,,,0.0045,ftsc1730_inches.csv
+1/4,3000,Threaded Fitting,15.494,,,,0.0091,ftsc1730_inches.csv
+3/8,3000,Threaded Fitting,18.796,,,,0.0181,ftsc1730_inches.csv
+1/2,3000,Threaded Fitting,22.86,,,,0.0318,ftsc1730_inches.csv
+3/4,3000,Threaded Fitting,27.94,,,,0.4536,ftsc1730_inches.csv
+1,3000,Threaded Fitting,36.068,,,,0.0862,ftsc1730_inches.csv
+1 1/2,3000,Threaded Fitting,51.816,,,,0.1451,ftsc1730_inches.csv
+2,3000,Threaded Fitting,64.008,,,,0.2495,ftsc1730_inches.csv
+1/8,3000,Threaded Fitting,11.11,,,,0.01,ftsc1730_millimetres.csv
+1/4,3000,Threaded Fitting,15.08,,,,0.02,ftsc1730_millimetres.csv
+3/8,3000,Threaded Fitting,18.25,,,,0.04,ftsc1730_millimetres.csv
+1/2,3000,Threaded Fitting,22.22,,,,0.07,ftsc1730_millimetres.csv
+3/4,3000,Threaded Fitting,26.98,,,,1.0,ftsc1730_millimetres.csv
+1,3000,Threaded Fitting,34.92,,,,0.19,ftsc1730_millimetres.csv
+1 1/2,3000,Threaded Fitting,50.0,,,,0.32,ftsc1730_millimetres.csv
+2,3000,Threaded Fitting,61.91,,,,0.55,ftsc1730_millimetres.csv
+1/8,3000,Threaded Fitting,11.43,,,,0.0045,ftsc1760_inches.csv
+1/4,3000,Threaded Fitting,15.494,,,,0.0136,ftsc1760_inches.csv
+3/8,3000,Threaded Fitting,18.796,,,,0.0227,ftsc1760_inches.csv
+1/2,3000,Threaded Fitting,22.86,,,,0.0454,ftsc1760_inches.csv
+3/4,3000,Threaded Fitting,27.94,,,,0.0726,ftsc1760_inches.csv
+1,3000,Threaded Fitting,36.068,,,,0.1451,ftsc1760_inches.csv
+1 1/2,3000,Threaded Fitting,51.816,,,,0.3039,ftsc1760_inches.csv
+2,3000,Threaded Fitting,64.008,,,,0.4309,ftsc1760_inches.csv
+1/8,3000,Threaded Fitting,11.11,,,,0.01,ftsc1760_millimetres.csv
+1/4,3000,Threaded Fitting,15.08,,,,0.03,ftsc1760_millimetres.csv
+3/8,3000,Threaded Fitting,18.25,,,,0.05,ftsc1760_millimetres.csv
+1/2,3000,Threaded Fitting,22.22,,,,0.1,ftsc1760_millimetres.csv
+3/4,3000,Threaded Fitting,26.98,,,,0.16,ftsc1760_millimetres.csv
+1,3000,Threaded Fitting,34.92,,,,0.32,ftsc1760_millimetres.csv
+1 1/2,3000,Threaded Fitting,50.0,,,,0.67,ftsc1760_millimetres.csv
+2,3000,Threaded Fitting,61.91,,,,0.95,ftsc1760_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0408,ftsc1830_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0499,ftsc1830_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.0635,ftsc1830_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.0907,ftsc1830_inches.csv
+1,3000,Threaded Fitting,,,,,0.195,ftsc1830_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.313,ftsc1830_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.3856,ftsc1830_inches.csv
+2,3000,Threaded Fitting,,,,,0.6123,ftsc1830_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.09,ftsc1830_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.11,ftsc1830_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.14,ftsc1830_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.2,ftsc1830_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.43,ftsc1830_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,0.69,ftsc1830_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,0.85,ftsc1830_millimetres.csv
+2,3000,Threaded Fitting,,,,,1.35,ftsc1830_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0544,ftsc1860_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0726,ftsc1860_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.0953,ftsc1860_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.1361,ftsc1860_inches.csv
+1,3000,Threaded Fitting,,,,,0.2858,ftsc1860_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.4672,ftsc1860_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.5761,ftsc1860_inches.csv
+2,3000,Threaded Fitting,,,,,0.9163,ftsc1860_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.12,ftsc1860_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.16,ftsc1860_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.21,ftsc1860_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.3,ftsc1860_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.63,ftsc1860_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,1.03,ftsc1860_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,1.27,ftsc1860_millimetres.csv
+2,3000,Threaded Fitting,,,,,2.02,ftsc1860_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.1996,ftsc1930_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.2132,ftsc1930_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.4536,ftsc1930_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.4672,ftsc1930_inches.csv
+1,3000,Threaded Fitting,,,,,0.7983,ftsc1930_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,1.5422,ftsc1930_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,1.6103,ftsc1930_inches.csv
+2,3000,Threaded Fitting,,,,,2.3587,ftsc1930_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.44,ftsc1930_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.47,ftsc1930_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,1.0,ftsc1930_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,1.03,ftsc1930_millimetres.csv
+1,3000,Threaded Fitting,,,,,1.76,ftsc1930_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,3.4,ftsc1930_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,3.55,ftsc1930_millimetres.csv
+2,3000,Threaded Fitting,,,,,5.2,ftsc1930_millimetres.csv
+1/8,2000,90° Elbow,20.574,6.35,,6.7031,0.0,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1/4,2000,90° Elbow,20.574,8.128,,10.2057,0.0363,ftsc1_threaded_90deg_elbow_2000_inches.csv
+3/8,2000,90° Elbow,24.638,9.144,,10.3581,0.0544,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1/2,2000,90° Elbow,28.448,10.922,,13.556,0.0998,ftsc1_threaded_90deg_elbow_2000_inches.csv
+3/4,2000,90° Elbow,33.274,12.7,,13.8608,0.1588,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1,2000,90° Elbow,38.1,14.732,,17.3431,0.2041,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1 1/4,2000,90° Elbow,44.45,17.018,,17.9527,0.3175,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1 1/2,2000,90° Elbow,50.8,17.78,,18.3769,0.4445,ftsc1_threaded_90deg_elbow_2000_inches.csv
+2,2000,90° Elbow,60.452,19.05,,19.2151,0.6441,ftsc1_threaded_90deg_elbow_2000_inches.csv
+2 1/2,2000,90° Elbow,76.2,23.622,,28.9052,1.3336,ftsc1_threaded_90deg_elbow_2000_inches.csv
+3,2000,90° Elbow,85.852,25.908,,30.48,2.2453,ftsc1_threaded_90deg_elbow_2000_inches.csv
+4,2000,90° Elbow,106.426,27.686,,33.02,5.4839,ftsc1_threaded_90deg_elbow_2000_inches.csv
+1/8,2000,90° Elbow,21.0,6.4,,6.7,0.0,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1/4,2000,90° Elbow,21.0,8.1,,10.2,0.08,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+3/8,2000,90° Elbow,25.0,9.1,,10.4,0.12,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1/2,2000,90° Elbow,28.0,10.9,,13.6,0.22,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+3/4,2000,90° Elbow,33.0,12.7,,13.9,0.35,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1,2000,90° Elbow,38.0,14.7,,17.3,0.45,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1 1/4,2000,90° Elbow,44.0,17.0,,18.0,0.7,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1 1/2,2000,90° Elbow,51.0,17.8,,18.4,0.98,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+2,2000,90° Elbow,60.0,19.0,,19.2,1.42,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+2 1/2,2000,90° Elbow,76.0,23.6,,28.9,2.94,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+3,2000,90° Elbow,86.0,25.9,,30.5,4.95,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+4,2000,90° Elbow,106.0,27.7,,33.0,12.09,ftsc1_threaded_90deg_elbow_2000_millimetres.csv
+1/8,3000,90° Elbow,20.574,6.35,,6.7031,0.0454,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1/4,3000,90° Elbow,24.638,8.128,,10.2057,0.068,ftsc1_threaded_90deg_elbow_3000_inches.csv
+3/8,3000,90° Elbow,28.448,9.144,,10.3581,0.1179,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1/2,3000,90° Elbow,33.274,10.922,,13.556,0.1996,ftsc1_threaded_90deg_elbow_3000_inches.csv
+3/4,3000,90° Elbow,38.1,12.7,,13.8608,0.2767,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1,3000,90° Elbow,44.45,14.732,,17.3431,0.4627,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1 1/4,3000,90° Elbow,50.8,17.018,,17.9527,0.4944,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1 1/2,3000,90° Elbow,60.452,17.78,,18.3769,0.7167,ftsc1_threaded_90deg_elbow_3000_inches.csv
+2,3000,90° Elbow,63.5,19.05,,19.2151,1.2156,ftsc1_threaded_90deg_elbow_3000_inches.csv
+2 1/2,3000,90° Elbow,82.55,23.622,,28.9052,2.4449,ftsc1_threaded_90deg_elbow_3000_inches.csv
+3,3000,90° Elbow,95.25,25.908,,30.48,2.9665,ftsc1_threaded_90deg_elbow_3000_inches.csv
+4,3000,90° Elbow,114.3,27.686,,33.02,6.5771,ftsc1_threaded_90deg_elbow_3000_inches.csv
+1/8,3000,90° Elbow,21.0,6.4,,6.7,0.1,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1/4,3000,90° Elbow,25.0,8.1,,10.2,0.15,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+3/8,3000,90° Elbow,28.0,9.1,,10.4,0.26,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1/2,3000,90° Elbow,33.0,10.9,,13.6,0.44,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+3/4,3000,90° Elbow,38.0,12.7,,13.9,0.61,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1,3000,90° Elbow,44.0,14.7,,17.3,1.02,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1 1/4,3000,90° Elbow,51.0,17.0,,18.0,1.09,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1 1/2,3000,90° Elbow,60.0,17.8,,18.4,1.58,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+2,3000,90° Elbow,64.0,19.0,,19.2,2.68,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+2 1/2,3000,90° Elbow,83.0,23.6,,28.9,5.39,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+3,3000,90° Elbow,95.0,25.9,,30.5,6.54,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+4,3000,90° Elbow,114.0,27.7,,33.0,14.5,ftsc1_threaded_90deg_elbow_3000_millimetres.csv
+1/8,6000,90° Elbow,24.638,6.35,,6.7031,0.0499,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1/4,6000,90° Elbow,28.448,8.128,,10.2057,0.127,ftsc1_threaded_90deg_elbow_6000_inches.csv
+3/8,6000,90° Elbow,33.274,9.144,,10.3581,0.2087,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1/2,6000,90° Elbow,38.1,10.922,,13.556,0.3311,ftsc1_threaded_90deg_elbow_6000_inches.csv
+3/4,6000,90° Elbow,44.45,12.7,,13.8608,0.5398,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1,6000,90° Elbow,50.8,14.732,,17.3431,0.7167,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1 1/4,6000,90° Elbow,60.452,17.018,,17.9527,1.388,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1 1/2,6000,90° Elbow,63.5,17.78,,18.3769,1.5422,ftsc1_threaded_90deg_elbow_6000_inches.csv
+2,6000,90° Elbow,82.55,19.05,,19.2151,2.7624,ftsc1_threaded_90deg_elbow_6000_inches.csv
+2 1/2,6000,90° Elbow,95.25,23.622,,28.9052,4.291,ftsc1_threaded_90deg_elbow_6000_inches.csv
+3,6000,90° Elbow,106.426,25.908,,30.48,8.0331,ftsc1_threaded_90deg_elbow_6000_inches.csv
+4,6000,90° Elbow,114.3,27.686,,33.02,7.8154,ftsc1_threaded_90deg_elbow_6000_inches.csv
+1/8,6000,90° Elbow,25.0,6.4,,6.7,0.11,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1/4,6000,90° Elbow,28.0,8.1,,10.2,0.28,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+3/8,6000,90° Elbow,33.0,9.1,,10.4,0.46,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1/2,6000,90° Elbow,38.0,10.9,,13.6,0.73,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+3/4,6000,90° Elbow,44.0,12.7,,13.9,1.19,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1,6000,90° Elbow,51.0,14.7,,17.3,1.58,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1 1/4,6000,90° Elbow,60.0,17.0,,18.0,3.06,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1 1/2,6000,90° Elbow,64.0,17.8,,18.4,3.4,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+2,6000,90° Elbow,83.0,19.0,,19.2,6.09,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+2 1/2,6000,90° Elbow,95.0,23.6,,28.9,9.46,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+3,6000,90° Elbow,106.0,25.9,,30.5,17.71,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+4,6000,90° Elbow,114.0,27.7,,33.0,17.23,ftsc1_threaded_90deg_elbow_6000_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0635,ftsc2330_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.0907,ftsc2330_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.1588,ftsc2330_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.195,ftsc2330_inches.csv
+1,3000,Threaded Fitting,,,,,0.2948,ftsc2330_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.4536,ftsc2330_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.5579,ftsc2330_inches.csv
+2,3000,Threaded Fitting,,,,,0.9117,ftsc2330_inches.csv
+2 1/2,3000,Threaded Fitting,,,,,2.4948,ftsc2330_inches.csv
+3,3000,Threaded Fitting,,,,,3.6287,ftsc2330_inches.csv
+4,3000,Threaded Fitting,,,,,5.806,ftsc2330_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.14,ftsc2330_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.2,ftsc2330_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.35,ftsc2330_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.43,ftsc2330_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.65,ftsc2330_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,0.98,ftsc2330_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,1.26,ftsc2330_millimetres.csv
+2,3000,Threaded Fitting,,,,,2.01,ftsc2330_millimetres.csv
+2 1/2,3000,Threaded Fitting,,,,,5.5,ftsc2330_millimetres.csv
+3,3000,Threaded Fitting,,,,,8.0,ftsc2330_millimetres.csv
+4,3000,Threaded Fitting,,,,,12.8,ftsc2330_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.2041,ftsc2360_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.2722,ftsc2360_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.3856,ftsc2360_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.635,ftsc2360_inches.csv
+1,3000,Threaded Fitting,,,,,0.7938,ftsc2360_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,1.3608,ftsc2360_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,1.8144,ftsc2360_inches.csv
+2,3000,Threaded Fitting,,,,,2.7669,ftsc2360_inches.csv
+2 1/2,3000,Threaded Fitting,,,,,4.2638,ftsc2360_inches.csv
+3,3000,Threaded Fitting,,,,,7.0307,ftsc2360_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.45,ftsc2360_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.6,ftsc2360_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.85,ftsc2360_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,1.4,ftsc2360_millimetres.csv
+1,3000,Threaded Fitting,,,,,1.75,ftsc2360_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,3.0,ftsc2360_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,4.0,ftsc2360_millimetres.csv
+2,3000,Threaded Fitting,,,,,6.1,ftsc2360_millimetres.csv
+2 1/2,3000,Threaded Fitting,,,,,9.4,ftsc2360_millimetres.csv
+3,3000,Threaded Fitting,,,,,15.5,ftsc2360_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.0816,ftsc2430_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.1134,ftsc2430_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.2041,ftsc2430_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.2495,ftsc2430_inches.csv
+1,3000,Threaded Fitting,,,,,0.3856,ftsc2430_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,0.567,ftsc2430_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,0.7711,ftsc2430_inches.csv
+2,3000,Threaded Fitting,,,,,1.1793,ftsc2430_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.18,ftsc2430_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.25,ftsc2430_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,0.45,ftsc2430_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,0.55,ftsc2430_millimetres.csv
+1,3000,Threaded Fitting,,,,,0.85,ftsc2430_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,1.25,ftsc2430_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,1.7,ftsc2430_millimetres.csv
+2,3000,Threaded Fitting,,,,,2.6,ftsc2430_millimetres.csv
+1/4,3000,Threaded Fitting,,,,,0.2177,ftsc2460_inches.csv
+3/8,3000,Threaded Fitting,,,,,0.2948,ftsc2460_inches.csv
+1/2,3000,Threaded Fitting,,,,,0.499,ftsc2460_inches.csv
+3/4,3000,Threaded Fitting,,,,,0.6577,ftsc2460_inches.csv
+1,3000,Threaded Fitting,,,,,0.9752,ftsc2460_inches.csv
+1 1/4,3000,Threaded Fitting,,,,,1.5422,ftsc2460_inches.csv
+1 1/2,3000,Threaded Fitting,,,,,1.8824,ftsc2460_inches.csv
+2,3000,Threaded Fitting,,,,,2.6308,ftsc2460_inches.csv
+1/4,3000,Threaded Fitting,,,,,0.48,ftsc2460_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.65,ftsc2460_millimetres.csv
+1/2,3000,Threaded Fitting,,,,,1.1,ftsc2460_millimetres.csv
+3/4,3000,Threaded Fitting,,,,,1.45,ftsc2460_millimetres.csv
+1,3000,Threaded Fitting,,,,,2.15,ftsc2460_millimetres.csv
+1 1/4,3000,Threaded Fitting,,,,,3.4,ftsc2460_millimetres.csv
+1 1/2,3000,Threaded Fitting,,,,,4.15,ftsc2460_millimetres.csv
+2,3000,Threaded Fitting,,,,,5.8,ftsc2460_millimetres.csv
+3/8,3000,Threaded Fitting,,,,,0.0272,ftsc2530_inches_x.csv
+1/2,3000,Threaded Fitting,,,,,0.0363,ftsc2530_inches_x.csv
+3/4,3000,Threaded Fitting,,,,,0.0635,ftsc2530_inches_x.csv
+1,3000,Threaded Fitting,,,,,0.0998,ftsc2530_inches_x.csv
+1 1/4,3000,Threaded Fitting,,,,,0.1724,ftsc2530_inches_x.csv
+1 1/2,3000,Threaded Fitting,,,,,0.2404,ftsc2530_inches_x.csv
+2,3000,Threaded Fitting,,,,,0.3629,ftsc2530_inches_x.csv
+2 1/2,3000,Threaded Fitting,,,,,0.5579,ftsc2530_inches_x.csv
+3,3000,Threaded Fitting,,,,,0.9435,ftsc2530_inches_x.csv
+4,3000,Threaded Fitting,,,,,1.9958,ftsc2530_inches_x.csv
+3/8,3000,Threaded Fitting,,,,,0.06,ftsc2530_millimetres_x.csv
+1/2,3000,Threaded Fitting,,,,,0.08,ftsc2530_millimetres_x.csv
+3/4,3000,Threaded Fitting,,,,,0.14,ftsc2530_millimetres_x.csv
+1,3000,Threaded Fitting,,,,,0.22,ftsc2530_millimetres_x.csv
+1 1/4,3000,Threaded Fitting,,,,,0.38,ftsc2530_millimetres_x.csv
+1 1/2,3000,Threaded Fitting,,,,,0.53,ftsc2530_millimetres_x.csv
+2,3000,Threaded Fitting,,,,,0.8,ftsc2530_millimetres_x.csv
+2 1/2,3000,Threaded Fitting,,,,,1.23,ftsc2530_millimetres_x.csv
+3,3000,Threaded Fitting,,,,,2.08,ftsc2530_millimetres_x.csv
+4,3000,Threaded Fitting,,,,,4.4,ftsc2530_millimetres_x.csv
+3/8,3000,Threaded Fitting,,,,,0.0318,ftsc2560_inches_x.csv
+1/2,3000,Threaded Fitting,,,,,0.0454,ftsc2560_inches_x.csv
+3/4,3000,Threaded Fitting,,,,,0.0998,ftsc2560_inches_x.csv
+1,3000,Threaded Fitting,,,,,0.1633,ftsc2560_inches_x.csv
+1 1/4,3000,Threaded Fitting,,,,,0.2858,ftsc2560_inches_x.csv
+1 1/2,3000,Threaded Fitting,,,,,0.3266,ftsc2560_inches_x.csv
+2,3000,Threaded Fitting,,,,,0.5443,ftsc2560_inches_x.csv
+2 1/2,3000,Threaded Fitting,,,,,0.9525,ftsc2560_inches_x.csv
+3,3000,Threaded Fitting,,,,,1.5422,ftsc2560_inches_x.csv
+4,3000,Threaded Fitting,,,,,3.3566,ftsc2560_inches_x.csv
+3/8,3000,Threaded Fitting,,,,,0.07,ftsc2560_millimetres_x.csv
+1/2,3000,Threaded Fitting,,,,,0.1,ftsc2560_millimetres_x.csv
+3/4,3000,Threaded Fitting,,,,,0.22,ftsc2560_millimetres_x.csv
+1,3000,Threaded Fitting,,,,,0.36,ftsc2560_millimetres_x.csv
+1 1/4,3000,Threaded Fitting,,,,,0.63,ftsc2560_millimetres_x.csv
+1 1/2,3000,Threaded Fitting,,,,,0.72,ftsc2560_millimetres_x.csv
+2,3000,Threaded Fitting,,,,,1.2,ftsc2560_millimetres_x.csv
+2 1/2,3000,Threaded Fitting,,,,,2.1,ftsc2560_millimetres_x.csv
+3,3000,Threaded Fitting,,,,,3.4,ftsc2560_millimetres_x.csv
+4,3000,Threaded Fitting,,,,,7.4,ftsc2560_millimetres_x.csv
+1/8,2000,45° Elbow,20.574,6.35,,6.7031,0.0227,ftsc2_threaded_tee_2000_inches.csv
+1/4,2000,45° Elbow,20.574,8.128,,10.2057,0.0544,ftsc2_threaded_tee_2000_inches.csv
+3/8,2000,45° Elbow,24.638,9.144,,10.3581,0.0726,ftsc2_threaded_tee_2000_inches.csv
+1/2,2000,45° Elbow,28.448,10.922,,13.556,0.1225,ftsc2_threaded_tee_2000_inches.csv
+3/4,2000,45° Elbow,33.274,12.7,,13.8608,0.195,ftsc2_threaded_tee_2000_inches.csv
+1,2000,45° Elbow,38.1,14.732,,17.3431,0.2767,ftsc2_threaded_tee_2000_inches.csv
+1 1/4,2000,45° Elbow,44.45,17.018,,17.9527,0.4173,ftsc2_threaded_tee_2000_inches.csv
+1 1/2,2000,45° Elbow,50.8,17.78,,18.3769,0.5761,ftsc2_threaded_tee_2000_inches.csv
+2,2000,45° Elbow,60.452,19.05,,19.2151,0.9163,ftsc2_threaded_tee_2000_inches.csv
+2 1/2,2000,45° Elbow,76.2,23.622,,28.9052,1.9595,ftsc2_threaded_tee_2000_inches.csv
+3,2000,45° Elbow,85.852,25.908,,30.48,2.6535,ftsc2_threaded_tee_2000_inches.csv
+4,2000,45° Elbow,106.426,27.686,,33.02,5.9012,ftsc2_threaded_tee_2000_inches.csv
+1/8,2000,45° Elbow,21.0,6.4,,6.7,0.05,ftsc2_threaded_tee_2000_millimetres.csv
+1/4,2000,45° Elbow,21.0,8.1,,10.2,0.12,ftsc2_threaded_tee_2000_millimetres.csv
+3/8,2000,45° Elbow,25.0,9.1,,10.4,0.16,ftsc2_threaded_tee_2000_millimetres.csv
+1/2,2000,45° Elbow,28.0,10.9,,13.6,0.27,ftsc2_threaded_tee_2000_millimetres.csv
+3/4,2000,45° Elbow,33.0,12.7,,13.9,0.43,ftsc2_threaded_tee_2000_millimetres.csv
+1,2000,45° Elbow,38.0,14.7,,17.3,0.61,ftsc2_threaded_tee_2000_millimetres.csv
+1 1/4,2000,45° Elbow,44.0,17.0,,18.0,0.92,ftsc2_threaded_tee_2000_millimetres.csv
+1 1/2,2000,45° Elbow,51.0,17.8,,18.4,1.27,ftsc2_threaded_tee_2000_millimetres.csv
+2,2000,45° Elbow,60.0,19.0,,19.2,2.02,ftsc2_threaded_tee_2000_millimetres.csv
+2 1/2,2000,45° Elbow,76.0,23.6,,28.9,4.32,ftsc2_threaded_tee_2000_millimetres.csv
+3,2000,45° Elbow,86.0,25.9,,30.5,5.85,ftsc2_threaded_tee_2000_millimetres.csv
+4,2000,45° Elbow,106.0,27.7,,33.0,13.01,ftsc2_threaded_tee_2000_millimetres.csv
+1/8,3000,45° Elbow,20.574,6.35,,6.7031,0.0635,ftsc2_threaded_tee_3000_inches.csv
+1/4,3000,45° Elbow,24.638,8.128,,10.2057,0.0907,ftsc2_threaded_tee_3000_inches.csv
+3/8,3000,45° Elbow,28.448,9.144,,10.3581,0.1542,ftsc2_threaded_tee_3000_inches.csv
+1/2,3000,45° Elbow,33.274,10.922,,13.556,0.2585,ftsc2_threaded_tee_3000_inches.csv
+3/4,3000,45° Elbow,38.1,12.7,,13.8608,0.3765,ftsc2_threaded_tee_3000_inches.csv
+1,3000,45° Elbow,44.45,14.732,,17.3431,0.6214,ftsc2_threaded_tee_3000_inches.csv
+1 1/4,3000,45° Elbow,50.8,17.018,,17.9527,0.7439,ftsc2_threaded_tee_3000_inches.csv
+1 1/2,3000,45° Elbow,60.452,17.78,,18.3769,1.447,ftsc2_threaded_tee_3000_inches.csv
+2,3000,45° Elbow,63.5,19.05,,19.2151,1.5513,ftsc2_threaded_tee_3000_inches.csv
+2 1/2,3000,45° Elbow,82.55,23.622,,28.9052,2.6989,ftsc2_threaded_tee_3000_inches.csv
+3,3000,45° Elbow,95.25,25.908,,30.48,4.7491,ftsc2_threaded_tee_3000_inches.csv
+4,3000,45° Elbow,114.3,27.686,,33.02,8.2282,ftsc2_threaded_tee_3000_inches.csv
+1/8,3000,45° Elbow,21.0,6.4,,6.7,0.14,ftsc2_threaded_tee_3000_millimetres.csv
+1/4,3000,45° Elbow,25.0,8.1,,10.2,0.2,ftsc2_threaded_tee_3000_millimetres.csv
+3/8,3000,45° Elbow,28.0,9.1,,10.4,0.34,ftsc2_threaded_tee_3000_millimetres.csv
+1/2,3000,45° Elbow,33.0,10.9,,13.6,0.57,ftsc2_threaded_tee_3000_millimetres.csv
+3/4,3000,45° Elbow,38.0,12.7,,13.9,0.83,ftsc2_threaded_tee_3000_millimetres.csv
+1,3000,45° Elbow,44.0,14.7,,17.3,1.37,ftsc2_threaded_tee_3000_millimetres.csv
+1 1/4,3000,45° Elbow,51.0,17.0,,18.0,1.64,ftsc2_threaded_tee_3000_millimetres.csv
+1 1/2,3000,45° Elbow,60.0,17.8,,18.4,3.19,ftsc2_threaded_tee_3000_millimetres.csv
+2,3000,45° Elbow,64.0,19.0,,19.2,3.42,ftsc2_threaded_tee_3000_millimetres.csv
+2 1/2,3000,45° Elbow,83.0,23.6,,28.9,5.95,ftsc2_threaded_tee_3000_millimetres.csv
+3,3000,45° Elbow,95.0,25.9,,30.5,10.47,ftsc2_threaded_tee_3000_millimetres.csv
+4,3000,45° Elbow,114.0,27.7,,33.0,18.14,ftsc2_threaded_tee_3000_millimetres.csv
+1/8,6000,45° Elbow,24.638,6.35,,6.7031,0.0998,ftsc2_threaded_tee_6000_inches.csv
+1/4,6000,45° Elbow,28.448,8.128,,10.2057,0.1724,ftsc2_threaded_tee_6000_inches.csv
+3/8,6000,45° Elbow,33.274,9.144,,10.3581,0.2858,ftsc2_threaded_tee_6000_inches.csv
+1/2,6000,45° Elbow,38.1,10.922,,13.556,0.44,ftsc2_threaded_tee_6000_inches.csv
+3/4,6000,45° Elbow,44.45,12.7,,13.8608,0.7303,ftsc2_threaded_tee_6000_inches.csv
+1,6000,45° Elbow,50.8,14.732,,17.3431,0.948,ftsc2_threaded_tee_6000_inches.csv
+1 1/4,6000,45° Elbow,60.452,17.018,,17.9527,1.5649,ftsc2_threaded_tee_6000_inches.csv
+1 1/2,6000,45° Elbow,63.5,17.78,,18.3769,1.9777,ftsc2_threaded_tee_6000_inches.csv
+2,6000,45° Elbow,82.55,19.05,,19.2151,3.8056,ftsc2_threaded_tee_6000_inches.csv
+2 1/2,6000,45° Elbow,95.25,23.622,,28.9052,5.7697,ftsc2_threaded_tee_6000_inches.csv
+3,6000,45° Elbow,106.426,25.908,,30.48,9.7704,ftsc2_threaded_tee_6000_inches.csv
+4,6000,45° Elbow,114.3,27.686,,33.02,10.2829,ftsc2_threaded_tee_6000_inches.csv
+1/8,6000,45° Elbow,25.0,6.4,,6.7,0.22,ftsc2_threaded_tee_6000_millimetres.csv
+1/4,6000,45° Elbow,28.0,8.1,,10.2,0.38,ftsc2_threaded_tee_6000_millimetres.csv
+3/8,6000,45° Elbow,33.0,9.1,,10.4,0.63,ftsc2_threaded_tee_6000_millimetres.csv
+1/2,6000,45° Elbow,38.0,10.9,,13.6,0.97,ftsc2_threaded_tee_6000_millimetres.csv
+3/4,6000,45° Elbow,44.0,12.7,,13.9,1.61,ftsc2_threaded_tee_6000_millimetres.csv
+1,6000,45° Elbow,51.0,14.7,,17.3,2.09,ftsc2_threaded_tee_6000_millimetres.csv
+1 1/4,6000,45° Elbow,60.0,17.0,,18.0,3.45,ftsc2_threaded_tee_6000_millimetres.csv
+1 1/2,6000,45° Elbow,64.0,17.8,,18.4,4.36,ftsc2_threaded_tee_6000_millimetres.csv
+2,6000,45° Elbow,83.0,19.0,,19.2,8.39,ftsc2_threaded_tee_6000_millimetres.csv
+2 1/2,6000,45° Elbow,95.0,23.6,,28.9,12.72,ftsc2_threaded_tee_6000_millimetres.csv
+3,6000,45° Elbow,106.0,25.9,,30.5,21.54,ftsc2_threaded_tee_6000_millimetres.csv
+4,6000,45° Elbow,114.0,27.7,,33.0,22.67,ftsc2_threaded_tee_6000_millimetres.csv
+1/8,2000,Tee,20.574,6.35,,6.7031,0.0499,ftsc3_threaded_cross_2000_inches.csv
+1/4,2000,Tee,20.574,8.128,,10.2057,0.0998,ftsc3_threaded_cross_2000_inches.csv
+3/8,2000,Tee,24.638,9.144,,10.3581,0.0907,ftsc3_threaded_cross_2000_inches.csv
+1/2,2000,Tee,28.448,10.922,,13.556,0.1588,ftsc3_threaded_cross_2000_inches.csv
+3/4,2000,Tee,33.274,12.7,,13.8608,0.2313,ftsc3_threaded_cross_2000_inches.csv
+1,2000,Tee,38.1,14.732,,17.3431,0.3447,ftsc3_threaded_cross_2000_inches.csv
+1 1/4,2000,Tee,44.45,17.018,,17.9527,0.5035,ftsc3_threaded_cross_2000_inches.csv
+1 1/2,2000,Tee,50.8,17.78,,18.3769,0.6532,ftsc3_threaded_cross_2000_inches.csv
+2,2000,Tee,60.452,19.05,,19.2151,1.1431,ftsc3_threaded_cross_2000_inches.csv
+2 1/2,2000,Tee,76.2,23.622,,28.9052,3.3793,ftsc3_threaded_cross_2000_inches.csv
+3,2000,Tee,85.852,25.908,,30.48,4.0098,ftsc3_threaded_cross_2000_inches.csv
+4,2000,Tee,106.426,27.686,,33.02,6.7222,ftsc3_threaded_cross_2000_inches.csv
+1/8,2000,Tee,21.0,6.4,,6.7,0.11,ftsc3_threaded_cross_2000_millimetres.csv
+1/4,2000,Tee,21.0,8.1,,10.2,0.22,ftsc3_threaded_cross_2000_millimetres.csv
+3/8,2000,Tee,25.0,9.1,,10.4,0.2,ftsc3_threaded_cross_2000_millimetres.csv
+1/2,2000,Tee,28.0,10.9,,13.6,0.35,ftsc3_threaded_cross_2000_millimetres.csv
+3/4,2000,Tee,33.0,12.7,,13.9,0.51,ftsc3_threaded_cross_2000_millimetres.csv
+1,2000,Tee,38.0,14.7,,17.3,0.76,ftsc3_threaded_cross_2000_millimetres.csv
+1 1/4,2000,Tee,44.0,17.0,,18.0,1.11,ftsc3_threaded_cross_2000_millimetres.csv
+1 1/2,2000,Tee,51.0,17.8,,18.4,1.44,ftsc3_threaded_cross_2000_millimetres.csv
+2,2000,Tee,60.0,19.0,,19.2,2.52,ftsc3_threaded_cross_2000_millimetres.csv
+2 1/2,2000,Tee,76.0,23.6,,28.9,7.45,ftsc3_threaded_cross_2000_millimetres.csv
+3,2000,Tee,86.0,25.9,,30.5,8.84,ftsc3_threaded_cross_2000_millimetres.csv
+4,2000,Tee,106.0,27.7,,33.0,14.82,ftsc3_threaded_cross_2000_millimetres.csv
+1/8,3000,Tee,20.574,6.35,,6.7031,0.0862,ftsc3_threaded_cross_3000_inches.csv
+1/4,3000,Tee,24.638,8.128,,10.2057,0.1134,ftsc3_threaded_cross_3000_inches.csv
+3/8,3000,Tee,28.448,9.144,,10.3581,0.195,ftsc3_threaded_cross_3000_inches.csv
+1/2,3000,Tee,33.274,10.922,,13.556,0.3084,ftsc3_threaded_cross_3000_inches.csv
+3/4,3000,Tee,38.1,12.7,,13.8608,0.5126,ftsc3_threaded_cross_3000_inches.csv
+1,3000,Tee,44.45,14.732,,17.3431,0.7439,ftsc3_threaded_cross_3000_inches.csv
+1 1/4,3000,Tee,50.8,17.018,,17.9527,0.8482,ftsc3_threaded_cross_3000_inches.csv
+1 1/2,3000,Tee,60.452,17.78,,18.3769,1.3336,ftsc3_threaded_cross_3000_inches.csv
+2,3000,Tee,63.5,19.05,,19.2151,1.6692,ftsc3_threaded_cross_3000_inches.csv
+2 1/2,3000,Tee,82.55,23.622,,28.9052,3.4428,ftsc3_threaded_cross_3000_inches.csv
+3,3000,Tee,95.25,25.908,,30.48,5.2798,ftsc3_threaded_cross_3000_inches.csv
+4,3000,Tee,114.3,27.686,,33.02,6.5816,ftsc3_threaded_cross_3000_inches.csv
+1/8,3000,Tee,21.0,6.4,,6.7,0.19,ftsc3_threaded_cross_3000_millimetres.csv
+1/4,3000,Tee,25.0,8.1,,10.2,0.25,ftsc3_threaded_cross_3000_millimetres.csv
+3/8,3000,Tee,28.0,9.1,,10.4,0.43,ftsc3_threaded_cross_3000_millimetres.csv
+1/2,3000,Tee,33.0,10.9,,13.6,0.68,ftsc3_threaded_cross_3000_millimetres.csv
+3/4,3000,Tee,38.0,12.7,,13.9,1.13,ftsc3_threaded_cross_3000_millimetres.csv
+1,3000,Tee,44.0,14.7,,17.3,1.64,ftsc3_threaded_cross_3000_millimetres.csv
+1 1/4,3000,Tee,51.0,17.0,,18.0,1.87,ftsc3_threaded_cross_3000_millimetres.csv
+1 1/2,3000,Tee,60.0,17.8,,18.4,2.94,ftsc3_threaded_cross_3000_millimetres.csv
+2,3000,Tee,64.0,19.0,,19.2,3.68,ftsc3_threaded_cross_3000_millimetres.csv
+2 1/2,3000,Tee,83.0,23.6,,28.9,7.59,ftsc3_threaded_cross_3000_millimetres.csv
+3,3000,Tee,95.0,25.9,,30.5,11.64,ftsc3_threaded_cross_3000_millimetres.csv
+4,3000,Tee,114.0,27.7,,33.0,14.51,ftsc3_threaded_cross_3000_millimetres.csv
+1/8,6000,Tee,24.638,6.35,,6.7031,0.1134,ftsc3_threaded_cross_6000_inches.csv
+1/4,6000,Tee,28.448,8.128,,10.2057,0.2404,ftsc3_threaded_cross_6000_inches.csv
+3/8,6000,Tee,33.274,9.144,,10.3581,0.3084,ftsc3_threaded_cross_6000_inches.csv
+1/2,6000,Tee,38.1,10.922,,13.556,0.5625,ftsc3_threaded_cross_6000_inches.csv
+3/4,6000,Tee,44.45,12.7,,13.8608,0.8845,ftsc3_threaded_cross_6000_inches.csv
+1,6000,Tee,50.8,14.732,,17.3431,1.3608,ftsc3_threaded_cross_6000_inches.csv
+1 1/4,6000,Tee,60.452,17.018,,17.9527,2.209,ftsc3_threaded_cross_6000_inches.csv
+1 1/2,6000,Tee,63.5,17.78,,18.3769,2.3632,ftsc3_threaded_cross_6000_inches.csv
+2,6000,Tee,82.55,19.05,,19.2151,4.5631,ftsc3_threaded_cross_6000_inches.csv
+2 1/2,6000,Tee,95.25,23.622,,28.9052,5.6563,ftsc3_threaded_cross_6000_inches.csv
+3,6000,Tee,106.426,25.908,,30.48,11.1085,ftsc3_threaded_cross_6000_inches.csv
+4,6000,Tee,114.3,27.686,,33.02,8.9494,ftsc3_threaded_cross_6000_inches.csv
+1/8,6000,Tee,25.0,6.4,,6.7,0.25,ftsc3_threaded_cross_6000_millimetres.csv
+1/4,6000,Tee,28.0,8.1,,10.2,0.53,ftsc3_threaded_cross_6000_millimetres.csv
+3/8,6000,Tee,33.0,9.1,,10.4,0.68,ftsc3_threaded_cross_6000_millimetres.csv
+1/2,6000,Tee,38.0,10.9,,13.6,1.24,ftsc3_threaded_cross_6000_millimetres.csv
+3/4,6000,Tee,44.0,12.7,,13.9,1.95,ftsc3_threaded_cross_6000_millimetres.csv
+1,6000,Tee,51.0,14.7,,17.3,3.0,ftsc3_threaded_cross_6000_millimetres.csv
+1 1/4,6000,Tee,60.0,17.0,,18.0,4.87,ftsc3_threaded_cross_6000_millimetres.csv
+1 1/2,6000,Tee,64.0,17.8,,18.4,5.21,ftsc3_threaded_cross_6000_millimetres.csv
+2,6000,Tee,83.0,19.0,,19.2,10.06,ftsc3_threaded_cross_6000_millimetres.csv
+2 1/2,6000,Tee,95.0,23.6,,28.9,12.47,ftsc3_threaded_cross_6000_millimetres.csv
+3,6000,Tee,106.0,25.9,,30.5,24.49,ftsc3_threaded_cross_6000_millimetres.csv
+4,6000,Tee,114.0,27.7,,33.0,19.73,ftsc3_threaded_cross_6000_millimetres.csv
+1/8,2000,Cross,17.526,6.35,,6.7031,0.0181,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1/4,2000,Cross,17.526,8.128,,10.2057,0.0363,ftsc4_threaded_45deg_elbow_2000_inches.csv
+3/8,2000,Cross,19.05,9.144,,10.3581,0.0454,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1/2,2000,Cross,22.352,10.922,,13.556,0.0862,ftsc4_threaded_45deg_elbow_2000_inches.csv
+3/4,2000,Cross,25.4,12.7,,13.8608,0.1497,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1,2000,Cross,28.448,14.732,,17.3431,0.2132,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1 1/4,2000,Cross,33.274,17.018,,17.9527,0.2812,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1 1/2,2000,Cross,35.052,17.78,,18.3769,0.3538,ftsc4_threaded_45deg_elbow_2000_inches.csv
+2,2000,Cross,42.926,19.05,,19.2151,0.5897,ftsc4_threaded_45deg_elbow_2000_inches.csv
+2 1/2,2000,Cross,52.324,23.622,,28.9052,1.5921,ftsc4_threaded_45deg_elbow_2000_inches.csv
+3,2000,Cross,63.5,25.908,,30.48,2.3269,ftsc4_threaded_45deg_elbow_2000_inches.csv
+4,2000,Cross,79.248,27.686,,33.02,3.9326,ftsc4_threaded_45deg_elbow_2000_inches.csv
+1/8,2000,Cross,17.0,6.4,,6.7,0.04,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1/4,2000,Cross,17.0,8.1,,10.2,0.08,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+3/8,2000,Cross,19.0,9.1,,10.4,0.1,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1/2,2000,Cross,22.0,10.9,,13.6,0.19,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+3/4,2000,Cross,25.0,12.7,,13.9,0.33,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1,2000,Cross,28.0,14.7,,17.3,0.47,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1 1/4,2000,Cross,33.0,17.0,,18.0,0.62,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1 1/2,2000,Cross,35.0,17.8,,18.4,0.78,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+2,2000,Cross,43.0,19.0,,19.2,1.3,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+2 1/2,2000,Cross,52.0,23.6,,28.9,3.51,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+3,2000,Cross,64.0,25.9,,30.5,5.13,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+4,2000,Cross,79.0,27.7,,33.0,8.67,ftsc4_threaded_45deg_elbow_2000_millimetres.csv
+1/8,3000,Cross,17.526,6.35,,6.7031,0.0499,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1/4,3000,Cross,19.05,8.128,,10.2057,0.059,ftsc4_threaded_45deg_elbow_3000_inches.csv
+3/8,3000,Cross,22.352,9.144,,10.3581,0.0998,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1/2,3000,Cross,25.4,10.922,,13.556,0.1542,ftsc4_threaded_45deg_elbow_3000_inches.csv
+3/4,3000,Cross,28.448,12.7,,13.8608,0.2404,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1,3000,Cross,33.274,14.732,,17.3431,0.4082,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1 1/4,3000,Cross,35.052,17.018,,17.9527,0.4581,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1 1/2,3000,Cross,42.926,17.78,,18.3769,0.6169,ftsc4_threaded_45deg_elbow_3000_inches.csv
+2,3000,Cross,43.688,19.05,,19.2151,1.0115,ftsc4_threaded_45deg_elbow_3000_inches.csv
+2 1/2,3000,Cross,52.324,23.622,,28.9052,1.515,ftsc4_threaded_45deg_elbow_3000_inches.csv
+3,3000,Cross,63.5,25.908,,30.48,2.7941,ftsc4_threaded_45deg_elbow_3000_inches.csv
+4,3000,Cross,79.248,27.686,,33.02,3.919,ftsc4_threaded_45deg_elbow_3000_inches.csv
+1/8,3000,Cross,17.0,6.4,,6.7,0.11,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1/4,3000,Cross,19.0,8.1,,10.2,0.13,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+3/8,3000,Cross,22.0,9.1,,10.4,0.22,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1/2,3000,Cross,25.0,10.9,,13.6,0.34,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+3/4,3000,Cross,28.0,12.7,,13.9,0.53,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1,3000,Cross,33.0,14.7,,17.3,0.9,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1 1/4,3000,Cross,35.0,17.0,,18.0,1.01,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1 1/2,3000,Cross,43.0,17.8,,18.4,1.36,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+2,3000,Cross,44.0,19.0,,19.2,2.23,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+2 1/2,3000,Cross,52.0,23.6,,28.9,3.34,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+3,3000,Cross,64.0,25.9,,30.5,6.16,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+4,3000,Cross,79.0,27.7,,33.0,8.64,ftsc4_threaded_45deg_elbow_3000_millimetres.csv
+1/8,6000,Cross,19.05,6.35,,6.7031,0.0499,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1/4,6000,Cross,22.352,8.128,,10.2057,0.1315,ftsc4_threaded_45deg_elbow_6000_inches.csv
+3/8,6000,Cross,25.4,9.144,,10.3581,0.0998,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1/2,6000,Cross,28.448,10.922,,13.556,0.2948,ftsc4_threaded_45deg_elbow_6000_inches.csv
+3/4,6000,Cross,33.274,12.7,,13.8608,0.4491,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1,6000,Cross,35.052,14.732,,17.3431,0.5715,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1 1/4,6000,Cross,42.926,17.018,,17.9527,0.9616,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1 1/2,6000,Cross,43.688,17.78,,18.3769,1.1793,ftsc4_threaded_45deg_elbow_6000_inches.csv
+2,6000,Cross,52.324,19.05,,19.2151,1.9504,ftsc4_threaded_45deg_elbow_6000_inches.csv
+2 1/2,6000,Cross,63.5,23.622,,28.9052,3.0844,ftsc4_threaded_45deg_elbow_6000_inches.csv
+3,6000,Cross,79.248,25.908,,30.48,6.2868,ftsc4_threaded_45deg_elbow_6000_inches.csv
+4,6000,Cross,79.248,27.686,,33.02,7.2575,ftsc4_threaded_45deg_elbow_6000_inches.csv
+1/8,6000,Cross,19.0,6.4,,6.7,0.11,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1/4,6000,Cross,22.0,8.1,,10.2,0.29,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+3/8,6000,Cross,25.0,9.1,,10.4,0.22,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1/2,6000,Cross,28.0,10.9,,13.6,0.65,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+3/4,6000,Cross,33.0,12.7,,13.9,0.99,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1,6000,Cross,35.0,14.7,,17.3,1.26,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1 1/4,6000,Cross,43.0,17.0,,18.0,2.12,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1 1/2,6000,Cross,44.0,17.8,,18.4,2.6,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+2,6000,Cross,52.0,19.0,,19.2,4.3,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+2 1/2,6000,Cross,64.0,23.6,,28.9,6.8,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+3,6000,Cross,79.0,25.9,,30.5,13.86,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+4,6000,Cross,79.0,27.7,,33.0,16.95,ftsc4_threaded_45deg_elbow_6000_millimetres.csv
+1/8,3000,Full Coupling,,,,,0.0499,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1/4,3000,Full Coupling,,,,,0.0454,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+3/8,3000,Full Coupling,,,,,0.0771,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1/2,3000,Full Coupling,,,,,0.1179,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+3/4,3000,Full Coupling,,,,,0.2132,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1,3000,Full Coupling,,,,,0.2948,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1 1/4,3000,Full Coupling,,,,,0.4808,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1 1/2,3000,Full Coupling,,,,,0.6169,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+2,3000,Full Coupling,,,,,1.1204,ftsc5_threaded_90deg_street_elbow_3000_inches.csv
+1/8,3000,Full Coupling,,,,,0.11,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1/4,3000,Full Coupling,,,,,0.1,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+3/8,3000,Full Coupling,,,,,0.17,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1/2,3000,Full Coupling,,,,,0.26,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+3/4,3000,Full Coupling,,,,,0.47,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1,3000,Full Coupling,,,,,0.65,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1 1/4,3000,Full Coupling,,,,,1.06,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1 1/2,3000,Full Coupling,,,,,1.36,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+2,3000,Full Coupling,,,,,2.47,ftsc5_threaded_90deg_street_elbow_3000_millimetres.csv
+1/8,6000,Full Coupling,,,,,0.0454,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1/4,6000,Full Coupling,,,,,0.0771,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+3/8,6000,Full Coupling,,,,,0.0862,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1/2,6000,Full Coupling,,,,,0.2041,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+3/4,6000,Full Coupling,,,,,0.3311,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1,6000,Full Coupling,,,,,0.6214,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1 1/4,6000,Full Coupling,,,,,0.7575,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1 1/2,6000,Full Coupling,,,,,1.4606,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+2,6000,Full Coupling,,,,,2.268,ftsc5_threaded_90deg_street_elbow_6000_inches.csv
+1/8,6000,Full Coupling,,,,,0.28,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1/4,6000,Full Coupling,,,,,0.17,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+3/8,6000,Full Coupling,,,,,0.19,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1/2,6000,Full Coupling,,,,,0.45,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+3/4,6000,Full Coupling,,,,,0.73,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1,6000,Full Coupling,,,,,1.37,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1 1/4,6000,Full Coupling,,,,,1.67,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1 1/2,6000,Full Coupling,,,,,3.22,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+2,6000,Full Coupling,,,,,5.0,ftsc5_threaded_90deg_street_elbow_6000_millimetres.csv
+1/8,3000,Full Coupling,,,,31.75,0.0227,ftsc6_threaded_coupling_3000_inches.csv
+1/4,3000,Full Coupling,,,,35.052,0.0227,ftsc6_threaded_coupling_3000_inches.csv
+3/8,3000,Full Coupling,,,,38.1,0.0499,ftsc6_threaded_coupling_3000_inches.csv
+1/2,3000,Full Coupling,,,,47.752,0.0499,ftsc6_threaded_coupling_3000_inches.csv
+3/4,3000,Full Coupling,,,,50.8,0.0862,ftsc6_threaded_coupling_3000_inches.csv
+1,3000,Full Coupling,,,,60.452,0.127,ftsc6_threaded_coupling_3000_inches.csv
+1 1/4,3000,Full Coupling,,,,66.548,0.3175,ftsc6_threaded_coupling_3000_inches.csv
+1 1/2,3000,Full Coupling,,,,79.248,0.4491,ftsc6_threaded_coupling_3000_inches.csv
+2,3000,Full Coupling,,,,85.852,0.6396,ftsc6_threaded_coupling_3000_inches.csv
+2 1/2,3000,Full Coupling,,,,91.948,0.821,ftsc6_threaded_coupling_3000_inches.csv
+3,3000,Full Coupling,,,,107.95,1.388,ftsc6_threaded_coupling_3000_inches.csv
+4,3000,Full Coupling,,,,120.65,3.4428,ftsc6_threaded_coupling_3000_inches.csv
+1/8,3000,Full Coupling,,,,32.0,0.05,ftsc6_threaded_coupling_3000_millimetres.csv
+1/4,3000,Full Coupling,,,,35.0,0.05,ftsc6_threaded_coupling_3000_millimetres.csv
+3/8,3000,Full Coupling,,,,38.0,0.11,ftsc6_threaded_coupling_3000_millimetres.csv
+1/2,3000,Full Coupling,,,,48.0,0.11,ftsc6_threaded_coupling_3000_millimetres.csv
+3/4,3000,Full Coupling,,,,51.0,0.19,ftsc6_threaded_coupling_3000_millimetres.csv
+1,3000,Full Coupling,,,,60.0,0.28,ftsc6_threaded_coupling_3000_millimetres.csv
+1 1/4,3000,Full Coupling,,,,67.0,0.7,ftsc6_threaded_coupling_3000_millimetres.csv
+1 1/2,3000,Full Coupling,,,,79.0,0.99,ftsc6_threaded_coupling_3000_millimetres.csv
+2,3000,Full Coupling,,,,86.0,1.41,ftsc6_threaded_coupling_3000_millimetres.csv
+2 1/2,3000,Full Coupling,,,,92.0,1.81,ftsc6_threaded_coupling_3000_millimetres.csv
+3,3000,Full Coupling,,,,108.0,3.06,ftsc6_threaded_coupling_3000_millimetres.csv
+4,3000,Full Coupling,,,,121.0,7.59,ftsc6_threaded_coupling_3000_millimetres.csv
+1/8,6000,Full Coupling,,,,31.75,0.0363,ftsc6_threaded_coupling_6000_inches.csv
+1/4,6000,Full Coupling,,,,35.052,0.0363,ftsc6_threaded_coupling_6000_inches.csv
+3/8,6000,Full Coupling,,,,38.1,0.0499,ftsc6_threaded_coupling_6000_inches.csv
+1/2,6000,Full Coupling,,,,47.752,0.0998,ftsc6_threaded_coupling_6000_inches.csv
+3/4,6000,Full Coupling,,,,50.8,0.2041,ftsc6_threaded_coupling_6000_inches.csv
+1,6000,Full Coupling,,,,60.452,0.4354,ftsc6_threaded_coupling_6000_inches.csv
+1 1/4,6000,Full Coupling,,,,66.548,0.4853,ftsc6_threaded_coupling_6000_inches.csv
+1 1/2,6000,Full Coupling,,,,79.248,0.8981,ftsc6_threaded_coupling_6000_inches.csv
+2,6000,Full Coupling,,,,85.852,1.5921,ftsc6_threaded_coupling_6000_inches.csv
+2 1/2,6000,Full Coupling,,,,91.948,2.209,ftsc6_threaded_coupling_6000_inches.csv
+3,6000,Full Coupling,,,,107.95,2.776,ftsc6_threaded_coupling_6000_inches.csv
+4,6000,Full Coupling,,,,120.65,5.0394,ftsc6_threaded_coupling_6000_inches.csv
+1/8,6000,Full Coupling,,,,32.0,0.08,ftsc6_threaded_coupling_6000_millimetres.csv
+1/4,6000,Full Coupling,,,,35.0,0.08,ftsc6_threaded_coupling_6000_millimetres.csv
+3/8,6000,Full Coupling,,,,38.0,0.11,ftsc6_threaded_coupling_6000_millimetres.csv
+1/2,6000,Full Coupling,,,,48.0,0.22,ftsc6_threaded_coupling_6000_millimetres.csv
+3/4,6000,Full Coupling,,,,51.0,0.45,ftsc6_threaded_coupling_6000_millimetres.csv
+1,6000,Full Coupling,,,,60.0,0.96,ftsc6_threaded_coupling_6000_millimetres.csv
+1 1/4,6000,Full Coupling,,,,67.0,1.07,ftsc6_threaded_coupling_6000_millimetres.csv
+1 1/2,6000,Full Coupling,,,,79.0,1.98,ftsc6_threaded_coupling_6000_millimetres.csv
+2,6000,Full Coupling,,,,86.0,3.51,ftsc6_threaded_coupling_6000_millimetres.csv
+2 1/2,6000,Full Coupling,,,,92.0,4.87,ftsc6_threaded_coupling_6000_millimetres.csv
+3,6000,Full Coupling,,,,108.0,6.12,ftsc6_threaded_coupling_6000_millimetres.csv
+4,6000,Full Coupling,,,,121.0,11.11,ftsc6_threaded_coupling_6000_millimetres.csv
+1/8,3000,Cap,,,,15.875,0.0091,ftsc7_threaded_half_coupling_3000_inches.csv
+1/4,3000,Cap,,,,17.526,0.0091,ftsc7_threaded_half_coupling_3000_inches.csv
+3/8,3000,Cap,,,,19.05,0.0363,ftsc7_threaded_half_coupling_3000_inches.csv
+1/2,3000,Cap,,,,23.876,0.0363,ftsc7_threaded_half_coupling_3000_inches.csv
+3/4,3000,Cap,,,,25.4,0.0499,ftsc7_threaded_half_coupling_3000_inches.csv
+1,3000,Cap,,,,30.226,0.0635,ftsc7_threaded_half_coupling_3000_inches.csv
+1 1/4,3000,Cap,,,,33.274,0.1542,ftsc7_threaded_half_coupling_3000_inches.csv
+1 1/2,3000,Cap,,,,39.624,0.2313,ftsc7_threaded_half_coupling_3000_inches.csv
+2,3000,Cap,,,,42.926,0.3175,ftsc7_threaded_half_coupling_3000_inches.csv
+2 1/2,3000,Cap,,,,45.974,0.4082,ftsc7_threaded_half_coupling_3000_inches.csv
+3,3000,Cap,,,,53.975,0.694,ftsc7_threaded_half_coupling_3000_inches.csv
+4,3000,Cap,,,,60.325,1.7191,ftsc7_threaded_half_coupling_3000_inches.csv
+1/8,3000,Cap,,,,16.0,0.02,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1/4,3000,Cap,,,,17.5,0.02,ftsc7_threaded_half_coupling_3000_millimetres.csv
+3/8,3000,Cap,,,,19.0,0.08,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1/2,3000,Cap,,,,24.0,0.08,ftsc7_threaded_half_coupling_3000_millimetres.csv
+3/4,3000,Cap,,,,25.5,0.11,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1,3000,Cap,,,,30.0,0.14,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1 1/4,3000,Cap,,,,33.5,0.34,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1 1/2,3000,Cap,,,,39.5,0.51,ftsc7_threaded_half_coupling_3000_millimetres.csv
+2,3000,Cap,,,,43.0,0.7,ftsc7_threaded_half_coupling_3000_millimetres.csv
+2 1/2,3000,Cap,,,,46.0,0.9,ftsc7_threaded_half_coupling_3000_millimetres.csv
+3,3000,Cap,,,,54.0,1.53,ftsc7_threaded_half_coupling_3000_millimetres.csv
+4,3000,Cap,,,,60.5,3.79,ftsc7_threaded_half_coupling_3000_millimetres.csv
+1/8,6000,Cap,,,,15.875,0.0181,ftsc7_threaded_half_coupling_6000_inches.csv
+1/4,6000,Cap,,,,17.526,0.0181,ftsc7_threaded_half_coupling_6000_inches.csv
+3/8,6000,Cap,,,,19.05,0.0227,ftsc7_threaded_half_coupling_6000_inches.csv
+1/2,6000,Cap,,,,23.876,0.0499,ftsc7_threaded_half_coupling_6000_inches.csv
+3/4,6000,Cap,,,,25.4,0.0998,ftsc7_threaded_half_coupling_6000_inches.csv
+1,6000,Cap,,,,30.226,0.2177,ftsc7_threaded_half_coupling_6000_inches.csv
+1 1/4,6000,Cap,,,,33.274,0.2404,ftsc7_threaded_half_coupling_6000_inches.csv
+1 1/2,6000,Cap,,,,39.624,0.4491,ftsc7_threaded_half_coupling_6000_inches.csv
+2,6000,Cap,,,,42.926,0.7938,ftsc7_threaded_half_coupling_6000_inches.csv
+2 1/2,6000,Cap,,,,45.974,1.1022,ftsc7_threaded_half_coupling_6000_inches.csv
+3,6000,Cap,,,,53.975,1.388,ftsc7_threaded_half_coupling_6000_inches.csv
+4,6000,Cap,,,,60.325,2.5174,ftsc7_threaded_half_coupling_6000_inches.csv
+1/8,6000,Cap,,,,16.0,0.04,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1/4,6000,Cap,,,,17.5,0.04,ftsc7_threaded_half_coupling_6000_millimetres.csv
+3/8,6000,Cap,,,,19.0,0.05,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1/2,6000,Cap,,,,24.0,0.11,ftsc7_threaded_half_coupling_6000_millimetres.csv
+3/4,6000,Cap,,,,25.5,0.22,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1,6000,Cap,,,,30.0,0.48,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1 1/4,6000,Cap,,,,33.5,0.53,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1 1/2,6000,Cap,,,,39.5,0.99,ftsc7_threaded_half_coupling_6000_millimetres.csv
+2,6000,Cap,,,,43.0,1.75,ftsc7_threaded_half_coupling_6000_millimetres.csv
+2 1/2,6000,Cap,,,,46.0,2.43,ftsc7_threaded_half_coupling_6000_millimetres.csv
+3,6000,Cap,,,,54.0,3.06,ftsc7_threaded_half_coupling_6000_millimetres.csv
+4,6000,Cap,,,,60.5,5.55,ftsc7_threaded_half_coupling_6000_millimetres.csv
+1/8,3000,Reducing Coupling,,,,19.05,0.0064,ftsc8_threaded_cap_3000_inches.csv
+1/4,3000,Reducing Coupling,,,,25.4,0.0127,ftsc8_threaded_cap_3000_inches.csv
+3/8,3000,Reducing Coupling,,,,25.4,0.0254,ftsc8_threaded_cap_3000_inches.csv
+1/2,3000,Reducing Coupling,,,,31.75,0.0513,ftsc8_threaded_cap_3000_inches.csv
+3/4,3000,Reducing Coupling,,,,36.576,0.0635,ftsc8_threaded_cap_3000_inches.csv
+1,3000,Reducing Coupling,,,,41.148,0.0998,ftsc8_threaded_cap_3000_inches.csv
+1 1/4,3000,Reducing Coupling,,,,44.45,0.2041,ftsc8_threaded_cap_3000_inches.csv
+1 1/2,3000,Reducing Coupling,,,,44.45,0.3311,ftsc8_threaded_cap_3000_inches.csv
+2,3000,Reducing Coupling,,,,47.752,0.6441,ftsc8_threaded_cap_3000_inches.csv
+2 1/2,3000,Reducing Coupling,,,,60.452,1.0297,ftsc8_threaded_cap_3000_inches.csv
+3,3000,Reducing Coupling,,,,65.024,1.7509,ftsc8_threaded_cap_3000_inches.csv
+4,3000,Reducing Coupling,,,,68.326,2.8848,ftsc8_threaded_cap_3000_inches.csv
+1/8,3000,Reducing Coupling,,,,19.0,0.014,ftsc8_threaded_cap_3000_millimetres.csv
+1/4,3000,Reducing Coupling,,,,25.0,0.028,ftsc8_threaded_cap_3000_millimetres.csv
+3/8,3000,Reducing Coupling,,,,25.0,0.056,ftsc8_threaded_cap_3000_millimetres.csv
+1/2,3000,Reducing Coupling,,,,32.0,0.113,ftsc8_threaded_cap_3000_millimetres.csv
+3/4,3000,Reducing Coupling,,,,37.0,0.14,ftsc8_threaded_cap_3000_millimetres.csv
+1,3000,Reducing Coupling,,,,41.0,0.22,ftsc8_threaded_cap_3000_millimetres.csv
+1 1/4,3000,Reducing Coupling,,,,44.0,0.45,ftsc8_threaded_cap_3000_millimetres.csv
+1 1/2,3000,Reducing Coupling,,,,44.0,0.73,ftsc8_threaded_cap_3000_millimetres.csv
+2,3000,Reducing Coupling,,,,48.0,1.42,ftsc8_threaded_cap_3000_millimetres.csv
+2 1/2,3000,Reducing Coupling,,,,60.0,2.27,ftsc8_threaded_cap_3000_millimetres.csv
+3,3000,Reducing Coupling,,,,65.0,3.86,ftsc8_threaded_cap_3000_millimetres.csv
+4,3000,Reducing Coupling,,,,68.0,6.36,ftsc8_threaded_cap_3000_millimetres.csv
+1/8,6000,Reducing Coupling,,,,,0.0227,ftsc8_threaded_cap_6000_inches.csv
+1/4,6000,Reducing Coupling,,,,26.924,0.0227,ftsc8_threaded_cap_6000_inches.csv
+3/8,6000,Reducing Coupling,,,,26.924,0.0363,ftsc8_threaded_cap_6000_inches.csv
+1/2,6000,Reducing Coupling,,,,33.274,0.0635,ftsc8_threaded_cap_6000_inches.csv
+3/4,6000,Reducing Coupling,,,,38.1,0.0862,ftsc8_threaded_cap_6000_inches.csv
+1,6000,Reducing Coupling,,,,42.926,0.1542,ftsc8_threaded_cap_6000_inches.csv
+1 1/4,6000,Reducing Coupling,,,,45.974,0.2676,ftsc8_threaded_cap_6000_inches.csv
+1 1/2,6000,Reducing Coupling,,,,47.752,0.3447,ftsc8_threaded_cap_6000_inches.csv
+2,6000,Reducing Coupling,,,,50.8,0.6668,ftsc8_threaded_cap_6000_inches.csv
+2 1/2,6000,Reducing Coupling,,,,63.5,1.6647,ftsc8_threaded_cap_6000_inches.csv
+3,6000,Reducing Coupling,,,,68.326,2.404,ftsc8_threaded_cap_6000_inches.csv
+4,6000,Reducing Coupling,,,,74.676,2.9302,ftsc8_threaded_cap_6000_inches.csv
+1/8,6000,Reducing Coupling,,,,,0.05,ftsc8_threaded_cap_6000_millimetres.csv
+1/4,6000,Reducing Coupling,,,,27.0,0.05,ftsc8_threaded_cap_6000_millimetres.csv
+3/8,6000,Reducing Coupling,,,,27.0,0.08,ftsc8_threaded_cap_6000_millimetres.csv
+1/2,6000,Reducing Coupling,,,,33.0,0.14,ftsc8_threaded_cap_6000_millimetres.csv
+3/4,6000,Reducing Coupling,,,,38.0,0.19,ftsc8_threaded_cap_6000_millimetres.csv
+1,6000,Reducing Coupling,,,,43.0,0.34,ftsc8_threaded_cap_6000_millimetres.csv
+1 1/4,6000,Reducing Coupling,,,,46.0,0.59,ftsc8_threaded_cap_6000_millimetres.csv
+1 1/2,6000,Reducing Coupling,,,,48.0,0.76,ftsc8_threaded_cap_6000_millimetres.csv
+2,6000,Reducing Coupling,,,,51.0,1.47,ftsc8_threaded_cap_6000_millimetres.csv
+2 1/2,6000,Reducing Coupling,,,,64.0,3.67,ftsc8_threaded_cap_6000_millimetres.csv
+3,6000,Reducing Coupling,,,,68.0,5.3,ftsc8_threaded_cap_6000_millimetres.csv
+4,6000,Reducing Coupling,,,,75.0,6.46,ftsc8_threaded_cap_6000_millimetres.csv
+1/8,2000,Union,9.652,,,9.652,0.0,ftsc9_threaded_square_head_plug_2000_inches.csv
+1/4,2000,Union,11.176,,,11.176,0.0045,ftsc9_threaded_square_head_plug_2000_inches.csv
+3/8,2000,Union,12.7,,,12.7,0.0091,ftsc9_threaded_square_head_plug_2000_inches.csv
+1/2,2000,Union,14.224,,,14.224,0.0227,ftsc9_threaded_square_head_plug_2000_inches.csv
+3/4,2000,Union,15.748,,,15.748,0.0363,ftsc9_threaded_square_head_plug_2000_inches.csv
+1,2000,Union,19.05,,,19.05,0.0635,ftsc9_threaded_square_head_plug_2000_inches.csv
+1 1/4,2000,Union,20.574,,,20.574,0.1134,ftsc9_threaded_square_head_plug_2000_inches.csv
+1 1/2,2000,Union,20.574,,,20.574,0.1769,ftsc9_threaded_square_head_plug_2000_inches.csv
+2,2000,Union,22.352,,,22.352,0.3084,ftsc9_threaded_square_head_plug_2000_inches.csv
+2 1/2,2000,Union,26.924,,,26.924,0.4627,ftsc9_threaded_square_head_plug_2000_inches.csv
+3,2000,Union,28.448,,,28.448,0.5897,ftsc9_threaded_square_head_plug_2000_inches.csv
+4,2000,Union,31.75,,,31.75,1.4742,ftsc9_threaded_square_head_plug_2000_inches.csv
+1/8,2000,Union,10.0,,,10.0,0.0,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1/4,2000,Union,11.0,,,11.0,0.01,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+3/8,2000,Union,13.0,,,13.0,0.02,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1/2,2000,Union,14.0,,,14.0,0.05,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+3/4,2000,Union,16.0,,,16.0,0.08,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1,2000,Union,19.0,,,19.0,0.14,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1 1/4,2000,Union,21.0,,,21.0,0.25,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1 1/2,2000,Union,21.0,,,21.0,0.39,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+2,2000,Union,22.0,,,22.0,0.68,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+2 1/2,2000,Union,27.0,,,27.0,1.02,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+3,2000,Union,28.0,,,28.0,1.3,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+4,2000,Union,32.0,,,32.0,3.25,ftsc9_threaded_square_head_plug_2000_millimetres.csv
+1/8,3000,Union,9.652,,,9.652,0.0,ftsc9_threaded_square_head_plug_3000_inches.csv
+1/4,3000,Union,11.176,,,11.176,0.0045,ftsc9_threaded_square_head_plug_3000_inches.csv
+3/8,3000,Union,12.7,,,12.7,0.0091,ftsc9_threaded_square_head_plug_3000_inches.csv
+1/2,3000,Union,14.224,,,14.224,0.0227,ftsc9_threaded_square_head_plug_3000_inches.csv
+3/4,3000,Union,15.748,,,15.748,0.0363,ftsc9_threaded_square_head_plug_3000_inches.csv
+1,3000,Union,19.05,,,19.05,0.0635,ftsc9_threaded_square_head_plug_3000_inches.csv
+1 1/4,3000,Union,20.574,,,20.574,0.1134,ftsc9_threaded_square_head_plug_3000_inches.csv
+1 1/2,3000,Union,20.574,,,20.574,0.1769,ftsc9_threaded_square_head_plug_3000_inches.csv
+2,3000,Union,22.352,,,22.352,0.3084,ftsc9_threaded_square_head_plug_3000_inches.csv
+2 1/2,3000,Union,26.924,,,26.924,0.4627,ftsc9_threaded_square_head_plug_3000_inches.csv
+3,3000,Union,28.448,,,28.448,0.5897,ftsc9_threaded_square_head_plug_3000_inches.csv
+4,3000,Union,31.75,,,31.75,1.4742,ftsc9_threaded_square_head_plug_3000_inches.csv
+1/8,3000,Union,10.0,,,10.0,0.0,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1/4,3000,Union,11.0,,,11.0,0.01,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+3/8,3000,Union,13.0,,,13.0,0.02,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1/2,3000,Union,14.0,,,14.0,0.05,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+3/4,3000,Union,16.0,,,16.0,0.08,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1,3000,Union,19.0,,,19.0,0.14,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1 1/4,3000,Union,21.0,,,21.0,0.25,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1 1/2,3000,Union,21.0,,,21.0,0.39,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+2,3000,Union,22.0,,,22.0,0.68,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+2 1/2,3000,Union,27.0,,,27.0,1.02,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+3,3000,Union,28.0,,,28.0,1.3,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+4,3000,Union,32.0,,,32.0,3.25,ftsc9_threaded_square_head_plug_3000_millimetres.csv
+1/8,6000,Union,9.652,,,9.652,0.0,ftsc9_threaded_square_head_plug_6000_inches.csv
+1/4,6000,Union,11.176,,,11.176,0.0045,ftsc9_threaded_square_head_plug_6000_inches.csv
+3/8,6000,Union,12.7,,,12.7,0.0091,ftsc9_threaded_square_head_plug_6000_inches.csv
+1/2,6000,Union,14.224,,,14.224,0.0227,ftsc9_threaded_square_head_plug_6000_inches.csv
+3/4,6000,Union,15.748,,,15.748,0.0363,ftsc9_threaded_square_head_plug_6000_inches.csv
+1,6000,Union,19.05,,,19.05,0.0635,ftsc9_threaded_square_head_plug_6000_inches.csv
+1 1/4,6000,Union,20.574,,,20.574,0.1134,ftsc9_threaded_square_head_plug_6000_inches.csv
+1 1/2,6000,Union,20.574,,,20.574,0.1769,ftsc9_threaded_square_head_plug_6000_inches.csv
+2,6000,Union,22.352,,,22.352,0.3084,ftsc9_threaded_square_head_plug_6000_inches.csv
+2 1/2,6000,Union,26.924,,,26.924,0.4627,ftsc9_threaded_square_head_plug_6000_inches.csv
+3,6000,Union,28.448,,,28.448,0.5897,ftsc9_threaded_square_head_plug_6000_inches.csv
+4,6000,Union,31.75,,,31.75,1.4742,ftsc9_threaded_square_head_plug_6000_inches.csv
+1/8,6000,Union,10.0,,,10.0,0.0,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1/4,6000,Union,11.0,,,11.0,0.01,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+3/8,6000,Union,13.0,,,13.0,0.02,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1/2,6000,Union,14.0,,,14.0,0.05,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+3/4,6000,Union,16.0,,,16.0,0.08,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1,6000,Union,19.0,,,19.0,0.14,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1 1/4,6000,Union,21.0,,,21.0,0.25,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1 1/2,6000,Union,21.0,,,21.0,0.39,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+2,6000,Union,22.0,,,22.0,0.68,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+2 1/2,6000,Union,27.0,,,27.0,1.02,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+3,6000,Union,28.0,,,28.0,1.3,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+4,6000,Union,32.0,,,32.0,3.25,ftsc9_threaded_square_head_plug_6000_millimetres.csv
+1/8,3000,Union,9.652,,,9.652,0.0,ftsc9_threaded_square_head_plug_9000_inches.csv
+1/4,3000,Union,11.176,,,11.176,0.0045,ftsc9_threaded_square_head_plug_9000_inches.csv
+3/8,3000,Union,12.7,,,12.7,0.0091,ftsc9_threaded_square_head_plug_9000_inches.csv
+1/2,3000,Union,14.224,,,14.224,0.0227,ftsc9_threaded_square_head_plug_9000_inches.csv
+3/4,3000,Union,15.748,,,15.748,0.0363,ftsc9_threaded_square_head_plug_9000_inches.csv
+1,3000,Union,19.05,,,19.05,0.0635,ftsc9_threaded_square_head_plug_9000_inches.csv
+1 1/4,3000,Union,20.574,,,20.574,0.1134,ftsc9_threaded_square_head_plug_9000_inches.csv
+1 1/2,3000,Union,20.574,,,20.574,0.1769,ftsc9_threaded_square_head_plug_9000_inches.csv
+2,3000,Union,22.352,,,22.352,0.3084,ftsc9_threaded_square_head_plug_9000_inches.csv
+2 1/2,3000,Union,26.924,,,26.924,0.4627,ftsc9_threaded_square_head_plug_9000_inches.csv
+3,3000,Union,28.448,,,28.448,0.5897,ftsc9_threaded_square_head_plug_9000_inches.csv
+4,3000,Union,31.75,,,31.75,1.4742,ftsc9_threaded_square_head_plug_9000_inches.csv
+1/8,3000,Union,10.0,,,10.0,0.0,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+1/4,3000,Union,11.0,,,11.0,0.01,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+3/8,3000,Union,13.0,,,13.0,0.02,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+1/2,3000,Union,14.0,,,14.0,0.05,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+3/4,3000,Union,16.0,,,16.0,0.08,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+1,3000,Union,19.0,,,19.0,0.14,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+1 1/4,3000,Union,21.0,,,21.0,0.25,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+1 1/2,3000,Union,21.0,,,21.0,0.39,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+2,3000,Union,22.0,,,22.0,0.68,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+2 1/2,3000,Union,27.0,,,27.0,1.02,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+3,3000,Union,28.0,,,28.0,1.3,ftsc9_threaded_square_head_plug_9000_millimetres.csv
+4,3000,Union,32.0,,,32.0,3.25,ftsc9_threaded_square_head_plug_9000_millimetres.csv

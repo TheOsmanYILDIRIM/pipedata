@@ -6,15 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Pipedata CSV Veri Depolama Katmani (Faz 7 — CSV-First Mimarisi)
+ * Pipedata CSV Veri Depolama Katmani (sifirdan cikarma — extract_tables.py)
  *
- * SQLite (pipedata.db) KALDIRILMISTIR. Bu sinif, APK icerisine `assets/csv/canonical/`
- * olarak gomulen kanonik CSV dosyalarini okur ve PipedataDbHelper ile BIREBIR ayni
- * public API'yi sunar (UI koduna dokunmadan gecis saglanir).
+ * APK icerisine `assets/csv/` olarak gomulen 8 tablo CSV'sini okur.
+ * CSV'ler `extract_tables.py` ile 956 orijinal B4A CSV'sinden tek adimda
+ * uretilir; dogruluk kapisi `verify_extract.py` (22 kontrol).
+ * Ham orijinal dosyalar APK'ya gomulmez (2.3MB tekrari onlemek icin).
  *
- * - Kanonik CSV'ler `build_canonical_csv.py` ile uretilir; `csv_vs_db_audit.py` ile
- *   DB'ye birebir es oldugu CI'da dogrulanir.
- * - Ham 956 orijinal CSV de `assets/csv/raw/` altinda APK icindedir (sadakat kaniti).
  * - Sorgular bellekte satir-filtreleme ile yapilir; SQL LIKE `%x%` -> `contains`,
  *   `ORDER BY col DESC LIMIT 1` -> `maxByOrNull`.
  */
@@ -23,7 +21,7 @@ class CsvDataStore(private val context: Context) {
     /** Tablo adi -> satirlar (kolon adi -> deger). CsvDataStore yuklemesiyle dolar. */
     private val tables = java.util.concurrent.ConcurrentHashMap<String, List<Map<String, String>>>()
 
-    private val csvDir = "csv/canonical"
+    private val csvDir = "csv"
 
     suspend fun ensureDatabaseAsync() = withContext(Dispatchers.IO) {
         try {

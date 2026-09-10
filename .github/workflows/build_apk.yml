@@ -32,6 +32,12 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x gradlew
 
+      - name: Extract Tables & Verify (sifirdan cikarma kapisi)
+        run: |
+          python3 extract_tables.py
+          python3 verify_extract.py
+          echo "==> 8 tablo orijinal CSV'den cikarildi, 22 kontrol PASS"
+
       - name: Build Signed APKs with Gradle
         run: ./gradlew assembleRelease assembleDebug --no-daemon --stacktrace
 
