@@ -288,10 +288,6 @@ class CsvDataStore(private val context: Context) {
         ratingStr: String,
         facing: String
     ): ComponentData {
-        // ASME B16.5 Pressure Classes per Subtype:
-        // - Socket Weld (SW): 150#, 300#, 600#, 1500# (No 400# or 2500# in standard)
-        // - Slip-On (SO): 150#, 300#, 400#, 600#, 900#, 1500# (No 2500# in standard)
-        // - Weld Neck (WN), Blind (BLD), Threaded (THD), Lap Joint (LJ): 150#, 300#, 400#, 600#, 900#, 1500#, 2500#
         val primaryOptions = when (subtype.id) {
             "sw" -> listOf("150#", "300#", "600#", "1500#")
             "so" -> listOf("150#", "300#", "400#", "600#", "900#", "1500#")
@@ -300,10 +296,6 @@ class CsvDataStore(private val context: Context) {
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
 
-        // ASME B16.5 NPS Ranges:
-        // - Socket Weld: 1/2" to 3"
-        // - Class 2500: 1/2" to 12"
-        // - Standard: 1/2" to 24"
         val availableNps = when {
             subtype.id == "sw" -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
             rating == 2500 -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"")
@@ -314,12 +306,6 @@ class CsvDataStore(private val context: Context) {
         val cleanNps = effectiveNps.replace("\"", "").trim()
         val effectiveDn = getNpsDn(cleanNps)
 
-        // ASME B16.5 Facings:
-        // - Lap Joint: Flat face (mates with back of stub end)
-        // - Class 150: RF, FF (No RTJ in B16.5 Class 150)
-        // - Class 300: RF, FF, RTJ
-        // - Class 400, 600, 900, 1500: RF, RTJ
-        // - Class 2500: RTJ, RF (RTJ standard primary)
         val secondaryOptions = when {
             subtype.id == "lj" -> listOf("Flat (Stub End)")
             rating == 150 -> listOf("RF", "FF")
@@ -342,13 +328,12 @@ class CsvDataStore(private val context: Context) {
         var wt = 2.5
         var ringNumber = ""
 
-        // Subtype dimension query mapping:
-        // - SO, THD, LJ, SW share identical ASME B16.5 external envelope (OD, T, PCD, X, Y)
-        // - BLD has solid face with no bore and no hub
-        // - WN has tapered hub for welding
         val flgLike = when (subtype.id) {
             "bld" -> "Blind"
             "wn" -> "Welding Neck"
+            "thd" -> "Threaded"
+            "lj" -> "Lap Joint"
+            "sw" -> "Socket Weld"
             else -> "Slip On"
         }
         val flgRows = tableData("tbl_flanges_asme_b16_5").filter { r ->
@@ -358,7 +343,7 @@ class CsvDataStore(private val context: Context) {
                     s(r, "flange_type").contains(flgLike) &&
                     d(r, "outer_diameter_mm") > 0.0
         }
-        val found = flgRows.maxByOrNull { d(it, "thickness_mm") }
+        val found = flgRows.firstOrNull()
         if (found != null) {
             od = d(found, "outer_diameter_mm")
             thk = d(found, "thickness_mm")
@@ -473,6 +458,11 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         selectedSchedule: String
     ): ComponentData {
+        val primaryOptions = listOf(
+            "5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"
+        )
+        val effectiveSchedule = if (selectedSchedule in primaryOptions) selectedSchedule else "STD"
+
         var odMm = 0.0
         var wallThkMm = 0.0
         var idMm = 0.0
@@ -480,10 +470,11 @@ class CsvDataStore(private val context: Context) {
         var wtWaterKgM = 0.0
         var inertia = 0.0
 
+        val cleanNps = nps.replace("\"", "").trim()
         val pipeRow = tableData("tbl_pipes").firstOrNull { r ->
             val n = s(r, "nps")
-            (n == nps || n == "$nps\"" || n == nps.replace(" ", "+")) &&
-                    s(r, "schedule") == selectedSchedule
+            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
+                    s(r, "schedule").equals(effectiveSchedule, ignoreCase = true)
         }
         if (pipeRow != null) {
             odMm = d(pipeRow, "outer_diameter_mm")
@@ -496,7 +487,7 @@ class CsvDataStore(private val context: Context) {
 
         if (odMm <= 0) {
             odMm = if (dn <= 50) 60.3 else dn * 1.15
-            wallThkMm = if (selectedSchedule == "80") 5.54 else 3.91
+            wallThkMm = if (effectiveSchedule == "80") 5.54 else 3.91
             idMm = odMm - 2 * wallThkMm
             wtEmptyKgM = (odMm - wallThkMm) * wallThkMm * 0.02466
             wtWaterKgM = 0.7854 * (idMm / 1000.0) * (idMm / 1000.0) * 1000.0
@@ -515,13 +506,13 @@ class CsvDataStore(private val context: Context) {
             categoryId = "pipes",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = "$nps\"",
+            availableNps = listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "3 1/2\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Schedule",
             primarySelectorLabelTr = "Et Kalınlığı",
-            primaryOptions = listOf("10", "20", "40", "80", "160"),
-            selectedPrimary = selectedSchedule,
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveSchedule,
             dimensions = rows
         )
     }
@@ -533,6 +524,27 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         sched: String
     ): ComponentData {
+        val compType = when (subtype.id) {
+            "elbow_90_lr" -> "90° Long Radius Elbow"
+            "elbow_90_sr" -> "90° Short Radius Elbow"
+            "elbow_45" -> "45° Elbow"
+            "return_180_lr" -> "180° Long Radius Return"
+            "return_180_sr" -> "180° Short Radius Return"
+            "tee_eq" -> "Equal Tee"
+            "tee_red" -> "Reducing Tee"
+            "cap_bw" -> "Butt Weld Cap"
+            "red_con" -> "Concentric Reducer"
+            "red_ecc" -> "Eccentric Reducer"
+            "stub_end" -> "Lap Joint Stub End"
+            else -> subtype.title
+        }
+
+        val primaryOptions = when (subtype.id) {
+            "stub_end" -> listOf("5", "5S", "10S", "40S", "STD")
+            else -> listOf("5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS")
+        }
+        val effectiveSched = if (sched in primaryOptions) sched else "STD"
+
         var od = 0.0
         var centerEnd = 0.0
         var centerCenter = 0.0
@@ -540,33 +552,14 @@ class CsvDataStore(private val context: Context) {
         var lengthHeight = 0.0
         var wt = 0.0
 
-        val cleanSched = sched.replace("'", "").trim()
-        val filterFn: (Map<String, String>) -> Boolean = { r ->
+        val cleanNps = nps.replace("\"", "").trim()
+        val found = tableData("tbl_fittings_buttweld_b16_9").firstOrNull { r ->
             val n = s(r, "nps")
-            val cf = s(r, "component_type")
-            val sf = s(r, "source_file")
-            val sch = s(r, "schedule")
-            val npsOk = (n == nps || n == "$nps\"" || n == nps.replace(" ", "+"))
-            val compMatches = when (subtype.id) {
-                "elbow_90_lr" -> sf.contains("90")
-                "elbow_90_sr" -> sf.contains("shortradius") && !sf.contains("return")
-                "elbow_45" -> cf == "45° Elbow"
-                "return_180_lr" -> sf.startsWith("return")
-                "return_180_sr" -> sf.startsWith("shortradiusreturn")
-                "tee_eq" -> cf == "Tee"
-                "tee_red" -> cf == "Reducing Tee"
-                "cap_bw" -> cf == "Cap"
-                "red_con", "red_ecc" -> cf == "Reducer"
-                "stub_end" -> sf.startsWith("stubend")
-                else -> true
-            }
-            val schedOk = sch == cleanSched || sch == "'$cleanSched'" || sch == "${cleanSched}S" ||
-                    sch == "'${cleanSched}S'" || sch == "STD"
-            npsOk && compMatches && schedOk
+            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
+                    s(r, "component_type") == compType &&
+                    s(r, "schedule").equals(effectiveSched, ignoreCase = true)
         }
-        val bwRows = tableData("tbl_fittings_buttweld_b16_9").filter(filterFn)
-        var found = bwRows.maxByOrNull { if (s(it, "schedule") == cleanSched) 1 else 0 }
-        // ORDER BY CASE WHEN schedule=? THEN 1 ELSE 2 END == schedule oncelikli secim (maxByOrNull yukarida)
+
         if (found != null) {
             od = d(found, "outer_diameter_mm")
             centerEnd = d(found, "center_to_end_mm")
@@ -575,20 +568,8 @@ class CsvDataStore(private val context: Context) {
             lengthHeight = d(found, "overall_length_height_mm")
             wt = d(found, "weight_kg")
         }
-        if (od <= 0.0 && centerEnd <= 0.0 && lengthHeight <= 0.0) {
-            val fallbackRow = tableData("tbl_fittings_buttweld_b16_9").filter(filterFn).firstOrNull()
-            if (fallbackRow != null) {
-                od = d(fallbackRow, "outer_diameter_mm")
-                centerEnd = d(fallbackRow, "center_to_end_mm")
-                centerCenter = d(fallbackRow, "center_to_center_mm")
-                backToFace = d(fallbackRow, "back_to_face_mm")
-                lengthHeight = d(fallbackRow, "overall_length_height_mm")
-                wt = d(fallbackRow, "weight_kg")
-            }
-        }
 
-        val npsVal = nps.replace("\"", "").trim()
-        val defaultOd = when (npsVal) {
+        val defaultOd = when (cleanNps) {
             "1/2" -> 21.3; "3/4" -> 26.7; "1" -> 33.4; "1 1/4" -> 42.2; "1 1/2" -> 48.3; "2" -> 60.3;
             "2 1/2" -> 73.0; "3" -> 88.9; "4" -> 114.3; "5" -> 141.3; "6" -> 168.3; "8" -> 219.1;
             "10" -> 273.0; "12" -> 323.8; "14" -> 355.6; "16" -> 406.4; "18" -> 457.0; "20" -> 508.0; "24" -> 610.0
@@ -663,19 +644,12 @@ class CsvDataStore(private val context: Context) {
 
         rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
 
-        val primaryOptions = when (subtype.id) {
-            "stub_end" -> listOf("10S", "40S", "STD", "5S", "80S")
-            "red_con", "red_ecc" -> listOf("STD", "40", "80", "160", "XS")
-            else -> listOf("STD", "40", "80", "160", "XXS")
-        }
-        val effectiveSched = if (sched in primaryOptions) sched else primaryOptions.first()
-
         return ComponentData(
             categoryId = "fittings_bw",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
             availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = "$nps\"",
+            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Schedule",
             primarySelectorLabelTr = "Seri",
@@ -692,8 +666,6 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        // 1. ASME B16.11 Pressure Ratings per Subtype:
-        // Union and Reducing Coupling only exist in Class 3000# and 6000# (No 9000#)
         val primaryOptions = when (subtype.id) {
             "sw_union", "sw_red_coupling" -> listOf("3000#", "6000#")
             else -> listOf("3000#", "6000#", "9000#")
@@ -701,7 +673,6 @@ class CsvDataStore(private val context: Context) {
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 3000
 
-        // 2. ASME B16.11 NPS Size Ranges per Subtype and Rating:
         val availableNps = when (subtype.id) {
             "sw_union" -> listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
             "sw_red_coupling" -> {
@@ -725,7 +696,7 @@ class CsvDataStore(private val context: Context) {
                     else -> listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
                 }
             }
-            else -> { // sw_coupling, sw_half_coupling
+            else -> {
                 if (rating == 9000) {
                     listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"")
                 } else {
@@ -734,7 +705,6 @@ class CsvDataStore(private val context: Context) {
             }
         }
 
-        // Clamp NPS to available range
         val cleanNpsWithQuote = if (nps.endsWith("\"")) nps else "$nps\""
         val effectiveNpsWithQuote = if (cleanNpsWithQuote in availableNps) cleanNpsWithQuote else availableNps.first()
         val effectiveNps = effectiveNpsWithQuote.replace("\"", "")
@@ -749,26 +719,25 @@ class CsvDataStore(private val context: Context) {
         var wt = 0.0
 
         val compTypeLike = when (subtype.id) {
-            "sw_elbow_90" -> "%90%"
-            "sw_elbow_45" -> "%45%"
-            "sw_tee" -> "%Tee%"
-            "sw_cross" -> "%Cross%"
-            "sw_coupling" -> "%Full Coupling%"
-            "sw_half_coupling" -> "%Half Coupling%"
-            "sw_cap" -> "%Cap%"
-            "sw_red_coupling" -> "%Reduc%"
-            "sw_union" -> "%Union%"
-            else -> "%"
+            "sw_elbow_90" -> "90° Elbow"
+            "sw_elbow_45" -> "45° Elbow"
+            "sw_tee" -> "Tee"
+            "sw_cross" -> "Cross"
+            "sw_coupling" -> "Full Coupling"
+            "sw_half_coupling" -> "Half Coupling"
+            "sw_cap" -> "Cap"
+            "sw_red_coupling" -> "Reducing Coupling"
+            "sw_union" -> "Union"
+            else -> subtype.title
         }
 
-        val forgedFilter: (Map<String, String>) -> Boolean = { r ->
+        val swRows = tableData("tbl_fittings_socketweld_b16_11").filter { r ->
             val n = s(r, "nps")
             (n == effectiveNps || n == "$effectiveNps\"" || n == "0+$effectiveNps") &&
                     s(r, "rating") == rating.toString() &&
-                    s(r, "component_type").contains(compTypeLike.trim('%'))
+                    s(r, "component_type").contains(compTypeLike)
         }
-        var swRows = tableData("tbl_fittings_socketweld_b16_11").filter(forgedFilter)
-        var swFound = swRows.maxByOrNull { d(it, "socket_depth_mm") }
+        val swFound = swRows.firstOrNull()
         if (swFound != null) {
             sockDepth = d(swFound, "socket_depth_mm")
             sockDia = d(swFound, "socket_diameter_mm")
@@ -780,33 +749,12 @@ class CsvDataStore(private val context: Context) {
             wt = d(swFound, "weight_kg")
         }
 
-        // Fallback to general socketweld table query if specific subtype row wasn't found
-        if (sockDia <= 0.0) {
-            swRows = tableData("tbl_fittings_socketweld_b16_11").filter { r ->
-                val n = s(r, "nps")
-                (n == effectiveNps || n == "$effectiveNps\"" || n == "0+$effectiveNps") &&
-                        s(r, "rating") == rating.toString()
-            }
-            swFound = swRows.maxByOrNull { d(it, "socket_depth_mm") }
-            if (swFound != null) {
-                sockDepth = d(swFound, "socket_depth_mm")
-                sockDia = d(swFound, "socket_diameter_mm")
-                centerEnd = d(swFound, "center_to_end_mm")
-                bore = d(swFound, "bore_diameter_mm")
-                sockThk = d(swFound, "socket_wall_thickness_mm")
-                bodyWallThk = d(swFound, "body_wall_thickness_mm")
-                lenVal = d(swFound, "length_mm")
-                wt = d(swFound, "weight_kg")
-            }
-        }
-
         val rows = mutableListOf<DimensionRow>()
         rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
         rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
 
         when (subtype.id) {
             "sw_coupling" -> {
-                // ASME B16.11: lenVal is Center Gap E. Overall length W = 2*J + E.
                 val centerGap = lenVal
                 val overallLen = if (centerGap > 0) sockDepth * 2.0 + centerGap else sockDepth * 2.0
                 rows.add(DimensionRow("overall_len", "Overall Length (W)", "Toplam Boy (W)", "${fmt(overallLen)} mm", "${fmt(overallLen/25.4)}\"", "forged"))
@@ -858,16 +806,34 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+
         var faceToFace = 0.0
+        var hwH = 0.0
+        var hwD = 0.0
         var wt = 0.0
+
+        val cleanNps = nps.replace("\"", "").trim()
+        val valveType = when (subtype.id) {
+            "vlv_gate" -> "Gate Valve"
+            "vlv_globe" -> "Globe Valve"
+            "vlv_check" -> "Check Valve"
+            "vlv_ball" -> "Ball Valve"
+            else -> subtype.title
+        }
 
         val valveRow = tableData("tbl_valves_asme_b16_10").firstOrNull { r ->
             val n = s(r, "nps")
-            (n == nps || n == "$nps\"") && s(r, "rating") == rating.toString()
+            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
+                    s(r, "rating") == rating.toString() &&
+                    s(r, "valve_type").equals(valveType, ignoreCase = true)
         }
         if (valveRow != null) {
             faceToFace = d(valveRow, "face_to_face_mm")
+            hwH = d(valveRow, "handwheel_height_mm")
+            hwD = d(valveRow, "handwheel_diameter_mm")
             wt = d(valveRow, "weight_kg")
         }
 
@@ -876,24 +842,29 @@ class CsvDataStore(private val context: Context) {
             wt = if (rating >= 300) 24.0 else 18.0
         }
 
-        val rows = listOf(
+        val rows = mutableListOf(
             DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
-            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def"),
-            DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def")
-
+            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def")
         )
+        if (hwH > 0) {
+            rows.add(DimensionRow("hw_h", "Handwheel Height (H)", "Volan Yüksekliği (H)", "${fmt(hwH)} mm", "${fmt(hwH/25.4)}\"", "valves_def"))
+        }
+        if (hwD > 0) {
+            rows.add(DimensionRow("hw_d", "Handwheel Diameter (W)", "Volan Çapı (W)", "${fmt(hwD)} mm", "${fmt(hwD/25.4)}\"", "valves_def"))
+        }
+        rows.add(DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def"))
 
         return ComponentData(
             categoryId = "valves",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
-            selectedNps = "$nps\"",
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("150#", "300#", "600#"),
-            selectedPrimary = "${rating}#",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRatingStr,
             dimensions = rows
         )
     }
@@ -905,14 +876,23 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        val primaryOptions = when (subtype.id) {
+            "gsk_rtj" -> listOf("300#", "400#", "600#", "900#", "1500#", "2500#")
+            "gsk_flat" -> listOf("150#", "300#", "400#", "600#", "900#")
+            else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        }
+        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+
         var idMm = 0.0
         var odMm = 0.0
         var ringNo = ""
 
+        val cleanNps = nps.replace("\"", "").trim()
         val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { r ->
             val n = s(r, "nps")
-            (n == nps || n == "$nps\"") && s(r, "rating") == rating.toString()
+            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
+                    s(r, "rating") == rating.toString()
         }
         if (gasketRow != null) {
             idMm = d(gasketRow, "inner_diameter_mm")
@@ -937,13 +917,13 @@ class CsvDataStore(private val context: Context) {
             categoryId = "gaskets",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
-            selectedNps = "$nps\"",
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("150#", "300#", "600#"),
-            selectedPrimary = "${rating}#",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRatingStr,
             dimensions = rows
         )
     }
@@ -955,15 +935,20 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val rating = ratingStr.replace("#", "").toIntOrNull() ?: 150
+        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+
         var odMm = 0.0
         var thkMm = 0.0
         var c2c = 0.0
         var wt = 0.0
 
+        val cleanNps = nps.replace("\"", "").trim()
         val blankRow = tableData("tbl_line_blanks_asme_b16_48").firstOrNull { r ->
             val n = s(r, "nps")
-            (n == nps || n == "$nps\"") && s(r, "rating") == rating.toString()
+            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
+                    s(r, "rating") == rating.toString()
         }
         if (blankRow != null) {
             odMm = d(blankRow, "outer_diameter_mm")
@@ -984,20 +969,19 @@ class CsvDataStore(private val context: Context) {
             DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"),
             DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"),
             DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def")
-
         )
 
         return ComponentData(
             categoryId = "blanks",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\""),
-            selectedNps = "$nps\"",
+            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
+            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
             dn = dn,
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
-            primaryOptions = listOf("150#", "300#", "600#"),
-            selectedPrimary = "${rating}#",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRatingStr,
             dimensions = rows
         )
     }

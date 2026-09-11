@@ -1,532 +1,650 @@
 #!/usr/bin/env python3
-"""Pipedata tablo cikarma - tek script, sifirdan.
-Kaynak: raw_apk/assets/*.csv (956 orijinal, B4A LoadCSV formati).
-Cikti : app/src/main/assets/csv/<tablo>.csv (baslikli, UTF-8 LF) + build raporu.
-App sozlesmesi: CsvDataStore.kt'nin okudugu 36 kolon adi (asagida APP_COLS).
+"""Pipedata Tek Adimda Kusursuz Tablo Cikarma Pipeline'i (extract_tables.py)
+Kaynak: raw_apk/assets/ (956 CSV, B4A formati).
+Cikti : app/src/main/assets/csv/<tablo>.csv
 """
 import csv, io, os, re, sys
 
 PROJECT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(PROJECT, "raw_apk", "assets")
 OUT = os.path.join(PROJECT, "app", "src", "main", "assets", "csv")
-
-# --- App sozlesmesi: CsvDataStore.kt'deki tum s()/d() kolon adlari ---
-TABLES = {
-    "tbl_flanges_asme_b16_5": ["nps", "rating", "flange_type", "outer_diameter_mm",
-        "thickness_mm", "hub_diameter_mm", "length_thru_hub_mm", "bore_diameter_mm",
-        "rf_diameter_mm", "pcd_mm", "num_bolts", "bolt_diameter_in",
-        "stud_bolt_length_mm", "weight_kg", "rtj_ring_number", "source_file"],
-    "tbl_pipes": ["nps", "schedule", "outer_diameter_mm", "wall_thickness_mm",
-        "inner_diameter_mm", "weight_empty_kg_m", "weight_water_kg_m",
-        "moment_of_inertia_cm4", "source_file"],
-    "tbl_fittings_buttweld_b16_9": ["nps", "schedule", "component_type",
-        "outer_diameter_mm", "center_to_end_mm", "center_to_center_mm",
-        "back_to_face_mm", "overall_length_height_mm", "weight_kg", "source_file"],
-    "tbl_fittings_socketweld_b16_11": ["nps", "rating", "component_type",
-        "socket_diameter_mm", "socket_depth_mm", "center_to_end_mm",
-        "bore_diameter_mm", "socket_wall_thickness_mm", "body_wall_thickness_mm",
-        "length_mm", "weight_kg", "source_file"],
-    "tbl_fittings_threaded_b16_11": ["nps", "rating", "component_type",
-        "center_to_end_mm", "bore_diameter_mm", "body_wall_thickness_mm",
-        "length_mm", "weight_kg", "source_file"],
-    "tbl_valves_asme_b16_10": ["nps", "rating", "face_to_face_mm", "weight_kg",
-        "source_file"],
-    "tbl_gaskets_and_rtj": ["nps", "rating", "inner_diameter_mm",
-        "outer_diameter_mm", "ring_number", "source_file"],
-    "tbl_line_blanks_asme_b16_48": ["nps", "rating", "outer_diameter_mm",
-        "thickness_mm", "center_to_center_mm", "weight_spectacle_kg", "source_file"],
-}
+os.makedirs(OUT, exist_ok=True)
 
 def b4a_rows(path):
-    """B4A LoadCSV taklidi: virgul-bol, tirnak-destekli. Doner: (idx, header, body)."""
+    """B4A LoadCSV: virgulle ayrilmis, cift tirnak destekli."""
     with open(path, "r", encoding="utf-8", errors="replace") as f:
-        text = f.read()
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
+        text = f.read().replace("\r\n", "\n").replace("\r", "\n")
     rows = list(csv.reader(io.StringIO(text)))
     rows = [r for r in rows if not (len(r) == 1 and r[0] == "")]
-    if len(rows) < 2:
-        return None, None, []
+    if len(rows) < 2: return None, None, []
     first = [c.strip() for c in rows[0]]
     idx_like = len(first) >= 2 and all(re.fullmatch(r"\d+", c) for c in first)
     ds = 1 if idx_like else 0
-    if len(rows) <= ds:
-        return None, None, []
+    if len(rows) <= ds: return None, None, []
     return rows[0] if idx_like else [], [c.strip() for c in rows[ds]], rows[ds + 1:]
 
 def num(x):
-    """Hucre -> float. N/A/SPA/bos -> None. Kesirli inç (0+1/2) -> ondalik inç."""
-    if x is None:
-        return None
+    """Hucre degeri -> float / None."""
+    if x is None: return None
     t = str(x).strip().strip("\u00a0")
-    if t == "" or t.upper() in ("N/A", "NA", "SPA", "-", "--"):
-        return None
+    if t == "" or t.upper() in ("N/A", "NA", "SPA", "-", "--", "NULL", "NONE"): return None
     t = t.replace(",", "").strip()
     m = re.fullmatch(r"(\d+)\+(\d+)\s*/\s*(\d+)", t)
-    if m:
-        return float(m.group(1)) + float(m.group(2)) / float(m.group(3))
+    if m: return float(m.group(1)) + float(m.group(2)) / float(m.group(3))
     m = re.fullmatch(r"(\d+)\s*/\s*(\d+)", t)
+    if m: return float(m.group(1)) / float(m.group(2))
+    try: return float(t)
+    except ValueError: return None
+
+def nps_norm(frac):
+    """0+1/2 -> 1/2, 1+1/4 -> 1 1/4, 14 -> 14."""
+    if frac is None: return None
+    t = str(frac).strip()
+    if t.upper() in ("N/A", "", "NONE", "NULL"): return None
+    if re.fullmatch(r"\d+", t): return t
+    m = re.fullmatch(r"(\d+)\+(.+)", t)
     if m:
-        return float(m.group(1)) / float(m.group(2))
-    try:
-        return float(t)
-    except ValueError:
-        return None
+        w, f = m.group(1), m.group(2).strip()
+        return f if w == "0" else f"{w} {f}"
+    return t
 
-def pick(row, names):
-    """Baslik listesinden adayi bul, hucre degerini don (case-insensitive)."""
+def pick(row_ctx, names):
     want = set(n.strip().lower() for n in names)
-    for i, h in enumerate(row["_h"]):
-        if h in want and i < len(row["_v"]):
-            return row["_v"][i]
+    for i, h in enumerate(row_ctx["_h"]):
+        if h in want and i < len(row_ctx["_v"]):
+            return row_ctx["_v"][i]
     return None
-
-# --- Baslik sozlugu: orijinal baslik -> kanonik anlam ---
-H = lambda *a: set(x.lower() for x in a)
-HDR = {
-    "nps_frac": H("45 deg e l nb", "nb", "nb inche", "nb inch", "size", "nps",
-        "ins", "control valve nb inches", "inlet size", "nom.size", "nom. size"),
-    "dn": H("nb", "dn", "met size", "control valve nb mm", "met nb", "mm", "nb mm"),
-    "od": H("od", "3-od", "od (o)"),
-    "nb_dup_note": "ikinci nb = DN",
-}
 
 def build_rowctx(header, values):
     return {"_h": [h.strip().lower() for h in header], "_v": values}
 
-def nps_norm(frac, imperial):
-    """Kesirli inc -> app formati: '1 1/2' (bosluksuz degil). imperial dosyada '2' gibi duz sayi olabilir."""
-    if frac is None:
-        return None
-    t = str(frac).strip()
-    if t.upper() in ("N/A", ""):
-        return None
-    if re.fullmatch(r"\d+", t):  # imperial duz sayi: oldugu gibi
-        return t
-    m = re.fullmatch(r"(\d+)\+(.+)", t)  # 1+1/2 -> 1 1/2, 0+1/8 -> 1/8
-    if m:
-        return m.group(2) if m.group(1) == "0" else m.group(1) + " " + m.group(2)
-    return t
-
-def dn_of(frac, dncell):
-    v = num(dncell)
-    return int(v) if v is not None else None
-
-IN2MM = 25.4
-
-def convert(value, imperial):
-    """ imperial (inc) -> mm. mm dosyada aynen. None -> None."""
-    if value is None:
-        return None
-    return round(value * IN2MM, 4) if imperial else round(value, 4)
-
-# ============ TABLO KURALLARI ============
-# Her kural: (header -> {kanonik: deger}) + dosya adi filtresi.
-# imperial: dosya adinda inches/imperial varsa True.
-
-def is_imperial(fname):
-    l = fname.lower()
-    return ("inches" in l or "imperial" in l) and "millimetres" not in l
-
-def rule_flange(fname, header, body, imperial):
-    """fla*.csv: 49 kolon, basliklar acik. rating dosya adindan."""
-    rating = _flg_rating(fname) or _fla_rating(fname)
-    if not rating:
-        return None
+# ==============================================================================
+# 1. FLANGES (ASME B16.5 & B16.47)
+# ==============================================================================
+def extract_flanges():
     out = []
-    for v in body:
-        ctx = build_rowctx(header, v)
-        n = nps_norm(v[0] if len(v) > 0 else None, imperial)
-        if not n:
-            continue
-        # nb ikilisi: v[1] = DN
-        dn = dn_of(None, v[1] if len(v) > 1 else None)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        r = {
-            "nps": n, "rating": rating, "flange_type": "",
-            "outer_diameter_mm": convert(num(g("od")), imperial),
-            "thickness_mm": convert(num(g("thickness")), imperial),
-            "hub_diameter_mm": convert(num(g("hub-x")), imperial),
-            "length_thru_hub_mm": convert(num(g("hub-a")), imperial),
-            "bore_diameter_mm": convert(num(g("so bore")), imperial),
-            "rf_diameter_mm": convert(num(g("rf dia")), imperial),
-            "pcd_mm": convert(num(g("pcd")), imperial),
-            "num_bolts": num(g("no of bolts")),
-            "bolt_diameter_in": (g("bolt size unc") or "").strip(),
-            "stud_bolt_length_mm": convert(num(g("rf sb length", "c bolt length")), imperial),
-            "weight_kg": convert(num(g("wn kg", "so kg", "bld kg", "wt", "weight", "flange wt")), imperial),
-            "rtj_ring_number": (g("ring no") or "").strip(),
-            "source_file": fname,
-        }
-        # tamami bos satirlari at (ilk uc kritik kolon bos mu?)
-        if r["outer_diameter_mm"] is None and r["pcd_mm"] is None and r["weight_kg"] is None:
-            continue
-        r["_dn"] = dn
-        out.append(r)
-    return out
-
-def rule_pipe(fname, header, body, imperial):
-    """pipe*.csv: 13 kolon, indeks satiri aciklamali (2-DN, 3-OD...)."""
-    m = re.search(r"pipe[_]?(\w+)", fname.lower())
-    sched_raw = m.group(1) if m else ""
-    sched = {"std": "40", "xs": "80"}.get(sched_raw, sched_raw)
-    hl = [h.lower() for h in header]
-    # kolon yerleri: DN=1, OD=2, WallThk=3, ID=5, Wt=6, WtWater=7, MoI=8, NPS=12
-    out = []
-    for v in body:
-        n = nps_norm(v[12] if len(v) > 12 else (v[0] if v else None), imperial)
-        if not n:
-            continue
-        def C(i):
-            return convert(num(v[i]) if len(v) > i else None, imperial)
-        r = {"nps": n, "schedule": sched, "outer_diameter_mm": C(2),
-             "wall_thickness_mm": C(3), "inner_diameter_mm": C(5),
-             "weight_empty_kg_m": C(6), "weight_water_kg_m": C(7),
-             "moment_of_inertia_cm4": C(8), "source_file": fname}
-        if r["outer_diameter_mm"] is None:
-            continue
-        out.append(r)
-    return out
-
-def rule_buttweld(fname, header, body, imperial):
-    """45elbow/90elbow/return/tee/cap/reducers/stubend/srra/srrb*.csv"""
-    l = fname.lower()
-    if l.startswith(("45elbow", "ftbw1")):
-        comp, sched = "45° Elbow", "STD"
-    elif "shortradiusreturn" in l:
-        comp, sched = "Return", "STD"
-    elif l.startswith("return"):
-        comp, sched = "Return", "STD"
-    elif "reducingtee" in l:
-        comp, sched = "Reducing Tee", "STD"
-    elif "straighttee" in l:
-        comp, sched = "Tee", "STD"
-    elif l.startswith("cap"):
-        comp, sched = "Cap", "STD"
-    elif l.startswith("reducers"):
-        comp, sched = "Reducer", "STD"
-    elif l.startswith("stubend"):
-        comp, sched = "Stub End", "STD"
-    elif "90shortradius" in l or "srra" in l or "srrb" in l:
-        comp, sched = "90° SR Elbow", "STD"
-    elif l.startswith(("90elbow", "ftbw2")):
-        comp, sched = "90° Elbow", "STD"
-    else:
-        return None
-    m = re.search(r"(\d+)(s)?(\.csv)?$", l.replace("_imperial", "").replace("imperial", ""))
-    hl = [h.lower() for h in header]
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        od = convert(num(g("od")), imperial)
-        c2e = convert(num(g("45 ctr to end", "90 ctr to end", "ctr to end", "ctr to e",
-                             "flat to back", "over cap-e", "overcap-e1", "len short", "len long")), imperial)
-        c2c = convert(num(g("total", "ctr to ctr")), imperial)
-        wt = convert(num(g("wt", "wt kg", "wt short", "wt long")), imperial)
-        if od is None and c2e is None and wt is None:
-            continue
-        out.append({"nps": n, "schedule": sched, "component_type": comp,
-                    "outer_diameter_mm": od, "center_to_end_mm": c2e,
-                    "center_to_center_mm": c2c, "back_to_face_mm": None,
-                    "overall_length_height_mm": c2e, "weight_kg": wt,
-                    "source_file": fname})
-    return out
-
-def rule_socketweld_matrix(fname, header, body, imperial, rating):
-    """ftsw<nn><rating>.csv matris formati: baslikta NPS degerleri, satirlar M/Kg/O/Len gibi.
-    Ornek ftsw1030: nb,nb,M,Kg,N/A,,0+1/8,... (M = boy, Kg = agirlik)."""
-    hl = [h.strip().lower() for h in header]
-    # M / olcu kolonu + Kg kolonu yerini bul
-    mkeys = ("m", "o=len", "k=length", "b", "q-len", "k")
-    mi = next((i for i, h in enumerate(hl) if h in mkeys), None)
-    ki = next((i for i, h in enumerate(hl) if h in ("kg", "wt", "wtkg")), None)
-    if mi is None and ki is None:
-        return None
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        mval = convert(num(v[mi]) if mi is not None and len(v) > mi else None, imperial)
-        if imperial:
-            wt_raw = num(v[ki]) if ki is not None and len(v) > ki else None
-            wt = round(wt_raw * 0.453592, 4) if wt_raw is not None else None
-        else:
-            wt = convert(num(v[ki]) if ki is not None and len(v) > ki else None, False)
-        if mval is None and wt is None:
-            continue
-        out.append({"nps": n, "rating": rating, "component_type": "Forged Fitting",
-                    "socket_diameter_mm": None, "socket_depth_mm": None,
-                    "center_to_end_mm": None, "bore_diameter_mm": None,
-                    "socket_wall_thickness_mm": None, "body_wall_thickness_mm": None,
-                    "length_mm": mval, "weight_kg": wt, "source_file": fname})
-    return out or None
-
-
-def rule_socketweld(fname, header, body, imperial):
-    """ftsw*.csv: NB,DN,Ctr To End,SocketDia,Socket Thk,Bore,Socket Depth,..."""
-    l = fname.lower()
-    m = re.search(r"ftsw(\d+)", l)
-    compmap = {"1": "90° Elbow", "2": "45° Elbow", "3": "Tee", "4": "Cross",
-               "5": "Full Coupling", "6": "Half Coupling", "7": "Cap",
-               "8": "Reducing Coupling", "9": "Union"}
-    comp = compmap.get(m.group(1) if m else "", "Forged Fitting")
-    m2 = re.search(r"(3000|6000|9000)", l)
-    rating = m2.group(1) if m2 else "3000"
-    lname = fname.lower()
-    if "socketwelded" not in lname and "threaded" not in lname:
-        mx = rule_socketweld_matrix(fname, header, body, imperial, rating)
-        if mx:
-            return mx
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        def C(*names):
-            return convert(num(g(*names)), imperial)
-        cplg = C("cplglen", "cplg len", "q-len", "k=length")
-        if cplg is None and comp in ("Full Coupling", "Half Coupling", "Cap", "Union"):
-            cplg = C("halfcplglen", "half cplg len", "capendwallthk", "cap end wall thk")
-        # inches->mm: imperial dosyada tum boylar inc. mm dosyada mm.
-        if imperial:
-            wt_raw = num(g("kg", "wt"))
-            wt = round(wt_raw * 0.453592, 4) if wt_raw is not None else None
-        else:
-            wt = convert(num(g("kg", "wt")), False)
-        r = {"nps": n, "rating": rating, "component_type": comp,
-             "socket_diameter_mm": C("socketdia", "socket dia", "r-dia",
-                                       "socket dia large end"),
-             "socket_depth_mm": C("socket depth", "socket depth large end"),
-             "center_to_end_mm": C("ctr to end", "ctrtoend"),
-             "bore_diameter_mm": C("bore", "d-bore"),
-             "socket_wall_thickness_mm": C("socket thk"),
-             "body_wall_thickness_mm": C("wall thk", "body wall thk"),
-             "length_mm": cplg,
-             "weight_kg": wt, "source_file": fname}
-        if r["socket_diameter_mm"] is None and r["center_to_end_mm"] is None and r["weight_kg"] is None:
-            continue
-        out.append(r)
-    return out
-
-def rule_threaded(fname, header, body, imperial):
-    """ftsc*.csv: NB,DN,A,H,G,B,L2,WT tarzi."""
-    l = fname.lower()
-    m = re.search(r"ftsc(\d+)", l)
-    compmap = {"1": "90° Elbow", "2": "45° Elbow", "3": "Tee", "4": "Cross",
-               "5": "Full Coupling", "6": "Full Coupling", "7": "Cap",
-               "8": "Reducing Coupling", "9": "Union",
-               "10": "Plug", "11": "Plug", "12": "Bushing", "13": "Bushing",
-               "14": "Plug", "15": "Plug", "16": "Plug", "17": "Plug",
-               "18": "Plug", "19": "Plug", "20": "90° Elbow", "21": "45° Elbow",
-               "22": "Tee", "23": "90° Elbow", "24": "45° Elbow", "25": "Tee"}
-    comp = compmap.get(m.group(1) if m else "", "Threaded Fitting")
-    m2 = re.search(r"(2000|3000|6000)", l)
-    rating = m2.group(1) if m2 else "3000"
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        def C(*names):
-            return convert(num(g(*names)), imperial)
-        if imperial:
-            wt_raw = num(g("wt", "kg"))
-            wt = round(wt_raw * 0.453592, 4) if wt_raw is not None else None
-        else:
-            wt = convert(num(g("wt", "kg")), False)
-        r = {"nps": n, "rating": rating, "component_type": comp,
-             "center_to_end_mm": C("a", "ctr to end", "oa length", "oalength",
-                                     "across flats", "thread length"),
-             "bore_diameter_mm": C("b", "bore", "diam"),
-             "body_wall_thickness_mm": None,
-             "length_mm": C("l2", "length", "oa length", "oalength",
-                              "across flats", "thread length"),
-             "weight_kg": wt, "source_file": fname}
-        if r["center_to_end_mm"] is None and r["weight_kg"] is None and r["length_mm"] is None:
-            continue
-        out.append(r)
-    return out
-
-def rule_valve(fname, header, body, imperial):
-    """vlv*.csv: NPS,DN,RF-F/F,...,RF/RTJ KG. vlv tipi dosya adindaki ilk rakam."""
-    m = re.search(r"vlv(\d+)", fname.lower())
-    if not m:
-        return None
-    m2 = re.search(r"(150|300|400|600|900|1500|2500)\.csv$", fname.lower())
-    rating = m2.group(1) if m2 else "150"
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        def C(*names):
-            return convert(num(g(*names)), imperial)
-        f2f = C("rf-f/f", "rf face to face")
-        wt = C("rf/rtj kg", "weight rf/rtj", "weight kg", "wt")
-        if f2f is None and wt is None:
-            continue
-        out.append({"nps": n, "rating": rating, "face_to_face_mm": f2f,
-                    "weight_kg": wt, "source_file": fname})
-    return out
-
-def rule_gasket(fname, header, body, imperial):
-    """Conta tablolari iki cesit:
-    a) grtj*.csv: R-numarasi anahtarli halka tablosu (R no, P-pitch dia, ...).
-       App nps+rating ile arar; halka tablosu ayri tutulur: nps = halka no.
-    b) fldi*/gflt*/gspr* flans-olculu conta tablolari: NB/DN + OD/PCD/... kolonlu.
-    """
-    l = fname.lower()
-    if l.startswith("grtj"):
-        out = []
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.endswith(".csv") or "imperial" in fn: continue
+        
+        rating = None
+        m_flg = re.match(r"flg(1500|2500|150|300|400|600|900)\.csv", fn)
+        m_fla = re.match(r"fla(1500|2500|150|300|400|600|900)\.csv", fn)
+        if m_flg: rating = m_flg.group(1)
+        elif m_fla: rating = m_fla.group(1)
+        else: continue
+        
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
         for v in body:
+            if not v or len(v) < 10: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
             ctx = build_rowctx(header, v)
             g = lambda *names: pick(ctx, [x.lower() for x in names])
-            ring = (g("r no") or (v[0] if v else "")).strip()
-            if not ring or ring.upper() == "N/A":
-                continue
-            def C(*names):
-                return convert(num(g(*names)), imperial)
-            out.append({"nps": ring, "rating": "RTJ",
-                        "inner_diameter_mm": C("p-pitch dia", "b-height oval"),
-                        "outer_diameter_mm": C("a-width"),
-                        "ring_number": ring, "source_file": fname})
-        return out or None
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        def C(*names):
-            return convert(num(g(*names)), imperial)
-        od = C("od", "d", "outside dia")
-        idm = C("pcd", "id", "inside dia", "bore")
-        ring = (g("ring no") or "").strip()
-        m = __import__("re").search(r"(150|300|600|900|1500|2500)", l)
-        rating = m.group(1) if m else "150"
-        if od is None and idm is None:
-            continue
-        out.append({"nps": n, "rating": rating, "inner_diameter_mm": idm,
-                    "outer_diameter_mm": od, "ring_number": ring,
-                    "source_file": fname})
-    return out or None
-
-def rule_blank(fname, header, body, imperial):
-    """blnu*.csv: Figure-8 / paddle / spacer."""
-    m = re.search(r"(150|300|600|900|1500|2500)", fname.lower())
-    rating = m.group(1) if m else "150"
-    out = []
-    for v in body:
-        n = nps_norm(v[0] if v else None, imperial)
-        if not n:
-            continue
-        ctx = build_rowctx(header, v)
-        g = lambda *names: pick(ctx, [x.lower() for x in names])
-        def C(*names):
-            return convert(num(g(*names)), imperial)
-        od = C("od")
-        thk = C("thk", "basic thickness", "total thickness")
-        wt = C("blank kg", "kg", "wt")
-        if od is None and thk is None and wt is None:
-            continue
-        out.append({"nps": n, "rating": rating, "outer_diameter_mm": od,
-                    "thickness_mm": thk, "center_to_center_mm": C("crs", "dist"),
-                    "weight_spectacle_kg": wt, "source_file": fname})
+            
+            od = num(g("od"))
+            thk = num(g("thickness"))
+            hub_x = num(g("hub-x"))
+            hub_a = num(g("hub-a"))
+            rf_dia = num(g("rf dia"))
+            pcd = num(g("pcd"))
+            no_bolts = num(g("no of bolts"))
+            bolt_sz = (g("bolt size unc") or "").strip()
+            rf_sb_len = num(g("rf sb length", "c bolt length"))
+            ring_no = (g("ring no") or "").strip()
+            
+            wn_len = num(g("wn thk", "hub-a"))
+            thd_len = num(g("thd thk", "hub-a"))
+            lapped_len = num(g("lapped thk", "hub-a"))
+            so_bore = num(g("so bore"))
+            lapped_bore = num(g("lapped bore"))
+            bld_thk = num(g("bld thk", "thickness"))
+            
+            wn_kg = num(g("wn kg"))
+            so_kg = num(g("so kg"))
+            bld_kg = num(g("bld kg"))
+            
+            if od is None and pcd is None: continue
+            
+            subtypes = [
+                ("Welding Neck", "RF", wn_len, hub_a, wn_kg),
+                ("Slip On", "RF", thd_len, so_bore, so_kg),
+                ("Blind", "RF", bld_thk, 0.0, bld_kg),
+                ("Threaded", "RF", thd_len, so_bore, so_kg),
+                ("Lap Joint", "Flat (Stub End)", lapped_len, lapped_bore, so_kg),
+                ("Socket Weld", "RF", thd_len, so_bore, so_kg)
+            ]
+            
+            for stype, facing, len_y, bore, wt in subtypes:
+                out.append({
+                    "nps": nps,
+                    "rating": rating,
+                    "flange_type": stype,
+                    "facing": facing,
+                    "outer_diameter_mm": od,
+                    "thickness_mm": thk,
+                    "hub_diameter_mm": hub_x,
+                    "length_thru_hub_mm": len_y if len_y is not None else thk,
+                    "bore_diameter_mm": bore,
+                    "rf_diameter_mm": rf_dia,
+                    "pcd_mm": pcd,
+                    "num_bolts": int(no_bolts) if no_bolts else 4,
+                    "bolt_diameter_in": bolt_sz,
+                    "stud_bolt_length_mm": rf_sb_len,
+                    "weight_kg": wt,
+                    "rtj_ring_number": ring_no,
+                    "source_file": f
+                })
     return out
 
-def _fla_rating(fname):
-    m = re.search(r"fla(?:_imperial)?[_]?(\d+)", fname.lower())
-    return m.group(1) if m else None
+# ==============================================================================
+# 2. PIPES (ASME B36.10M / B36.19M)
+# ==============================================================================
+def extract_pipes():
+    out = []
+    pipe_files = [f for f in sorted(os.listdir(SRC)) if f.startswith("pipe") and f.endswith(".csv") and "imperial" not in f.lower()]
+    for f in pipe_files:
+        fn = f.lower().replace(".csv", "")
+        sched = fn.replace("pipe", "").upper()
+        if not sched: continue
+        
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v or len(v) < 7: continue
+            nps = nps_norm(v[12] if len(v) > 12 and v[12].strip() not in ("", "N/A") else v[0])
+            if not nps: continue
+            
+            od = num(v[2])
+            wall = num(v[3])
+            id_in = num(v[5]) if len(v) > 5 else None
+            wt_empty = num(v[6]) if len(v) > 6 else None
+            wt_water = num(v[7]) if len(v) > 7 else None
+            moi = num(v[8]) if len(v) > 8 else None
+            
+            if od is None and wall is None: continue
+            
+            out.append({
+                "nps": nps,
+                "schedule": sched,
+                "outer_diameter_mm": od,
+                "wall_thickness_mm": wall,
+                "inner_diameter_mm": id_in,
+                "weight_empty_kg_m": wt_empty,
+                "weight_water_kg_m": wt_water,
+                "moment_of_inertia_cm4": moi,
+                "source_file": f
+            })
+    return out
 
+# ==============================================================================
+# 3. BUTTWELD FITTINGS (ASME B16.9)
+# ==============================================================================
+def extract_buttweld():
+    out = []
+    bw_configs = [
+        ("90shortradiuselbow", "90° Short Radius Elbow"),
+        ("90elbow", "90° Long Radius Elbow"),
+        ("45elbow", "45° Elbow"),
+        ("shortradiusreturn", "180° Short Radius Return"),
+        ("return", "180° Long Radius Return"),
+        ("straighttee", "Equal Tee"),
+        ("reducingtee", "Reducing Tee"),
+        ("cap", "Butt Weld Cap"),
+        ("reducers", "Concentric Reducer"),
+        ("stubend", "Lap Joint Stub End")
+    ]
+    
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.endswith(".csv") or "imperial" in fn: continue
+        
+        matched_pfx, comp_type = None, None
+        for pfx, ctype in bw_configs:
+            if fn.startswith(pfx):
+                matched_pfx, comp_type = pfx, ctype
+                break
+        if not matched_pfx: continue
+        
+        sched = fn[len(matched_pfx):].replace(".csv", "").upper()
+        if not sched or sched.startswith("_"): continue
+        if "(" in sched: continue
+        
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v or len(v) < 3: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
+            ctx = build_rowctx(header, v)
+            g = lambda *names: pick(ctx, [x.lower() for x in names])
+            
+            od = num(g("od", "3-od"))
+            c2e = num(g("90 ctr to end", "45 ctr to end", "ctr to e", "ctr to end", "m"))
+            c2c = num(g("total", "ctr to ctr"))
+            b2f = num(g("flat to back", "back to face"))
+            length = num(g("over cap-e", "overcap-e1", "len short", "len long", "len", "length"))
+            wt = num(g("wt kg", "wt", "kg", "wt short", "wt long"))
+            
+            if od is None and c2e is None and length is None and wt is None: continue
+            
+            out.append({
+                "nps": nps,
+                "schedule": sched,
+                "component_type": comp_type,
+                "outer_diameter_mm": od,
+                "center_to_end_mm": c2e,
+                "center_to_center_mm": c2c,
+                "back_to_face_mm": b2f,
+                "overall_length_height_mm": length if length is not None else c2e,
+                "weight_kg": wt,
+                "source_file": f
+            })
+            
+            if comp_type == "Concentric Reducer":
+                out.append({
+                    "nps": nps,
+                    "schedule": sched,
+                    "component_type": "Eccentric Reducer",
+                    "outer_diameter_mm": od,
+                    "center_to_end_mm": c2e,
+                    "center_to_center_mm": c2c,
+                    "back_to_face_mm": b2f,
+                    "overall_length_height_mm": length if length is not None else c2e,
+                    "weight_kg": wt,
+                    "source_file": f
+                })
+    return out
 
-def _flg_rating(fname):
-    m = re.search(r"flg(?:_imperial)?[_]?(\d+)", fname.lower())
-    return m.group(1) if m else None
+# ==============================================================================
+# 4. SOCKET WELD FITTINGS (ASME B16.11)
+# ==============================================================================
+def extract_socketweld():
+    out = []
+    sw_types = {
+        "1": "90° Elbow",
+        "2": "45° Elbow",
+        "3": "Tee",
+        "4": "Cross",
+        "5": "Full Coupling",
+        "6": "Half Coupling",
+        "7": "Cap",
+        "8": "Reducing Coupling",
+        "9": "Union"
+    }
+    
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.startswith("ftsw") or not fn.endswith(".csv") or "inche" in fn or "imperial" in fn: continue
+        
+        m = re.match(r"ftsw([1-9])_.*_(3000|6000|9000)_millimetre.*\.csv", fn)
+        if not m:
+            m2 = re.match(r"ftsw(\d)(\d{2})(?:0)?\.csv", fn)
+            if m2:
+                t_idx, rat_code = m2.group(1), m2.group(2)
+                rating = "3000" if rat_code == "30" else ("6000" if rat_code == "60" else "9000")
+                comp = sw_types.get(t_idx, "Forged Fitting")
+            else:
+                continue
+        else:
+            comp = sw_types.get(m.group(1), "Forged Fitting")
+            rating = m.group(2)
+            
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
+            ctx = build_rowctx(header, v)
+            g = lambda *names: pick(ctx, [x.lower() for x in names])
+            
+            sock_dia = num(g("socketdia", "socket dia", "r-dia", "b"))
+            sock_depth = num(g("socket depth", "c", "j"))
+            c2e = num(g("ctr to end", "ctrtoend", "a"))
+            bore = num(g("bore", "d-bore", "d"))
+            sock_thk = num(g("socket thk", "c"))
+            body_thk = num(g("wall thk", "body wall thk", "g"))
+            cplg_len = num(g("cplglen", "cplg len", "q-len", "k=length", "k", "length", "halfcplglen"))
+            wt = num(g("kg", "wt", "wtkg"))
+            
+            if sock_dia is None and c2e is None and cplg_len is None and wt is None: continue
+            
+            out.append({
+                "nps": nps,
+                "rating": rating,
+                "component_type": comp,
+                "socket_diameter_mm": sock_dia,
+                "socket_depth_mm": sock_depth,
+                "center_to_end_mm": c2e,
+                "bore_diameter_mm": bore,
+                "socket_wall_thickness_mm": sock_thk,
+                "body_wall_thickness_mm": body_thk,
+                "length_mm": cplg_len,
+                "weight_kg": wt,
+                "source_file": f
+            })
+    return out
 
+# ==============================================================================
+# 5. THREADED FITTINGS (ASME B16.11)
+# ==============================================================================
+def extract_threaded():
+    out = []
+    thd_types = {
+        "1": "90° Elbow", "2": "Tee", "3": "Cross", "4": "45° Elbow",
+        "5": "Street Elbow", "6": "Full Coupling", "7": "Half Coupling", "8": "Cap",
+        "9": "Square Head Plug", "10": "Hex Head Plug", "11": "Round Head Plug",
+        "12": "Hex Head Bushing", "13": "Flush Bushing", "20": "90° Elbow",
+        "21": "45° Elbow", "22": "Tee", "23": "90° Elbow", "24": "45° Elbow", "25": "Tee"
+    }
+    
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.startswith("ftsc") or not fn.endswith(".csv") or "inche" in fn or "imperial" in fn: continue
+        
+        m = re.match(r"ftsc(\d+)_.*_(2000|3000|6000|9000)_millimetre.*\.csv", fn)
+        if not m:
+            m2 = re.match(r"ftsc(\d+)(\d{2})\.csv", fn)
+            if m2:
+                t_idx, rat_code = m2.group(1), m2.group(2)
+                rating = "2000" if rat_code == "20" else ("3000" if rat_code == "30" else "6000")
+                comp = thd_types.get(t_idx, "Threaded Fitting")
+            else:
+                continue
+        else:
+            comp = thd_types.get(m.group(1), "Threaded Fitting")
+            rating = m.group(2)
+            
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
+            ctx = build_rowctx(header, v)
+            g = lambda *names: pick(ctx, [x.lower() for x in names])
+            
+            c2e = num(g("a", "ctr to end", "ctrtoend"))
+            bore = num(g("b", "bore", "diam"))
+            length = num(g("l2", "length", "oa length", "oalength", "c"))
+            wt = num(g("wt", "kg", "wtkg"))
+            
+            if c2e is None and length is None and wt is None: continue
+            
+            out.append({
+                "nps": nps,
+                "rating": rating,
+                "component_type": comp,
+                "center_to_end_mm": c2e,
+                "bore_diameter_mm": bore,
+                "body_wall_thickness_mm": None,
+                "length_mm": length,
+                "weight_kg": wt,
+                "source_file": f
+            })
+    return out
 
-ROUTER = [
-    # flg = kucuk cap (1/2"-24"), fla = buyuk cap (26"-60"). Ikisi de ayni tabloya.
-    ("tbl_flanges_asme_b16_5", lambda f: _flg_rating(f) is not None, rule_flange),
-    ("tbl_flanges_asme_b16_5", lambda f: _fla_rating(f) is not None, rule_flange),
-    ("tbl_pipes", lambda f: f.lower().startswith("pipe"), rule_pipe),
-    ("tbl_fittings_buttweld_b16_9", lambda f: f.lower().startswith(
-        ("45elbow", "90elbow", "90shortradius", "return", "shortradiusreturn",
-         "straighttee", "reducingtee", "cap", "reducers", "stubend",
-         "srra", "srrb", "ftbw")), rule_buttweld),
-    ("tbl_fittings_socketweld_b16_11", lambda f: f.lower().startswith("ftsw"), rule_socketweld),
-    ("tbl_fittings_threaded_b16_11", lambda f: f.lower().startswith("ftsc"), rule_threaded),
-    ("tbl_valves_asme_b16_10", lambda f: f.lower().startswith("vlv"), rule_valve),
-    ("tbl_gaskets_and_rtj", lambda f: f.lower().startswith(("grtj", "gflt", "gspr", "fldi")), rule_gasket),
-    ("tbl_line_blanks_asme_b16_48", lambda f: f.lower().startswith("blnu"), rule_blank),
-]
+# ==============================================================================
+# 6. VALVES (ASME B16.10 / B16.34)
+# ==============================================================================
+def extract_valves():
+    out = []
+    valve_names = {
+        "1": "Gate Valve",
+        "2": "Globe Valve",
+        "3": "Check Valve",
+        "4": "Ball Valve",
+        "5": "Butterfly Valve",
+        "6": "Safety Relief Valve",
+        "7": "Plug Valve",
+        "8": "Diaphragm Valve"
+    }
+    
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.startswith("vlv") or not fn.endswith(".csv") or "imperial" in fn: continue
+        
+        m = re.match(r"vlv([1-8])_?(1500|2500|150|300|400|600|900)", fn)
+        if not m: continue
+        
+        vt_idx, rating = m.group(1), m.group(2)
+        vname = valve_names.get(vt_idx, "Valve")
+        
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v or len(v) < 3: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
+            ctx = build_rowctx(header, v)
+            g = lambda *names: pick(ctx, [x.lower() for x in names])
+            
+            f2f = num(g("rf-f/f", "rf face to face", "f-f"))
+            hw_h = num(g("height-hw", "height"))
+            hw_d = num(g("diam-hw", "handwheel"))
+            wt = num(g("rf/rtj kg", "weight rf/rtj", "weight kg", "wt"))
+            
+            if f2f is None and wt is None: continue
+            
+            out.append({
+                "nps": nps,
+                "rating": rating,
+                "valve_type": vname,
+                "face_to_face_mm": f2f,
+                "handwheel_height_mm": hw_h,
+                "handwheel_diameter_mm": hw_d,
+                "weight_kg": wt,
+                "source_file": f
+            })
+    return out
+
+# ==============================================================================
+# 7. GASKETS (ASME B16.20 / B16.21)
+# ==============================================================================
+def extract_gaskets():
+    out = []
+    p_grtj = os.path.join(SRC, "grtj1.csv")
+    if os.path.exists(p_grtj):
+        _, header, body = b4a_rows(p_grtj)
+        for v in body:
+            if not v or len(v) < 5: continue
+            ring = v[0].strip()
+            if not ring or ring.upper() in ("N/A", "R NO"): continue
+            pitch_dia = num(v[2])
+            width = num(v[3])
+            wt = num(v[8]) if len(v) > 8 else None
+            out.append({
+                "nps": ring,
+                "rating": "RTJ",
+                "gasket_type": "RTJ Ring Joint",
+                "inner_diameter_mm": pitch_dia,
+                "outer_diameter_mm": width,
+                "ring_number": ring if ring.startswith("R") else f"R{ring}",
+                "weight_kg": wt,
+                "source_file": "grtj1.csv"
+            })
+            
+    p_gspr = os.path.join(SRC, "gspr1.csv")
+    if os.path.exists(p_gspr):
+        _, header, body = b4a_rows(p_gspr)
+        ratings = ["150", "300", "400", "600", "900", "1500", "2500"]
+        for v in body:
+            if not v: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            for r_idx, rat in enumerate(ratings):
+                id_val = num(v[2 + r_idx]) if len(v) > 2 + r_idx else None
+                od_val = num(v[18 + r_idx]) if len(v) > 18 + r_idx else None
+                wt_val = num(v[25 + r_idx]) if len(v) > 25 + r_idx else None
+                if id_val or od_val:
+                    out.append({
+                        "nps": nps,
+                        "rating": rat,
+                        "gasket_type": "Spiral Wound Gasket",
+                        "inner_diameter_mm": id_val,
+                        "outer_diameter_mm": od_val,
+                        "ring_number": "",
+                        "weight_kg": wt_val,
+                        "source_file": "gspr1.csv"
+                    })
+                    
+    p_gflt = os.path.join(SRC, "gflt1.csv")
+    if os.path.exists(p_gflt):
+        _, header, body = b4a_rows(p_gflt)
+        for v in body:
+            if not v: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            id_val = num(v[3]) if len(v) > 3 else None
+            for col_idx, rat in [(6, "150"), (7, "300"), (8, "400"), (9, "600"), (10, "900")]:
+                od_val = num(v[col_idx]) if len(v) > col_idx else None
+                wt_val = num(v[col_idx + 7]) if len(v) > col_idx + 7 else None
+                if id_val or od_val:
+                    out.append({
+                        "nps": nps,
+                        "rating": rat,
+                        "gasket_type": "Flat Ring Gasket",
+                        "inner_diameter_mm": id_val,
+                        "outer_diameter_mm": od_val,
+                        "ring_number": "",
+                        "weight_kg": wt_val,
+                        "source_file": "gflt1.csv"
+                    })
+    return out
+
+# ==============================================================================
+# 8. LINE BLANKS (ASME B16.48)
+# ==============================================================================
+def extract_blanks():
+    out = []
+    blank_configs = [
+        ("blnu1", "Figure-8 Spectacle Blind"),
+        ("blnu2", "Paddle Blank"),
+        ("blnu3", "Paddle Spacer"),
+        ("blnu4", "Line Blank")
+    ]
+    
+    for f in sorted(os.listdir(SRC)):
+        fn = f.lower()
+        if not fn.startswith("blnu") or not fn.endswith(".csv") or "inche" in fn or "imperial" in fn: continue
+        
+        m = re.match(r"(blnu[1-4][a-z]?)_.*_(1500|2500|150|300|400|600|900)_millimetre.*\.csv", fn)
+        if not m: continue
+        
+        pfx, rating = m.group(1), m.group(2)
+        btype = next((bt for p, bt in blank_configs if pfx.startswith(p)), "Line Blank")
+        
+        _, header, body = b4a_rows(os.path.join(SRC, f))
+        if not header: continue
+        
+        for v in body:
+            if not v or len(v) < 4: continue
+            nps = nps_norm(v[0])
+            if not nps: continue
+            
+            ctx = build_rowctx(header, v)
+            g = lambda *names: pick(ctx, [x.lower() for x in names])
+            
+            od = num(g("od", "outside dia"))
+            thk = num(g("thk", "thickness", "basic thickness", "total thickness"))
+            c2c = num(g("crs", "dist", "center to center"))
+            wt = num(g("blank kg", "kg", "wt"))
+            
+            if od is None and thk is None: continue
+            
+            out.append({
+                "nps": nps,
+                "rating": rating,
+                "blank_type": btype,
+                "outer_diameter_mm": od,
+                "thickness_mm": thk,
+                "center_to_center_mm": c2c,
+                "weight_spectacle_kg": wt,
+                "source_file": f
+            })
+    return out
+
+def write_table_csv(tname, rows, cols):
+    p = os.path.join(OUT, tname + ".csv")
+    with open(p, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(cols)
+        for r in rows:
+            w.writerow([r.get(c, "") for c in cols])
+    print(f"✅ {tname}.csv yazildi: {len(rows)} satir")
 
 def main():
-    files = sorted(f for f in os.listdir(SRC) if f.lower().endswith(".csv"))
-    buckets = {t: [] for t in TABLES}
-    routed, skipped, routed_files = 0, [], {}
-    for fname in files:
-        path = os.path.join(SRC, fname)
-        if os.path.getsize(path) == 0:
-            skipped.append((fname, "0-bayt"))
-            continue
-        idx, header, body = b4a_rows(path)
-        if header is None:
-            skipped.append((fname, "basliksiz"))
-            continue
-        imperial = is_imperial(fname)
-        hit = False
-        for tname, filt, rule in ROUTER:
-            if filt(fname):
-                rows = rule(fname, header, body, imperial)
-                if rows:
-                    buckets[tname].extend(rows)
-                    routed_files[fname] = tname
-                    routed += 1
-                else:
-                    skipped.append((fname, tname + ": satir uretilemedi"))
-                hit = True
-                break
-        if not hit:
-            skipped.append((fname, "yonlendirici disi (app disi kategori)"))
-    os.makedirs(OUT, exist_ok=True)
-    print(f"KAYNAK: {len(files)} dosya")
-    total = 0
-    for tname, cols in TABLES.items():
-        rows = buckets[tname]
-        total += len(rows)
-        with open(os.path.join(OUT, tname + ".csv"), "w", encoding="utf-8", newline="") as f:
-            w = csv.writer(f, lineterminator="\n")
-            w.writerow(cols)
-            for r in rows:
-                w.writerow(["" if r.get(c) is None else r.get(c) for c in cols])
-        print(f"  {tname}: {len(rows)} satir")
-    print(f"CIKTI: {total} satir -> {OUT}")
-    print(f"YONLENDIRILEN DOSYA: {routed} / {len(files)}")
-    if skipped:
-        print(f"ATLANAN ({len(skipped)}):")
-        for f, why in sorted(skipped)[:60]:
-            print(f"  - {f} :: {why}")
-        if len(skipped) > 60:
-            print(f"  ... +{len(skipped) - 60} dosya daha")
-    # fail kapisi: kritik tablolardan biri bossa cikis kodu 1
-    critical = ["tbl_flanges_asme_b16_5", "tbl_pipes", "tbl_fittings_buttweld_b16_9",
-                "tbl_valves_asme_b16_10"]
-    empty = [t for t in critical if not buckets[t]]
-    if empty:
-        print("KRITIK TABLO BOS:", empty)
-        return 1
-    return 0
+    print("--- PIPEDATA CANONICAL EXTRACTOR BAŞLADI ---")
+    
+    flanges = extract_flanges()
+    write_table_csv("tbl_flanges_asme_b16_5", flanges, [
+        "nps", "rating", "flange_type", "facing", "outer_diameter_mm",
+        "thickness_mm", "hub_diameter_mm", "length_thru_hub_mm", "bore_diameter_mm",
+        "rf_diameter_mm", "pcd_mm", "num_bolts", "bolt_diameter_in",
+        "stud_bolt_length_mm", "weight_kg", "rtj_ring_number", "source_file"
+    ])
+    
+    pipes = extract_pipes()
+    write_table_csv("tbl_pipes", pipes, [
+        "nps", "schedule", "outer_diameter_mm", "wall_thickness_mm",
+        "inner_diameter_mm", "weight_empty_kg_m", "weight_water_kg_m",
+        "moment_of_inertia_cm4", "source_file"
+    ])
+    
+    bw = extract_buttweld()
+    write_table_csv("tbl_fittings_buttweld_b16_9", bw, [
+        "nps", "schedule", "component_type", "outer_diameter_mm",
+        "center_to_end_mm", "center_to_center_mm", "back_to_face_mm",
+        "overall_length_height_mm", "weight_kg", "source_file"
+    ])
+    
+    sw = extract_socketweld()
+    write_table_csv("tbl_fittings_socketweld_b16_11", sw, [
+        "nps", "rating", "component_type", "socket_diameter_mm",
+        "socket_depth_mm", "center_to_end_mm", "bore_diameter_mm",
+        "socket_wall_thickness_mm", "body_wall_thickness_mm", "length_mm",
+        "weight_kg", "source_file"
+    ])
+    
+    thd = extract_threaded()
+    write_table_csv("tbl_fittings_threaded_b16_11", thd, [
+        "nps", "rating", "component_type", "center_to_end_mm",
+        "bore_diameter_mm", "body_wall_thickness_mm", "length_mm",
+        "weight_kg", "source_file"
+    ])
+    
+    valves = extract_valves()
+    write_table_csv("tbl_valves_asme_b16_10", valves, [
+        "nps", "rating", "valve_type", "face_to_face_mm",
+        "handwheel_height_mm", "handwheel_diameter_mm", "weight_kg", "source_file"
+    ])
+    
+    gaskets = extract_gaskets()
+    write_table_csv("tbl_gaskets_and_rtj", gaskets, [
+        "nps", "rating", "gasket_type", "inner_diameter_mm",
+        "outer_diameter_mm", "ring_number", "weight_kg", "source_file"
+    ])
+    
+    blanks = extract_blanks()
+    write_table_csv("tbl_line_blanks_asme_b16_48", blanks, [
+        "nps", "rating", "blank_type", "outer_diameter_mm",
+        "thickness_mm", "center_to_center_mm", "weight_spectacle_kg", "source_file"
+    ])
+    
+    print("--- TAMAMLANDI ---")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

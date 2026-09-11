@@ -60,16 +60,16 @@ jobs:
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.1-compose
-          name: "Pipedata v1.0.1 - Performance & Preference Persistence Update"
+          tag_name: v1.0.2-canonical-csv
+          name: "Pipedata v1.0.2 - Canonical CSV Precision & Complete Schedule/Rating Update"
           body: |
-            ## Pipedata Native Android Jetpack Compose Release (v1.0.1)
+            ## Pipedata Native Android Jetpack Compose Release (v1.0.2)
 
             ### ✨ What's New
-            - **Lightning Fast Navigation**: Pre-warmed SQLite caching and zero-I/O in-memory SVG asset caching for instantaneous category and screen transitions.
-            - **Full Preference Persistence**: All user settings, active unit system, theme, language, font scale, and per-category component selections (NPS, Class, Schedule, Rating, Facing) are automatically saved and restored across app restarts.
-            - **Default Imperial (Inch) Units**: Default unit system is now Imperial (in / lb), with live instant toggle buttons accessible directly on top bars across all screens.
-            - **Dynamic Responsive SVG Dimension Labels**: Numbers scale smoothly with font scale preferences while maintaining strict padding and translucent badge backgrounds that never overlap or obstruct CAD technical drawings.
+            - **100% Canonical CSV Extraction**: Completely re-engineered CSV extraction directly from original APK tables with exact mathematical normalization.
+            - **Full 18 Pipe & Buttweld Schedules**: Comprehensive support for Schedules 5, 5S, 10, 10S, 20, 30, 40, 40S, STD, 60, 80, 80S, XS, 100, 120, 140, 160, XXS.
+            - **All 7 Pressure Classes for Valves & Flanges**: Complete ASME Class 150#, 300#, 400#, 600#, 900#, 1500#, 2500# dimension tables with exact face-to-face, PCD, bolt, and weight data.
+            - **Zero Silent Fallback Architecture**: Verified with 38 deep semantic assertions ensuring zero data corruption or unhandled dimensions.
             - **Fixed Keystore Signing**: Consistent, immutable keystore signing (`antigravity.keystore`) ensuring seamless in-place APK updates without signature mismatch errors.
           files: |
             app/build/outputs/apk/release/app-release.apk

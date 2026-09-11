@@ -1,703 +1,323 @@
-nps,rating,inner_diameter_mm,outer_diameter_mm,ring_number,source_file
-3/8,150,60.0,90.0,,fldi_10.csv
-1/2,150,65.0,95.0,,fldi_10.csv
-3/4,150,75.0,105.0,,fldi_10.csv
-1,150,85.0,115.0,,fldi_10.csv
-1 1/4,150,100.0,140.0,,fldi_10.csv
-1 1/2,150,110.0,150.0,,fldi_10.csv
-2,150,125.0,165.0,,fldi_10.csv
-2 1/2,150,145.0,185.0,,fldi_10.csv
-3,150,160.0,200.0,,fldi_10.csv
-4,150,180.0,220.0,,fldi_10.csv
-5,150,210.0,250.0,,fldi_10.csv
-6,150,240.0,285.0,,fldi_10.csv
-8,150,295.0,340.0,,fldi_10.csv
-10,150,350.0,395.0,,fldi_10.csv
-12,150,400.0,445.0,,fldi_10.csv
-14,150,460.0,505.0,,fldi_10.csv
-16,150,515.0,565.0,,fldi_10.csv
-18,150,565.0,615.0,,fldi_10.csv
-20,150,620.0,670.0,,fldi_10.csv
-24,150,725.0,780.0,,fldi_10.csv
-28,150,840.0,895.0,,fldi_10.csv
-32,150,950.0,1015.0,,fldi_10.csv
-36,150,1050.0,1115.0,,fldi_10.csv
-40,150,1160.0,1230.0,,fldi_10.csv
-48,150,1380.0,1455.0,,fldi_10.csv
-56,150,1590.0,1675.0,,fldi_10.csv
-64,150,1820.0,1915.0,,fldi_10.csv
-72,150,2020.0,2115.0,,fldi_10.csv
-80,150,2230.0,2325.0,,fldi_10.csv
-88,150,2440.0,2550.0,,fldi_10.csv
-96,150,2650.0,2760.0,,fldi_10.csv
-104,150,2850.0,2960.0,,fldi_10.csv
-112,150,3070.0,3180.0,,fldi_10.csv
-120,150,3290.0,3405.0,,fldi_10.csv
-3/8,150,70.0,100.0,,fldi_100.csv
-1/2,150,75.0,105.0,,fldi_100.csv
-3/4,150,90.0,130.0,,fldi_100.csv
-1,150,100.0,140.0,,fldi_100.csv
-1 1/4,150,110.0,155.0,,fldi_100.csv
-1 1/2,150,125.0,170.0,,fldi_100.csv
-2,150,145.0,195.0,,fldi_100.csv
-2 1/2,150,170.0,220.0,,fldi_100.csv
-3,150,180.0,230.0,,fldi_100.csv
-4,150,210.0,265.0,,fldi_100.csv
-5,150,250.0,315.0,,fldi_100.csv
-6,150,290.0,355.0,,fldi_100.csv
-8,150,360.0,430.0,,fldi_100.csv
-10,150,430.0,505.0,,fldi_100.csv
-12,150,500.0,585.0,,fldi_100.csv
-14,150,560.0,655.0,,fldi_100.csv
-3/8,150,60.0,90.0,,fldi_16.csv
-1/2,150,65.0,95.0,,fldi_16.csv
-3/4,150,75.0,105.0,,fldi_16.csv
-1,150,85.0,115.0,,fldi_16.csv
-1 1/4,150,100.0,140.0,,fldi_16.csv
-1 1/2,150,110.0,150.0,,fldi_16.csv
-2,150,125.0,165.0,,fldi_16.csv
-2 1/2,150,145.0,185.0,,fldi_16.csv
-3,150,160.0,200.0,,fldi_16.csv
-4,150,180.0,220.0,,fldi_16.csv
-5,150,210.0,250.0,,fldi_16.csv
-6,150,240.0,285.0,,fldi_16.csv
-8,150,295.0,340.0,,fldi_16.csv
-10,150,355.0,405.0,,fldi_16.csv
-12,150,410.0,460.0,,fldi_16.csv
-14,150,470.0,520.0,,fldi_16.csv
-16,150,525.0,580.0,,fldi_16.csv
-18,150,585.0,640.0,,fldi_16.csv
-20,150,650.0,715.0,,fldi_16.csv
-24,150,770.0,840.0,,fldi_16.csv
-28,150,840.0,910.0,,fldi_16.csv
-32,150,950.0,1025.0,,fldi_16.csv
-36,150,1050.0,1125.0,,fldi_16.csv
-40,150,1170.0,1255.0,,fldi_16.csv
-48,150,1390.0,1485.0,,fldi_16.csv
-56,150,1590.0,1685.0,,fldi_16.csv
-64,150,1820.0,1930.0,,fldi_16.csv
-72,150,2020.0,2130.0,,fldi_16.csv
-80,150,2230.0,2345.0,,fldi_16.csv
-3/8,150,70.0,100.0,,fldi_160.csv
-1/2,150,75.0,105.0,,fldi_160.csv
-3/4,150,0.0,0.0,,fldi_160.csv
-1,150,100.0,140.0,,fldi_160.csv
-1 1/4,150,0.0,0.0,,fldi_160.csv
-1 1/2,150,125.0,170.0,,fldi_160.csv
-2,150,145.0,195.0,,fldi_160.csv
-2 1/2,150,170.0,220.0,,fldi_160.csv
-3,150,180.0,230.0,,fldi_160.csv
-4,150,210.0,265.0,,fldi_160.csv
-5,150,250.0,315.0,,fldi_160.csv
-6,150,290.0,355.0,,fldi_160.csv
-8,150,360.0,430.0,,fldi_160.csv
-10,150,430.0,515.0,,fldi_160.csv
-12,150,500.0,585.0,,fldi_160.csv
-3/8,150,50.0,75.0,,fldi_2.5.csv
-1/2,150,55.0,80.0,,fldi_2.5.csv
-3/4,150,65.0,90.0,,fldi_2.5.csv
-1,150,75.0,100.0,,fldi_2.5.csv
-1 1/4,150,90.0,120.0,,fldi_2.5.csv
-1 1/2,150,100.0,130.0,,fldi_2.5.csv
-2,150,110.0,140.0,,fldi_2.5.csv
-2 1/2,150,130.0,160.0,,fldi_2.5.csv
-3,150,150.0,190.0,,fldi_2.5.csv
-4,150,170.0,210.0,,fldi_2.5.csv
-5,150,200.0,240.0,,fldi_2.5.csv
-6,150,225.0,265.0,,fldi_2.5.csv
-8,150,280.0,320.0,,fldi_2.5.csv
-10,150,335.0,375.0,,fldi_2.5.csv
-12,150,395.0,440.0,,fldi_2.5.csv
-14,150,445.0,490.0,,fldi_2.5.csv
-16,150,495.0,540.0,,fldi_2.5.csv
-18,150,550.0,595.0,,fldi_2.5.csv
-20,150,600.0,645.0,,fldi_2.5.csv
-24,150,705.0,755.0,,fldi_2.5.csv
-28,150,810.0,860.0,,fldi_2.5.csv
-32,150,920.0,975.0,,fldi_2.5.csv
-36,150,1020.0,1075.0,,fldi_2.5.csv
-40,150,1120.0,1175.0,,fldi_2.5.csv
-48,150,1320.0,1375.0,,fldi_2.5.csv
-56,150,1520.0,1575.0,,fldi_2.5.csv
-64,150,1730.0,1790.0,,fldi_2.5.csv
-72,150,1930.0,1990.0,,fldi_2.5.csv
-80,150,2130.0,2190.0,,fldi_2.5.csv
-88,150,2340.0,2405.0,,fldi_2.5.csv
-96,150,2540.0,2605.0,,fldi_2.5.csv
-104,150,2740.0,2805.0,,fldi_2.5.csv
-112,150,2960.0,3030.0,,fldi_2.5.csv
-120,150,3160.0,3230.0,,fldi_2.5.csv
-128,150,3360.0,3430.0,,fldi_2.5.csv
-136,150,3560.0,3630.0,,fldi_2.5.csv
-144,150,3770.0,3840.0,,fldi_2.5.csv
-152,150,3970.0,4045.0,,fldi_2.5.csv
-160,150,4170.0,4245.0,,fldi_2.5.csv
-3/8,150,60.0,90.0,,fldi_25.csv
-1/2,150,65.0,95.0,,fldi_25.csv
-3/4,150,75.0,105.0,,fldi_25.csv
-1,150,85.0,115.0,,fldi_25.csv
-1 1/4,150,100.0,140.0,,fldi_25.csv
-1 1/2,150,110.0,150.0,,fldi_25.csv
-2,150,125.0,165.0,,fldi_25.csv
-2 1/2,150,145.0,185.0,,fldi_25.csv
-3,150,160.0,200.0,,fldi_25.csv
-4,150,190.0,235.0,,fldi_25.csv
-5,150,220.0,270.0,,fldi_25.csv
-6,150,250.0,300.0,,fldi_25.csv
-8,150,310.0,360.0,,fldi_25.csv
-10,150,370.0,425.0,,fldi_25.csv
-12,150,430.0,485.0,,fldi_25.csv
-14,150,490.0,555.0,,fldi_25.csv
-16,150,550.0,620.0,,fldi_25.csv
-18,150,600.0,670.0,,fldi_25.csv
-20,150,660.0,730.0,,fldi_25.csv
-24,150,770.0,845.0,,fldi_25.csv
-28,150,875.0,960.0,,fldi_25.csv
-32,150,990.0,1085.0,,fldi_25.csv
-36,150,1090.0,1185.0,,fldi_25.csv
-40,150,1210.0,1320.0,,fldi_25.csv
-3/8,150,85.0,125.0,,fldi_250.csv
-1/2,150,90.0,130.0,,fldi_250.csv
-3/4,150,0.0,0.0,,fldi_250.csv
-1,150,105.0,150.0,,fldi_250.csv
-1 1/4,150,0.0,0.0,,fldi_250.csv
-1 1/2,150,135.0,185.0,,fldi_250.csv
-2,150,150.0,200.0,,fldi_250.csv
-2 1/2,150,180.0,230.0,,fldi_250.csv
-3,150,200.0,255.0,,fldi_250.csv
-4,150,235.0,300.0,,fldi_250.csv
-5,150,275.0,340.0,,fldi_250.csv
-6,150,320.0,390.0,,fldi_250.csv
-8,150,400.0,485.0,,fldi_250.csv
-10,150,490.0,585.0,,fldi_250.csv
-3/8,150,85.0,125.0,,fldi_320.csv
-1/2,150,90.0,130.0,,fldi_320.csv
-3/4,150,0.0,0.0,,fldi_320.csv
-1,150,115.0,160.0,,fldi_320.csv
-1 1/4,150,0.0,0.0,,fldi_320.csv
-1 1/2,150,145.0,195.0,,fldi_320.csv
-2,150,160.0,210.0,,fldi_320.csv
-2 1/2,150,200.0,255.0,,fldi_320.csv
-3,150,220.0,275.0,,fldi_320.csv
-4,150,265.0,335.0,,fldi_320.csv
-5,150,310.0,380.0,,fldi_320.csv
-6,150,350.0,425.0,,fldi_320.csv
-8,150,440.0,525.0,,fldi_320.csv
-10,150,540.0,640.0,,fldi_320.csv
-3/8,150,60.0,90.0,,fldi_40.csv
-1/2,150,65.0,95.0,,fldi_40.csv
-3/4,150,75.0,105.0,,fldi_40.csv
-1,150,85.0,115.0,,fldi_40.csv
-1 1/4,150,100.0,140.0,,fldi_40.csv
-1 1/2,150,110.0,150.0,,fldi_40.csv
-2,150,125.0,165.0,,fldi_40.csv
-2 1/2,150,145.0,185.0,,fldi_40.csv
-3,150,160.0,200.0,,fldi_40.csv
-4,150,190.0,235.0,,fldi_40.csv
-5,150,220.0,270.0,,fldi_40.csv
-6,150,250.0,300.0,,fldi_40.csv
-8,150,320.0,375.0,,fldi_40.csv
-10,150,385.0,450.0,,fldi_40.csv
-12,150,450.0,515.0,,fldi_40.csv
-14,150,510.0,580.0,,fldi_40.csv
-16,150,585.0,660.0,,fldi_40.csv
-18,150,610.0,685.0,,fldi_40.csv
-20,150,670.0,755.0,,fldi_40.csv
-24,150,795.0,890.0,,fldi_40.csv
-3/8,150,85.0,125.0,,fldi_400.csv
-1/2,150,100.0,145.0,,fldi_400.csv
-3/4,150,0.0,0.0,,fldi_400.csv
-1,150,130.0,180.0,,fldi_400.csv
-1 1/4,150,0.0,0.0,,fldi_400.csv
-1 1/2,150,165.0,220.0,,fldi_400.csv
-2,150,180.0,235.0,,fldi_400.csv
-2 1/2,150,225.0,290.0,,fldi_400.csv
-3,150,240.0,305.0,,fldi_400.csv
-4,150,295.0,370.0,,fldi_400.csv
-5,150,340.0,415.0,,fldi_400.csv
-6,150,390.0,475.0,,fldi_400.csv
-8,150,490.0,585.0,,fldi_400.csv
-3/8,150,50.0,75.0,,fldi_6.csv
-1/2,150,55.0,80.0,,fldi_6.csv
-3/4,150,65.0,90.0,,fldi_6.csv
-1,150,75.0,100.0,,fldi_6.csv
-1 1/4,150,90.0,120.0,,fldi_6.csv
-1 1/2,150,100.0,130.0,,fldi_6.csv
-2,150,110.0,140.0,,fldi_6.csv
-2 1/2,150,130.0,160.0,,fldi_6.csv
-3,150,150.0,190.0,,fldi_6.csv
-4,150,170.0,210.0,,fldi_6.csv
-5,150,200.0,240.0,,fldi_6.csv
-6,150,225.0,265.0,,fldi_6.csv
-8,150,280.0,320.0,,fldi_6.csv
-10,150,335.0,375.0,,fldi_6.csv
-12,150,395.0,440.0,,fldi_6.csv
-14,150,445.0,490.0,,fldi_6.csv
-16,150,495.0,540.0,,fldi_6.csv
-18,150,550.0,595.0,,fldi_6.csv
-20,150,600.0,645.0,,fldi_6.csv
-24,150,705.0,755.0,,fldi_6.csv
-28,150,810.0,860.0,,fldi_6.csv
-32,150,920.0,975.0,,fldi_6.csv
-36,150,1020.0,1075.0,,fldi_6.csv
-40,150,1120.0,1175.0,,fldi_6.csv
-48,150,1340.0,1405.0,,fldi_6.csv
-56,150,1560.0,1630.0,,fldi_6.csv
-64,150,1760.0,1830.0,,fldi_6.csv
-72,150,1970.0,2045.0,,fldi_6.csv
-80,150,2180.0,2265.0,,fldi_6.csv
-88,150,2390.0,2475.0,,fldi_6.csv
-96,150,2600.0,2685.0,,fldi_6.csv
-104,150,2810.0,2905.0,,fldi_6.csv
-112,150,3020.0,3115.0,,fldi_6.csv
-120,150,3220.0,3315.0,,fldi_6.csv
-128,150,3430.0,3525.0,,fldi_6.csv
-136,150,3640.0,3735.0,,fldi_6.csv
-144,150,3860.0,3970.0,,fldi_6.csv
-3/8,150,70.0,100.0,,fldi_63.csv
-1/2,150,75.0,105.0,,fldi_63.csv
-3/4,150,90.0,130.0,,fldi_63.csv
-1,150,100.0,140.0,,fldi_63.csv
-1 1/4,150,110.0,155.0,,fldi_63.csv
-1 1/2,150,125.0,170.0,,fldi_63.csv
-2,150,135.0,180.0,,fldi_63.csv
-2 1/2,150,160.0,205.0,,fldi_63.csv
-3,150,170.0,215.0,,fldi_63.csv
-4,150,200.0,250.0,,fldi_63.csv
-5,150,240.0,295.0,,fldi_63.csv
-6,150,280.0,345.0,,fldi_63.csv
-8,150,345.0,415.0,,fldi_63.csv
-10,150,400.0,470.0,,fldi_63.csv
-12,150,460.0,530.0,,fldi_63.csv
-14,150,525.0,600.0,,fldi_63.csv
-16,150,585.0,670.0,,fldi_63.csv
-1/2,150,21.0,,,gflt1.csv
-3/4,150,27.0,,,gflt1.csv
-1,150,33.0,,,gflt1.csv
-1 1/4,150,42.0,,,gflt1.csv
-1 1/2,150,48.0,,,gflt1.csv
-2,150,60.0,,,gflt1.csv
-2 1/2,150,73.0,,,gflt1.csv
-3,150,89.0,,,gflt1.csv
-3 1/2,150,102.0,,,gflt1.csv
-4,150,114.0,,,gflt1.csv
-5,150,141.0,,,gflt1.csv
-6,150,168.0,,,gflt1.csv
-8,150,219.0,,,gflt1.csv
-10,150,273.0,,,gflt1.csv
-12,150,324.0,,,gflt1.csv
-14,150,356.0,,,gflt1.csv
-16,150,406.0,,,gflt1.csv
-18,150,457.0,,,gflt1.csv
-20,150,508.0,,,gflt1.csv
-24,150,610.0,,,gflt1.csv
-1/2,150,21.336,,,gflt1_imperial.csv
-3/4,150,26.924,,,gflt1_imperial.csv
-1,150,33.274,,,gflt1_imperial.csv
-1 1/4,150,42.164,,,gflt1_imperial.csv
-1 1/2,150,48.514,,,gflt1_imperial.csv
-2,150,60.452,,,gflt1_imperial.csv
-2 1/2,150,73.152,,,gflt1_imperial.csv
-3,150,88.9,,,gflt1_imperial.csv
-3 1/2,150,101.6,,,gflt1_imperial.csv
-4,150,114.3,,,gflt1_imperial.csv
-5,150,141.224,,,gflt1_imperial.csv
-6,150,168.148,,,gflt1_imperial.csv
-8,150,15.748,,,gflt1_imperial.csv
-10,150,273.05,,,gflt1_imperial.csv
-12,150,323.85,,,gflt1_imperial.csv
-14,150,355.6,,,gflt1_imperial.csv
-16,150,406.4,,,gflt1_imperial.csv
-18,150,457.2,,,gflt1_imperial.csv
-20,150,508.0,,,gflt1_imperial.csv
-24,150,609.6,,,gflt1_imperial.csv
-26,150,660.0,,,gflt2.csv
-28,150,711.0,,,gflt2.csv
-30,150,762.0,,,gflt2.csv
-32,150,813.0,,,gflt2.csv
-34,150,864.0,,,gflt2.csv
-36,150,914.0,,,gflt2.csv
-38,150,965.0,,,gflt2.csv
-40,150,1016.0,,,gflt2.csv
-42,150,1067.0,,,gflt2.csv
-44,150,1118.0,,,gflt2.csv
-46,150,1168.0,,,gflt2.csv
-48,150,1219.0,,,gflt2.csv
-50,150,1270.0,,,gflt2.csv
-52,150,1321.0,,,gflt2.csv
-54,150,1372.0,,,gflt2.csv
-56,150,1422.0,,,gflt2.csv
-58,150,1473.0,,,gflt2.csv
-60,150,1524.0,,,gflt2.csv
-26,150,660.4,,,gflt2_imperial.csv
-28,150,711.2,,,gflt2_imperial.csv
-30,150,762.0,,,gflt2_imperial.csv
-32,150,812.8,,,gflt2_imperial.csv
-34,150,863.6,,,gflt2_imperial.csv
-36,150,914.4,,,gflt2_imperial.csv
-38,150,965.2,,,gflt2_imperial.csv
-40,150,1016.0,,,gflt2_imperial.csv
-42,150,1066.8,,,gflt2_imperial.csv
-44,150,1117.6,,,gflt2_imperial.csv
-46,150,1168.4,,,gflt2_imperial.csv
-48,150,1219.2,,,gflt2_imperial.csv
-50,150,1270.0,,,gflt2_imperial.csv
-52,150,1320.8,,,gflt2_imperial.csv
-54,150,1371.6,,,gflt2_imperial.csv
-56,150,1422.4,,,gflt2_imperial.csv
-58,150,1473.2,,,gflt2_imperial.csv
-60,150,1524.0,,,gflt2_imperial.csv
-26,150,660.0,,,gflt3.csv
-28,150,711.0,,,gflt3.csv
-30,150,762.0,,,gflt3.csv
-32,150,813.0,,,gflt3.csv
-34,150,864.0,,,gflt3.csv
-36,150,914.0,,,gflt3.csv
-38,150,965.0,,,gflt3.csv
-40,150,1016.0,,,gflt3.csv
-42,150,1067.0,,,gflt3.csv
-44,150,1118.0,,,gflt3.csv
-46,150,1168.0,,,gflt3.csv
-48,150,1219.0,,,gflt3.csv
-50,150,1270.0,,,gflt3.csv
-52,150,1321.0,,,gflt3.csv
-54,150,1372.0,,,gflt3.csv
-56,150,1422.0,,,gflt3.csv
-58,150,1473.0,,,gflt3.csv
-60,150,1524.0,,,gflt3.csv
-26,150,660.4,,,gflt3_imperial.csv
-28,150,711.2,,,gflt3_imperial.csv
-30,150,762.0,,,gflt3_imperial.csv
-32,150,812.8,,,gflt3_imperial.csv
-34,150,863.6,,,gflt3_imperial.csv
-36,150,914.4,,,gflt3_imperial.csv
-38,150,965.2,,,gflt3_imperial.csv
-40,150,1016.0,,,gflt3_imperial.csv
-42,150,1066.8,,,gflt3_imperial.csv
-44,150,1117.6,,,gflt3_imperial.csv
-46,150,1168.4,,,gflt3_imperial.csv
-48,150,1219.2,,,gflt3_imperial.csv
-50,150,1270.0,,,gflt3_imperial.csv
-52,150,1320.8,,,gflt3_imperial.csv
-54,150,1371.6,,,gflt3_imperial.csv
-56,150,1422.4,,,gflt3_imperial.csv
-58,150,1473.2,,,gflt3_imperial.csv
-60,150,1524.0,,,gflt3_imperial.csv
-R-11,RTJ,34.14,6.35,R-11,grtj1.csv
-R-12,RTJ,39.7,7.95,R-12,grtj1.csv
-R-13,RTJ,42.88,7.95,R-13,grtj1.csv
-R-14,RTJ,44.45,7.95,R-14,grtj1.csv
-R-15,RTJ,47.63,7.95,R-15,grtj1.csv
-R-16,RTJ,50.8,7.95,R-16,grtj1.csv
-R-17,RTJ,57.15,7.95,R-17,grtj1.csv
-R-18,RTJ,60.33,7.95,R-18,grtj1.csv
-R-19,RTJ,65.1,7.95,R-19,grtj1.csv
-R-20,RTJ,68.28,7.95,R-20,grtj1.csv
-R-21,RTJ,72.24,11.13,R-21,grtj1.csv
-R-22,RTJ,82.55,7.95,R-22,grtj1.csv
-R-23,RTJ,82.55,11.13,R-23,grtj1.csv
-R-24,RTJ,95.25,11.13,R-24,grtj1.csv
-R-25,RTJ,101.6,7.95,R-25,grtj1.csv
-R-26,RTJ,101.6,11.13,R-26,grtj1.csv
-R-27,RTJ,107.95,11.13,R-27,grtj1.csv
-R-28,RTJ,111.13,12.7,R-28,grtj1.csv
-R-29,RTJ,114.3,7.95,R-29,grtj1.csv
-R-30,RTJ,117.48,11.13,R-30,grtj1.csv
-R-31,RTJ,123.83,11.13,R-31,grtj1.csv
-R-32,RTJ,127.0,12.7,R-32,grtj1.csv
-R-33,RTJ,131.78,7.95,R-33,grtj1.csv
-R-34,RTJ,131.78,11.13,R-34,grtj1.csv
-R-35,RTJ,136.53,11.13,R-35,grtj1.csv
-R-36,RTJ,149.23,7.95,R-36,grtj1.csv
-R-37,RTJ,149.23,11.13,R-37,grtj1.csv
-R-38,RTJ,157.18,15.88,R-38,grtj1.csv
-R-39,RTJ,161.93,11.13,R-39,grtj1.csv
-R-40,RTJ,171.45,7.95,R-40,grtj1.csv
-R-41,RTJ,180.98,11.13,R-41,grtj1.csv
-R-42,RTJ,190.5,19.05,R-42,grtj1.csv
-R-43,RTJ,193.68,7.95,R-43,grtj1.csv
-R-44,RTJ,193.68,11.13,R-44,grtj1.csv
-R-45,RTJ,211.15,11.13,R-45,grtj1.csv
-R-46,RTJ,211.15,12.7,R-46,grtj1.csv
-R-47,RTJ,228.6,19.05,R-47,grtj1.csv
-R-48,RTJ,247.65,7.95,R-48,grtj1.csv
-R-49,RTJ,269.88,11.13,R-49,grtj1.csv
-R-50,RTJ,269.88,15.88,R-50,grtj1.csv
-R-51,RTJ,279.4,22.23,R-51,grtj1.csv
-R-52,RTJ,304.8,7.95,R-52,grtj1.csv
-R-53,RTJ,323.85,11.13,R-53,grtj1.csv
-R-54,RTJ,323.85,15.88,R-54,grtj1.csv
-R-55,RTJ,342.9,28.58,R-55,grtj1.csv
-R-56,RTJ,381.0,7.95,R-56,grtj1.csv
-R-57,RTJ,381.0,11.13,R-57,grtj1.csv
-R-58,RTJ,381.0,22.23,R-58,grtj1.csv
-R-59,RTJ,396.88,7.95,R-59,grtj1.csv
-R-60,RTJ,406.4,31.75,R-60,grtj1.csv
-R-61,RTJ,419.1,11.13,R-61,grtj1.csv
-R-62,RTJ,419.1,15.88,R-62,grtj1.csv
-R-63,RTJ,419.1,25.4,R-63,grtj1.csv
-R-64,RTJ,454.03,7.95,R-64,grtj1.csv
-R-65,RTJ,469.9,11.13,R-65,grtj1.csv
-R-66,RTJ,469.9,15.88,R-66,grtj1.csv
-R-67,RTJ,469.9,28.58,R-67,grtj1.csv
-R-68,RTJ,517.53,7.95,R-68,grtj1.csv
-R-69,RTJ,533.4,11.13,R-69,grtj1.csv
-R-70,RTJ,533.4,19.05,R-70,grtj1.csv
-R-71,RTJ,533.4,28.58,R-71,grtj1.csv
-R-72,RTJ,558.8,7.95,R-72,grtj1.csv
-R-73,RTJ,584.2,12.7,R-73,grtj1.csv
-R-74,RTJ,584.2,19.05,R-74,grtj1.csv
-R-75,RTJ,584.2,31.75,R-75,grtj1.csv
-R-76,RTJ,673.1,7.95,R-76,grtj1.csv
-R-77,RTJ,692.15,15.88,R-77,grtj1.csv
-R-78,RTJ,692.15,25.4,R-78,grtj1.csv
-R-79,RTJ,692.15,34.93,R-79,grtj1.csv
-R-80,RTJ,615.95,7.95,R-80,grtj1.csv
-R-81,RTJ,635.0,14.3,R-81,grtj1.csv
-R-82,RTJ,57.15,11.13,R-82,grtj1.csv
-R-84,RTJ,63.5,11.13,R-84,grtj1.csv
-R-85,RTJ,79.38,12.7,R-85,grtj1.csv
-R-86,RTJ,90.5,15.88,R-86,grtj1.csv
-R-87,RTJ,100.03,15.88,R-87,grtj1.csv
-R-88,RTJ,123.83,19.05,R-88,grtj1.csv
-R-89,RTJ,114.3,19.05,R-89,grtj1.csv
-R-90,RTJ,155.58,22.23,R-90,grtj1.csv
-R-91,RTJ,260.35,31.75,R-91,grtj1.csv
-R-92,RTJ,228.6,11.13,R-92,grtj1.csv
-R-93,RTJ,749.3,19.05,R-93,grtj1.csv
-R-94,RTJ,800.1,19.05,R-94,grtj1.csv
-R-95,RTJ,857.25,19.05,R-95,grtj1.csv
-R-96,RTJ,914.4,22.23,R-96,grtj1.csv
-R-97,RTJ,965.2,22.23,R-97,grtj1.csv
-R-98,RTJ,1022.35,22.23,R-98,grtj1.csv
-R-99,RTJ,234.95,11.13,R-99,grtj1.csv
-R-100,RTJ,749.3,28.58,R-100,grtj1.csv
-R-101,RTJ,800.1,31.75,R-101,grtj1.csv
-R-102,RTJ,857.25,31.75,R-102,grtj1.csv
-R-103,RTJ,914.4,31.75,R-103,grtj1.csv
-R-104,RTJ,965.2,34.93,R-104,grtj1.csv
-R-105,RTJ,1022.35,34.93,R-105,grtj1.csv
-R-11,RTJ,,,R-11,grtj1_imperial.csv
-R-12,RTJ,,,R-12,grtj1_imperial.csv
-R-13,RTJ,,,R-13,grtj1_imperial.csv
-R-14,RTJ,,,R-14,grtj1_imperial.csv
-R-15,RTJ,,,R-15,grtj1_imperial.csv
-R-16,RTJ,,,R-16,grtj1_imperial.csv
-R-17,RTJ,,,R-17,grtj1_imperial.csv
-R-18,RTJ,,,R-18,grtj1_imperial.csv
-R-19,RTJ,,,R-19,grtj1_imperial.csv
-R-20,RTJ,,,R-20,grtj1_imperial.csv
-R-21,RTJ,,,R-21,grtj1_imperial.csv
-R-22,RTJ,,,R-22,grtj1_imperial.csv
-R-23,RTJ,,,R-23,grtj1_imperial.csv
-R-24,RTJ,,,R-24,grtj1_imperial.csv
-R-25,RTJ,,,R-25,grtj1_imperial.csv
-R-26,RTJ,,,R-26,grtj1_imperial.csv
-R-27,RTJ,,,R-27,grtj1_imperial.csv
-R-28,RTJ,,,R-28,grtj1_imperial.csv
-R-29,RTJ,,,R-29,grtj1_imperial.csv
-R-30,RTJ,,,R-30,grtj1_imperial.csv
-R-31,RTJ,,,R-31,grtj1_imperial.csv
-R-32,RTJ,,,R-32,grtj1_imperial.csv
-R-33,RTJ,,,R-33,grtj1_imperial.csv
-R-34,RTJ,,,R-34,grtj1_imperial.csv
-R-35,RTJ,,,R-35,grtj1_imperial.csv
-R-36,RTJ,,,R-36,grtj1_imperial.csv
-R-37,RTJ,,,R-37,grtj1_imperial.csv
-R-38,RTJ,,,R-38,grtj1_imperial.csv
-R-39,RTJ,,,R-39,grtj1_imperial.csv
-R-40,RTJ,,,R-40,grtj1_imperial.csv
-R-41,RTJ,,,R-41,grtj1_imperial.csv
-R-42,RTJ,,,R-42,grtj1_imperial.csv
-R-43,RTJ,,,R-43,grtj1_imperial.csv
-R-44,RTJ,,,R-44,grtj1_imperial.csv
-R-45,RTJ,,,R-45,grtj1_imperial.csv
-R-46,RTJ,,,R-46,grtj1_imperial.csv
-R-47,RTJ,,,R-47,grtj1_imperial.csv
-R-48,RTJ,,,R-48,grtj1_imperial.csv
-R-49,RTJ,,,R-49,grtj1_imperial.csv
-R-50,RTJ,,,R-50,grtj1_imperial.csv
-R-51,RTJ,,,R-51,grtj1_imperial.csv
-R-52,RTJ,,,R-52,grtj1_imperial.csv
-R-53,RTJ,,,R-53,grtj1_imperial.csv
-R-54,RTJ,,,R-54,grtj1_imperial.csv
-R-55,RTJ,,,R-55,grtj1_imperial.csv
-R-56,RTJ,,,R-56,grtj1_imperial.csv
-R-57,RTJ,,,R-57,grtj1_imperial.csv
-R-58,RTJ,,,R-58,grtj1_imperial.csv
-R-59,RTJ,,,R-59,grtj1_imperial.csv
-R-60,RTJ,,,R-60,grtj1_imperial.csv
-R-61,RTJ,,,R-61,grtj1_imperial.csv
-R-62,RTJ,,,R-62,grtj1_imperial.csv
-R-63,RTJ,,,R-63,grtj1_imperial.csv
-R-64,RTJ,,,R-64,grtj1_imperial.csv
-R-65,RTJ,,,R-65,grtj1_imperial.csv
-R-66,RTJ,,,R-66,grtj1_imperial.csv
-R-67,RTJ,,,R-67,grtj1_imperial.csv
-R-68,RTJ,,,R-68,grtj1_imperial.csv
-R-69,RTJ,,,R-69,grtj1_imperial.csv
-R-70,RTJ,,,R-70,grtj1_imperial.csv
-R-71,RTJ,,,R-71,grtj1_imperial.csv
-R-72,RTJ,,,R-72,grtj1_imperial.csv
-R-73,RTJ,,,R-73,grtj1_imperial.csv
-R-74,RTJ,,,R-74,grtj1_imperial.csv
-R-75,RTJ,,,R-75,grtj1_imperial.csv
-R-76,RTJ,,,R-76,grtj1_imperial.csv
-R-77,RTJ,,,R-77,grtj1_imperial.csv
-R-78,RTJ,,,R-78,grtj1_imperial.csv
-R-79,RTJ,,,R-79,grtj1_imperial.csv
-R-80,RTJ,,,R-80,grtj1_imperial.csv
-R-81,RTJ,,,R-81,grtj1_imperial.csv
-R-82,RTJ,,,R-82,grtj1_imperial.csv
-R-84,RTJ,,,R-84,grtj1_imperial.csv
-R-85,RTJ,,,R-85,grtj1_imperial.csv
-R-86,RTJ,,,R-86,grtj1_imperial.csv
-R-87,RTJ,,,R-87,grtj1_imperial.csv
-R-88,RTJ,,,R-88,grtj1_imperial.csv
-R-89,RTJ,,,R-89,grtj1_imperial.csv
-R-90,RTJ,,,R-90,grtj1_imperial.csv
-R-91,RTJ,,,R-91,grtj1_imperial.csv
-R-92,RTJ,,,R-92,grtj1_imperial.csv
-R-93,RTJ,,,R-93,grtj1_imperial.csv
-R-94,RTJ,,,R-94,grtj1_imperial.csv
-R-95,RTJ,,,R-95,grtj1_imperial.csv
-R-96,RTJ,,,R-96,grtj1_imperial.csv
-R-97,RTJ,,,R-97,grtj1_imperial.csv
-R-98,RTJ,,,R-98,grtj1_imperial.csv
-R-99,RTJ,,,R-99,grtj1_imperial.csv
-R-100,RTJ,,,R-100,grtj1_imperial.csv
-R-101,RTJ,,,R-101,grtj1_imperial.csv
-R-102,RTJ,,,R-102,grtj1_imperial.csv
-R-103,RTJ,,,R-103,grtj1_imperial.csv
-R-104,RTJ,,,R-104,grtj1_imperial.csv
-R-105,RTJ,,,R-105,grtj1_imperial.csv
-RX-20,RTJ,,,RX-20,grtj2.csv
-RX-23,RTJ,,,RX-23,grtj2.csv
-RX-24,RTJ,,,RX-24,grtj2.csv
-RX-25,RTJ,,,RX-25,grtj2.csv
-RX-26,RTJ,,,RX-26,grtj2.csv
-RX-27,RTJ,,,RX-27,grtj2.csv
-RX-31,RTJ,,,RX-31,grtj2.csv
-RX-35,RTJ,,,RX-35,grtj2.csv
-RX-37,RTJ,,,RX-37,grtj2.csv
-RX-39,RTJ,,,RX-39,grtj2.csv
-RX-41,RTJ,,,RX-41,grtj2.csv
-RX-44,RTJ,,,RX-44,grtj2.csv
-RX-45,RTJ,,,RX-45,grtj2.csv
-RX-46,RTJ,,,RX-46,grtj2.csv
-RX-47,RTJ,,,RX-47,grtj2.csv
-RX-49,RTJ,,,RX-49,grtj2.csv
-RX-50,RTJ,,,RX-50,grtj2.csv
-RX-53,RTJ,,,RX-53,grtj2.csv
-RX-54,RTJ,,,RX-54,grtj2.csv
-RX-57,RTJ,,,RX-57,grtj2.csv
-RX-63,RTJ,,,RX-63,grtj2.csv
-RX-65,RTJ,,,RX-65,grtj2.csv
-RX-66,RTJ,,,RX-66,grtj2.csv
-RX-69,RTJ,,,RX-69,grtj2.csv
-RX-70,RTJ,,,RX-70,grtj2.csv
-RX-73,RTJ,,,RX-73,grtj2.csv
-RX-74,RTJ,,,RX-74,grtj2.csv
-RX-82,RTJ,,,RX-82,grtj2.csv
-RX-84,RTJ,,,RX-84,grtj2.csv
-RX-85,RTJ,,,RX-85,grtj2.csv
-RX-86,RTJ,,,RX-86,grtj2.csv
-RX-87,RTJ,,,RX-87,grtj2.csv
-RX-88,RTJ,,,RX-88,grtj2.csv
-RX-89,RTJ,,,RX-89,grtj2.csv
-RX-90,RTJ,,,RX-90,grtj2.csv
-RX-91,RTJ,,,RX-91,grtj2.csv
-RX-99,RTJ,,,RX-99,grtj2.csv
-RX-201,RTJ,,,RX-201,grtj2.csv
-RX-205,RTJ,,,RX-205,grtj2.csv
-RX-210,RTJ,,,RX-210,grtj2.csv
-RX-215,RTJ,,,RX-215,grtj2.csv
-RX-20,RTJ,,,RX-20,grtj2_imperial.csv
-RX-23,RTJ,,,RX-23,grtj2_imperial.csv
-RX-24,RTJ,,,RX-24,grtj2_imperial.csv
-RX-25,RTJ,,,RX-25,grtj2_imperial.csv
-RX-26,RTJ,,,RX-26,grtj2_imperial.csv
-RX-27,RTJ,,,RX-27,grtj2_imperial.csv
-RX-31,RTJ,,,RX-31,grtj2_imperial.csv
-RX-35,RTJ,,,RX-35,grtj2_imperial.csv
-RX-37,RTJ,,,RX-37,grtj2_imperial.csv
-RX-39,RTJ,,,RX-39,grtj2_imperial.csv
-RX-41,RTJ,,,RX-41,grtj2_imperial.csv
-RX-44,RTJ,,,RX-44,grtj2_imperial.csv
-RX-45,RTJ,,,RX-45,grtj2_imperial.csv
-RX-46,RTJ,,,RX-46,grtj2_imperial.csv
-RX-47,RTJ,,,RX-47,grtj2_imperial.csv
-RX-49,RTJ,,,RX-49,grtj2_imperial.csv
-RX-50,RTJ,,,RX-50,grtj2_imperial.csv
-RX-53,RTJ,,,RX-53,grtj2_imperial.csv
-RX-54,RTJ,,,RX-54,grtj2_imperial.csv
-RX-57,RTJ,,,RX-57,grtj2_imperial.csv
-RX-63,RTJ,,,RX-63,grtj2_imperial.csv
-RX-65,RTJ,,,RX-65,grtj2_imperial.csv
-RX-66,RTJ,,,RX-66,grtj2_imperial.csv
-RX-69,RTJ,,,RX-69,grtj2_imperial.csv
-RX-70,RTJ,,,RX-70,grtj2_imperial.csv
-RX-73,RTJ,,,RX-73,grtj2_imperial.csv
-RX-74,RTJ,,,RX-74,grtj2_imperial.csv
-RX-82,RTJ,,,RX-82,grtj2_imperial.csv
-RX-84,RTJ,,,RX-84,grtj2_imperial.csv
-RX-85,RTJ,,,RX-85,grtj2_imperial.csv
-RX-86,RTJ,,,RX-86,grtj2_imperial.csv
-RX-87,RTJ,,,RX-87,grtj2_imperial.csv
-RX-88,RTJ,,,RX-88,grtj2_imperial.csv
-RX-89,RTJ,,,RX-89,grtj2_imperial.csv
-RX-90,RTJ,,,RX-90,grtj2_imperial.csv
-RX-91,RTJ,,,RX-91,grtj2_imperial.csv
-RX-99,RTJ,,,RX-99,grtj2_imperial.csv
-RX-201,RTJ,,,RX-201,grtj2_imperial.csv
-RX-205,RTJ,,,RX-205,grtj2_imperial.csv
-RX-210,RTJ,,,RX-210,grtj2_imperial.csv
-RX-215,RTJ,,,RX-215,grtj2_imperial.csv
-BX-150,RTJ,,,BX-150,grtj3.csv
-BX-151,RTJ,,,BX-151,grtj3.csv
-BX-152,RTJ,,,BX-152,grtj3.csv
-BX-153,RTJ,,,BX-153,grtj3.csv
-BX-154,RTJ,,,BX-154,grtj3.csv
-BX-155,RTJ,,,BX-155,grtj3.csv
-BX-156,RTJ,,,BX-156,grtj3.csv
-BX-157,RTJ,,,BX-157,grtj3.csv
-BX-158,RTJ,,,BX-158,grtj3.csv
-BX-159,RTJ,,,BX-159,grtj3.csv
-BX-160,RTJ,,,BX-160,grtj3.csv
-BX-161,RTJ,,,BX-161,grtj3.csv
-BX-162,RTJ,,,BX-162,grtj3.csv
-BX-163,RTJ,,,BX-163,grtj3.csv
-BX-164,RTJ,,,BX-164,grtj3.csv
-BX-165,RTJ,,,BX-165,grtj3.csv
-BX-166,RTJ,,,BX-166,grtj3.csv
-BX-167,RTJ,,,BX-167,grtj3.csv
-BX-168,RTJ,,,BX-168,grtj3.csv
-BX-169,RTJ,,,BX-169,grtj3.csv
-BX-170,RTJ,,,BX-170,grtj3.csv
-BX-171,RTJ,,,BX-171,grtj3.csv
-BX-172,RTJ,,,BX-172,grtj3.csv
-BX-303,RTJ,,,BX-303,grtj3.csv
-BX-150,RTJ,,,BX-150,grtj3_imperial.csv
-BX-151,RTJ,,,BX-151,grtj3_imperial.csv
-BX-152,RTJ,,,BX-152,grtj3_imperial.csv
-BX-153,RTJ,,,BX-153,grtj3_imperial.csv
-BX-154,RTJ,,,BX-154,grtj3_imperial.csv
-BX-155,RTJ,,,BX-155,grtj3_imperial.csv
-BX-156,RTJ,,,BX-156,grtj3_imperial.csv
-BX-157,RTJ,,,BX-157,grtj3_imperial.csv
-BX-158,RTJ,,,BX-158,grtj3_imperial.csv
-BX-159,RTJ,,,BX-159,grtj3_imperial.csv
-BX-160,RTJ,,,BX-160,grtj3_imperial.csv
-BX-161,RTJ,,,BX-161,grtj3_imperial.csv
-BX-162,RTJ,,,BX-162,grtj3_imperial.csv
-BX-163,RTJ,,,BX-163,grtj3_imperial.csv
-BX-164,RTJ,,,BX-164,grtj3_imperial.csv
-BX-165,RTJ,,,BX-165,grtj3_imperial.csv
-BX-166,RTJ,,,BX-166,grtj3_imperial.csv
-BX-167,RTJ,,,BX-167,grtj3_imperial.csv
-BX-168,RTJ,,,BX-168,grtj3_imperial.csv
-BX-169,RTJ,,,BX-169,grtj3_imperial.csv
-BX-170,RTJ,,,BX-170,grtj3_imperial.csv
-BX-171,RTJ,,,BX-171,grtj3_imperial.csv
-BX-172,RTJ,,,BX-172,grtj3_imperial.csv
-BX-303,RTJ,,,BX-303,grtj3_imperial.csv
+nps,rating,gasket_type,inner_diameter_mm,outer_diameter_mm,ring_number,weight_kg,source_file
+R-11,RTJ,RTJ Ring Joint,34.14,6.35,R-11,0.028,grtj1.csv
+R-12,RTJ,RTJ Ring Joint,39.7,7.95,R-12,0.038,grtj1.csv
+R-13,RTJ,RTJ Ring Joint,42.88,7.95,R-13,0.045,grtj1.csv
+R-14,RTJ,RTJ Ring Joint,44.45,7.95,R-14,0.048,grtj1.csv
+R-15,RTJ,RTJ Ring Joint,47.63,7.95,R-15,0.055,grtj1.csv
+R-16,RTJ,RTJ Ring Joint,50.8,7.95,R-16,0.063,grtj1.csv
+R-17,RTJ,RTJ Ring Joint,57.15,7.95,R-17,0.079,grtj1.csv
+R-18,RTJ,RTJ Ring Joint,60.33,7.95,R-18,0.089,grtj1.csv
+R-19,RTJ,RTJ Ring Joint,65.1,7.95,R-19,0.103,grtj1.csv
+R-20,RTJ,RTJ Ring Joint,68.28,7.95,R-20,0.114,grtj1.csv
+R-21,RTJ,RTJ Ring Joint,72.24,11.13,R-21,0.127,grtj1.csv
+R-22,RTJ,RTJ Ring Joint,82.55,7.95,R-22,0.166,grtj1.csv
+R-23,RTJ,RTJ Ring Joint,82.55,11.13,R-23,0.166,grtj1.csv
+R-24,RTJ,RTJ Ring Joint,95.25,11.13,R-24,0.222,grtj1.csv
+R-25,RTJ,RTJ Ring Joint,101.6,7.95,R-25,0.252,grtj1.csv
+R-26,RTJ,RTJ Ring Joint,101.6,11.13,R-26,0.252,grtj1.csv
+R-27,RTJ,RTJ Ring Joint,107.95,11.13,R-27,0.285,grtj1.csv
+R-28,RTJ,RTJ Ring Joint,111.13,12.7,R-28,0.302,grtj1.csv
+R-29,RTJ,RTJ Ring Joint,114.3,7.95,R-29,0.319,grtj1.csv
+R-30,RTJ,RTJ Ring Joint,117.48,11.13,R-30,0.338,grtj1.csv
+R-31,RTJ,RTJ Ring Joint,123.83,11.13,R-31,0.375,grtj1.csv
+R-32,RTJ,RTJ Ring Joint,127.0,12.7,R-32,0.395,grtj1.csv
+R-33,RTJ,RTJ Ring Joint,131.78,7.95,R-33,0.425,grtj1.csv
+R-34,RTJ,RTJ Ring Joint,131.78,11.13,R-34,0.425,grtj1.csv
+R-35,RTJ,RTJ Ring Joint,136.53,11.13,R-35,0.456,grtj1.csv
+R-36,RTJ,RTJ Ring Joint,149.23,7.95,R-36,0.545,grtj1.csv
+R-37,RTJ,RTJ Ring Joint,149.23,11.13,R-37,0.545,grtj1.csv
+R-38,RTJ,RTJ Ring Joint,157.18,15.88,R-38,0.605,grtj1.csv
+R-39,RTJ,RTJ Ring Joint,161.93,11.13,R-39,0.642,grtj1.csv
+R-40,RTJ,RTJ Ring Joint,171.45,7.95,R-40,0.719,grtj1.csv
+R-41,RTJ,RTJ Ring Joint,180.98,11.13,R-41,0.802,grtj1.csv
+R-42,RTJ,RTJ Ring Joint,190.5,19.05,R-42,0.888,grtj1.csv
+R-43,RTJ,RTJ Ring Joint,193.68,7.95,R-43,0.918,grtj1.csv
+R-44,RTJ,RTJ Ring Joint,193.68,11.13,R-44,0.918,grtj1.csv
+R-45,RTJ,RTJ Ring Joint,211.15,11.13,R-45,1.091,grtj1.csv
+R-46,RTJ,RTJ Ring Joint,211.15,12.7,R-46,1.091,grtj1.csv
+R-47,RTJ,RTJ Ring Joint,228.6,19.05,R-47,1.279,grtj1.csv
+R-48,RTJ,RTJ Ring Joint,247.65,7.95,R-48,1.502,grtj1.csv
+R-49,RTJ,RTJ Ring Joint,269.88,11.13,R-49,1.783,grtj1.csv
+R-50,RTJ,RTJ Ring Joint,269.88,15.88,R-50,1.783,grtj1.csv
+R-51,RTJ,RTJ Ring Joint,279.4,22.23,R-51,1.911,grtj1.csv
+R-52,RTJ,RTJ Ring Joint,304.8,7.95,R-52,2.275,grtj1.csv
+R-53,RTJ,RTJ Ring Joint,323.85,11.13,R-53,2.568,grtj1.csv
+R-54,RTJ,RTJ Ring Joint,323.85,15.88,R-54,2.568,grtj1.csv
+R-55,RTJ,RTJ Ring Joint,342.9,28.58,R-55,2.879,grtj1.csv
+R-56,RTJ,RTJ Ring Joint,381.0,7.95,R-56,3.555,grtj1.csv
+R-57,RTJ,RTJ Ring Joint,381.0,11.13,R-57,3.555,grtj1.csv
+R-58,RTJ,RTJ Ring Joint,381.0,22.23,R-58,3.555,grtj1.csv
+R-59,RTJ,RTJ Ring Joint,396.88,7.95,R-59,3.857,grtj1.csv
+R-60,RTJ,RTJ Ring Joint,406.4,31.75,R-60,4.045,grtj1.csv
+R-61,RTJ,RTJ Ring Joint,419.1,11.13,R-61,4.301,grtj1.csv
+R-62,RTJ,RTJ Ring Joint,419.1,15.88,R-62,4.301,grtj1.csv
+R-63,RTJ,RTJ Ring Joint,419.1,25.4,R-63,4.301,grtj1.csv
+R-64,RTJ,RTJ Ring Joint,454.03,7.95,R-64,5.048,grtj1.csv
+R-65,RTJ,RTJ Ring Joint,469.9,11.13,R-65,5.407,grtj1.csv
+R-66,RTJ,RTJ Ring Joint,469.9,15.88,R-66,5.407,grtj1.csv
+R-67,RTJ,RTJ Ring Joint,469.9,28.58,R-67,5.407,grtj1.csv
+R-68,RTJ,RTJ Ring Joint,517.53,7.95,R-68,6.559,grtj1.csv
+R-69,RTJ,RTJ Ring Joint,533.4,11.13,R-69,6.968,grtj1.csv
+R-70,RTJ,RTJ Ring Joint,533.4,19.05,R-70,6.968,grtj1.csv
+R-71,RTJ,RTJ Ring Joint,533.4,28.58,R-71,6.968,grtj1.csv
+R-72,RTJ,RTJ Ring Joint,558.8,7.95,R-72,7.647,grtj1.csv
+R-73,RTJ,RTJ Ring Joint,584.2,12.7,R-73,8.358,grtj1.csv
+R-74,RTJ,RTJ Ring Joint,584.2,19.05,R-74,8.358,grtj1.csv
+R-75,RTJ,RTJ Ring Joint,584.2,31.75,R-75,8.358,grtj1.csv
+R-76,RTJ,RTJ Ring Joint,673.1,7.95,R-76,11.096,grtj1.csv
+R-77,RTJ,RTJ Ring Joint,692.15,15.88,R-77,11.733,grtj1.csv
+R-78,RTJ,RTJ Ring Joint,692.15,25.4,R-78,11.733,grtj1.csv
+R-79,RTJ,RTJ Ring Joint,692.15,34.93,R-79,11.733,grtj1.csv
+R-80,RTJ,RTJ Ring Joint,615.95,7.95,R-80,9.292,grtj1.csv
+R-81,RTJ,RTJ Ring Joint,635.0,14.3,R-81,9.875,grtj1.csv
+R-82,RTJ,RTJ Ring Joint,57.15,11.13,R-82,0.079,grtj1.csv
+R-84,RTJ,RTJ Ring Joint,63.5,11.13,R-84,0.098,grtj1.csv
+R-85,RTJ,RTJ Ring Joint,79.38,12.7,R-85,0.154,grtj1.csv
+R-86,RTJ,RTJ Ring Joint,90.5,15.88,R-86,0.2,grtj1.csv
+R-87,RTJ,RTJ Ring Joint,100.03,15.88,R-87,0.245,grtj1.csv
+R-88,RTJ,RTJ Ring Joint,123.83,19.05,R-88,0.375,grtj1.csv
+R-89,RTJ,RTJ Ring Joint,114.3,19.05,R-89,0.319,grtj1.csv
+R-90,RTJ,RTJ Ring Joint,155.58,22.23,R-90,0.592,grtj1.csv
+R-91,RTJ,RTJ Ring Joint,260.35,31.75,R-91,1.66,grtj1.csv
+R-92,RTJ,RTJ Ring Joint,228.6,11.13,R-92,1.279,grtj1.csv
+R-93,RTJ,RTJ Ring Joint,749.3,19.05,R-93,13.751,grtj1.csv
+R-94,RTJ,RTJ Ring Joint,800.1,19.05,R-94,15.678,grtj1.csv
+R-95,RTJ,RTJ Ring Joint,857.25,19.05,R-95,17.998,grtj1.csv
+R-96,RTJ,RTJ Ring Joint,914.4,22.23,R-96,20.478,grtj1.csv
+R-97,RTJ,RTJ Ring Joint,965.2,22.23,R-97,22.817,grtj1.csv
+R-98,RTJ,RTJ Ring Joint,1022.35,22.23,R-98,25.599,grtj1.csv
+R-99,RTJ,RTJ Ring Joint,234.95,11.13,R-99,1.351,grtj1.csv
+R-100,RTJ,RTJ Ring Joint,749.3,28.58,R-100,13.751,grtj1.csv
+R-101,RTJ,RTJ Ring Joint,800.1,31.75,R-101,15.678,grtj1.csv
+R-102,RTJ,RTJ Ring Joint,857.25,31.75,R-102,17.998,grtj1.csv
+R-103,RTJ,RTJ Ring Joint,914.4,31.75,R-103,20.478,grtj1.csv
+R-104,RTJ,RTJ Ring Joint,965.2,34.93,R-104,22.817,grtj1.csv
+R-105,RTJ,RTJ Ring Joint,1022.35,34.93,R-105,25.599,grtj1.csv
+1/2,150,Spiral Wound Gasket,14.2,47.8,,0.025,gspr1.csv
+1/2,300,Spiral Wound Gasket,14.2,54.1,,0.033,gspr1.csv
+1/2,400,Spiral Wound Gasket,14.2,54.1,,0.033,gspr1.csv
+1/2,600,Spiral Wound Gasket,14.2,54.1,,0.033,gspr1.csv
+1/2,900,Spiral Wound Gasket,14.2,63.5,,0.047,gspr1.csv
+1/2,1500,Spiral Wound Gasket,14.2,63.5,,0.047,gspr1.csv
+1/2,2500,Spiral Wound Gasket,14.2,69.9,,0.057,gspr1.csv
+3/4,150,Spiral Wound Gasket,20.6,57.2,,0.035,gspr1.csv
+3/4,300,Spiral Wound Gasket,20.6,66.8,,0.049,gspr1.csv
+3/4,400,Spiral Wound Gasket,20.6,66.8,,0.049,gspr1.csv
+3/4,600,Spiral Wound Gasket,20.6,66.8,,0.049,gspr1.csv
+3/4,900,Spiral Wound Gasket,20.6,69.9,,0.055,gspr1.csv
+3/4,1500,Spiral Wound Gasket,20.6,69.9,,0.055,gspr1.csv
+3/4,2500,Spiral Wound Gasket,20.6,76.2,,0.066,gspr1.csv
+1,150,Spiral Wound Gasket,26.9,66.8,,0.047,gspr1.csv
+1,300,Spiral Wound Gasket,26.9,73.2,,0.057,gspr1.csv
+1,400,Spiral Wound Gasket,26.9,73.2,,0.057,gspr1.csv
+1,600,Spiral Wound Gasket,26.9,73.2,,0.057,gspr1.csv
+1,900,Spiral Wound Gasket,26.9,79.5,,0.069,gspr1.csv
+1,1500,Spiral Wound Gasket,26.9,79.5,,0.069,gspr1.csv
+1,2500,Spiral Wound Gasket,26.9,85.9,,0.082,gspr1.csv
+1 1/4,150,Spiral Wound Gasket,38.1,76.2,,0.053,gspr1.csv
+1 1/4,300,Spiral Wound Gasket,38.1,82.6,,0.066,gspr1.csv
+1 1/4,400,Spiral Wound Gasket,38.1,82.6,,0.066,gspr1.csv
+1 1/4,600,Spiral Wound Gasket,38.1,82.6,,0.066,gspr1.csv
+1 1/4,900,Spiral Wound Gasket,33.3,88.9,,0.083,gspr1.csv
+1 1/4,1500,Spiral Wound Gasket,33.3,88.9,,0.083,gspr1.csv
+1 1/4,2500,Spiral Wound Gasket,33.3,104.9,,0.121,gspr1.csv
+1 1/2,150,Spiral Wound Gasket,44.5,85.9,,0.066,gspr1.csv
+1 1/2,300,Spiral Wound Gasket,44.5,95.3,,0.087,gspr1.csv
+1 1/2,400,Spiral Wound Gasket,44.5,95.3,,0.087,gspr1.csv
+1 1/2,600,Spiral Wound Gasket,44.5,95.3,,0.087,gspr1.csv
+1 1/2,900,Spiral Wound Gasket,41.4,98.6,,0.098,gspr1.csv
+1 1/2,1500,Spiral Wound Gasket,41.4,98.6,,0.098,gspr1.csv
+1 1/2,2500,Spiral Wound Gasket,41.4,117.6,,0.148,gspr1.csv
+2,150,Spiral Wound Gasket,55.6,104.9,,0.097,gspr1.csv
+2,300,Spiral Wound Gasket,55.6,111.3,,0.113,gspr1.csv
+2,400,Spiral Wound Gasket,55.6,111.3,,0.113,gspr1.csv
+2,600,Spiral Wound Gasket,55.6,111.3,,0.113,gspr1.csv
+2,900,Spiral Wound Gasket,52.3,143.0,,0.216,gspr1.csv
+2,1500,Spiral Wound Gasket,52.3,143.0,,0.216,gspr1.csv
+2,2500,Spiral Wound Gasket,52.3,146.1,,0.228,gspr1.csv
+2 1/2,150,Spiral Wound Gasket,66.5,124.0,,0.133,gspr1.csv
+2 1/2,300,Spiral Wound Gasket,66.5,130.3,,0.153,gspr1.csv
+2 1/2,400,Spiral Wound Gasket,66.5,130.3,,0.153,gspr1.csv
+2 1/2,600,Spiral Wound Gasket,66.5,130.3,,0.153,gspr1.csv
+2 1/2,900,Spiral Wound Gasket,63.5,165.1,,0.284,gspr1.csv
+2 1/2,1500,Spiral Wound Gasket,63.5,165.1,,0.284,gspr1.csv
+2 1/2,2500,Spiral Wound Gasket,63.5,168.4,,0.297,gspr1.csv
+3,150,Spiral Wound Gasket,81.0,136.7,,0.148,gspr1.csv
+3,300,Spiral Wound Gasket,81.0,149.4,,0.192,gspr1.csv
+3,400,Spiral Wound Gasket,81.0,149.4,,0.192,gspr1.csv
+3,600,Spiral Wound Gasket,81.0,149.4,,0.192,gspr1.csv
+3,900,Spiral Wound Gasket,78.7,168.4,,0.266,gspr1.csv
+3,1500,Spiral Wound Gasket,78.7,174.8,,0.293,gspr1.csv
+3,2500,Spiral Wound Gasket,78.7,196.9,,0.394,gspr1.csv
+4,150,Spiral Wound Gasket,106.4,174.8,,0.235,gspr1.csv
+4,300,Spiral Wound Gasket,106.4,181.1,,0.263,gspr1.csv
+4,400,Spiral Wound Gasket,102.6,177.8,,0.249,gspr1.csv
+4,600,Spiral Wound Gasket,102.6,193.8,,0.321,gspr1.csv
+4,900,Spiral Wound Gasket,102.6,206.5,,0.383,gspr1.csv
+4,1500,Spiral Wound Gasket,97.8,209.6,,0.399,gspr1.csv
+4,2500,Spiral Wound Gasket,97.8,235.0,,0.537,gspr1.csv
+5,150,Spiral Wound Gasket,131.8,196.9,,0.262,gspr1.csv
+5,300,Spiral Wound Gasket,131.8,215.9,,0.358,gspr1.csv
+5,400,Spiral Wound Gasket,128.3,212.9,,0.342,gspr1.csv
+5,600,Spiral Wound Gasket,128.3,241.3,,0.5,gspr1.csv
+5,900,Spiral Wound Gasket,128.3,247.7,,0.538,gspr1.csv
+5,1500,Spiral Wound Gasket,124.5,254.0,,0.577,gspr1.csv
+5,2500,Spiral Wound Gasket,124.5,279.4,,0.743,gspr1.csv
+6,150,Spiral Wound Gasket,157.2,222.3,,0.302,gspr1.csv
+6,300,Spiral Wound Gasket,157.2,251.0,,0.468,gspr1.csv
+6,400,Spiral Wound Gasket,154.9,247.7,,0.449,gspr1.csv
+6,600,Spiral Wound Gasket,154.9,266.7,,0.569,gspr1.csv
+6,900,Spiral Wound Gasket,154.9,289.1,,0.72,gspr1.csv
+6,1500,Spiral Wound Gasket,147.3,282.7,,0.675,gspr1.csv
+6,2500,Spiral Wound Gasket,147.3,317.5,,0.932,gspr1.csv
+8,150,Spiral Wound Gasket,215.9,279.4,,0.434,gspr1.csv
+8,300,Spiral Wound Gasket,215.9,308.1,,0.64,gspr1.csv
+8,400,Spiral Wound Gasket,205.7,304.8,,0.616,gspr1.csv
+8,600,Spiral Wound Gasket,205.7,320.8,,0.738,gspr1.csv
+8,900,Spiral Wound Gasket,196.9,358.9,,1.055,gspr1.csv
+8,1500,Spiral Wound Gasket,196.9,352.6,,0.999,gspr1.csv
+8,2500,Spiral Wound Gasket,196.9,387.4,,1.316,gspr1.csv
+10,150,Spiral Wound Gasket,268.2,339.9,,0.598,gspr1.csv
+10,300,Spiral Wound Gasket,268.2,362.0,,0.789,gspr1.csv
+10,400,Spiral Wound Gasket,255.3,358.9,,0.761,gspr1.csv
+10,600,Spiral Wound Gasket,255.3,400.1,,1.145,gspr1.csv
+10,900,Spiral Wound Gasket,246.1,435.1,,1.502,gspr1.csv
+10,1500,Spiral Wound Gasket,246.1,435.1,,1.502,gspr1.csv
+10,2500,Spiral Wound Gasket,246.1,476.3,,1.963,gspr1.csv
+12,150,Spiral Wound Gasket,317.5,409.7,,0.905,gspr1.csv
+12,300,Spiral Wound Gasket,317.5,422.4,,1.034,gspr1.csv
+12,400,Spiral Wound Gasket,307.3,419.1,,1.001,gspr1.csv
+12,600,Spiral Wound Gasket,307.3,457.2,,1.41,gspr1.csv
+12,900,Spiral Wound Gasket,292.1,498.6,,1.893,gspr1.csv
+12,1500,Spiral Wound Gasket,292.1,520.7,,2.171,gspr1.csv
+12,2500,Spiral Wound Gasket,292.1,549.4,,2.545,gspr1.csv
+14,150,Spiral Wound Gasket,349.3,450.9,,1.102,gspr1.csv
+14,300,Spiral Wound Gasket,349.3,485.9,,1.503,gspr1.csv
+14,400,Spiral Wound Gasket,342.9,482.6,,1.465,gspr1.csv
+14,600,Spiral Wound Gasket,342.9,492.3,,1.579,gspr1.csv
+14,900,Spiral Wound Gasket,320.8,520.7,,1.933,gspr1.csv
+14,1500,Spiral Wound Gasket,320.8,577.9,,2.702,gspr1.csv
+16,150,Spiral Wound Gasket,400.1,514.4,,1.432,gspr1.csv
+16,300,Spiral Wound Gasket,400.1,539.8,,1.76,gspr1.csv
+16,400,Spiral Wound Gasket,389.9,536.7,,1.718,gspr1.csv
+16,600,Spiral Wound Gasket,389.9,565.2,,2.104,gspr1.csv
+16,900,Spiral Wound Gasket,374.7,574.8,,2.237,gspr1.csv
+16,1500,Spiral Wound Gasket,368.3,641.4,,3.23,gspr1.csv
+18,150,Spiral Wound Gasket,449.3,549.4,,1.411,gspr1.csv
+18,300,Spiral Wound Gasket,449.3,596.9,,2.08,gspr1.csv
+18,400,Spiral Wound Gasket,438.2,593.9,,2.034,gspr1.csv
+18,600,Spiral Wound Gasket,438.2,612.9,,2.315,gspr1.csv
+18,900,Spiral Wound Gasket,425.5,638.3,,2.704,gspr1.csv
+18,1500,Spiral Wound Gasket,425.5,704.9,,3.801,gspr1.csv
+20,150,Spiral Wound Gasket,500.1,606.6,,1.658,gspr1.csv
+20,300,Spiral Wound Gasket,500.1,654.1,,2.405,gspr1.csv
+20,400,Spiral Wound Gasket,489.0,647.7,,2.304,gspr1.csv
+20,600,Spiral Wound Gasket,489.0,682.8,,2.873,gspr1.csv
+20,900,Spiral Wound Gasket,482.6,698.5,,3.141,gspr1.csv
+20,1500,Spiral Wound Gasket,476.3,755.7,,4.159,gspr1.csv
+24,150,Spiral Wound Gasket,603.3,717.6,,2.216,gspr1.csv
+24,300,Spiral Wound Gasket,603.3,774.7,,3.26,gspr1.csv
+24,400,Spiral Wound Gasket,590.6,768.4,,3.141,gspr1.csv
+24,600,Spiral Wound Gasket,590.6,790.7,,3.565,gspr1.csv
+24,900,Spiral Wound Gasket,590.6,838.2,,4.515,gspr1.csv
+24,1500,Spiral Wound Gasket,577.9,901.7,,5.868,gspr1.csv
+1/2,150,Flat Ring Gasket,21.0,48.0,,0.005,gflt1.csv
+1/2,300,Flat Ring Gasket,21.0,54.0,,0.007,gflt1.csv
+1/2,400,Flat Ring Gasket,21.0,54.0,,0.007,gflt1.csv
+1/2,600,Flat Ring Gasket,21.0,54.0,,0.007,gflt1.csv
+1/2,900,Flat Ring Gasket,21.0,64.0,,0.01,gflt1.csv
+3/4,150,Flat Ring Gasket,27.0,57.0,,0.008,gflt1.csv
+3/4,300,Flat Ring Gasket,27.0,67.0,,0.011,gflt1.csv
+3/4,400,Flat Ring Gasket,27.0,67.0,,0.011,gflt1.csv
+3/4,600,Flat Ring Gasket,27.0,67.0,,0.011,gflt1.csv
+3/4,900,Flat Ring Gasket,27.0,70.0,,0.012,gflt1.csv
+1,150,Flat Ring Gasket,33.0,67.0,,0.01,gflt1.csv
+1,300,Flat Ring Gasket,33.0,73.0,,0.013,gflt1.csv
+1,400,Flat Ring Gasket,33.0,73.0,,0.013,gflt1.csv
+1,600,Flat Ring Gasket,33.0,73.0,,0.013,gflt1.csv
+1,900,Flat Ring Gasket,33.0,79.0,,0.015,gflt1.csv
+1 1/4,150,Flat Ring Gasket,42.0,76.0,,0.012,gflt1.csv
+1 1/4,300,Flat Ring Gasket,42.0,83.0,,0.015,gflt1.csv
+1 1/4,400,Flat Ring Gasket,42.0,83.0,,0.015,gflt1.csv
+1 1/4,600,Flat Ring Gasket,42.0,83.0,,0.015,gflt1.csv
+1 1/4,900,Flat Ring Gasket,42.0,89.0,,0.018,gflt1.csv
+1 1/2,150,Flat Ring Gasket,48.0,86.0,,0.015,gflt1.csv
+1 1/2,300,Flat Ring Gasket,48.0,95.0,,0.02,gflt1.csv
+1 1/2,400,Flat Ring Gasket,48.0,95.0,,0.02,gflt1.csv
+1 1/2,600,Flat Ring Gasket,48.0,95.0,,0.02,gflt1.csv
+1 1/2,900,Flat Ring Gasket,48.0,98.0,,0.022,gflt1.csv
+2,150,Flat Ring Gasket,60.0,105.0,,0.029,gflt1.csv
+2,300,Flat Ring Gasket,60.0,111.0,,0.021,gflt1.csv
+2,400,Flat Ring Gasket,60.0,111.0,,0.021,gflt1.csv
+2,600,Flat Ring Gasket,60.0,111.0,,0.021,gflt1.csv
+2,900,Flat Ring Gasket,60.0,143.0,,0.044,gflt1.csv
+2 1/2,150,Flat Ring Gasket,73.0,124.0,,0.029,gflt1.csv
+2 1/2,300,Flat Ring Gasket,73.0,130.0,,0.035,gflt1.csv
+2 1/2,400,Flat Ring Gasket,73.0,130.0,,0.035,gflt1.csv
+2 1/2,600,Flat Ring Gasket,73.0,130.0,,0.035,gflt1.csv
+2 1/2,900,Flat Ring Gasket,73.0,165.0,,0.065,gflt1.csv
+3,150,Flat Ring Gasket,89.0,137.0,,0.031,gflt1.csv
+3,300,Flat Ring Gasket,89.0,149.0,,0.043,gflt1.csv
+3,400,Flat Ring Gasket,89.0,149.0,,0.043,gflt1.csv
+3,600,Flat Ring Gasket,89.0,149.0,,0.043,gflt1.csv
+3,900,Flat Ring Gasket,89.0,168.0,,0.061,gflt1.csv
+3 1/2,150,Flat Ring Gasket,102.0,162.0,,0.047,gflt1.csv
+3 1/2,300,Flat Ring Gasket,102.0,165.0,,0.05,gflt1.csv
+3 1/2,400,Flat Ring Gasket,102.0,162.0,,0.047,gflt1.csv
+3 1/2,600,Flat Ring Gasket,102.0,162.0,,0.047,gflt1.csv
+3 1/2,900,Flat Ring Gasket,102.0,180.0,,0.071,gflt1.csv
+4,150,Flat Ring Gasket,114.0,175.0,,0.051,gflt1.csv
+4,300,Flat Ring Gasket,114.0,181.0,,0.058,gflt1.csv
+4,400,Flat Ring Gasket,114.0,178.0,,0.054,gflt1.csv
+4,600,Flat Ring Gasket,114.0,194.0,,0.072,gflt1.csv
+4,900,Flat Ring Gasket,114.0,206.0,,0.088,gflt1.csv
+5,150,Flat Ring Gasket,141.0,197.0,,0.055,gflt1.csv
+5,300,Flat Ring Gasket,141.0,216.0,,0.078,gflt1.csv
+5,400,Flat Ring Gasket,141.0,213.0,,0.074,gflt1.csv
+5,600,Flat Ring Gasket,141.0,241.0,,0.114,gflt1.csv
+5,900,Flat Ring Gasket,141.0,248.0,,0.122,gflt1.csv
+6,150,Flat Ring Gasket,168.0,222.0,,0.063,gflt1.csv
+6,300,Flat Ring Gasket,168.0,251.0,,0.102,gflt1.csv
+6,400,Flat Ring Gasket,168.0,248.0,,0.097,gflt1.csv
+6,600,Flat Ring Gasket,168.0,267.0,,0.126,gflt1.csv
+6,900,Flat Ring Gasket,168.0,289.0,,0.022,gflt1.csv
+8,150,Flat Ring Gasket,219.0,279.0,,0.088,gflt1.csv
+8,300,Flat Ring Gasket,219.0,308.0,,0.138,gflt1.csv
+8,400,Flat Ring Gasket,219.0,305.0,,0.133,gflt1.csv
+8,600,Flat Ring Gasket,219.0,321.0,,0.162,gflt1.csv
+8,900,Flat Ring Gasket,219.0,359.0,,0.239,gflt1.csv
+10,150,Flat Ring Gasket,273.0,340.0,,0.12,gflt1.csv
+10,300,Flat Ring Gasket,273.0,362.0,,0.167,gflt1.csv
+10,400,Flat Ring Gasket,273.0,359.0,,0.16,gflt1.csv
+10,600,Flat Ring Gasket,273.0,400.0,,0.255,gflt1.csv
+10,900,Flat Ring Gasket,273.0,435.0,,0.34,gflt1.csv
+12,150,Flat Ring Gasket,324.0,410.0,,0.186,gflt1.csv
+12,300,Flat Ring Gasket,324.0,422.0,,0.219,gflt1.csv
+12,400,Flat Ring Gasket,324.0,419.0,,0.211,gflt1.csv
+12,600,Flat Ring Gasket,324.0,457.0,,0.311,gflt1.csv
+12,900,Flat Ring Gasket,324.0,498.0,,0.426,gflt1.csv
+14,150,Flat Ring Gasket,356.0,451.0,,0.225,gflt1.csv
+14,300,Flat Ring Gasket,356.0,486.0,,0.323,gflt1.csv
+14,400,Flat Ring Gasket,356.0,483.0,,0.314,gflt1.csv
+14,600,Flat Ring Gasket,356.0,492.0,,0.344,gflt1.csv
+14,900,Flat Ring Gasket,356.0,521.0,,0.427,gflt1.csv
+16,150,Flat Ring Gasket,406.0,514.0,,0.298,gflt1.csv
+16,300,Flat Ring Gasket,406.0,540.0,,0.376,gflt1.csv
+16,400,Flat Ring Gasket,406.0,537.0,,0.366,gflt1.csv
+16,600,Flat Ring Gasket,406.0,565.0,,0.462,gflt1.csv
+16,900,Flat Ring Gasket,406.0,575.0,,0.492,gflt1.csv
+18,150,Flat Ring Gasket,457.0,549.0,,0.276,gflt1.csv
+18,300,Flat Ring Gasket,457.0,597.0,,0.436,gflt1.csv
+18,400,Flat Ring Gasket,457.0,594.0,,0.425,gflt1.csv
+18,600,Flat Ring Gasket,457.0,613.0,,0.494,gflt1.csv
+18,900,Flat Ring Gasket,457.0,638.0,,0.591,gflt1.csv
+20,150,Flat Ring Gasket,508.0,606.0,,0.324,gflt1.csv
+20,300,Flat Ring Gasket,508.0,654.0,,0.506,gflt1.csv
+20,400,Flat Ring Gasket,508.0,648.0,,0.479,gflt1.csv
+20,600,Flat Ring Gasket,508.0,683.0,,0.617,gflt1.csv
+20,900,Flat Ring Gasket,508.0,699.0,,0.682,gflt1.csv
+24,150,Flat Ring Gasket,610.0,718.0,,0.421,gflt1.csv
+24,300,Flat Ring Gasket,610.0,775.0,,0.675,gflt1.csv
+24,400,Flat Ring Gasket,610.0,768.0,,0.65,gflt1.csv
+24,600,Flat Ring Gasket,610.0,791.0,,0.749,gflt1.csv
+24,900,Flat Ring Gasket,610.0,838.0,,0.984,gflt1.csv
