@@ -188,7 +188,11 @@ def extract_pipes():
 
             # INDEPENDENT PHYSICAL CONSTRAINTS: nominal pipe geometry,
             # B36.10 plain-end steel mass and 1000 kg/m^3 water.
-            standard_wall = {("1/8", "STD"): 1.73, ("1/8", "XS"): 2.41}.get((nps, sched))
+            # Independently tabulated B36.10/B36.19 nominal thickness anchors.
+            standard_wall = {
+                ("1/8", "STD"): 1.73, ("1/8", "XS"): 2.41,
+                ("22", "40S"): 9.53,
+            }.get((nps, sched))
             if standard_wall is not None and wall != standard_wall:
                 corrections.append((f, nps, sched, "wall", wall, standard_wall))
                 wall = standard_wall
