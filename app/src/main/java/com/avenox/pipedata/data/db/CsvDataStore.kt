@@ -270,7 +270,7 @@ class CsvDataStore(private val context: Context) {
         val result = when (categoryId) {
             "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel)
             "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
@@ -507,7 +507,8 @@ class CsvDataStore(private val context: Context) {
         allSubtypes: List<SubtypeItem>,
         nps: String,
         dn: Int,
-        sched: String
+        sched: String,
+        branchSel: String?
     ): ComponentData {
         val compType = when (subtype.id) {
             "elbow_90_lr" -> "90° Long Radius Elbow"
