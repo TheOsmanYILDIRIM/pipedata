@@ -164,6 +164,15 @@ class CsvDataStore(private val context: Context) {
                 svgAsset = "modern_ftsw1.svg"
             ),
             TopicCategory(
+                id = "fittings_thd",
+                titleEn = "Threaded Fittings",
+                titleTr = "Dişli Fitingler",
+                std = "ASME B16.11",
+                descEn = "Forged threaded elbows, tees, couplings, caps, plugs and bushings",
+                descTr = "Dişli dirsek, tee, manşon, kep, tapa ve redüksiyon burçları",
+                svgAsset = "modern_ftsw1.svg"
+            ),
+            TopicCategory(
                 id = "valves",
                 titleEn = "Valves",
                 titleTr = "Endüstriyel Vanalar",
@@ -230,6 +239,21 @@ class CsvDataStore(private val context: Context) {
                 SubtypeItem("sw_red_coupling", "Reducing Coupling", "Red Coupling", "RED-C", "ASME B16.11", "Diameter reducing socket coupling.", "Soketli çap düşürücü redüksiyon.", "modern_ftsw8.svg", "Soketli Redüksiyon", "Redüksiyon"),
                 SubtypeItem("sw_union", "Socket Weld Union", "SW Union", "UNION", "ASME B16.11", "High pressure 3-piece socket weld union.", "Dövme çelik soketli konik rakor.", "modern_ftsw9.svg", "Soketli Konik Rakor", "Konik Rakor")
             )
+            "fittings_thd" -> listOf(
+                SubtypeItem("thd_elbow_90", "90° Threaded Elbow", "90° Threaded", "90°", "ASME B16.11", "Forged threaded 90-degree elbow.", "Dişli 90 derece dirsek.", "modern_ftsw1.svg", "90° Dişli Dirsek"),
+                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsw2.svg", "45° Dişli Dirsek"),
+                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsw3.svg", "Dişli Te"),
+                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsw4.svg", "Dişli İstavroz"),
+                SubtypeItem("thd_street", "Street Elbow", "Street", "ST", "ASME B16.11", "Street elbow.", "Dişli sokak dirseği.", "modern_ftsw1.svg", "Dişli Sokak Dirseği"),
+                SubtypeItem("thd_full", "Full Coupling", "Coupling", "CPL", "ASME B16.11", "Threaded full coupling.", "Dişli tam manşon.", "modern_ftsw5.svg", "Dişli Tam Manşon"),
+                SubtypeItem("thd_half", "Half Coupling", "Half", "HALF", "ASME B16.11", "Threaded half coupling.", "Dişli yarım manşon.", "modern_ftsw6.svg", "Dişli Yarım Manşon"),
+                SubtypeItem("thd_cap", "Threaded Cap", "Cap", "CAP", "ASME B16.11", "Threaded cap.", "Dişli kep.", "modern_ftsw7.svg", "Dişli Kep"),
+                SubtypeItem("thd_square", "Square Head Plug", "Square Plug", "SQ", "ASME B16.11", "Square head plug.", "Kare başlı tapa.", "modern_ftsw7.svg", "Kare Başlı Tapa"),
+                SubtypeItem("thd_hex", "Hex Head Plug", "Hex Plug", "HEX", "ASME B16.11", "Hex head plug.", "Altıgen başlı tapa.", "modern_ftsw7.svg", "Altıgen Başlı Tapa"),
+                SubtypeItem("thd_round", "Round Head Plug", "Round Plug", "RND", "ASME B16.11", "Round head plug.", "Yuvarlak başlı tapa.", "modern_ftsw7.svg", "Yuvarlak Başlı Tapa"),
+                SubtypeItem("thd_bushing", "Hex Head Bushing", "Bushing", "BSH", "ASME B16.11", "Hex head bushing.", "Altıgen başlı burç.", "modern_ftsw8.svg", "Altıgen Başlı Burç"),
+                SubtypeItem("thd_flush", "Flush Bushing", "Flush Bushing", "FL", "ASME B16.11", "Flush bushing.", "Gömme burç.", "modern_ftsw8.svg", "Gömme Burç")
+            )
             "valves" -> listOf(
                 SubtypeItem("vlv_gate", "Gate Valve", "Gate Valve", "GATE", "ASME B16.34", "Linear motion isolation valve.", "Tam açık/kapalı hat kesme vanası.", "modern_vlfl1.svg", "Sürgülü Vana (Gate Valve)", "Sürgülü Vana"),
                 SubtypeItem("vlv_globe", "Globe Valve", "Globe Valve", "GLOBE", "ASME B16.34", "Throttling and flow regulation valve.", "Akış ayar ve kısma vanası.", "modern_vlfl2.svg", "Glob Vana (Globe Valve)", "Glob Vana"),
@@ -273,6 +297,7 @@ class CsvDataStore(private val context: Context) {
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel)
             "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_thd" -> buildThreadedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
@@ -876,6 +901,87 @@ class CsvDataStore(private val context: Context) {
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveRatingStr,
+            dimensions = rows
+        )
+    }
+
+    private fun buildThreadedData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String
+    ): ComponentData {
+        val type = when (subtype.id) {
+            "thd_elbow_90" -> "90° Elbow"
+            "thd_elbow_45" -> "45° Elbow"
+            "thd_tee" -> "Tee"
+            "thd_cross" -> "Cross"
+            "thd_street" -> "Street Elbow"
+            "thd_full" -> "Full Coupling"
+            "thd_half" -> "Half Coupling"
+            "thd_cap" -> "Cap"
+            "thd_square" -> "Square Head Plug"
+            "thd_hex" -> "Hex Head Plug"
+            "thd_round" -> "Round Head Plug"
+            "thd_bushing" -> "Hex Head Bushing"
+            "thd_flush" -> "Flush Bushing"
+            else -> subtype.title
+        }
+        val records = tableData("tbl_fittings_threaded_b16_11").filter { row ->
+            s(row, "component_type") == type &&
+                listOf("center_to_end_mm", "length_mm", "bore_diameter_mm", "weight_kg")
+                    .any { d(row, it) > 0 }
+        }
+        val requestedNps = nps.replace("\"", "").trim()
+        val atSize = records.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val preferred = listOf("2000#", "3000#", "6000#", "9000#")
+        val primaryOptions = preferred.filter { it.removeSuffix("#") in atSize }
+            .ifEmpty { preferred.filter { c -> records.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRating = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "3000#"
+        val rating = effectiveRating.removeSuffix("#")
+        val sizes = records.filter { s(it, "rating") == rating }.map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/8", "1/4", "3/8", "1/2", "3/4",
+            "1", "1 1/4", "1 1/2", "2", "2 1/2", "3", "4")
+            .filter { it in sizes }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "1\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+        val matching = records.filter { s(it, "nps") == cleanNps && s(it, "rating") == rating }
+        val record = matching.maxByOrNull { row ->
+            listOf("center_to_end_mm", "bore_diameter_mm", "body_wall_thickness_mm",
+                "length_mm", "weight_kg").count { d(row, it) > 0 }
+        }
+        val rows = mutableListOf<DimensionRow>()
+        fun addDim(field: String, id: String, en: String, tr: String) {
+            val value = record?.get(field)?.toDoubleOrNull()
+            if (value != null && value > 0) {
+                rows.add(DimensionRow(id, en, tr, "${fmt(value)} mm",
+                    "${fmt(value / 25.4)}\"", "forged"))
+            }
+        }
+        addDim("center_to_end_mm", "c2e", "Center-to-End (A)", "Merkezden Uca (A)")
+        addDim("bore_diameter_mm", "bore", "Bore Diameter (B)", "İç Delik Çapı (B)")
+        addDim("body_wall_thickness_mm", "wall", "Body Wall Thickness", "Gövde Et Kalınlığı")
+        addDim("length_mm", "len", "Overall Length (L)", "Toplam Boy (L)")
+        val weight = record?.get("weight_kg")?.toDoubleOrNull()
+        if (weight != null && weight > 0) rows.add(DimensionRow("weight", "Source Weight",
+            "Kaynak Ağırlık", "${fmtWeight(weight)} kg",
+            "${fmtWeight(weight * 2.20462)} lb", "forged"))
+        return ComponentData(
+            categoryId = "fittings_thd",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRating,
             dimensions = rows
         )
     }
