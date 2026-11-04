@@ -26,6 +26,15 @@ if r:
     check("flans-OD-152", r["outer_diameter_mm"] in ("152", "152.0", "152.4"), r["outer_diameter_mm"])
     check("flans-PCD-120.6", r["pcd_mm"] in ("120.6", "120.7"), r["pcd_mm"])
     check("flans-civata-4", r["num_bolts"] in ("4", "4.0"), r["num_bolts"])
+r_wn = first("tbl_flanges_asme_b16_5", nps="2", rating="150", flange_type="Welding Neck")
+check("flans-2-150-WN-var", r_wn is not None)
+if r_wn:
+    check("flans-WN-bore-52.5", r_wn["bore_diameter_mm"] == "52.5", r_wn["bore_diameter_mm"])
+    check("flans-WN-hub-A-60.3", r_wn["hub_diameter_mm"] == "78.0", r_wn["hub_diameter_mm"])
+r_threaded = first("tbl_flanges_asme_b16_5", nps="2", rating="150", flange_type="Threaded")
+if r_threaded:
+    check("flans-threaded-no-fake-weight", r_threaded["weight_kg"] == "", r_threaded["weight_kg"])
+
 
 # 2) Boru 2" Sch40: OD=60.3
 r = first("tbl_pipes", nps="2", schedule="40")
