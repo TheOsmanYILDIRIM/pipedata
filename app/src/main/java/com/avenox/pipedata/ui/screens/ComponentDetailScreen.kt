@@ -815,24 +815,26 @@ private fun getThemedSvgBytes(
         val dimMap = mutableMapOf<String, String>()
         data.dimensions.forEach { row ->
             val raw = if (isMetric) row.valueMetric else row.valueImperial
+            // No guessed engineering numbers and no meaningless N/A" badge.
+            if (raw.startsWith("N/A")) return@forEach
             val cleaned = raw.replace(" mm", "").replace(" kg", "kg").replace(" lb", "lb").trim()
             dimMap[row.key.lowercase()] = cleaned
         }
 
         val dn = data.dn
-        val odStr = dimMap["od"] ?: if (isMetric) "${fmt(dn * 2.8)}" else "${fmt(dn * 2.8 / 25.4)}\""
-        val thkStr = dimMap["thk"] ?: if (isMetric) "17.5" else "0.69\""
-        val hubStr = dimMap["hub"] ?: dimMap["ctf"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
-        val boreStr = dimMap["bore"] ?: dimMap["id"] ?: if (isMetric) "$dn" else "${fmt(dn / 25.4)}\""
-        val pcdStr = dimMap["pcd"] ?: if (isMetric) "${fmt(dn * 2.2)}" else "${fmt(dn * 2.2 / 25.4)}\""
-        val lenStr = dimMap["len"] ?: dimMap["lth"] ?: if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
-        val rfStr = dimMap["rf"] ?: if (isMetric) "${fmt(dn * 1.75)}" else "${fmt(dn * 1.75 / 25.4)}\""
-        val boltsStr = dimMap["bolts"] ?: "4 × 5/8\""
-        val studStr = dimMap["stud"] ?: if (isMetric) "70" else "2.75\""
-        val wtStr = dimMap["weight"] ?: if (isMetric) "2.5kg" else "5.5lb"
+        val odStr = dimMap["od"] ?: dimMap["flange_od"] ?: "—"
+        val thkStr = dimMap["thk"] ?: "—"
+        val hubStr = dimMap["hub"] ?: dimMap["ctf"] ?: "—"
+        val boreStr = dimMap["bore"] ?: dimMap["id"] ?: "—"
+        val pcdStr = dimMap["pcd"] ?: "—"
+        val lenStr = dimMap["len"] ?: dimMap["lth"] ?: "—"
+        val rfStr = dimMap["rf"] ?: "—"
+        val boltsStr = dimMap["bolts"] ?: "—"
+        val studStr = dimMap["stud"] ?: "—"
+        val wtStr = dimMap["weight"] ?: "—"
 
-        val numBolts = boltsStr.split("×").firstOrNull()?.trim() ?: "4"
-        val boltSz = boltsStr.split("×").getOrNull(1)?.trim() ?: "5/8\""
+        val numBolts = boltsStr.split("×").firstOrNull()?.trim() ?: "—"
+        val boltSz = boltsStr.split("×").getOrNull(1)?.trim() ?: "—"
 
         // Dynamically inject real engineering values into all SVG parameter callout badges
         val placeholderRegex = Regex("\\[\\[(.*?)\\]\\]")
