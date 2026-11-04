@@ -215,6 +215,7 @@ def extract_buttweld():
                 matched_pfx, comp_type = pfx, ctype
                 break
         if not matched_pfx: continue
+        if comp_type in ("Concentric Reducer", "Reducing Tee"): continue  # matrix rows below
         
         sched = fn[len(matched_pfx):].replace(".csv", "").upper()
         if not sched or sched.startswith("_"): continue
@@ -255,21 +256,70 @@ def extract_buttweld():
                 "source_file": f
             })
             
-            if False and comp_type == "Concentric Reducer":  # No fabricated eccentric data
+    out.extend(extract_matrix_fittings())
+    return out
+
+def extract_matrix_fittings():
+    """Flatten original reducer/reducing-tee NPS × branch matrix without guesses.
+
+    Left matrix stores dimensions; second matrix stores matching weights.
+    Both are indexed by branch NPS headers, not by arbitrary column offsets.
+    """
+    out = []
+    families = (("reducers", "Concentric Reducer"), ("reducingtee", "Reducing Tee"))
+    for fname in sorted(os.listdir(SRC)):
+        fn = fname.lower()
+        if "imperial" in fn or not fn.endswith(".csv"): continue
+        family = next(((prefix, name) for prefix, name in families if fn.startswith(prefix)), None)
+        if family is None: continue
+        prefix, comp_type = family
+        schedule = fn[len(prefix):-4].upper()
+        if schedule not in {"5", "5S", "10", "10S", "20", "30", "40", "40S",
+                            "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"}:
+            continue
+        _, headers, body = b4a_rows(os.path.join(SRC, fname))
+        if not headers or len(headers) < 75: continue
+        for values in body:
+            if len(values) < 75: continue
+            main_nps = nps_norm(values[0])
+            main_od = num(values[2])
+            if not main_nps or main_od is None: continue
+            weights = {}
+            for j in range(43, min(len(headers), len(values), 79)):
+                branch = nps_norm(headers[j])
+                wt = num(values[j])
+                if branch and wt is not None:
+                    weights[branch] = wt
+            for j in range(4, min(40, len(headers), len(values))):
+                branch = nps_norm(headers[j])
+                branch_measure = num(values[j])
+                if not branch or branch_measure is None or branch_measure <= 0: continue
+                if branch == main_nps: continue
+                if comp_type == "Reducing Tee":
+                    run_end = num(values[3])
+                    branch_end = branch_measure
+                    overall_len = None
+                else:
+                    run_end = None
+                    branch_end = None
+                    overall_len = branch_measure
                 out.append({
-                    "nps": nps,
-                    "schedule": sched,
-                    "component_type": "Eccentric Reducer",
-                    "outer_diameter_mm": od,
-                    "center_to_end_mm": c2e,
-                "radius_mm": radius,
-                    "center_to_center_mm": c2c,
-                    "back_to_face_mm": b2f,
-                    "overall_length_height_mm": length if length is not None else c2e,
-                    "weight_kg": wt,
-                    "source_file": f
+                    "nps": main_nps,
+                    "branch_nps": branch,
+                    "schedule": schedule,
+                    "component_type": comp_type,
+                    "outer_diameter_mm": main_od,
+                    "center_to_end_mm": run_end,
+                    "branch_center_to_end_mm": branch_end,
+                    "radius_mm": None,
+                    "center_to_center_mm": None,
+                    "back_to_face_mm": None,
+                    "overall_length_height_mm": overall_len,
+                    "weight_kg": weights.get(branch),
+                    "source_file": fname
                 })
     return out
+
 
 # ==============================================================================
 # 4. SOCKET WELD FITTINGS (ASME B16.11)
@@ -633,8 +683,9 @@ def main():
     
     bw = extract_buttweld()
     write_table_csv("tbl_fittings_buttweld_b16_9", bw, [
-        "nps", "schedule", "component_type", "outer_diameter_mm",
-        "center_to_end_mm", "radius_mm", "center_to_center_mm", "back_to_face_mm",
+        "nps", "branch_nps", "schedule", "component_type", "outer_diameter_mm",
+        "center_to_end_mm", "branch_center_to_end_mm", "radius_mm",
+        "center_to_center_mm", "back_to_face_mm",
         "overall_length_height_mm", "weight_kg", "source_file"
     ])
     
