@@ -547,8 +547,8 @@ class CsvDataStore(private val context: Context) {
             availableNps = availableSizes.map { "$it\"" },
             selectedNps = "$effectiveNps\"",
             dn = getNpsDn(effectiveNps),
-            primarySelectorLabelEn = "Schedule",
-            primarySelectorLabelTr = "Et Kalınlığı",
+            primarySelectorLabelEn = "SCH / Schedule",
+            primarySelectorLabelTr = "SCH / Et Kalınlığı",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveSchedule,
             dimensions = rows
