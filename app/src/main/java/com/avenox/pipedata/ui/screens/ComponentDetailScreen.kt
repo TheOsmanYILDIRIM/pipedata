@@ -850,14 +850,14 @@ private fun getThemedSvgBytes(
                     else -> dimMap[key.lowercase()] ?: "—"
                 }
             } else if (data.categoryId == "fittings_sw") {
-                val swSockDia = dimMap["sock_dia"] ?: if (isMetric) "22.2" else "0.88\""
-                val swSockDepth = dimMap["sock_depth"] ?: if (isMetric) "9.5" else "0.38\""
-                val swCenterEnd = dimMap["center_end"] ?: if (isMetric) "15.5" else "0.62\""
-                val swSockThk = dimMap["sock_thk"] ?: if (isMetric) "4.7" else "0.18\""
-                val swBore = dimMap["bore"] ?: if (isMetric) "16.6" else "0.65\""
-                val swWallThk = dimMap["wall_thk"] ?: if (isMetric) "3.7" else "0.15\""
-                val swLen = dimMap["length"] ?: if (isMetric) "22.5" else "0.88\""
-                val swCapThk = dimMap["cap_thk"] ?: if (isMetric) "6.4" else "0.25\""
+                val swSockDia = dimMap["sock_dia"] ?: "—"
+                val swSockDepth = dimMap["sock_depth"] ?: "—"
+                val swCenterEnd = dimMap["center_end"] ?: "—"
+                val swSockThk = dimMap["sock_thk"] ?: "—"
+                val swBore = dimMap["bore"] ?: "—"
+                val swWallThk = dimMap["wall_thk"] ?: "—"
+                val swLen = dimMap["length"] ?: "—"
+                val swCapThk = dimMap["cap_thk"] ?: "—"
                 when (key) {
                     "3" -> swCenterEnd
                     "4" -> swSockDia
@@ -873,14 +873,14 @@ private fun getThemedSvgBytes(
                     else -> dimMap[key.lowercase()] ?: data.selectedPrimary
                 }
             } else if (data.categoryId == "fittings_bw") {
-                val bwOd = dimMap["od"] ?: if (isMetric) "60.3" else "2.375\""
-                val bwCenterEnd = dimMap["center_end"] ?: dimMap["length"] ?: if (isMetric) "76.2" else "3.00\""
-                val bwCenterCenter = dimMap["center_center"] ?: if (isMetric) "${fmt(dn * 3.0)}" else "${fmt(dn * 3.0 / 25.4)}\""
-                val bwBackFace = dimMap["back_to_face"] ?: if (isMetric) "${fmt(dn * 2.1)}" else "${fmt(dn * 2.1 / 25.4)}\""
-                val bwLen = dimMap["length"] ?: dimMap["center_end"] ?: if (isMetric) "63.5" else "2.50\""
-                val bwSmallOd = dimMap["small_od"] ?: dimMap["branch_center_end"] ?: if (isMetric) "${fmt(dn * 0.75)}" else "${fmt(dn * 0.75 / 25.4)}\""
-                val bwLapDia = dimMap["lap_dia"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
-                val bwRadius = dimMap["radius"] ?: if (isMetric) "8.0" else "5/16\""
+                val bwOd = dimMap["od"] ?: "—"
+                val bwCenterEnd = dimMap["center_end"] ?: dimMap["length"] ?: "—"
+                val bwCenterCenter = dimMap["center_center"] ?: "—"
+                val bwBackFace = dimMap["back_to_face"] ?: "—"
+                val bwLen = dimMap["length"] ?: dimMap["center_end"] ?: "—"
+                val bwSmallOd = dimMap["small_od"] ?: dimMap["branch_center_end"] ?: "—"
+                val bwLapDia = dimMap["lap_dia"] ?: "—"
+                val bwRadius = dimMap["radius"] ?: "—"
                 when (key) {
                     "3" -> bwOd
                     "4" -> if (dimMap.containsKey("center_center")) bwCenterCenter else bwCenterEnd
@@ -890,7 +890,7 @@ private fun getThemedSvgBytes(
                     "10" -> data.selectedPrimary
                     "13", "14", "15" -> wtStr
                     "39" -> bwSmallOd
-                    "DB2_4" -> if (isMetric) "3.9" else "0.15\""
+                    "DB2_4" -> thkStr
                     else -> dimMap[key.lowercase()] ?: data.selectedPrimary
                 }
             } else {
