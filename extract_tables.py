@@ -412,17 +412,13 @@ def extract_socketweld():
         if not fn.startswith("ftsw") or not fn.endswith(".csv") or "inche" in fn or "imperial" in fn: continue
         
         m = re.match(r"ftsw([1-9])_.*_(3000|6000|9000)_millimetre.*\.csv", fn)
+        # Legacy short names such as ftsw1030.csv are ambiguous (30 was
+        # previously misread as 9000); dimensional millimetre sources are
+        # unambiguous and cover the modeled fitting types.
         if not m:
-            m2 = re.match(r"ftsw(\d)(\d{2})(?:0)?\.csv", fn)
-            if m2:
-                t_idx, rat_code = m2.group(1), m2.group(2)
-                rating = "3000" if rat_code == "30" else ("6000" if rat_code == "60" else "9000")
-                comp = sw_types.get(t_idx, "Forged Fitting")
-            else:
-                continue
-        else:
-            comp = sw_types.get(m.group(1), "Forged Fitting")
-            rating = m.group(2)
+            continue
+        comp = sw_types.get(m.group(1), "Forged Fitting")
+        rating = m.group(2)
             
         _, header, body = b4a_rows(os.path.join(SRC, f))
         if not header: continue
