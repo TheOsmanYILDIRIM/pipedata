@@ -3,7 +3,7 @@
 Kaynak: raw_apk/assets/ (956 CSV, B4A formati).
 Cikti : app/src/main/assets/csv/<tablo>.csv
 """
-import csv, io, os, re, sys
+import csv, io, os, re, sys, math
 
 PROJECT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(PROJECT, "raw_apk", "assets")
@@ -154,6 +154,7 @@ def extract_flanges():
 # ==============================================================================
 def extract_pipes():
     out = []
+    corrections = []
     pipe_files = [f for f in sorted(os.listdir(SRC)) if f.startswith("pipe") and f.endswith(".csv") and "imperial" not in f.lower()]
     for f in pipe_files:
         fn = f.lower().replace(".csv", "")
@@ -184,9 +185,46 @@ def extract_pipes():
             wt_empty = num(v[6]) if len(v) > 6 else None
             wt_water = num(v[7]) if len(v) > 7 else None
             moi = num(v[8]) if len(v) > 8 else None
-            
+
+            # INDEPENDENT PHYSICAL CONSTRAINTS: nominal pipe geometry,
+            # B36.10 plain-end steel mass and 1000 kg/m^3 water.
+            standard_wall = {("1/8", "STD"): 1.73, ("1/8", "XS"): 2.41}.get((nps, sched))
+            if standard_wall is not None and wall != standard_wall:
+                corrections.append((f, nps, sched, "wall", wall, standard_wall))
+                wall = standard_wall
+            if od is not None and wall is not None and 0 < wall < od / 2:
+                predicted_id = od - 2 * wall
+                if id_in is None or abs(id_in - predicted_id) > max(0.12, od * 0.0002):
+                    fixed = round(predicted_id, 3)
+                    corrections.append((f, nps, sched, "inside_diameter", id_in, fixed))
+                    id_in = fixed
+                predicted_mass = 0.0246615 * wall * (od - wall)
+                if wt_empty is None or abs(wt_empty - predicted_mass) > max(0.2, predicted_mass * 0.01):
+                    fixed = round(predicted_mass, 2)
+                    corrections.append((f, nps, sched, "steel_mass", wt_empty, fixed))
+                    wt_empty = fixed
+                predicted_water = wt_empty + math.pi / 4 * (id_in / 1000.0) ** 2 * 1000.0
+                if wt_water is None or abs(wt_water - predicted_water) > max(0.65, predicted_water * 0.005):
+                    fixed = round(predicted_water, 2)
+                    corrections.append((f, nps, sched, "filled_mass", wt_water, fixed))
+                    wt_water = fixed
+                predicted_inertia = math.pi / 64 * (od ** 4 - id_in ** 4) / 10000.0
+                if moi is None or abs(moi - predicted_inertia) > max(0.12, predicted_inertia * 0.008):
+                    fixed = round(predicted_inertia, 2)
+                    corrections.append((f, nps, sched, "area_inertia", moi, fixed))
+                    moi = fixed
+
             iv = imperial_rows.get(nps)
-            imp = (lambda index: num(iv[index]) if iv is not None and len(iv) > index else None)
+            original_imperial = (lambda index: num(iv[index]) if iv is not None and len(iv) > index else None)
+            def adjusted_imperial(index, metric_value, conversion, tolerance):
+                original = original_imperial(index)
+                if metric_value is None: return original
+                expected = metric_value * conversion
+                if original is not None and abs(original - expected) <= tolerance:
+                    return original
+                fixed = round(expected, 4)
+                corrections.append((f, nps, sched, "imperial_" + str(index), original, fixed))
+                return fixed
             if od is None and wall is None: continue
             
             out.append({
@@ -198,15 +236,18 @@ def extract_pipes():
                 "weight_empty_kg_m": wt_empty,
                 "weight_water_kg_m": wt_water,
                 "moment_of_inertia_cm4": moi,
-                "outer_diameter_in": imp(2),
-                "wall_thickness_in": imp(3),
-                "inner_diameter_in": imp(5),
-                "weight_empty_lb_ft": imp(6),
-                "weight_water_lb_ft": imp(7),
-                "moment_of_inertia_in4": imp(8),
+                "outer_diameter_in": adjusted_imperial(2, od, 1 / 25.4, 0.012),
+                "wall_thickness_in": adjusted_imperial(3, wall, 1 / 25.4, 0.004),
+                "inner_diameter_in": adjusted_imperial(5, id_in, 1 / 25.4, 0.015),
+                "weight_empty_lb_ft": adjusted_imperial(6, wt_empty, 0.671968975, max(0.02, wt_empty * 0.001) if wt_empty is not None else 0.02),
+                "weight_water_lb_ft": adjusted_imperial(7, wt_water, 0.671968975, max(0.04, wt_water * 0.001) if wt_water is not None else 0.04),
+                "moment_of_inertia_in4": adjusted_imperial(8, moi, 0.024025096, max(0.06, moi * 0.0005) if moi is not None else 0.06),
                 "source_file": f,
                 "imperial_source_file": imperial_file if iv is not None else None
             })
+    print("INDEPENDENT_PHYSICS_CORRECTIONS", len(corrections))
+    for item in corrections[:35]:
+        print("  corrected:", *item)
     return out
 
 # ==============================================================================
