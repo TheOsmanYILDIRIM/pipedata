@@ -540,13 +540,13 @@ class CsvDataStore(private val context: Context) {
         }
         val effectiveSched = if (sched in primaryOptions) sched else "STD"
 
-        var od = 0.0
-        var centerEnd = 0.0
+        var od = Double.NaN
+        var centerEnd = Double.NaN
         var radiusMm = Double.NaN
-        var centerCenter = 0.0
-        var backToFace = 0.0
-        var lengthHeight = 0.0
-        var wt = 0.0
+        var centerCenter = Double.NaN
+        var backToFace = Double.NaN
+        var lengthHeight = Double.NaN
+        var wt = Double.NaN
 
         val cleanNps = nps.replace("\"", "").trim()
         val found = tableData("tbl_fittings_buttweld_b16_9").firstOrNull { r ->
@@ -566,37 +566,7 @@ class CsvDataStore(private val context: Context) {
             wt = d(found, "weight_kg")
         }
 
-        val defaultOd = when (cleanNps) {
-            "1/2" -> 21.3; "3/4" -> 26.7; "1" -> 33.4; "1 1/4" -> 42.2; "1 1/2" -> 48.3; "2" -> 60.3;
-            "2 1/2" -> 73.0; "3" -> 88.9; "4" -> 114.3; "5" -> 141.3; "6" -> 168.3; "8" -> 219.1;
-            "10" -> 273.0; "12" -> 323.8; "14" -> 355.6; "16" -> 406.4; "18" -> 457.0; "20" -> 508.0; "24" -> 610.0
-            else -> dn * 1.15
-        }
-        if (od <= 0.0) od = defaultOd
-        if (centerEnd <= 0.0) {
-            centerEnd = when (subtype.id) {
-                "elbow_90_lr" -> od * 1.5
-                "elbow_90_sr" -> od * 1.0
-                "elbow_45" -> od * 0.625
-                "tee_eq", "tee_red" -> od * 1.05
-                "cap_bw" -> od * 0.63
-                "red_con", "red_ecc" -> od * 1.05
-                "stub_end" -> od * 1.06
-                else -> od * 1.25
-            }
-        }
-        if (centerCenter <= 0.0 && subtype.id.startsWith("return_")) {
-            centerCenter = if (subtype.id == "return_180_lr") centerEnd * 2.0 else od * 2.0
-        }
-        if (backToFace <= 0.0 && subtype.id.startsWith("return_")) {
-            backToFace = centerCenter * 0.70
-        }
-        if (lengthHeight <= 0.0) {
-            lengthHeight = if (centerEnd > 0) centerEnd else od * 1.1
-        }
-        if (wt <= 0.0) {
-            wt = (od / 60.3) * (od / 60.3) * 1.4
-        }
+        // Missing fitting measurements are N/A, not OD-based estimates.
 
         val rows = mutableListOf<DimensionRow>()
         rows.add(DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(od)} mm", "${fmt(od / 25.4)}\"", "buttweld"))
@@ -624,7 +594,7 @@ class CsvDataStore(private val context: Context) {
                 rows.add(DimensionRow("length", "Length / Height (E)", "Kep Toplam Boyu (E)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "red_con", "red_ecc" -> {
-                val smallOd = od * 0.7
+                val smallOd = Double.NaN // small-end diameter requires separate source geometry
                 rows.add(DimensionRow("small_od", "Small End Diameter (OD₂)", "Küçük Çap (OD₂)", "${fmt(smallOd)} mm", "${fmt(smallOd / 25.4)}\"", "buttweld"))
                 rows.add(DimensionRow("length", "End-to-End Length (H)", "Toplam Redüksiyon Boyu (H)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
