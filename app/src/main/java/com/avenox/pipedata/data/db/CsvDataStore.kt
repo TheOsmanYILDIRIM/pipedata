@@ -540,11 +540,17 @@ class CsvDataStore(private val context: Context) {
         var wt = Double.NaN
 
         val cleanNps = nps.replace("\"", "").trim()
+        val matrixType = subtype.id in setOf("tee_red", "red_con")
+        val branchOptions = if (matrixType) tableData("tbl_fittings_buttweld_b16_9")
+            .filter { s(it, "nps") == cleanNps && s(it, "schedule") == effectiveSched && s(it, "component_type") == compType }
+            .map { s(it, "branch_nps") }.filter { it.isNotBlank() }.distinct() else emptyList()
+        val selectedBranch = branchSel?.replace("\"", "")?.takeIf { it in branchOptions } ?: branchOptions.firstOrNull()
         val found = tableData("tbl_fittings_buttweld_b16_9").firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "component_type") == compType &&
-                    s(r, "schedule").equals(effectiveSched, ignoreCase = true)
+                    s(r, "schedule").equals(effectiveSched, ignoreCase = true) &&
+                    (!matrixType || s(r, "branch_nps") == selectedBranch)
         }
 
         if (found != null) {
