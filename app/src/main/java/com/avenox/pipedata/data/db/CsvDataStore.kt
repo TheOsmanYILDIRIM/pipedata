@@ -412,7 +412,8 @@ class CsvDataStore(private val context: Context) {
         }
 
         rows.add(DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"))
-        rows.add(DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"))
+        val bolting = if (bolts > 0 && boltSz != "N/A") "$bolts × $boltSz" else "N/A"
+        rows.add(DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", bolting, bolting, "dimensions"))
         rows.add(DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"))
         rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions"))
 
@@ -672,14 +673,14 @@ class CsvDataStore(private val context: Context) {
         val effectiveNpsWithQuote = if (cleanNpsWithQuote in availableNps) cleanNpsWithQuote else availableNps.first()
         val effectiveNps = effectiveNpsWithQuote.replace("\"", "")
 
-        var sockDepth = 0.0
-        var sockDia = 0.0
-        var centerEnd = 0.0
-        var bore = 0.0
-        var sockThk = 0.0
-        var bodyWallThk = 0.0
-        var lenVal = 0.0
-        var wt = 0.0
+        var sockDepth = Double.NaN
+        var sockDia = Double.NaN
+        var centerEnd = Double.NaN
+        var bore = Double.NaN
+        var sockThk = Double.NaN
+        var bodyWallThk = Double.NaN
+        var lenVal = Double.NaN
+        var wt = Double.NaN
 
         val compTypeLike = when (subtype.id) {
             "sw_elbow_90" -> "90° Elbow"
