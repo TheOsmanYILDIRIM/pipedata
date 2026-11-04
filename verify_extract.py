@@ -243,6 +243,24 @@ if union:
     check("socket-union-depth-10", union["socket_depth_mm"] in ("10", "10.0"), union["socket_depth_mm"])
     check("socket-union-mass-0.145", union["weight_kg"] == "0.145", union["weight_kg"])
 
+# 11c) Threaded fittings were previously unreachable and lost their source fields.
+thd_hex = first("tbl_fittings_threaded_b16_11",
+                nps="1/2", rating="3000", component_type="Hex Head Plug")
+check("threaded-hex-1-2-3000-present", thd_hex is not None)
+if thd_hex:
+    check("threaded-hex-length-14", float(thd_hex["length_mm"]) == 14.0, thd_hex["length_mm"])
+    check("threaded-hex-across-flats-22.23",
+          float(thd_hex["across_flats_mm"]) == 22.23, thd_hex["across_flats_mm"])
+    check("threaded-hex-head-depth-8",
+          float(thd_hex["head_depth_mm"]) == 8.0, thd_hex["head_depth_mm"])
+thd_elbow = first("tbl_fittings_threaded_b16_11",
+                  nps="1/2", rating="3000", component_type="90° Elbow")
+check("threaded-elbow-1-2-3000-present", thd_elbow is not None)
+if thd_elbow:
+    check("threaded-elbow-A-33", float(thd_elbow["center_to_end_mm"]) == 33, thd_elbow["center_to_end_mm"])
+    check("threaded-elbow-H-38", float(thd_elbow["height_mm"]) == 38, thd_elbow["height_mm"])
+    check("threaded-elbow-G-4.09", float(thd_elbow["body_wall_thickness_mm"]) == 4.09, thd_elbow["body_wall_thickness_mm"])
+
 # 12) Screen-level selection regression: actual fields must not get lost in CSV mapping.
 wn = first("tbl_flanges_asme_b16_5", nps="6", rating="300", flange_type="Welding Neck")
 check("screen-6-300-WN-exists", wn is not None)
