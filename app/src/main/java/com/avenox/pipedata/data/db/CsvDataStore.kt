@@ -102,10 +102,11 @@ class CsvDataStore(private val context: Context) {
     }
 
     /** Yuklu tablodan satirlari doner; tablo yuklenmediyse bos liste (sorgu fallback'e duser). */
-    private fun tableData(table: String): List<Map<String, String>> = tables[table] ?: emptyList()
+    private fun tableData(table: String): List<Map<String, String>> =
+        tables[table] ?: error("Required CSV table missing: $table")
 
     private fun d(row: Map<String, String>, col: String): Double {
-        return row[col]?.trim()?.toDoubleOrNull() ?: 0.0
+        return row[col]?.trim()?.toDoubleOrNull() ?: Double.NaN
     }
 
     private fun s(row: Map<String, String>, col: String): String = row[col] ?: ""
@@ -816,9 +817,9 @@ class CsvDataStore(private val context: Context) {
         val effectiveConnection = if (connection in connectionOptions) connection else "RF"
 
         var faceToFace = Double.NaN
-        var hwH = 0.0
-        var hwD = 0.0
-        var wt = 0.0
+        var hwH = Double.NaN
+        var hwD = Double.NaN
+        var wt = Double.NaN
 
         val cleanNps = nps.replace("\"", "").trim()
         val valveType = when (subtype.id) {
@@ -851,7 +852,7 @@ class CsvDataStore(private val context: Context) {
 
         val rows = mutableListOf(
             DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
-            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def")
+            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "N/A", "N/A", "valves_def")
         )
         if (hwH > 0) {
             rows.add(DimensionRow("hw_h", "Handwheel Height (H)", "Volan Yüksekliği (H)", "${fmt(hwH)} mm", "${fmt(hwH/25.4)}\"", "valves_def"))
@@ -1001,13 +1002,13 @@ class CsvDataStore(private val context: Context) {
     private val dfWeight = java.text.DecimalFormat("0.##", java.text.DecimalFormatSymbols(java.util.Locale.US))
 
     private fun fmt(d: Double): String {
-        if (d.isNaN() || d.isInfinite()) return "—"
+        if (d.isNaN() || d.isInfinite()) return "N/A"
         val rounded = Math.round(d * 10000.0) / 10000.0
         return dfPrecision.format(rounded)
     }
 
     private fun fmtWeight(d: Double): String {
-        if (d.isNaN() || d.isInfinite()) return "—"
+        if (d.isNaN() || d.isInfinite()) return "N/A"
         val rounded = Math.round(d * 100.0) / 100.0
         return dfWeight.format(rounded)
     }
