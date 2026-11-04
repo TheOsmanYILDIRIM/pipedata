@@ -870,7 +870,8 @@ class CsvDataStore(private val context: Context) {
         } else ""
         val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { row ->
             if (subtype.id == "gsk_rtj") {
-                val wanted = sourceRing.replace("-", "").uppercase()
+                val canonical = sourceRing.replace("-", "").uppercase()
+                val wanted = if (canonical.isNotBlank() && !canonical.startsWith("R")) "R$canonical" else canonical
                 wanted.isNotEmpty() && wanted != "N/A" &&
                     s(row, "ring_number").replace("-", "").uppercase() == wanted
             } else {
