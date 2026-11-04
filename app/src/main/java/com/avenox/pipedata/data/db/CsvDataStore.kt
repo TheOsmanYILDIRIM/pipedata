@@ -591,7 +591,7 @@ class CsvDataStore(private val context: Context) {
                 rows.add(DimensionRow("length", "End-to-End Length (H)", "Toplam Redüksiyon Boyu (H)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "stub_end" -> {
-                val lapDia = if (backToFace > 0) backToFace else od * 1.5
+                val lapDia = backToFace // no estimated lap diameter
                 rows.add(DimensionRow("lap_dia", "Flared Lap Diameter (G)", "Yaka Flanş Çapı (G)", "${fmt(lapDia)} mm", "${fmt(lapDia / 25.4)}\"", "buttweld"))
                 rows.add(DimensionRow("length", "Overall Length (F)", "Toplam Yaka Boyu (F)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
                 rows.add(DimensionRow("radius", "Corner Radius (r)", "Yaka Köşe Radyüsü (r)", if (dn <= 50) "8.0 mm" else "12.5 mm", if (dn <= 50) "0.31\"" else "0.50\"", "buttweld"))
@@ -728,13 +728,13 @@ class CsvDataStore(private val context: Context) {
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
             "sw_half_coupling", "sw_union", "sw_red_coupling" -> {
-                val effectiveLen = if (lenVal > 0) lenVal else if (centerEnd > 0) centerEnd else sockDepth * 2.0
+                val effectiveLen = if (lenVal > 0) lenVal else centerEnd
                 rows.add(DimensionRow("length", "Overall Length (L)", "Toplam Boy (L)", "${fmt(effectiveLen)} mm", "${fmt(effectiveLen/25.4)}\"", "forged"))
                 if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
             "sw_cap" -> {
-                val capThk = if (lenVal > 0) lenVal else if (sockThk > 0) sockThk else 6.4
+                val capThk = if (lenVal > 0) lenVal else sockThk
                 rows.add(DimensionRow("cap_thk", "End Wall Thk (E)", "Taban Kalınlığı (E)", "${fmt(capThk)} mm", "${fmt(capThk/25.4)}\"", "forged"))
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
