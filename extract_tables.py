@@ -227,6 +227,7 @@ def extract_buttweld():
             
             od = num(g("od", "3-od"))
             c2e = num(g("90 ctr to end", "45 ctr to end", "ctr to e", "ctr to end", "m"))
+            radius = num(g("radius", "r"))
             c2c = num(g("total", "ctr to ctr"))
             b2f = num(g("flat to back", "back to face"))
             length = num(g("over cap-e", "overcap-e1", "len short", "len long", "len", "length"))
@@ -240,6 +241,7 @@ def extract_buttweld():
                 "component_type": comp_type,
                 "outer_diameter_mm": od,
                 "center_to_end_mm": c2e,
+                "radius_mm": radius,
                 "center_to_center_mm": c2c,
                 "back_to_face_mm": b2f,
                 "overall_length_height_mm": length if length is not None else c2e,
@@ -247,13 +249,14 @@ def extract_buttweld():
                 "source_file": f
             })
             
-            if comp_type == "Concentric Reducer":
+            if False and comp_type == "Concentric Reducer":  # No fabricated eccentric data
                 out.append({
                     "nps": nps,
                     "schedule": sched,
                     "component_type": "Eccentric Reducer",
                     "outer_diameter_mm": od,
                     "center_to_end_mm": c2e,
+                "radius_mm": radius,
                     "center_to_center_mm": c2c,
                     "back_to_face_mm": b2f,
                     "overall_length_height_mm": length if length is not None else c2e,
@@ -325,6 +328,7 @@ def extract_socketweld():
                 "socket_diameter_mm": sock_dia,
                 "socket_depth_mm": sock_depth,
                 "center_to_end_mm": c2e,
+                "radius_mm": radius,
                 "bore_diameter_mm": bore,
                 "socket_wall_thickness_mm": sock_thk,
                 "body_wall_thickness_mm": body_thk,
@@ -387,6 +391,7 @@ def extract_threaded():
                 "rating": rating,
                 "component_type": comp,
                 "center_to_end_mm": c2e,
+                "radius_mm": radius,
                 "bore_diameter_mm": bore,
                 "body_wall_thickness_mm": None,
                 "length_mm": length,
@@ -433,6 +438,10 @@ def extract_valves():
             g = lambda *names: pick(ctx, [x.lower() for x in names])
             
             f2f = num(g("rf-f/f", "rf face to face", "f-f"))
+            rtj_f2f = num(g("rtj f/f", "rtj-f/f"))
+            bw_f2f = num(g("bw-f/f", "bw f/f"))
+            bw_weight = num(g("bw kg"))
+            rtj_add_len = num(g("rtj add len"))
             hw_h = num(g("height-hw", "height"))
             hw_d = num(g("diam-hw", "handwheel"))
             wt = num(g("rf/rtj kg", "weight rf/rtj", "weight kg", "wt"))
@@ -444,6 +453,10 @@ def extract_valves():
                 "rating": rating,
                 "valve_type": vname,
                 "face_to_face_mm": f2f,
+                "face_to_face_rtj_mm": rtj_f2f,
+                "face_to_face_bw_mm": bw_f2f,
+                "weight_bw_kg": bw_weight,
+                "rtj_add_length_mm": rtj_add_len,
                 "handwheel_height_mm": hw_h,
                 "handwheel_diameter_mm": hw_d,
                 "weight_kg": wt,
@@ -464,14 +477,22 @@ def extract_gaskets():
             ring = v[0].strip()
             if not ring or ring.upper() in ("N/A", "R NO"): continue
             pitch_dia = num(v[2])
+            oval_height = num(v[4]) if len(v) > 4 else None
+            oct_height = num(v[5]) if len(v) > 5 else None
+            oct_width = num(v[6]) if len(v) > 6 else None
             width = num(v[3])
             wt = num(v[8]) if len(v) > 8 else None
             out.append({
                 "nps": ring,
                 "rating": "RTJ",
                 "gasket_type": "RTJ Ring Joint",
-                "inner_diameter_mm": pitch_dia,
-                "outer_diameter_mm": width,
+                "inner_diameter_mm": None,
+                "outer_diameter_mm": None,
+                "pitch_diameter_mm": pitch_dia,
+                "ring_width_mm": width,
+                "oval_height_mm": oval_height,
+                "oct_height_mm": oct_height,
+                "oct_width_mm": oct_width,
                 "ring_number": ring if ring.startswith("R") else f"R{ring}",
                 "weight_kg": wt,
                 "source_file": "grtj1.csv"
@@ -497,6 +518,7 @@ def extract_gaskets():
                         "inner_diameter_mm": id_val,
                         "outer_diameter_mm": od_val,
                         "ring_number": "",
+                        "thickness_mm": num(v[32]) if len(v) > 32 else None,
                         "weight_kg": wt_val,
                         "source_file": "gspr1.csv"
                     })
@@ -607,7 +629,7 @@ def main():
     bw = extract_buttweld()
     write_table_csv("tbl_fittings_buttweld_b16_9", bw, [
         "nps", "schedule", "component_type", "outer_diameter_mm",
-        "center_to_end_mm", "center_to_center_mm", "back_to_face_mm",
+        "center_to_end_mm", "radius_mm", "center_to_center_mm", "back_to_face_mm",
         "overall_length_height_mm", "weight_kg", "source_file"
     ])
     
@@ -629,13 +651,16 @@ def main():
     valves = extract_valves()
     write_table_csv("tbl_valves_asme_b16_10", valves, [
         "nps", "rating", "valve_type", "face_to_face_mm",
+        "face_to_face_rtj_mm", "face_to_face_bw_mm", "weight_bw_kg", "rtj_add_length_mm",
         "handwheel_height_mm", "handwheel_diameter_mm", "weight_kg", "source_file"
     ])
     
     gaskets = extract_gaskets()
     write_table_csv("tbl_gaskets_and_rtj", gaskets, [
         "nps", "rating", "gasket_type", "inner_diameter_mm",
-        "outer_diameter_mm", "ring_number", "weight_kg", "source_file"
+        "outer_diameter_mm", "pitch_diameter_mm", "ring_width_mm",
+        "oval_height_mm", "oct_height_mm", "oct_width_mm", "thickness_mm",
+        "ring_number", "weight_kg", "source_file"
     ])
     
     blanks = extract_blanks()

@@ -271,7 +271,7 @@ class CsvDataStore(private val context: Context) {
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
@@ -547,6 +547,7 @@ class CsvDataStore(private val context: Context) {
 
         var od = 0.0
         var centerEnd = 0.0
+        var radiusMm = Double.NaN
         var centerCenter = 0.0
         var backToFace = 0.0
         var lengthHeight = 0.0
@@ -563,6 +564,7 @@ class CsvDataStore(private val context: Context) {
         if (found != null) {
             od = d(found, "outer_diameter_mm")
             centerEnd = d(found, "center_to_end_mm")
+            radiusMm = found["radius_mm"]?.toDoubleOrNull() ?: Double.NaN
             centerCenter = d(found, "center_to_center_mm")
             backToFace = d(found, "back_to_face_mm")
             lengthHeight = d(found, "overall_length_height_mm")
@@ -607,7 +609,7 @@ class CsvDataStore(private val context: Context) {
         when (subtype.id) {
             "elbow_90_lr", "elbow_90_sr", "elbow_45" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End (A)", "Merkez-Uç Mesafesi (A)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                val radius = if (subtype.id == "elbow_90_lr") od * 1.5 else if (subtype.id == "elbow_90_sr") od * 1.0 else od * 0.625
+                val radius = radiusMm // Missing radius is unknown; do not derive from OD.
                 rows.add(DimensionRow("radius", "Centerline Radius (R)", "Büküm Yarıçapı (R)", "${fmt(radius)} mm", "${fmt(radius / 25.4)}\"", "buttweld"))
             }
             "return_180_lr", "return_180_sr" -> {
@@ -804,13 +806,16 @@ class CsvDataStore(private val context: Context) {
         allSubtypes: List<SubtypeItem>,
         nps: String,
         dn: Int,
-        ratingStr: String
+        ratingStr: String,
+        connection: String
     ): ComponentData {
         val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val connectionOptions = listOf("RF", "RTJ", "BW")
+        val effectiveConnection = if (connection in connectionOptions) connection else "RF"
 
-        var faceToFace = 0.0
+        var faceToFace = Double.NaN
         var hwH = 0.0
         var hwD = 0.0
         var wt = 0.0
@@ -831,16 +836,18 @@ class CsvDataStore(private val context: Context) {
                     s(r, "valve_type").equals(valveType, ignoreCase = true)
         }
         if (valveRow != null) {
-            faceToFace = d(valveRow, "face_to_face_mm")
+            val faceColumn = when (effectiveConnection) {
+                "RTJ" -> "face_to_face_rtj_mm"
+                "BW" -> "face_to_face_bw_mm"
+                else -> "face_to_face_mm"
+            }
+            faceToFace = valveRow[faceColumn]?.toDoubleOrNull() ?: Double.NaN
             hwH = d(valveRow, "handwheel_height_mm")
             hwD = d(valveRow, "handwheel_diameter_mm")
-            wt = d(valveRow, "weight_kg")
+            wt = if (effectiveConnection == "BW") d(valveRow, "weight_bw_kg") else d(valveRow, "weight_kg")
         }
 
-        if (faceToFace <= 0) {
-            faceToFace = if (rating >= 300) 216.0 else 178.0
-            wt = if (rating >= 300) 24.0 else 18.0
-        }
+        // Missing measurement stays unknown.
 
         val rows = mutableListOf(
             DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
@@ -865,6 +872,10 @@ class CsvDataStore(private val context: Context) {
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveRatingStr,
+            secondarySelectorLabelEn = "End connection",
+            secondarySelectorLabelTr = "Bağlantı",
+            secondaryOptions = connectionOptions,
+            selectedSecondary = effectiveConnection,
             dimensions = rows
         )
     }
