@@ -237,35 +237,23 @@ class CsvDataStore(private val context: Context) {
                 SubtypeItem("sw_half_coupling", "Half Coupling", "Half Coupling", "HALF-C", "ASME B16.11", "Single socket high pressure branch coupling.", "Tek taraf soketli yarım manşon.", "modern_ftsw6.svg", "Soketli Yarım Manşon", "Yarım Manşon"),
                 SubtypeItem("sw_cap", "Socket Weld Cap", "SW Cap", "SW CAP", "ASME B16.11", "High pressure socket end closure cap.", "Soketli boru sonlandırma kepi.", "modern_ftsw7.svg", "Soketli Kep", "Soketli Kep"),
                 SubtypeItem("sw_red_coupling", "Reducing Coupling", "Red Coupling", "RED-C", "ASME B16.11", "Diameter reducing socket coupling.", "Soketli çap düşürücü redüksiyon.", "modern_ftsw8.svg", "Soketli Redüksiyon", "Redüksiyon"),
-                SubtypeItem("sw_union", "Socket Weld Union", "SW Union", "UNION", "ASME B16.11", "High pressure 3-piece socket weld union.", "Dövme çelik soketli konik rakor.", "modern_ftsw9.svg", "Soketli Konik Rakor", "Konik Rakor"),
-                SubtypeItem("thd_elbow_90", "90° Elbow (Threaded)", "90° Elbow", "THD1", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc1.svg", "Dişli 90° Dirsek", "Dişli 90° Dirsek"),
-                SubtypeItem("thd_tee", "Tee (Threaded)", "Tee", "THD2", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc2.svg", "Dişli Te", "Dişli Te"),
-                SubtypeItem("thd_cross", "Cross (Threaded)", "Cross", "THD3", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc3.svg", "Dişli İstavroz", "Dişli İstavroz"),
-                SubtypeItem("thd_elbow_45", "45° Elbow (Threaded)", "45° Elbow", "THD4", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc4.svg", "Dişli 45° Dirsek", "Dişli 45° Dirsek"),
-                SubtypeItem("thd_street_elbow", "Street Elbow (Threaded)", "Street Elbow", "THD5", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc5.svg", "Dişli Street Dirsek", "Dişli Street Dirsek"),
-                SubtypeItem("thd_full_coupling", "Full Coupling (Threaded)", "Full Coupling", "THD6", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc6.svg", "Dişli Tam Manşon", "Dişli Tam Manşon"),
-                SubtypeItem("thd_half_coupling", "Half Coupling (Threaded)", "Half Coupling", "THD7", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc7.svg", "Dişli Yarım Manşon", "Dişli Yarım Manşon"),
-                SubtypeItem("thd_cap", "Cap (Threaded)", "Cap", "THD8", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc8.svg", "Dişli Kep", "Dişli Kep"),
-                SubtypeItem("thd_square_plug", "Square Head Plug (Threaded)", "Square Head Plug", "THD9", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc9.svg", "Kare Başlı Tapa", "Kare Başlı Tapa"),
-                SubtypeItem("thd_hex_plug", "Hex Head Plug (Threaded)", "Hex Head Plug", "THD10", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc10.svg", "Altıgen Başlı Tapa", "Altıgen Başlı Tapa"),
-                SubtypeItem("thd_round_plug", "Round Head Plug (Threaded)", "Round Head Plug", "THD11", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc11.svg", "Yuvarlak Başlı Tapa", "Yuvarlak Başlı Tapa"),
-                SubtypeItem("thd_hex_bushing", "Hex Head Bushing (Threaded)", "Hex Head Bushing", "THD12", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc12.svg", "Altıgen Bushing", "Altıgen Bushing"),
-                SubtypeItem("thd_flush_bushing", "Flush Bushing (Threaded)", "Flush Bushing", "THD13", "ASME B16.11", "Forged threaded fitting.", "Dişli dövme fiting.", "modern_ftsc13.svg", "Gömme Bushing", "Gömme Bushing")
+                SubtypeItem("sw_union", "Socket Weld Union", "SW Union", "UNION", "ASME B16.11", "High pressure 3-piece socket weld union.", "Dövme çelik soketli konik rakor.", "modern_ftsw9.svg", "Soketli Konik Rakor", "Konik Rakor")
+
             )
             "fittings_thd" -> listOf(
-                SubtypeItem("thd_elbow_90", "90° Threaded Elbow", "90° Threaded", "90°", "ASME B16.11", "Forged threaded 90-degree elbow.", "Dişli 90 derece dirsek.", "modern_ftsw1.svg", "90° Dişli Dirsek"),
-                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsw2.svg", "45° Dişli Dirsek"),
-                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsw3.svg", "Dişli Te"),
-                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsw4.svg", "Dişli İstavroz"),
-                SubtypeItem("thd_street", "Street Elbow", "Street", "ST", "ASME B16.11", "Street elbow.", "Dişli sokak dirseği.", "modern_ftsw1.svg", "Dişli Sokak Dirseği"),
-                SubtypeItem("thd_full", "Full Coupling", "Coupling", "CPL", "ASME B16.11", "Threaded full coupling.", "Dişli tam manşon.", "modern_ftsw5.svg", "Dişli Tam Manşon"),
-                SubtypeItem("thd_half", "Half Coupling", "Half", "HALF", "ASME B16.11", "Threaded half coupling.", "Dişli yarım manşon.", "modern_ftsw6.svg", "Dişli Yarım Manşon"),
-                SubtypeItem("thd_cap", "Threaded Cap", "Cap", "CAP", "ASME B16.11", "Threaded cap.", "Dişli kep.", "modern_ftsw7.svg", "Dişli Kep"),
-                SubtypeItem("thd_square", "Square Head Plug", "Square Plug", "SQ", "ASME B16.11", "Square head plug.", "Kare başlı tapa.", "modern_ftsw7.svg", "Kare Başlı Tapa"),
-                SubtypeItem("thd_hex", "Hex Head Plug", "Hex Plug", "HEX", "ASME B16.11", "Hex head plug.", "Altıgen başlı tapa.", "modern_ftsw7.svg", "Altıgen Başlı Tapa"),
-                SubtypeItem("thd_round", "Round Head Plug", "Round Plug", "RND", "ASME B16.11", "Round head plug.", "Yuvarlak başlı tapa.", "modern_ftsw7.svg", "Yuvarlak Başlı Tapa"),
-                SubtypeItem("thd_bushing", "Hex Head Bushing", "Bushing", "BSH", "ASME B16.11", "Hex head bushing.", "Altıgen başlı burç.", "modern_ftsw8.svg", "Altıgen Başlı Burç"),
-                SubtypeItem("thd_flush", "Flush Bushing", "Flush Bushing", "FL", "ASME B16.11", "Flush bushing.", "Gömme burç.", "modern_ftsw8.svg", "Gömme Burç")
+                SubtypeItem("thd_elbow_90", "90° Threaded Elbow", "90° Threaded", "90°", "ASME B16.11", "Forged threaded 90-degree elbow.", "Dişli 90 derece dirsek.", "modern_ftsc1.svg", "90° Dişli Dirsek"),
+                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsc2.svg", "45° Dişli Dirsek"),
+                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsc3.svg", "Dişli Te"),
+                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsc4.svg", "Dişli İstavroz"),
+                SubtypeItem("thd_street", "Street Elbow", "Street", "ST", "ASME B16.11", "Street elbow.", "Dişli sokak dirseği.", "modern_ftsc5.svg", "Dişli Sokak Dirseği"),
+                SubtypeItem("thd_full", "Full Coupling", "Coupling", "CPL", "ASME B16.11", "Threaded full coupling.", "Dişli tam manşon.", "modern_ftsc6.svg", "Dişli Tam Manşon"),
+                SubtypeItem("thd_half", "Half Coupling", "Half", "HALF", "ASME B16.11", "Threaded half coupling.", "Dişli yarım manşon.", "modern_ftsc7.svg", "Dişli Yarım Manşon"),
+                SubtypeItem("thd_cap", "Threaded Cap", "Cap", "CAP", "ASME B16.11", "Threaded cap.", "Dişli kep.", "modern_ftsc8.svg", "Dişli Kep"),
+                SubtypeItem("thd_square", "Square Head Plug", "Square Plug", "SQ", "ASME B16.11", "Square head plug.", "Kare başlı tapa.", "modern_ftsc9.svg", "Kare Başlı Tapa"),
+                SubtypeItem("thd_hex", "Hex Head Plug", "Hex Plug", "HEX", "ASME B16.11", "Hex head plug.", "Altıgen başlı tapa.", "modern_ftsc10.svg", "Altıgen Başlı Tapa"),
+                SubtypeItem("thd_round", "Round Head Plug", "Round Plug", "RND", "ASME B16.11", "Round head plug.", "Yuvarlak başlı tapa.", "modern_ftsc11.svg", "Yuvarlak Başlı Tapa"),
+                SubtypeItem("thd_bushing", "Hex Head Bushing", "Bushing", "BSH", "ASME B16.11", "Hex head bushing.", "Altıgen başlı burç.", "modern_ftsc12.svg", "Altıgen Başlı Burç"),
+                SubtypeItem("thd_flush", "Flush Bushing", "Flush Bushing", "FL", "ASME B16.11", "Flush bushing.", "Gömme burç.", "modern_ftsc13.svg", "Gömme Burç")
             )
             "valves" -> listOf(
                 SubtypeItem("vlv_gate", "Gate Valve", "Gate Valve", "GATE", "ASME B16.34", "Linear motion isolation valve.", "Tam açık/kapalı hat kesme vanası.", "modern_vlfl1.svg", "Sürgülü Vana (Gate Valve)", "Sürgülü Vana"),
@@ -982,6 +970,9 @@ class CsvDataStore(private val context: Context) {
         addDim("center_to_end_mm", "c2e", "Center-to-End (A)", "Merkezden Uca (A)")
         addDim("bore_diameter_mm", "bore", "Bore Diameter (B)", "İç Delik Çapı (B)")
         addDim("body_wall_thickness_mm", "wall", "Body Wall Thickness", "Gövde Et Kalınlığı")
+        addDim("height_mm", "height", "Outside Height (H)", "Dış Yükseklik (H)")
+        addDim("across_flats_mm", "across_flats", "Across Flats", "Anahtar Ağzı")
+        addDim("head_depth_mm", "head_depth", "Head Depth", "Baş Derinliği")
         addDim("length_mm", "len", "Overall Length (L)", "Toplam Boy (L)")
         val weight = record?.get("weight_kg")?.toDoubleOrNull()
         if (weight != null && weight > 0) rows.add(DimensionRow("weight", "Source Weight",
