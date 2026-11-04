@@ -102,7 +102,7 @@ def extract_flanges():
             ring_no = (g("ring no") or "").strip()
             
             wn_len = num(g("wn thk", "hub-a"))
-            wn_bore = num(g("wn & long neck id"))
+            wn_bore = num(g("wn & long neck id", "long neck id"))
             thd_len = num(g("thd thk", "hub-a"))
             lapped_len = num(g("lapped thk", "hub-a"))
             so_bore = num(g("so bore"))
@@ -133,11 +133,11 @@ def extract_flanges():
                     "outer_diameter_mm": od,
                     "thickness_mm": thk,
                     "hub_diameter_mm": hub_x,
-                    "length_thru_hub_mm": len_y if len_y is not None else thk,
+                    "length_thru_hub_mm": len_y,
                     "bore_diameter_mm": bore,
                     "rf_diameter_mm": rf_dia,
                     "pcd_mm": pcd,
-                    "num_bolts": int(no_bolts) if no_bolts else 4,
+                    "num_bolts": int(no_bolts) if no_bolts is not None else None,
                     "bolt_diameter_in": bolt_sz,
                     "stud_bolt_length_mm": rf_sb_len,
                     "stud_bolt_length_rtj_mm": rtj_sb_len,
