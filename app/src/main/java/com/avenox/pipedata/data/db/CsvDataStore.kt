@@ -242,9 +242,9 @@ class CsvDataStore(private val context: Context) {
             )
             "fittings_thd" -> listOf(
                 SubtypeItem("thd_elbow_90", "90° Threaded Elbow", "90° Threaded", "90°", "ASME B16.11", "Forged threaded 90-degree elbow.", "Dişli 90 derece dirsek.", "modern_ftsc1.svg", "90° Dişli Dirsek"),
-                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsc2.svg", "45° Dişli Dirsek"),
-                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsc3.svg", "Dişli Te"),
-                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsc4.svg", "Dişli İstavroz"),
+                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsc4.svg", "45° Dişli Dirsek"),
+                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsc2.svg", "Dişli Te"),
+                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsc3.svg", "Dişli İstavroz"),
                 SubtypeItem("thd_street", "Street Elbow", "Street", "ST", "ASME B16.11", "Street elbow.", "Dişli sokak dirseği.", "modern_ftsc5.svg", "Dişli Sokak Dirseği"),
                 SubtypeItem("thd_full", "Full Coupling", "Coupling", "CPL", "ASME B16.11", "Threaded full coupling.", "Dişli tam manşon.", "modern_ftsc6.svg", "Dişli Tam Manşon"),
                 SubtypeItem("thd_half", "Half Coupling", "Half", "HALF", "ASME B16.11", "Threaded half coupling.", "Dişli yarım manşon.", "modern_ftsc7.svg", "Dişli Yarım Manşon"),
