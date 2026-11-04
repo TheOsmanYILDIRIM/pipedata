@@ -52,7 +52,10 @@ if r_80:
 # 3) Vana 2" 150#: F2F=178
 r = first("tbl_valves_asme_b16_10", nps="2", rating="150")
 check("vana-2-150-var", r is not None)
-if r: check("vana-F2F-178", r["face_to_face_mm"] in ("178", "178.0"), r["face_to_face_mm"])
+if r:
+    check("vana-F2F-178", r["face_to_face_mm"] in ("178", "178.0"), r["face_to_face_mm"])
+    check("vana-RTJ-F2F-191", r["face_to_face_rtj_mm"] in ("191", "191.0"), r["face_to_face_rtj_mm"])
+    check("vana-BW-F2F-216", r["face_to_face_bw_mm"] in ("216", "216.0"), r["face_to_face_bw_mm"])
 
 # 3b) Vana 14" 150# vs 1500# rating ayrimi (Rating parse bug testi)
 r_v150 = first("tbl_valves_asme_b16_10", nps="14", rating="150", valve_type="Gate Valve")
