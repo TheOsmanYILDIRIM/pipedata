@@ -307,7 +307,20 @@ def extract_buttweld():
             b2f = num(g("flat to back", "back to face"))
             length = num(g("over cap-e", "overcap-e1", "len short", "len long", "len", "length"))
             wt = num(g("wt kg", "wt", "kg", "wt short", "wt long"))
-            
+            lap_dia = None
+            short_len = None
+            short_weight = None
+            if comp_type == "Lap Joint Stub End":
+                # Stub-end data uses DO=pipe end, OD=flared lap: they are NOT
+                # interchangeable. The original file stores two patterns.
+                od = num(g("do"))
+                lap_dia = num(g("od"))
+                short_len = num(g("stub len sht"))
+                length = num(g("stub len lg"))
+                radius = num(g("radius"))
+                short_weight = num(g("wt short"))
+                wt = num(g("wt long"))
+
             if od is None and c2e is None and length is None and wt is None: continue
             
             out.append({
@@ -317,6 +330,9 @@ def extract_buttweld():
                 "outer_diameter_mm": od,
                 "center_to_end_mm": c2e,
                 "radius_mm": radius,
+                "lap_diameter_mm": lap_dia,
+                "short_length_mm": short_len,
+                "short_weight_kg": short_weight,
                 "branch_center_to_end_mm": branch_c2e,
                 "center_to_center_mm": c2c,
                 "back_to_face_mm": b2f,
@@ -335,6 +351,17 @@ def extract_matrix_fittings():
     Both are indexed by branch NPS headers, not by arbitrary column offsets.
     """
     out = []
+    # The small-end OD comes from the independently indexed standard pipe OD.
+    od_by_nps = {}
+    pipe_src = os.path.join(SRC, "pipestd.csv")
+    if os.path.isfile(pipe_src):
+        _, _, pipe_rows = b4a_rows(pipe_src)
+        for pipe in pipe_rows:
+            if len(pipe) < 3: continue
+            size = nps_norm(pipe[12] if len(pipe) > 12 and pipe[12] not in ("", "N/A") else pipe[0])
+            diameter = num(pipe[2])
+            if size and diameter and diameter > 0:
+                od_by_nps[size] = diameter
     families = (("reducers", "Concentric Reducer"), ("reducingtee", "Reducing Tee"))
     for fname in sorted(os.listdir(SRC)):
         fn = fname.lower()
@@ -372,12 +399,13 @@ def extract_matrix_fittings():
                     run_end = None
                     branch_end = None
                     overall_len = branch_measure
-                out.append({
+                record = {
                     "nps": main_nps,
                     "branch_nps": branch,
                     "schedule": schedule,
                     "component_type": comp_type,
                     "outer_diameter_mm": main_od,
+                    "small_end_outer_diameter_mm": od_by_nps.get(branch),
                     "center_to_end_mm": run_end,
                     "branch_center_to_end_mm": branch_end,
                     "radius_mm": None,
@@ -385,8 +413,16 @@ def extract_matrix_fittings():
                     "back_to_face_mm": None,
                     "overall_length_height_mm": overall_len,
                     "weight_kg": weights.get(branch),
-                    "source_file": fname
-                })
+                    "source_file": fname,
+                    "dimension_basis": "APK matrix"
+                }
+                out.append(record)
+                if comp_type == "Concentric Reducer":
+                    # ASME B16.9 specifies identical H for concentric/eccentric
+                    # reducers at a given large-end NPS, NOT identical weights.
+                    out.append({**record, "component_type": "Eccentric Reducer",
+                                "weight_kg": None,
+                                "dimension_basis": "ASME B16.9 shared H"})
     return out
 
 
@@ -751,9 +787,11 @@ def main():
     bw = extract_buttweld()
     write_table_csv("tbl_fittings_buttweld_b16_9", bw, [
         "nps", "branch_nps", "schedule", "component_type", "outer_diameter_mm",
-        "center_to_end_mm", "branch_center_to_end_mm", "radius_mm",
-        "center_to_center_mm", "back_to_face_mm",
-        "overall_length_height_mm", "weight_kg", "source_file"
+        "small_end_outer_diameter_mm", "center_to_end_mm",
+        "branch_center_to_end_mm", "radius_mm", "lap_diameter_mm",
+        "short_length_mm", "short_weight_kg", "center_to_center_mm",
+        "back_to_face_mm", "overall_length_height_mm", "weight_kg",
+        "dimension_basis", "source_file"
     ])
     
     sw = extract_socketweld()
