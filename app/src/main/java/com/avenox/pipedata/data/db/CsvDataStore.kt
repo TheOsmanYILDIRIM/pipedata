@@ -896,34 +896,45 @@ class CsvDataStore(private val context: Context) {
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
 
-        var idMm = 0.0
-        var odMm = 0.0
-        var ringNo = ""
-
         val cleanNps = nps.replace("\"", "").trim()
-        val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { r ->
-            val n = s(r, "nps")
-            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
-                    s(r, "rating") == rating.toString()
+        val type = when (subtype.id) {
+            "gsk_rtj" -> "RTJ Ring Joint"
+            "gsk_flat" -> "Flat Ring Gasket"
+            else -> "Spiral Wound Gasket"
         }
-        if (gasketRow != null) {
-            idMm = d(gasketRow, "inner_diameter_mm")
-            odMm = d(gasketRow, "outer_diameter_mm")
-            ringNo = s(gasketRow, "ring_number")
+        val sourceRing = if (subtype.id == "gsk_rtj") {
+            tableData("tbl_flanges_asme_b16_5").firstOrNull { row ->
+                s(row, "nps") == cleanNps && s(row, "rating") == rating.toString() &&
+                    s(row, "flange_type") == "Welding Neck"
+            }?.get("rtj_ring_number")?.replace("'", "")?.trim().orEmpty()
+        } else ""
+        val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { row ->
+            if (subtype.id == "gsk_rtj") {
+                val wanted = sourceRing.replace("-", "").uppercase()
+                wanted.isNotEmpty() && wanted != "N/A" &&
+                    s(row, "ring_number").replace("-", "").uppercase() == wanted
+            } else {
+                s(row, "nps") == cleanNps && s(row, "rating") == rating.toString() &&
+                    s(row, "gasket_type") == type
+            }
         }
-
-        if (odMm <= 0) {
-            idMm = 60.3
-            odMm = 104.8
-            ringNo = if (dn == 50) "R23" else "R" + (dn / 2)
+        fun measured(column: String): Double =
+            gasketRow?.get(column)?.toDoubleOrNull() ?: Double.NaN
+        fun dim(id: String, en: String, tr: String, value: Double) =
+            DimensionRow(id, en, tr, "${fmt(value)} mm", "${fmt(value / 25.4)}\"", "gaskets_def")
+        val rows = mutableListOf<DimensionRow>()
+        if (subtype.id == "gsk_rtj") {
+            rows.add(dim("pitch", "Pitch Diameter (P)", "Hatve Çapı (P)", measured("pitch_diameter_mm")))
+            rows.add(dim("width", "Ring Width (A)", "Halka Genişliği (A)", measured("ring_width_mm")))
+            rows.add(dim("oval", "Oval Height (B)", "Oval Yüksekliği (B)", measured("oval_height_mm")))
+            rows.add(dim("oct", "Octagonal Height (H)", "Sekizgen Yüksekliği (H)", measured("oct_height_mm")))
+            val ring = gasketRow?.get("ring_number") ?: "N/A"
+            rows.add(DimensionRow("ring", "RTJ Ring Number", "RTJ Halka Numarası", ring, ring, "gaskets_def"))
+        } else {
+            rows.add(dim("id", "Inside Diameter (d1)", "İç Çap (d1)", measured("inner_diameter_mm")))
+            rows.add(dim("od", "Outside Diameter (d2)", "Dış Çap (d2)", measured("outer_diameter_mm")))
+            rows.add(dim("thk", "Gasket Thickness", "Conta Kalınlığı", measured("thickness_mm")))
         }
-
-        val rows = listOf(
-            DimensionRow("id", "Gasket Inside Dia (d1)", "Conta İç Çapı (d1)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "gaskets_def"),
-            DimensionRow("od", "Gasket Outside Dia (d2)", "Conta Dış Çapı (d2)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "gaskets_def"),
-            DimensionRow("ring", "RTJ Ring Number", "RTJ Ring Numarası", ringNo.ifBlank { "R23" }, ringNo.ifBlank { "R23" }, "gaskets_def"),
-            DimensionRow("thk", "Standard Thickness", "Conta Kalınlığı", "4.5 mm", "0.177\"", "gaskets_def")
-        )
 
         return ComponentData(
             categoryId = "gaskets",
