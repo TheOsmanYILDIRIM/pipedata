@@ -875,8 +875,6 @@ class CsvDataStore(private val context: Context) {
         val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
-        val connectionOptions = listOf("RF", "RTJ", "BW")
-        val effectiveConnection = if (connection in connectionOptions) connection else "RF"
 
         var faceToFace = Double.NaN
         var hwH = Double.NaN
@@ -898,6 +896,13 @@ class CsvDataStore(private val context: Context) {
                     s(r, "rating") == rating.toString() &&
                     s(r, "valve_type").equals(valveType, ignoreCase = true)
         }
+        val connectionColumns = mapOf("RF" to "face_to_face_mm",
+            "RTJ" to "face_to_face_rtj_mm", "BW" to "face_to_face_bw_mm")
+        val connectionOptions = connectionColumns.filter { (_, column) ->
+            valveRow?.get(column)?.toDoubleOrNull()?.let { it > 0.0 } == true
+        }.keys.toList()
+        val effectiveConnection = connection.takeIf { it in connectionOptions }
+            ?: connectionOptions.firstOrNull() ?: "RF"
         if (valveRow != null) {
             val faceColumn = when (effectiveConnection) {
                 "RTJ" -> "face_to_face_rtj_mm"
@@ -912,17 +917,30 @@ class CsvDataStore(private val context: Context) {
 
         // Missing measurement stays unknown.
 
-        val rows = mutableListOf(
-            DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
-            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "N/A", "N/A", "valves_def")
-        )
+        val rows = mutableListOf<DimensionRow>()
+        if (faceToFace > 0) {
+            rows.add(DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"))
+        }
+        // Flanged valve ends use the mating flange OD from B16.5.
+        // For butt-weld valves this is inapplicable and omitted.
+        if (effectiveConnection != "BW") {
+            val matingFlange = tableData("tbl_flanges_asme_b16_5").firstOrNull { r ->
+                s(r, "nps") == cleanNps && s(r, "rating") == rating.toString() &&
+                    s(r, "flange_type") == "Welding Neck"
+            }
+            val flangeOd = matingFlange?.get("outer_diameter_mm")?.toDoubleOrNull()
+            if (flangeOd != null && flangeOd > 0) {
+                rows.add(DimensionRow("flange_od", "Mating Flange Outside Dia (O)", "Karşı Flanş Dış Çapı (O)",
+                    "${fmt(flangeOd)} mm", "${fmt(flangeOd/25.4)}\"", "valves_def"))
+            }
+        }
         if (hwH > 0) {
             rows.add(DimensionRow("hw_h", "Handwheel Height (H)", "Volan Yüksekliği (H)", "${fmt(hwH)} mm", "${fmt(hwH/25.4)}\"", "valves_def"))
         }
         if (hwD > 0) {
             rows.add(DimensionRow("hw_d", "Handwheel Diameter (W)", "Volan Çapı (W)", "${fmt(hwD)} mm", "${fmt(hwD/25.4)}\"", "valves_def"))
         }
-        rows.add(DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def"))
 
         return ComponentData(
             categoryId = "valves",
