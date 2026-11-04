@@ -989,20 +989,50 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = when (subtype.id) {
-            "gsk_rtj" -> listOf("300#", "400#", "600#", "900#", "1500#", "2500#")
-            "gsk_flat" -> listOf("150#", "300#", "400#", "600#", "900#")
-            else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
-        }
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
-        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
-
-        val cleanNps = nps.replace("\"", "").trim()
         val type = when (subtype.id) {
             "gsk_rtj" -> "RTJ Ring Joint"
             "gsk_flat" -> "Flat Ring Gasket"
             else -> "Spiral Wound Gasket"
         }
+        val sourceGaskets = tableData("tbl_gaskets_and_rtj")
+        val preferredRatings = when (subtype.id) {
+            "gsk_rtj" -> listOf("300#", "400#", "600#", "900#", "1500#", "2500#")
+            "gsk_flat" -> listOf("150#", "300#", "400#", "600#", "900#")
+            else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        }
+        val matchingFlanges = if (subtype.id == "gsk_rtj") {
+            val ringKeys = sourceGaskets.filter { s(it, "gasket_type") == type }
+                .map { s(it, "ring_number").replace("-", "").uppercase() }.toSet()
+            tableData("tbl_flanges_asme_b16_5").filter { row ->
+                val rawRing = s(row, "rtj_ring_number").replace("-", "").uppercase()
+                val key = if (rawRing.startsWith("R")) rawRing else "R$rawRing"
+                s(row, "flange_type") == "Welding Neck" && key in ringKeys
+            }
+        } else emptyList()
+        val compatible = if (subtype.id == "gsk_rtj") matchingFlanges
+            else sourceGaskets.filter { s(it, "gasket_type") == type &&
+                d(it, "inner_diameter_mm") > 0 && d(it, "outer_diameter_mm") > 0 }
+        val requestedNps = nps.replace("\"", "").trim()
+        val classesForSize = compatible.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val primaryOptions = preferredRatings.filter { it.removeSuffix("#") in classesForSize }
+            .ifEmpty { preferredRatings.filter { cls -> compatible.any {
+                s(it, "rating") == cls.removeSuffix("#")
+            } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: preferredRatings.first()
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val sizesForRating = compatible.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12",
+            "14", "16", "18", "20", "22", "24")
+            .filter { it in sizesForRating }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+
         val sourceRing = if (subtype.id == "gsk_rtj") {
             tableData("tbl_flanges_asme_b16_5").firstOrNull { row ->
                 s(row, "nps") == cleanNps && s(row, "rating") == rating.toString() &&
@@ -1045,9 +1075,9 @@ class CsvDataStore(private val context: Context) {
             categoryId = "gaskets",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
