@@ -587,7 +587,11 @@ def extract_threaded():
             
             c2e = num(g("a", "ctr to end", "ctrtoend"))
             bore = num(g("b", "bore", "diam"))
-            length = num(g("l2", "length", "oa length", "oalength", "c"))
+            length = num(g("l2", "thread length", "length", "oa length", "oalength", "c"))
+            height = num(g("h", "height"))
+            wall = num(g("g", "body wall thk", "wall thk"))
+            across_flats = num(g("across flats"))
+            head_depth = num(g("head depth"))
             wt = num(g("wt", "kg", "wtkg"))
             
             if c2e is None and length is None and wt is None: continue
@@ -598,7 +602,10 @@ def extract_threaded():
                 "component_type": comp,
                 "center_to_end_mm": c2e,
                 "bore_diameter_mm": bore,
-                "body_wall_thickness_mm": None,
+                "body_wall_thickness_mm": wall,
+                "height_mm": height,
+                "across_flats_mm": across_flats,
+                "head_depth_mm": head_depth,
                 "length_mm": length,
                 "weight_kg": wt,
                 "source_file": f
@@ -865,7 +872,8 @@ def main():
     thd = extract_threaded()
     write_table_csv("tbl_fittings_threaded_b16_11", thd, [
         "nps", "rating", "component_type", "center_to_end_mm",
-        "bore_diameter_mm", "body_wall_thickness_mm", "length_mm",
+        "bore_diameter_mm", "body_wall_thickness_mm", "height_mm",
+        "across_flats_mm", "head_depth_mm", "length_mm",
         "weight_kg", "source_file"
     ])
     
