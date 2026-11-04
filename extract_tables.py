@@ -97,6 +97,14 @@ def extract_flanges():
             thk = num(g("thickness"))
             hub_x = num(g("hub-x"))
             hub_a = num(g("hub-a"))
+            long_neck_od = num(g("long neck od", "long neck od same as col 5"))
+            if long_neck_od is None:
+                long_neck_od = hub_x  # Source explicitly says: Same as col 5.
+            weld_flat = num(g("weld flat"))
+            rf_height = num(g("rf height"))
+            rtj_pitch = num(g("rtj pitch dia"))
+            rtj_depth = num(g("rtj depth"))
+            rtj_width = num(g("rtj width"))
             rf_dia = num(g("rf dia"))
             pcd = num(g("pcd"))
             no_bolts = num(g("no of bolts"))
@@ -139,6 +147,13 @@ def extract_flanges():
                     "outer_diameter_mm": od,
                     "thickness_mm": thk,
                     "hub_diameter_mm": hub_x,
+                    "hub_a_mm": hub_a,
+                    "long_neck_outer_diameter_mm": long_neck_od,
+                    "weld_flat_mm": weld_flat,
+                    "raised_face_height_mm": rf_height,
+                    "rtj_pitch_diameter_mm": rtj_pitch,
+                    "rtj_depth_mm": rtj_depth,
+                    "rtj_width_mm": rtj_width,
                     "length_thru_hub_mm": len_y,
                     "bore_diameter_mm": bore,
                     "rf_diameter_mm": rf_dia,
@@ -812,7 +827,9 @@ def main():
     flanges = extract_flanges()
     write_table_csv("tbl_flanges_asme_b16_5", flanges, [
         "nps", "rating", "flange_type", "facing", "outer_diameter_mm",
-        "thickness_mm", "hub_diameter_mm", "length_thru_hub_mm", "bore_diameter_mm",
+        "thickness_mm", "hub_diameter_mm", "hub_a_mm", "long_neck_outer_diameter_mm",
+        "weld_flat_mm", "raised_face_height_mm", "rtj_pitch_diameter_mm",
+        "rtj_depth_mm", "rtj_width_mm", "length_thru_hub_mm", "bore_diameter_mm",
         "rf_diameter_mm", "pcd_mm", "num_bolts", "bolt_diameter_in",
         "stud_bolt_length_mm", "stud_bolt_length_rtj_mm",
         "socket_depth_mm", "lapped_radius_mm", "weight_kg", "rtj_ring_number", "source_file"
