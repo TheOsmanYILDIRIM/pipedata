@@ -203,7 +203,7 @@ def extract_pipes():
                     corrections.append((f, nps, sched, "inside_diameter", id_in, fixed))
                     id_in = fixed
                 predicted_mass = 0.0246615 * wall * (od - wall)
-                if wt_empty is None or abs(wt_empty - predicted_mass) > max(0.2, predicted_mass * 0.01):
+                if wt_empty is None or abs(wt_empty - predicted_mass) > max(0.12, predicted_mass * 0.001):
                     fixed = round(predicted_mass, 2)
                     corrections.append((f, nps, sched, "steel_mass", wt_empty, fixed))
                     wt_empty = fixed
@@ -240,11 +240,11 @@ def extract_pipes():
                 "weight_empty_kg_m": wt_empty,
                 "weight_water_kg_m": wt_water,
                 "moment_of_inertia_cm4": moi,
-                "outer_diameter_in": adjusted_imperial(2, od, 1 / 25.4, 0.012),
+                "outer_diameter_in": adjusted_imperial(2, od, 1 / 25.4, 0.025),
                 "wall_thickness_in": adjusted_imperial(3, wall, 1 / 25.4, 0.004),
-                "inner_diameter_in": adjusted_imperial(5, id_in, 1 / 25.4, 0.015),
+                "inner_diameter_in": adjusted_imperial(5, id_in, 1 / 25.4, 0.025),
                 "weight_empty_lb_ft": adjusted_imperial(6, wt_empty, 0.671968975, max(0.02, wt_empty * 0.001) if wt_empty is not None else 0.02),
-                "weight_water_lb_ft": adjusted_imperial(7, wt_water, 0.671968975, max(0.04, wt_water * 0.001) if wt_water is not None else 0.04),
+                "weight_water_lb_ft": adjusted_imperial(7, wt_water, 0.671968975, max(0.5, wt_water * 0.003) if wt_water is not None else 0.5),
                 "moment_of_inertia_in4": adjusted_imperial(8, moi, 0.024025096, max(0.06, moi * 0.0005) if moi is not None else 0.06),
                 "source_file": f,
                 "imperial_source_file": imperial_file if iv is not None else None
