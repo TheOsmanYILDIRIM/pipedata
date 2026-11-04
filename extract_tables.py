@@ -51,10 +51,16 @@ def nps_norm(frac):
     return t
 
 def pick(row_ctx, names):
-    want = set(n.strip().lower() for n in names)
-    for i, h in enumerate(row_ctx["_h"]):
-        if h in want and i < len(row_ctx["_v"]):
-            return row_ctx["_v"][i]
+    # Caller orders aliases by semantic priority: never let an earlier header
+    # silently override a more specific dimension (e.g. WN THK vs HUB-A).
+    headers, values = row_ctx["_h"], row_ctx["_v"]
+    for name in names:
+        target = name.strip().lower()
+        for i, header in enumerate(headers):
+            if header == target and i < len(values):
+                candidate = values[i]
+                if candidate is not None and candidate.strip().upper() not in ("", "N/A", "NULL"):
+                    return candidate
     return None
 
 def build_rowctx(header, values):
