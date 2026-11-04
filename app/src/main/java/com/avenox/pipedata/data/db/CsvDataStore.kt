@@ -356,7 +356,7 @@ class CsvDataStore(private val context: Context) {
             bolts = d(found, "num_bolts").toInt()
             val rawBolt = s(found, "bolt_diameter_in")
             boltSz = rawBolt.replace("0+", "").replace("\"", "").trim() + "\""
-            studL = d(found, "stud_bolt_length_mm")
+            studL = d(found, if (effectiveFacing == "RTJ") "stud_bolt_length_rtj_mm" else "stud_bolt_length_mm")
             wt = d(found, "weight_kg")
             val rawRing = s(found, "rtj_ring_number")
             ringNumber = if (!rawRing.isNullOrBlank()) {
@@ -385,19 +385,12 @@ class CsvDataStore(private val context: Context) {
             }
             "sw" -> {
                 rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
-                val socketDepth = when (cleanNps) {
-                    "1/2" -> 9.5; "3/4" -> 11.0; "1" -> 12.5; "1 1/4" -> 14.5; "1 1/2" -> 16.0; "2" -> 17.5; "2 1/2" -> 19.0; "3" -> 20.5; else -> 17.5
-                }
+                val socketDepth = found?.get("socket_depth_mm")?.toDoubleOrNull() ?: Double.NaN
                 rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
             }
             "lj" -> {
                 rows.add(DimensionRow("bore", "Bore Clearance (B)", "Yaka Boşluk Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
-                val cornerRadius = when {
-                    effectiveDn <= 50 -> 8.0
-                    effectiveDn <= 100 -> 10.0
-                    effectiveDn <= 150 -> 11.0
-                    else -> 13.0
-                }
+                val cornerRadius = found?.get("lapped_radius_mm")?.toDoubleOrNull() ?: Double.NaN
                 rows.add(DimensionRow("radius", "Corner Radius (r)", "Köşe Radyüsü (r)", "${fmt(cornerRadius)} mm", "${fmt(cornerRadius/25.4)}\"", "dimensions"))
             }
             else -> {
