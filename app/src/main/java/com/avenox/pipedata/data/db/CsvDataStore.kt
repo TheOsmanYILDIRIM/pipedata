@@ -102,10 +102,11 @@ class CsvDataStore(private val context: Context) {
     }
 
     /** Yuklu tablodan satirlari doner; tablo yuklenmediyse bos liste (sorgu fallback'e duser). */
-    private fun tableData(table: String): List<Map<String, String>> = tables[table] ?: emptyList()
+    private fun tableData(table: String): List<Map<String, String>> =
+        tables[table] ?: error("Required CSV table missing: $table")
 
     private fun d(row: Map<String, String>, col: String): Double {
-        return row[col]?.trim()?.toDoubleOrNull() ?: 0.0
+        return row[col]?.trim()?.toDoubleOrNull() ?: Double.NaN
     }
 
     private fun s(row: Map<String, String>, col: String): String = row[col] ?: ""
@@ -160,6 +161,15 @@ class CsvDataStore(private val context: Context) {
                 std = "ASME B16.11",
                 descEn = "Socket weld & threaded fittings, Class 2000, 3000 & 6000",
                 descTr = "Soket kaynaklı ve dişli dövme fitingler, Class 2000-6000",
+                svgAsset = "modern_ftsw1.svg"
+            ),
+            TopicCategory(
+                id = "fittings_thd",
+                titleEn = "Threaded Fittings",
+                titleTr = "Dişli Fitingler",
+                std = "ASME B16.11",
+                descEn = "Forged threaded elbows, tees, couplings, caps, plugs and bushings",
+                descTr = "Dişli dirsek, tee, manşon, kep, tapa ve redüksiyon burçları",
                 svgAsset = "modern_ftsw1.svg"
             ),
             TopicCategory(
@@ -228,6 +238,22 @@ class CsvDataStore(private val context: Context) {
                 SubtypeItem("sw_cap", "Socket Weld Cap", "SW Cap", "SW CAP", "ASME B16.11", "High pressure socket end closure cap.", "Soketli boru sonlandırma kepi.", "modern_ftsw7.svg", "Soketli Kep", "Soketli Kep"),
                 SubtypeItem("sw_red_coupling", "Reducing Coupling", "Red Coupling", "RED-C", "ASME B16.11", "Diameter reducing socket coupling.", "Soketli çap düşürücü redüksiyon.", "modern_ftsw8.svg", "Soketli Redüksiyon", "Redüksiyon"),
                 SubtypeItem("sw_union", "Socket Weld Union", "SW Union", "UNION", "ASME B16.11", "High pressure 3-piece socket weld union.", "Dövme çelik soketli konik rakor.", "modern_ftsw9.svg", "Soketli Konik Rakor", "Konik Rakor")
+
+            )
+            "fittings_thd" -> listOf(
+                SubtypeItem("thd_elbow_90", "90° Threaded Elbow", "90° Threaded", "90°", "ASME B16.11", "Forged threaded 90-degree elbow.", "Dişli 90 derece dirsek.", "modern_ftsc1.svg", "90° Dişli Dirsek"),
+                SubtypeItem("thd_elbow_45", "45° Threaded Elbow", "45° Threaded", "45°", "ASME B16.11", "Forged threaded 45-degree elbow.", "Dişli 45 derece dirsek.", "modern_ftsc4.svg", "45° Dişli Dirsek"),
+                SubtypeItem("thd_tee", "Threaded Tee", "Tee", "TEE", "ASME B16.11", "Forged threaded tee.", "Dişli tee.", "modern_ftsc2.svg", "Dişli Te"),
+                SubtypeItem("thd_cross", "Threaded Cross", "Cross", "CROSS", "ASME B16.11", "Forged threaded cross.", "Dişli istavroz.", "modern_ftsc3.svg", "Dişli İstavroz"),
+                SubtypeItem("thd_street", "Street Elbow", "Street", "ST", "ASME B16.11", "Street elbow.", "Dişli sokak dirseği.", "modern_ftsc5.svg", "Dişli Sokak Dirseği"),
+                SubtypeItem("thd_full", "Full Coupling", "Coupling", "CPL", "ASME B16.11", "Threaded full coupling.", "Dişli tam manşon.", "modern_ftsc6.svg", "Dişli Tam Manşon"),
+                SubtypeItem("thd_half", "Half Coupling", "Half", "HALF", "ASME B16.11", "Threaded half coupling.", "Dişli yarım manşon.", "modern_ftsc7.svg", "Dişli Yarım Manşon"),
+                SubtypeItem("thd_cap", "Threaded Cap", "Cap", "CAP", "ASME B16.11", "Threaded cap.", "Dişli kep.", "modern_ftsc8.svg", "Dişli Kep"),
+                SubtypeItem("thd_square", "Square Head Plug", "Square Plug", "SQ", "ASME B16.11", "Square head plug.", "Kare başlı tapa.", "modern_ftsc9.svg", "Kare Başlı Tapa"),
+                SubtypeItem("thd_hex", "Hex Head Plug", "Hex Plug", "HEX", "ASME B16.11", "Hex head plug.", "Altıgen başlı tapa.", "modern_ftsc10.svg", "Altıgen Başlı Tapa"),
+                SubtypeItem("thd_round", "Round Head Plug", "Round Plug", "RND", "ASME B16.11", "Round head plug.", "Yuvarlak başlı tapa.", "modern_ftsc11.svg", "Yuvarlak Başlı Tapa"),
+                SubtypeItem("thd_bushing", "Hex Head Bushing", "Bushing", "BSH", "ASME B16.11", "Hex head bushing.", "Altıgen başlı burç.", "modern_ftsc12.svg", "Altıgen Başlı Burç"),
+                SubtypeItem("thd_flush", "Flush Bushing", "Flush Bushing", "FL", "ASME B16.11", "Flush bushing.", "Gömme burç.", "modern_ftsc13.svg", "Gömme Burç")
             )
             "valves" -> listOf(
                 SubtypeItem("vlv_gate", "Gate Valve", "Gate Valve", "GATE", "ASME B16.34", "Linear motion isolation valve.", "Tam açık/kapalı hat kesme vanası.", "modern_vlfl1.svg", "Sürgülü Vana (Gate Valve)", "Sürgülü Vana"),
@@ -256,9 +282,10 @@ class CsvDataStore(private val context: Context) {
         subtypeIndex: Int,
         nps: String,
         primarySel: String,
-        secondarySel: String?
+        secondarySel: String?,
+        flangeSchedule: String? = null
     ): ComponentData {
-        val cacheKey = "$categoryId|$subtypeIndex|$nps|$primarySel|$secondarySel"
+        val cacheKey = "$categoryId|$subtypeIndex|$nps|$primarySel|$secondarySel|$flangeSchedule"
         dataCache[cacheKey]?.let { return it }
 
         val subtypes = getCategorySubtypes(categoryId)
@@ -267,14 +294,15 @@ class CsvDataStore(private val context: Context) {
         val dn = getNpsDn(cleanNpsNum)
 
         val result = when (categoryId) {
-            "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+            "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF", flangeSchedule)
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel)
             "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "fittings_thd" -> buildThreadedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
+            "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+            else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF", flangeSchedule)
         }
         dataCache[cacheKey] = result
         return result
@@ -286,25 +314,52 @@ class CsvDataStore(private val context: Context) {
         nps: String,
         dn: Int,
         ratingStr: String,
-        facing: String
+        facing: String,
+        flangeSchedule: String?
     ): ComponentData {
-        val primaryOptions = when (subtype.id) {
+        val flgLike = when (subtype.id) {
+            "bld" -> "Blind"
+            "wn" -> "Welding Neck"
+            "thd" -> "Threaded"
+            "lj" -> "Lap Joint"
+            "sw" -> "Socket Weld"
+            else -> "Slip On"
+        }
+        val availableFlangeRows = tableData("tbl_flanges_asme_b16_5").filter { r ->
+            s(r, "flange_type") == flgLike && d(r, "outer_diameter_mm") > 0 &&
+                d(r, "pcd_mm") > 0 && d(r, "num_bolts") > 0
+        }
+        val requestedNps = nps.replace("\"", "").trim()
+        val ratingsAtSize = availableFlangeRows.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val allowedRatings = when (subtype.id) {
             "sw" -> listOf("150#", "300#", "600#", "1500#")
             "so" -> listOf("150#", "300#", "400#", "600#", "900#", "1500#")
             else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
         }
+        val primaryOptions = allowedRatings.filter { it.removeSuffix("#") in ratingsAtSize }
+            .ifEmpty { allowedRatings.filter { option ->
+                availableFlangeRows.any { s(it, "rating") == option.removeSuffix("#") }
+            } }
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
 
-        val availableNps = when {
-            subtype.id == "sw" -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
-            rating == 2500 -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"")
-            else -> listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\"")
-        }
+        val nominalSizeList = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"",
+            "2 1/2\"", "3\"", "3 1/2\"", "4\"", "5\"", "6\"", "8\"", "10\"",
+            "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\"")
+        val actualSizes = availableFlangeRows.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = nominalSizeList.filter { it.removeSuffix("\"") in actualSizes &&
+            (subtype.id != "sw" || nominalSizeList.indexOf(it) <= 7) }
         val rawNpsWithQuotes = if (nps.endsWith("\"")) nps else "$nps\""
         val effectiveNps = if (rawNpsWithQuotes in availableNps) rawNpsWithQuotes else if (availableNps.contains("2\"")) "2\"" else availableNps.first()
         val cleanNps = effectiveNps.replace("\"", "").trim()
         val effectiveDn = getNpsDn(cleanNps)
+        val scheduleOptions = if (subtype.id == "wn") tableData("tbl_pipes")
+            .filter { s(it, "nps") == cleanNps && it["wall_thickness_mm"]?.toDoubleOrNull()?.let { w -> w > 0 } == true }
+            .map { s(it, "schedule") }.distinct() else emptyList()
+        val selectedSchedule = flangeSchedule?.takeIf { it in scheduleOptions }
+            ?: "STD".takeIf { it in scheduleOptions } ?: scheduleOptions.firstOrNull()
 
         val secondaryOptions = when {
             subtype.id == "lj" -> listOf("Flat (Stub End)")
@@ -315,28 +370,20 @@ class CsvDataStore(private val context: Context) {
         }
         val effectiveFacing = if (facing in secondaryOptions) facing else secondaryOptions.first()
 
-        var od = 0.0
-        var thk = 0.0
-        var hubX = 0.0
-        var lenY = 0.0
-        var bore = 0.0
-        var rf = 0.0
-        var pcd = 0.0
-        var bolts = 4
-        var boltSz = "5/8\""
-        var studL = 70.0
-        var wt = 2.5
+        var od = Double.NaN
+        var thk = Double.NaN
+        var hubX = Double.NaN
+        var lenY = Double.NaN
+        var bore = Double.NaN
+        var rf = Double.NaN
+        var pcd = Double.NaN
+        var bolts = 0
+        var boltSz = "N/A"
+        var studL = Double.NaN
+        var wt = Double.NaN
         var ringNumber = ""
 
-        val flgLike = when (subtype.id) {
-            "bld" -> "Blind"
-            "wn" -> "Welding Neck"
-            "thd" -> "Threaded"
-            "lj" -> "Lap Joint"
-            "sw" -> "Socket Weld"
-            else -> "Slip On"
-        }
-        val flgRows = tableData("tbl_flanges_asme_b16_5").filter { r ->
+        val flgRows = availableFlangeRows.filter { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "rating") == rating.toString() &&
@@ -350,12 +397,18 @@ class CsvDataStore(private val context: Context) {
             hubX = d(found, "hub_diameter_mm")
             lenY = d(found, "length_thru_hub_mm")
             bore = d(found, "bore_diameter_mm")
+            if (subtype.id == "wn" && selectedSchedule != null) {
+                val pipe = tableData("tbl_pipes").firstOrNull { r ->
+                    s(r, "nps") == cleanNps && s(r, "schedule") == selectedSchedule
+                }
+                bore = pipe?.get("inner_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+            }
             rf = d(found, "rf_diameter_mm")
             pcd = d(found, "pcd_mm")
             bolts = d(found, "num_bolts").toInt()
-            val rawBolt = s(found, "bolt_diameter_in").ifBlank { "5/8\"" }
+            val rawBolt = s(found, "bolt_diameter_in")
             boltSz = rawBolt.replace("0+", "").replace("\"", "").trim() + "\""
-            studL = d(found, "stud_bolt_length_mm")
+            studL = d(found, if (effectiveFacing == "RTJ") "stud_bolt_length_rtj_mm" else "stud_bolt_length_mm")
             wt = d(found, "weight_kg")
             val rawRing = s(found, "rtj_ring_number")
             ringNumber = if (!rawRing.isNullOrBlank()) {
@@ -364,25 +417,31 @@ class CsvDataStore(private val context: Context) {
             } else ""
         }
 
-        if (od <= 0) {
-            val mult = if (rating >= 600) 1.25 else if (rating >= 300) 1.15 else 1.0
-            od = (if (effectiveDn == 50) 152.4 else effectiveDn * 2.8) * mult
-            thk = 17.5 * mult
-            hubX = 77.7 * mult
-            lenY = 63.5 * mult
-            bore = effectiveDn * 1.05
-            pcd = od * 0.79
-            bolts = if (effectiveDn >= 200) 8 else 4
-            wt = 2.45 * mult * (effectiveDn / 50.0)
-        }
+        // Missing flange rows remain N/A; no estimated dimensions.
 
         val rows = mutableListOf<DimensionRow>()
         rows.add(DimensionRow("od", "Outside Diameter (O)", "Dış Çap (O)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "dimensions"))
         rows.add(DimensionRow("thk", "Min Thickness (T)", "Min. Et Kalınlığı (T)", "${fmt(thk)} mm", "${fmt(thk/25.4)}\"", "dimensions"))
 
         if (subtype.id != "bld") {
-            rows.add(DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"))
-            rows.add(DimensionRow("len", "Length Thru Hub (Y)", "Toplam Boyun Boyu (Y)", "${fmt(lenY)} mm", "${fmt(lenY/25.4)}\"", "dimensions"))
+            if (hubX > 0) rows.add(DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"))
+            if (lenY > 0) rows.add(DimensionRow("len", "Length Thru Hub (Y)", "Toplam Boyun Boyu (Y)", "${fmt(lenY)} mm", "${fmt(lenY/25.4)}\"", "dimensions"))
+        }
+        if (found != null) {
+            fun sourceDimension(column: String, key: String, en: String, tr: String) {
+                val number = found[column]?.toDoubleOrNull()
+                if (number != null && number > 0) rows.add(DimensionRow(key, en, tr,
+                    "${fmt(number)} mm", "${fmt(number / 25.4)}\"", "dimensions"))
+            }
+            sourceDimension("hub_a_mm", "hub_a", "Pipe-end Outside Dia (A)", "Boru Ucu Dış Çapı (A)")
+            if (subtype.id == "wn") {
+                sourceDimension("long_neck_outer_diameter_mm", "long_neck_od", "Long Neck Outside Dia", "Uzun Boyun Dış Çapı")
+                sourceDimension("weld_flat_mm", "weld_flat", "Weld Flat", "Kaynak Alın Düzlüğü")
+            }
+            sourceDimension("raised_face_height_mm", "rf_height", "Raised Face Height", "Conta Alnı Yüksekliği")
+            sourceDimension("rtj_pitch_diameter_mm", "rtj_pitch", "RTJ Pitch Diameter", "RTJ Hatve Çapı")
+            sourceDimension("rtj_depth_mm", "rtj_depth", "RTJ Groove Depth", "RTJ Kanal Derinliği")
+            sourceDimension("rtj_width_mm", "rtj_width", "RTJ Groove Width", "RTJ Kanal Genişliği")
         }
 
         when (subtype.id) {
@@ -393,20 +452,13 @@ class CsvDataStore(private val context: Context) {
                 rows.add(DimensionRow("bore", "Thread Standard", "Diş Standardı", "$cleanNps\" NPT (ASME B1.20.1)", "$cleanNps\" NPT (ASME B1.20.1)", "dimensions"))
             }
             "sw" -> {
-                rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
-                val socketDepth = when (cleanNps) {
-                    "1/2" -> 9.5; "3/4" -> 11.0; "1" -> 12.5; "1 1/4" -> 14.5; "1 1/2" -> 16.0; "2" -> 17.5; "2 1/2" -> 19.0; "3" -> 20.5; else -> 17.5
-                }
-                rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
+                if (bore > 0) rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
+                val socketDepth = found?.get("socket_depth_mm")?.toDoubleOrNull() ?: Double.NaN
+                if (socketDepth > 0) rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
             }
             "lj" -> {
                 rows.add(DimensionRow("bore", "Bore Clearance (B)", "Yaka Boşluk Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
-                val cornerRadius = when {
-                    effectiveDn <= 50 -> 8.0
-                    effectiveDn <= 100 -> 10.0
-                    effectiveDn <= 150 -> 11.0
-                    else -> 13.0
-                }
+                val cornerRadius = found?.get("lapped_radius_mm")?.toDoubleOrNull() ?: Double.NaN
                 rows.add(DimensionRow("radius", "Corner Radius (r)", "Köşe Radyüsü (r)", "${fmt(cornerRadius)} mm", "${fmt(cornerRadius/25.4)}\"", "dimensions"))
             }
             else -> {
@@ -428,9 +480,10 @@ class CsvDataStore(private val context: Context) {
         }
 
         rows.add(DimensionRow("pcd", "Bolt Circle (PCD)", "Cıvata Dairesi (PCD)", "${fmt(pcd)} mm", "${fmt(pcd/25.4)}\"", "dimensions"))
-        rows.add(DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", "$bolts × $boltSz", "$bolts × $boltSz", "dimensions"))
-        rows.add(DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"))
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions"))
+        val bolting = if (bolts > 0 && boltSz != "N/A") "$bolts × $boltSz" else "N/A"
+        rows.add(DimensionRow("bolts", "Bolting", "Cıvata Adet & Çap", bolting, bolting, "dimensions"))
+        if (studL > 0) rows.add(DimensionRow("stud", "Stud Length", "Saplama Boyu", "${fmt(studL)} mm", "${fmt(studL/25.4)}\"", "dimensions"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Reference Weight", "Referans Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "dimensions"))
 
         return ComponentData(
             categoryId = "flanges",
@@ -447,7 +500,9 @@ class CsvDataStore(private val context: Context) {
             secondarySelectorLabelTr = "Yüzey",
             secondaryOptions = secondaryOptions,
             selectedSecondary = effectiveFacing,
-            dimensions = rows
+            dimensions = rows,
+            flangeScheduleOptions = scheduleOptions,
+            selectedFlangeSchedule = selectedSchedule
         )
     }
 
@@ -458,20 +513,34 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         selectedSchedule: String
     ): ComponentData {
-        val primaryOptions = listOf(
-            "5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"
+        val preferredSchedules = listOf(
+            "5", "5S", "10", "10S", "20", "30", "40", "40S", "STD",
+            "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"
         )
-        val effectiveSchedule = if (selectedSchedule in primaryOptions) selectedSchedule else "STD"
+        val pipeRows = tableData("tbl_pipes")
+        val validRows = pipeRows.filter { d(it, "wall_thickness_mm") > 0.0 && d(it, "outer_diameter_mm") > 0.0 }
+        val npsChoices = listOf("1/8", "1/4", "3/8", "1/2", "3/4", "1",
+            "1 1/4", "1 1/2", "2", "2 1/2", "3", "3 1/2", "4",
+            "5", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24",
+            "26", "28", "30", "32", "34", "36", "38", "40", "42", "44", "46", "48")
+        val validNps = validRows.map { s(it, "nps") }.toSet()
+        val availableSizes = npsChoices.filter { it in validNps }
+        val requestedNps = nps.replace("\"", "").trim()
+        val effectiveNps = requestedNps.takeIf { it in validNps } ?: availableSizes.firstOrNull() ?: requestedNps
+        val optionsAvailable = validRows.filter { s(it, "nps") == effectiveNps }.map { s(it, "schedule") }.toSet()
+        val primaryOptions = preferredSchedules.filter { it in optionsAvailable }
+        val effectiveSchedule = selectedSchedule.takeIf { it in primaryOptions }
+            ?: (if ("40" in primaryOptions) "40" else primaryOptions.firstOrNull() ?: "STD")
 
-        var odMm = 0.0
-        var wallThkMm = 0.0
-        var idMm = 0.0
-        var wtEmptyKgM = 0.0
-        var wtWaterKgM = 0.0
-        var inertia = 0.0
+        var odMm = Double.NaN
+        var wallThkMm = Double.NaN
+        var idMm = Double.NaN
+        var wtEmptyKgM = Double.NaN
+        var wtWaterKgM = Double.NaN
+        var inertia = Double.NaN
 
-        val cleanNps = nps.replace("\"", "").trim()
-        val pipeRow = tableData("tbl_pipes").firstOrNull { r ->
+        val cleanNps = effectiveNps
+        val pipeRow = validRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "schedule").equals(effectiveSchedule, ignoreCase = true)
@@ -485,32 +554,27 @@ class CsvDataStore(private val context: Context) {
             inertia = d(pipeRow, "moment_of_inertia_cm4")
         }
 
-        if (odMm <= 0) {
-            odMm = if (dn <= 50) 60.3 else dn * 1.15
-            wallThkMm = if (effectiveSchedule == "80") 5.54 else 3.91
-            idMm = odMm - 2 * wallThkMm
-            wtEmptyKgM = (odMm - wallThkMm) * wallThkMm * 0.02466
-            wtWaterKgM = 0.7854 * (idMm / 1000.0) * (idMm / 1000.0) * 1000.0
-        }
+        // Imperial figures come from original APK CSV, not converted rounded metric values.
+        fun imperial(column: String): Double = pipeRow?.get(column)?.toDoubleOrNull() ?: Double.NaN
 
         val rows = listOf(
-            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(wallThkMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(wtEmptyKgM*0.6719)} lb/ft", "pipes_sch"),
-            DimensionRow("wt_water", "Water Content Weight", "Su Ağırlığı (Dolu)", "${fmt(wtWaterKgM)} kg/m", "${fmt(wtWaterKgM*0.6719)} lb/ft", "pipes_sch"),
-            DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(inertia*0.0240)} in⁴", "pipes_sch")
+            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(imperial("outer_diameter_in"))}\"", "pipes_sch"),
+            DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(imperial("wall_thickness_in"))}\"", "pipes_sch"),
+            DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(imperial("inner_diameter_in"))}\"", "pipes_sch"),
+            DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(imperial("weight_empty_lb_ft"))} lb/ft", "pipes_sch"),
+            DimensionRow("wt_water", "Water-Filled Pipe Weight", "Su Dolu Boru Ağırlığı", "${fmt(wtWaterKgM)} kg/m", "${fmt(imperial("weight_water_lb_ft"))} lb/ft", "pipes_sch"),
+            DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(imperial("moment_of_inertia_in4"))} in⁴", "pipes_sch")
         )
 
         return ComponentData(
             categoryId = "pipes",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "3 1/2\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
-            primarySelectorLabelEn = "Schedule",
-            primarySelectorLabelTr = "Et Kalınlığı",
+            availableNps = availableSizes.map { "$it\"" },
+            selectedNps = "$effectiveNps\"",
+            dn = getNpsDn(effectiveNps),
+            primarySelectorLabelEn = "SCH / Schedule",
+            primarySelectorLabelTr = "SCH / Et Kalınlığı",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveSchedule,
             dimensions = rows
@@ -522,7 +586,8 @@ class CsvDataStore(private val context: Context) {
         allSubtypes: List<SubtypeItem>,
         nps: String,
         dn: Int,
-        sched: String
+        sched: String,
+        branchSel: String?
     ): ComponentData {
         val compType = when (subtype.id) {
             "elbow_90_lr" -> "90° Long Radius Elbow"
@@ -539,67 +604,71 @@ class CsvDataStore(private val context: Context) {
             else -> subtype.title
         }
 
-        val primaryOptions = when (subtype.id) {
-            "stub_end" -> listOf("5", "5S", "10S", "40S", "STD")
-            else -> listOf("5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS")
-        }
-        val effectiveSched = if (sched in primaryOptions) sched else "STD"
+        val preferredSchedules = listOf("5", "5S", "10", "10S", "20", "30",
+            "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS")
+        val componentRows = tableData("tbl_fittings_buttweld_b16_9")
+            .filter { r ->
+                s(r, "component_type") == compType &&
+                    when (subtype.id) {
+                        "elbow_90_lr", "elbow_90_sr", "elbow_45", "tee_eq" ->
+                            d(r, "center_to_end_mm") > 0
+                        "return_180_lr", "return_180_sr" ->
+                            d(r, "center_to_center_mm") > 0
+                        "tee_red" -> d(r, "branch_center_to_end_mm") > 0
+                        else -> d(r, "overall_length_height_mm") > 0
+                    }
+            }
+        val supportedNps = componentRows.map { s(it, "nps") }.toSet()
+        val sizeOrder = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12", "14",
+            "16", "18", "20", "22", "24", "26", "28", "30", "32", "34",
+            "36", "38", "40", "42", "44", "46", "48")
+        val availableSizes = sizeOrder.filter { it in supportedNps }
+        val requestedNps = nps.replace("\"", "").trim()
+        val effectiveNps = requestedNps.takeIf { it in supportedNps }
+            ?: "2".takeIf { it in supportedNps } ?: availableSizes.firstOrNull() ?: requestedNps
+        val presentSchedules = componentRows.filter { s(it, "nps") == effectiveNps }
+            .map { s(it, "schedule") }.toSet()
+        val primaryOptions = preferredSchedules.filter { it in presentSchedules }
+        val effectiveSched = sched.takeIf { it in primaryOptions }
+            ?: "STD".takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "STD"
 
-        var od = 0.0
-        var centerEnd = 0.0
-        var centerCenter = 0.0
-        var backToFace = 0.0
-        var lengthHeight = 0.0
-        var wt = 0.0
+        var od = Double.NaN
+        var centerEnd = Double.NaN
+        var radiusMm = Double.NaN
+        var branchCenterEnd = Double.NaN
+        var centerCenter = Double.NaN
+        var backToFace = Double.NaN
+        var lengthHeight = Double.NaN
+        var wt = Double.NaN
 
-        val cleanNps = nps.replace("\"", "").trim()
-        val found = tableData("tbl_fittings_buttweld_b16_9").firstOrNull { r ->
+        val cleanNps = effectiveNps
+        val matrixType = subtype.id in setOf("tee_red", "red_con", "red_ecc")
+        val branchOptions = if (matrixType) tableData("tbl_fittings_buttweld_b16_9")
+            .filter { s(it, "nps") == cleanNps && s(it, "schedule") == effectiveSched && s(it, "component_type") == compType }
+            .map { s(it, "branch_nps") }.filter { it.isNotBlank() }.distinct() else emptyList()
+        val selectedBranch = branchSel?.replace("\"", "")?.takeIf { it in branchOptions } ?: branchOptions.firstOrNull()
+        val found = componentRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "component_type") == compType &&
-                    s(r, "schedule").equals(effectiveSched, ignoreCase = true)
+                    s(r, "schedule").equals(effectiveSched, ignoreCase = true) &&
+                    (!matrixType || s(r, "branch_nps") == selectedBranch)
         }
 
         if (found != null) {
             od = d(found, "outer_diameter_mm")
             centerEnd = d(found, "center_to_end_mm")
+            radiusMm = found["radius_mm"]?.toDoubleOrNull() ?: Double.NaN
+            branchCenterEnd = d(found, "branch_center_to_end_mm")
             centerCenter = d(found, "center_to_center_mm")
             backToFace = d(found, "back_to_face_mm")
             lengthHeight = d(found, "overall_length_height_mm")
             wt = d(found, "weight_kg")
         }
 
-        val defaultOd = when (cleanNps) {
-            "1/2" -> 21.3; "3/4" -> 26.7; "1" -> 33.4; "1 1/4" -> 42.2; "1 1/2" -> 48.3; "2" -> 60.3;
-            "2 1/2" -> 73.0; "3" -> 88.9; "4" -> 114.3; "5" -> 141.3; "6" -> 168.3; "8" -> 219.1;
-            "10" -> 273.0; "12" -> 323.8; "14" -> 355.6; "16" -> 406.4; "18" -> 457.0; "20" -> 508.0; "24" -> 610.0
-            else -> dn * 1.15
-        }
-        if (od <= 0.0) od = defaultOd
-        if (centerEnd <= 0.0) {
-            centerEnd = when (subtype.id) {
-                "elbow_90_lr" -> od * 1.5
-                "elbow_90_sr" -> od * 1.0
-                "elbow_45" -> od * 0.625
-                "tee_eq", "tee_red" -> od * 1.05
-                "cap_bw" -> od * 0.63
-                "red_con", "red_ecc" -> od * 1.05
-                "stub_end" -> od * 1.06
-                else -> od * 1.25
-            }
-        }
-        if (centerCenter <= 0.0 && subtype.id.startsWith("return_")) {
-            centerCenter = if (subtype.id == "return_180_lr") centerEnd * 2.0 else od * 2.0
-        }
-        if (backToFace <= 0.0 && subtype.id.startsWith("return_")) {
-            backToFace = centerCenter * 0.70
-        }
-        if (lengthHeight <= 0.0) {
-            lengthHeight = if (centerEnd > 0) centerEnd else od * 1.1
-        }
-        if (wt <= 0.0) {
-            wt = (od / 60.3) * (od / 60.3) * 1.4
-        }
+        // Missing fitting measurements are N/A, not OD-based estimates.
 
         val rows = mutableListOf<DimensionRow>()
         rows.add(DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(od)} mm", "${fmt(od / 25.4)}\"", "buttweld"))
@@ -607,7 +676,7 @@ class CsvDataStore(private val context: Context) {
         when (subtype.id) {
             "elbow_90_lr", "elbow_90_sr", "elbow_45" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End (A)", "Merkez-Uç Mesafesi (A)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                val radius = if (subtype.id == "elbow_90_lr") od * 1.5 else if (subtype.id == "elbow_90_sr") od * 1.0 else od * 0.625
+                val radius = radiusMm // Missing radius is unknown; do not derive from OD.
                 rows.add(DimensionRow("radius", "Centerline Radius (R)", "Büküm Yarıçapı (R)", "${fmt(radius)} mm", "${fmt(radius / 25.4)}\"", "buttweld"))
             }
             "return_180_lr", "return_180_sr" -> {
@@ -616,45 +685,55 @@ class CsvDataStore(private val context: Context) {
             }
             "tee_eq" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End Run (C)", "Gövde Merkez-Uç (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
+                rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(branchCenterEnd)} mm", "${fmt(branchCenterEnd / 25.4)}\"", "buttweld"))
             }
             "tee_red" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End Run (C)", "Gövde Merkez-Uç (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                val branchCe = if (lengthHeight > 0) lengthHeight else centerEnd * 0.8
+                val branchCe = branchCenterEnd
                 rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(branchCe)} mm", "${fmt(branchCe / 25.4)}\"", "buttweld"))
             }
             "cap_bw" -> {
                 rows.add(DimensionRow("length", "Length / Height (E)", "Kep Toplam Boyu (E)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "red_con", "red_ecc" -> {
-                val smallOd = od * 0.7
-                rows.add(DimensionRow("small_od", "Small End Diameter (OD₂)", "Küçük Çap (OD₂)", "${fmt(smallOd)} mm", "${fmt(smallOd / 25.4)}\"", "buttweld"))
+                val branch = selectedBranch?.let { "$it\"" } ?: "N/A"
+                rows.add(DimensionRow("small_nps", "Small End Nominal Size (NPS)", "Küçük Uç Anma Çapı (NPS)", branch, branch, "buttweld"))
+                val smallOd = found?.get("small_end_outer_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+                if (smallOd > 0) rows.add(DimensionRow("small_od", "Small End Outside Dia (OD2)", "Küçük Uç Dış Çapı (OD2)", "${fmt(smallOd)} mm", "${fmt(smallOd / 25.4)}\"", "buttweld"))
                 rows.add(DimensionRow("length", "End-to-End Length (H)", "Toplam Redüksiyon Boyu (H)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "stub_end" -> {
-                val lapDia = if (backToFace > 0) backToFace else od * 1.5
+                val lapDia = found?.get("lap_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+                val shortLen = found?.get("short_length_mm")?.toDoubleOrNull() ?: Double.NaN
+                val shortWt = found?.get("short_weight_kg")?.toDoubleOrNull() ?: Double.NaN
                 rows.add(DimensionRow("lap_dia", "Flared Lap Diameter (G)", "Yaka Flanş Çapı (G)", "${fmt(lapDia)} mm", "${fmt(lapDia / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("length", "Overall Length (F)", "Toplam Yaka Boyu (F)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("radius", "Corner Radius (r)", "Yaka Köşe Radyüsü (r)", if (dn <= 50) "8.0 mm" else "12.5 mm", if (dn <= 50) "0.31\"" else "0.50\"", "buttweld"))
+                if (shortLen > 0) rows.add(DimensionRow("short_len", "Short Pattern Length", "Kısa Tip Boy (F)", "${fmt(shortLen)} mm", "${fmt(shortLen / 25.4)}\"", "buttweld"))
+                rows.add(DimensionRow("length", "Long Pattern Length (F)", "Uzun Tip Boy (F)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
+                if (radiusMm > 0) rows.add(DimensionRow("radius", "Corner Radius (r)", "Yaka Köşe Radyüsü (r)", "${fmt(radiusMm)} mm", "${fmt(radiusMm / 25.4)}\"", "buttweld"))
+                if (shortWt > 0) rows.add(DimensionRow("short_wt", "Short Pattern Weight", "Kısa Tip Ağırlık", "${fmtWeight(shortWt)} kg", "${fmtWeight(shortWt * 2.20462)} lb", "buttweld"))
             }
             else -> {
                 rows.add(DimensionRow("center_end", "Center-to-End", "Merkez-Uç Mesafesi", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
             }
         }
 
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
 
         return ComponentData(
             categoryId = "fittings_bw",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
-            primarySelectorLabelEn = "Schedule",
-            primarySelectorLabelTr = "Seri",
+            availableNps = availableSizes.map { "$it\"" },
+            selectedNps = "$effectiveNps\"",
+            dn = getNpsDn(effectiveNps),
+            primarySelectorLabelEn = "SCH / Schedule",
+            primarySelectorLabelTr = "SCH / Et Kalınlığı",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveSched,
+            secondarySelectorLabelEn = if (matrixType) "Branch NPS" else null,
+            secondarySelectorLabelTr = if (matrixType) "Branşman Çapı" else null,
+            secondaryOptions = branchOptions,
+            selectedSecondary = selectedBranch,
             dimensions = rows
         )
     }
@@ -666,14 +745,43 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = when (subtype.id) {
+        val compTypeLike = when (subtype.id) {
+            "sw_elbow_90" -> "90° Elbow"
+            "sw_elbow_45" -> "45° Elbow"
+            "sw_tee" -> "Tee"
+            "sw_cross" -> "Cross"
+            "sw_coupling" -> "Full Coupling"
+            "sw_half_coupling" -> "Half Coupling"
+            "sw_cap" -> "Cap"
+            "sw_red_coupling" -> "Reducing Coupling"
+            "sw_union" -> "Union"
+            else -> subtype.title
+        }
+
+        val allForType = tableData("tbl_fittings_socketweld_b16_11")
+            .filter { s(it, "component_type") == compTypeLike }
+        val measuredRows = allForType.filter { row ->
+            when (subtype.id) {
+                "sw_union", "sw_red_coupling", "sw_half_coupling", "sw_cap" ->
+                    d(row, "length_mm") > 0
+                else -> d(row, "socket_diameter_mm") > 0 && d(row, "socket_depth_mm") > 0
+            }
+        }
+        val requestedSize = nps.replace("\"", "").trim()
+        val supportedRatings = measuredRows.filter { s(it, "nps") == requestedSize }
+            .map { s(it, "rating") }.toSet()
+        val preferredRatings = when (subtype.id) {
             "sw_union", "sw_red_coupling" -> listOf("3000#", "6000#")
             else -> listOf("3000#", "6000#", "9000#")
         }
+        val primaryOptions = preferredRatings.filter { it.removeSuffix("#") in supportedRatings }
+            .ifEmpty { preferredRatings.filter { candidate ->
+                measuredRows.any { s(it, "rating") == candidate.removeSuffix("#") }
+            } }
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 3000
 
-        val availableNps = when (subtype.id) {
+        val potentialNps = when (subtype.id) {
             "sw_union" -> listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
             "sw_red_coupling" -> {
                 if (rating == 6000) {
@@ -705,39 +813,38 @@ class CsvDataStore(private val context: Context) {
             }
         }
 
+        val presentSizes = measuredRows.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = potentialNps.filter { it.replace("\"", "") in presentSizes }
         val cleanNpsWithQuote = if (nps.endsWith("\"")) nps else "$nps\""
-        val effectiveNpsWithQuote = if (cleanNpsWithQuote in availableNps) cleanNpsWithQuote else availableNps.first()
+        val effectiveNpsWithQuote = cleanNpsWithQuote.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: cleanNpsWithQuote
         val effectiveNps = effectiveNpsWithQuote.replace("\"", "")
 
-        var sockDepth = 0.0
-        var sockDia = 0.0
-        var centerEnd = 0.0
-        var bore = 0.0
-        var sockThk = 0.0
-        var bodyWallThk = 0.0
-        var lenVal = 0.0
-        var wt = 0.0
+        var sockDepth = Double.NaN
+        var sockDia = Double.NaN
+        var centerEnd = Double.NaN
+        var bore = Double.NaN
+        var sockThk = Double.NaN
+        var bodyWallThk = Double.NaN
+        var lenVal = Double.NaN
+        var wt = Double.NaN
 
-        val compTypeLike = when (subtype.id) {
-            "sw_elbow_90" -> "90° Elbow"
-            "sw_elbow_45" -> "45° Elbow"
-            "sw_tee" -> "Tee"
-            "sw_cross" -> "Cross"
-            "sw_coupling" -> "Full Coupling"
-            "sw_half_coupling" -> "Half Coupling"
-            "sw_cap" -> "Cap"
-            "sw_red_coupling" -> "Reducing Coupling"
-            "sw_union" -> "Union"
-            else -> subtype.title
-        }
 
-        val swRows = tableData("tbl_fittings_socketweld_b16_11").filter { r ->
+        val swRows = measuredRows.filter { r ->
             val n = s(r, "nps")
             (n == effectiveNps || n == "$effectiveNps\"" || n == "0+$effectiveNps") &&
                     s(r, "rating") == rating.toString() &&
                     s(r, "component_type").contains(compTypeLike)
         }
-        val swFound = swRows.firstOrNull()
+        val swFound = swRows.maxByOrNull { row ->
+            listOf("socket_diameter_mm", "socket_depth_mm", "center_to_end_mm",
+                "bore_diameter_mm", "socket_wall_thickness_mm", "body_wall_thickness_mm",
+                "length_mm", "weight_kg").count { key ->
+                row[key]?.trim()?.toDoubleOrNull()?.let { it > 0.0 } == true
+            }
+        }
         if (swFound != null) {
             sockDepth = d(swFound, "socket_depth_mm")
             sockDia = d(swFound, "socket_diameter_mm")
@@ -750,8 +857,8 @@ class CsvDataStore(private val context: Context) {
         }
 
         val rows = mutableListOf<DimensionRow>()
-        rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
-        rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
+        if (sockDia > 0) rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
+        if (sockDepth > 0) rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
 
         when (subtype.id) {
             "sw_coupling" -> {
@@ -765,13 +872,13 @@ class CsvDataStore(private val context: Context) {
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
             "sw_half_coupling", "sw_union", "sw_red_coupling" -> {
-                val effectiveLen = if (lenVal > 0) lenVal else if (centerEnd > 0) centerEnd else sockDepth * 2.0
+                val effectiveLen = if (lenVal > 0) lenVal else centerEnd
                 rows.add(DimensionRow("length", "Overall Length (L)", "Toplam Boy (L)", "${fmt(effectiveLen)} mm", "${fmt(effectiveLen/25.4)}\"", "forged"))
                 if (bore > 0) rows.add(DimensionRow("bore", "Bore Diameter (D)", "İç Delik Çapı (D)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "forged"))
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
             "sw_cap" -> {
-                val capThk = if (lenVal > 0) lenVal else if (sockThk > 0) sockThk else 6.4
+                val capThk = if (lenVal > 0) lenVal else sockThk
                 rows.add(DimensionRow("cap_thk", "End Wall Thk (E)", "Taban Kalınlığı (E)", "${fmt(capThk)} mm", "${fmt(capThk/25.4)}\"", "forged"))
                 if (sockThk > 0) rows.add(DimensionRow("sock_thk", "Socket Wall (C)", "Soket Et Kalınlığı (C)", "${fmt(sockThk)} mm", "${fmt(sockThk/25.4)}\"", "forged"))
             }
@@ -782,7 +889,7 @@ class CsvDataStore(private val context: Context) {
                 if (bodyWallThk > 0) rows.add(DimensionRow("wall_thk", "Body Wall (G)", "Gövde Et Kalınlığı (G)", "${fmt(bodyWallThk)} mm", "${fmt(bodyWallThk/25.4)}\"", "forged"))
             }
         }
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
 
         return ComponentData(
             categoryId = "fittings_sw",
@@ -799,23 +906,98 @@ class CsvDataStore(private val context: Context) {
         )
     }
 
-    private fun buildValveData(
+    private fun buildThreadedData(
         subtype: SubtypeItem,
         allSubtypes: List<SubtypeItem>,
         nps: String,
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
-        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val type = when (subtype.id) {
+            "thd_elbow_90" -> "90° Elbow"
+            "thd_elbow_45" -> "45° Elbow"
+            "thd_tee" -> "Tee"
+            "thd_cross" -> "Cross"
+            "thd_street" -> "Street Elbow"
+            "thd_full" -> "Full Coupling"
+            "thd_half" -> "Half Coupling"
+            "thd_cap" -> "Cap"
+            "thd_square" -> "Square Head Plug"
+            "thd_hex" -> "Hex Head Plug"
+            "thd_round" -> "Round Head Plug"
+            "thd_bushing" -> "Hex Head Bushing"
+            "thd_flush" -> "Flush Bushing"
+            else -> subtype.title
+        }
+        val records = tableData("tbl_fittings_threaded_b16_11").filter { row ->
+            s(row, "component_type") == type &&
+                listOf("center_to_end_mm", "length_mm", "bore_diameter_mm", "weight_kg")
+                    .any { d(row, it) > 0 }
+        }
+        val requestedNps = nps.replace("\"", "").trim()
+        val atSize = records.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val preferred = listOf("2000#", "3000#", "6000#", "9000#")
+        val primaryOptions = preferred.filter { it.removeSuffix("#") in atSize }
+            .ifEmpty { preferred.filter { c -> records.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRating = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "3000#"
+        val rating = effectiveRating.removeSuffix("#")
+        val sizes = records.filter { s(it, "rating") == rating }.map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/8", "1/4", "3/8", "1/2", "3/4",
+            "1", "1 1/4", "1 1/2", "2", "2 1/2", "3", "4")
+            .filter { it in sizes }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "1\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+        val matching = records.filter { s(it, "nps") == cleanNps && s(it, "rating") == rating }
+        val record = matching.maxByOrNull { row ->
+            listOf("center_to_end_mm", "bore_diameter_mm", "body_wall_thickness_mm",
+                "length_mm", "weight_kg").count { d(row, it) > 0 }
+        }
+        val rows = mutableListOf<DimensionRow>()
+        fun addDim(field: String, id: String, en: String, tr: String) {
+            val value = record?.get(field)?.toDoubleOrNull()
+            if (value != null && value > 0) {
+                rows.add(DimensionRow(id, en, tr, "${fmt(value)} mm",
+                    "${fmt(value / 25.4)}\"", "forged"))
+            }
+        }
+        addDim("center_to_end_mm", "c2e", "Center-to-End (A)", "Merkezden Uca (A)")
+        addDim("bore_diameter_mm", "bore", "Bore Diameter (B)", "İç Delik Çapı (B)")
+        addDim("body_wall_thickness_mm", "wall", "Body Wall Thickness", "Gövde Et Kalınlığı")
+        addDim("height_mm", "height", "Outside Height (H)", "Dış Yükseklik (H)")
+        addDim("across_flats_mm", "across_flats", "Across Flats", "Anahtar Ağzı")
+        addDim("head_depth_mm", "head_depth", "Head Depth", "Baş Derinliği")
+        addDim("length_mm", "len", "Overall Length (L)", "Toplam Boy (L)")
+        val weight = record?.get("weight_kg")?.toDoubleOrNull()
+        if (weight != null && weight > 0) rows.add(DimensionRow("weight", "Source Weight",
+            "Kaynak Ağırlık", "${fmtWeight(weight)} kg",
+            "${fmtWeight(weight * 2.20462)} lb", "forged"))
+        return ComponentData(
+            categoryId = "fittings_thd",
+            currentSubtype = subtype,
+            allSubtypes = allSubtypes,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
+            primarySelectorLabelEn = "Class",
+            primarySelectorLabelTr = "Sınıf",
+            primaryOptions = primaryOptions,
+            selectedPrimary = effectiveRating,
+            dimensions = rows
+        )
+    }
 
-        var faceToFace = 0.0
-        var hwH = 0.0
-        var hwD = 0.0
-        var wt = 0.0
-
-        val cleanNps = nps.replace("\"", "").trim()
+    private fun buildValveData(
+        subtype: SubtypeItem,
+        allSubtypes: List<SubtypeItem>,
+        nps: String,
+        dn: Int,
+        ratingStr: String,
+        connection: String
+    ): ComponentData {
         val valveType = when (subtype.id) {
             "vlv_gate" -> "Gate Valve"
             "vlv_globe" -> "Globe Valve"
@@ -823,48 +1005,105 @@ class CsvDataStore(private val context: Context) {
             "vlv_ball" -> "Ball Valve"
             else -> subtype.title
         }
+        val allValveRows = tableData("tbl_valves_asme_b16_10").filter {
+            s(it, "valve_type").equals(valveType, ignoreCase = true) &&
+                (d(it, "face_to_face_mm") > 0 || d(it, "face_to_face_rtj_mm") > 0 ||
+                    d(it, "face_to_face_bw_mm") > 0)
+        }
+        val requestedNps = nps.replace("\"", "").trim()
+        val ratingsAtSize = allValveRows.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val allowedRatings = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val primaryOptions = allowedRatings.filter { it.removeSuffix("#") in ratingsAtSize }
+            .ifEmpty { allowedRatings.filter { c -> allValveRows.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "150#"
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val presentSizes = allValveRows.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "4", "5", "6", "8", "10", "12", "14",
+            "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36")
+            .filter { it in presentSizes }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
 
-        val valveRow = tableData("tbl_valves_asme_b16_10").firstOrNull { r ->
+        var faceToFace = Double.NaN
+        var hwH = Double.NaN
+        var hwD = Double.NaN
+        var wt = Double.NaN
+
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+
+
+        val valveRow = allValveRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "rating") == rating.toString() &&
                     s(r, "valve_type").equals(valveType, ignoreCase = true)
         }
+        val connectionColumns = mapOf("RF" to "face_to_face_mm",
+            "RTJ" to "face_to_face_rtj_mm", "BW" to "face_to_face_bw_mm")
+        val connectionOptions = connectionColumns.filter { (_, column) ->
+            valveRow?.get(column)?.toDoubleOrNull()?.let { it > 0.0 } == true
+        }.keys.toList()
+        val effectiveConnection = connection.takeIf { it in connectionOptions }
+            ?: connectionOptions.firstOrNull() ?: "RF"
         if (valveRow != null) {
-            faceToFace = d(valveRow, "face_to_face_mm")
+            val faceColumn = when (effectiveConnection) {
+                "RTJ" -> "face_to_face_rtj_mm"
+                "BW" -> "face_to_face_bw_mm"
+                else -> "face_to_face_mm"
+            }
+            faceToFace = valveRow[faceColumn]?.toDoubleOrNull() ?: Double.NaN
             hwH = d(valveRow, "handwheel_height_mm")
             hwD = d(valveRow, "handwheel_diameter_mm")
-            wt = d(valveRow, "weight_kg")
+            wt = if (effectiveConnection == "BW") d(valveRow, "weight_bw_kg") else d(valveRow, "weight_kg")
         }
 
-        if (faceToFace <= 0) {
-            faceToFace = if (rating >= 300) 216.0 else 178.0
-            wt = if (rating >= 300) 24.0 else 18.0
-        }
+        // Missing measurement stays unknown.
 
-        val rows = mutableListOf(
-            DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"),
-            DimensionRow("flange_od", "Flange Outside Dia (O)", "Flanş Dış Çapı (O)", "${fmt(dn * 2.8)} mm", "${fmt((dn*2.8)/25.4)}\"", "valves_def")
-        )
+        val rows = mutableListOf<DimensionRow>()
+        if (faceToFace > 0) {
+            rows.add(DimensionRow("f2f", "Face-to-Face (L)", "Alından Alına Boy (L)", "${fmt(faceToFace)} mm", "${fmt(faceToFace/25.4)}\"", "valves_def"))
+        }
+        // Flanged valve ends use the mating flange OD from B16.5.
+        // For butt-weld valves this is inapplicable and omitted.
+        if (effectiveConnection != "BW") {
+            val matingFlange = tableData("tbl_flanges_asme_b16_5").firstOrNull { r ->
+                s(r, "nps") == cleanNps && s(r, "rating") == rating.toString() &&
+                    s(r, "flange_type") == "Welding Neck"
+            }
+            val flangeOd = matingFlange?.get("outer_diameter_mm")?.toDoubleOrNull()
+            if (flangeOd != null && flangeOd > 0) {
+                rows.add(DimensionRow("flange_od", "Mating Flange Outside Dia (O)", "Karşı Flanş Dış Çapı (O)",
+                    "${fmt(flangeOd)} mm", "${fmt(flangeOd/25.4)}\"", "valves_def"))
+            }
+        }
         if (hwH > 0) {
             rows.add(DimensionRow("hw_h", "Handwheel Height (H)", "Volan Yüksekliği (H)", "${fmt(hwH)} mm", "${fmt(hwH/25.4)}\"", "valves_def"))
         }
         if (hwD > 0) {
             rows.add(DimensionRow("hw_d", "Handwheel Diameter (W)", "Volan Çapı (W)", "${fmt(hwD)} mm", "${fmt(hwD/25.4)}\"", "valves_def"))
         }
-        rows.add(DimensionRow("weight", "Estimated Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "valves_def"))
 
         return ComponentData(
             categoryId = "valves",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveRatingStr,
+            secondarySelectorLabelEn = "End connection",
+            secondarySelectorLabelTr = "Bağlantı",
+            secondaryOptions = connectionOptions,
+            selectedSecondary = effectiveConnection,
             dimensions = rows
         )
     }
@@ -876,50 +1115,95 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = when (subtype.id) {
+        val type = when (subtype.id) {
+            "gsk_rtj" -> "RTJ Ring Joint"
+            "gsk_flat" -> "Flat Ring Gasket"
+            else -> "Spiral Wound Gasket"
+        }
+        val sourceGaskets = tableData("tbl_gaskets_and_rtj")
+        val preferredRatings = when (subtype.id) {
             "gsk_rtj" -> listOf("300#", "400#", "600#", "900#", "1500#", "2500#")
             "gsk_flat" -> listOf("150#", "300#", "400#", "600#", "900#")
             else -> listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
         }
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
+        val matchingFlanges = if (subtype.id == "gsk_rtj") {
+            val ringKeys = sourceGaskets.filter { s(it, "gasket_type") == type }
+                .map { s(it, "ring_number").replace("-", "").uppercase() }.toSet()
+            tableData("tbl_flanges_asme_b16_5").filter { row ->
+                val rawRing = s(row, "rtj_ring_number").replace("-", "").uppercase()
+                val key = if (rawRing.startsWith("R")) rawRing else "R$rawRing"
+                s(row, "flange_type") == "Welding Neck" && key in ringKeys
+            }
+        } else emptyList()
+        val compatible = if (subtype.id == "gsk_rtj") matchingFlanges
+            else sourceGaskets.filter { s(it, "gasket_type") == type &&
+                d(it, "inner_diameter_mm") > 0 && d(it, "outer_diameter_mm") > 0 }
+        val requestedNps = nps.replace("\"", "").trim()
+        val classesForSize = compatible.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val primaryOptions = preferredRatings.filter { it.removeSuffix("#") in classesForSize }
+            .ifEmpty { preferredRatings.filter { cls -> compatible.any {
+                s(it, "rating") == cls.removeSuffix("#")
+            } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: preferredRatings.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val sizesForRating = compatible.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12",
+            "14", "16", "18", "20", "22", "24")
+            .filter { it in sizesForRating }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
+        val cleanNps = effectiveNps.replace("\"", "").trim()
 
-        var idMm = 0.0
-        var odMm = 0.0
-        var ringNo = ""
-
-        val cleanNps = nps.replace("\"", "").trim()
-        val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { r ->
-            val n = s(r, "nps")
-            (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
-                    s(r, "rating") == rating.toString()
+        val sourceRing = if (subtype.id == "gsk_rtj") {
+            tableData("tbl_flanges_asme_b16_5").firstOrNull { row ->
+                s(row, "nps") == cleanNps && s(row, "rating") == rating.toString() &&
+                    s(row, "flange_type") == "Welding Neck"
+            }?.get("rtj_ring_number")?.replace("'", "")?.trim().orEmpty()
+        } else ""
+        val gasketRow = tableData("tbl_gaskets_and_rtj").firstOrNull { row ->
+            if (subtype.id == "gsk_rtj") {
+                val canonical = sourceRing.replace("-", "").uppercase()
+                val wanted = if (canonical.isNotBlank() && !canonical.startsWith("R")) "R$canonical" else canonical
+                wanted.isNotEmpty() && wanted != "N/A" &&
+                    s(row, "ring_number").replace("-", "").uppercase() == wanted
+            } else {
+                s(row, "nps") == cleanNps && s(row, "rating") == rating.toString() &&
+                    s(row, "gasket_type") == type
+            }
         }
-        if (gasketRow != null) {
-            idMm = d(gasketRow, "inner_diameter_mm")
-            odMm = d(gasketRow, "outer_diameter_mm")
-            ringNo = s(gasketRow, "ring_number")
+        fun measured(column: String): Double =
+            gasketRow?.get(column)?.toDoubleOrNull() ?: Double.NaN
+        fun dim(id: String, en: String, tr: String, value: Double) =
+            DimensionRow(id, en, tr, "${fmt(value)} mm", "${fmt(value / 25.4)}\"", "gaskets_def")
+        val rows = mutableListOf<DimensionRow>()
+        if (subtype.id == "gsk_rtj") {
+            rows.add(dim("pitch", "Pitch Diameter (P)", "Hatve Çapı (P)", measured("pitch_diameter_mm")))
+            rows.add(dim("width", "Ring Width (A)", "Halka Genişliği (A)", measured("ring_width_mm")))
+            rows.add(dim("oval", "Oval Height (B)", "Oval Yüksekliği (B)", measured("oval_height_mm")))
+            rows.add(dim("oct", "Octagonal Height (H)", "Sekizgen Yüksekliği (H)", measured("oct_height_mm")))
+            val ring = gasketRow?.get("ring_number") ?: "N/A"
+            rows.add(DimensionRow("ring", "RTJ Ring Number", "RTJ Halka Numarası", ring, ring, "gaskets_def"))
+        } else {
+            rows.add(dim("id", "Inside Diameter (d1)", "İç Çap (d1)", measured("inner_diameter_mm")))
+            rows.add(dim("od", "Outside Diameter (d2)", "Dış Çap (d2)", measured("outer_diameter_mm")))
+            val thickness = measured("thickness_mm")
+            if (thickness > 0) {
+                rows.add(dim("thk", "Gasket Thickness", "Conta Kalınlığı", thickness))
+            }
         }
-
-        if (odMm <= 0) {
-            idMm = 60.3
-            odMm = 104.8
-            ringNo = if (dn == 50) "R23" else "R" + (dn / 2)
-        }
-
-        val rows = listOf(
-            DimensionRow("id", "Gasket Inside Dia (d1)", "Conta İç Çapı (d1)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "gaskets_def"),
-            DimensionRow("od", "Gasket Outside Dia (d2)", "Conta Dış Çapı (d2)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "gaskets_def"),
-            DimensionRow("ring", "RTJ Ring Number", "RTJ Ring Numarası", ringNo.ifBlank { "R23" }, ringNo.ifBlank { "R23" }, "gaskets_def"),
-            DimensionRow("thk", "Standard Thickness", "Conta Kalınlığı", "4.5 mm", "0.177\"", "gaskets_def")
-        )
 
         return ComponentData(
             categoryId = "gaskets",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
@@ -935,49 +1219,70 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
+        val selectedBlankType = when (subtype.id) {
+            "blk_paddle" -> "Paddle Blank"
+            "blk_spacer" -> "Paddle Spacer"
+            else -> "Figure-8 Spectacle Blind"
+        }
+        val validRecords = tableData("tbl_line_blanks_asme_b16_48").filter { row ->
+            s(row, "blank_type") == selectedBlankType && d(row, "thickness_mm") > 0 &&
+                if (subtype.id == "blk_spacer") d(row, "inner_diameter_mm") > 0
+                else d(row, "outer_diameter_mm") > 0
+        }
+        val requestedSize = nps.replace("\"", "").trim()
+        val presentRatings = validRecords.filter { s(it, "nps") == requestedSize }
+            .map { s(it, "rating") }.toSet()
+        val allowedRatings = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val primaryOptions = allowedRatings.filter { it.removeSuffix("#") in presentRatings }
+            .ifEmpty { allowedRatings.filter { c -> validRecords.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "150#"
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val presentSizes = validRecords.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12",
+            "14", "16", "18", "20", "22", "24")
+            .filter { it in presentSizes }.map { "$it\"" }
+        val effectiveSize = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps } ?: availableNps.firstOrNull() ?: nps
 
-        var odMm = 0.0
-        var thkMm = 0.0
-        var c2c = 0.0
-        var wt = 0.0
+        var odMm = Double.NaN
+        var idMm = Double.NaN
+        var thkMm = Double.NaN
+        var c2c = Double.NaN
+        var wt = Double.NaN
 
-        val cleanNps = nps.replace("\"", "").trim()
-        val blankRow = tableData("tbl_line_blanks_asme_b16_48").firstOrNull { r ->
+        val cleanNps = effectiveSize.replace("\"", "").trim()
+        val blankRow = validRecords.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
-                    s(r, "rating") == rating.toString()
+                s(r, "rating") == rating.toString() && s(r, "blank_type") == selectedBlankType
         }
         if (blankRow != null) {
             odMm = d(blankRow, "outer_diameter_mm")
+            idMm = d(blankRow, "inner_diameter_mm")
             thkMm = d(blankRow, "thickness_mm")
             c2c = d(blankRow, "center_to_center_mm")
             wt = d(blankRow, "weight_spectacle_kg")
         }
 
-        if (odMm <= 0) {
-            odMm = 104.8
-            thkMm = 6.4
-            c2c = 120.7
-            wt = 1.8
-        }
+        // Missing blank measurements remain N/A.
 
-        val rows = listOf(
-            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"),
-            DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"),
-            DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"),
-            DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def")
-        )
+        val rows = mutableListOf<DimensionRow>()
+        if (odMm > 0) rows.add(DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"))
+        if (idMm > 0) rows.add(DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "blanks_def"))
+        if (thkMm > 0) rows.add(DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"))
+        if (c2c > 0) rows.add(DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Reference Weight", "Referans Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def"))
 
         return ComponentData(
             categoryId = "blanks",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveSize,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
@@ -990,13 +1295,13 @@ class CsvDataStore(private val context: Context) {
     private val dfWeight = java.text.DecimalFormat("0.##", java.text.DecimalFormatSymbols(java.util.Locale.US))
 
     private fun fmt(d: Double): String {
-        if (d.isNaN() || d.isInfinite()) return "—"
+        if (d.isNaN() || d.isInfinite()) return "N/A"
         val rounded = Math.round(d * 10000.0) / 10000.0
         return dfPrecision.format(rounded)
     }
 
     private fun fmtWeight(d: Double): String {
-        if (d.isNaN() || d.isInfinite()) return "—"
+        if (d.isNaN() || d.isInfinite()) return "N/A"
         val rounded = Math.round(d * 100.0) / 100.0
         return dfWeight.format(rounded)
     }
@@ -1015,7 +1320,9 @@ class CsvDataStore(private val context: Context) {
             "2" -> 50
             "2 1/2", "2-1/2" -> 65
             "3" -> 80
+            "3 1/2", "3-1/2" -> 90
             "4" -> 100
+            "5" -> 125
             "6" -> 150
             "8" -> 200
             "10" -> 250
@@ -1024,8 +1331,21 @@ class CsvDataStore(private val context: Context) {
             "16" -> 400
             "18" -> 450
             "20" -> 500
+            "22" -> 550
             "24" -> 600
-            else -> 50
+            "26" -> 650
+            "28" -> 700
+            "30" -> 750
+            "32" -> 800
+            "34" -> 850
+            "36" -> 900
+            "38" -> 950
+            "40" -> 1000
+            "42" -> 1050
+            "44" -> 1100
+            "46" -> 1150
+            "48" -> 1200
+            else -> 0
         }
     }
 

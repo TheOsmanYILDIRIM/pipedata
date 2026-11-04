@@ -52,6 +52,7 @@ fun ComponentDetailScreen(
     onNpsChange: (String) -> Unit,
     onPrimaryChange: (String) -> Unit,
     onSecondaryChange: ((String) -> Unit)? = null,
+    onFlangeScheduleChange: (String) -> Unit,
     currentUnit: UnitSystem,
     onUnitToggle: () -> Unit,
     fontScale: Float,
@@ -238,6 +239,40 @@ fun ComponentDetailScreen(
                 modifier = Modifier.padding(horizontal = 14.dp)
             )
 
+            if (data.flangeScheduleOptions.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = if (isTr) "BORU ET KALINLIĞI (SCH)" else "PIPE SCHEDULE (SCH)",
+                    color = colors.textSecondary,
+                    fontSize = (11 * fontScale).sp,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp)
+                ) {
+                    items(data.flangeScheduleOptions) { schedule ->
+                        val active = schedule == data.selectedFlangeSchedule
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(7.dp))
+                                .background(if (active) colors.accent else colors.chipBg)
+                                .border(1.dp, if (active) colors.accent else colors.border, RoundedCornerShape(7.dp))
+                                .clickable { onFlangeScheduleChange(schedule) }
+                                .padding(horizontal = 13.dp, vertical = 9.dp)
+                        ) {
+                            Text(
+                                text = schedule,
+                                color = if (active) colors.accentText else colors.textPrimary,
+                                fontSize = (12 * fontScale).sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(14.dp))
 
             // ================================================================
@@ -401,7 +436,7 @@ private fun CadDrawingStage(
     }
 
     val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
-    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
+    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${data.selectedFlangeSchedule}_${isMetric}_$normScale"
 
     val svgBytes = remember(dynamicCacheKey) {
         getThemedSvgBytes(context, svgAsset, theme, data, isMetric, normScale)
@@ -594,7 +629,7 @@ private fun getThemedSvgBytes(
     fontScale: Float = 1.0f
 ): ByteArray? {
     val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
-    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
+    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${data.selectedFlangeSchedule}_${isMetric}_$normScale"
     renderedSvgBytesCache[cacheKey]?.let { return it }
 
     return try {
@@ -780,38 +815,49 @@ private fun getThemedSvgBytes(
         val dimMap = mutableMapOf<String, String>()
         data.dimensions.forEach { row ->
             val raw = if (isMetric) row.valueMetric else row.valueImperial
+            // No guessed engineering numbers and no meaningless N/A" badge.
+            if (raw.startsWith("N/A")) return@forEach
             val cleaned = raw.replace(" mm", "").replace(" kg", "kg").replace(" lb", "lb").trim()
             dimMap[row.key.lowercase()] = cleaned
         }
 
         val dn = data.dn
-        val odStr = dimMap["od"] ?: if (isMetric) "${fmt(dn * 2.8)}" else "${fmt(dn * 2.8 / 25.4)}\""
-        val thkStr = dimMap["thk"] ?: if (isMetric) "17.5" else "0.69\""
-        val hubStr = dimMap["hub"] ?: dimMap["ctf"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
-        val boreStr = dimMap["bore"] ?: dimMap["id"] ?: if (isMetric) "$dn" else "${fmt(dn / 25.4)}\""
-        val pcdStr = dimMap["pcd"] ?: if (isMetric) "${fmt(dn * 2.2)}" else "${fmt(dn * 2.2 / 25.4)}\""
-        val lenStr = dimMap["len"] ?: dimMap["lth"] ?: if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
-        val rfStr = dimMap["rf"] ?: if (isMetric) "${fmt(dn * 1.75)}" else "${fmt(dn * 1.75 / 25.4)}\""
-        val boltsStr = dimMap["bolts"] ?: "4 × 5/8\""
-        val studStr = dimMap["stud"] ?: if (isMetric) "70" else "2.75\""
-        val wtStr = dimMap["weight"] ?: if (isMetric) "2.5kg" else "5.5lb"
+        val odStr = dimMap["od"] ?: dimMap["flange_od"] ?: "—"
+        val thkStr = dimMap["thk"] ?: "—"
+        val hubStr = dimMap["hub"] ?: dimMap["ctf"] ?: "—"
+        val boreStr = dimMap["bore"] ?: dimMap["id"] ?: "—"
+        val pcdStr = dimMap["pcd"] ?: "—"
+        val lenStr = dimMap["len"] ?: dimMap["lth"] ?: "—"
+        val rfStr = dimMap["rf"] ?: "—"
+        val boltsStr = dimMap["bolts"] ?: "—"
+        val studStr = dimMap["stud"] ?: "—"
+        val wtStr = dimMap["weight"] ?: "—"
 
-        val numBolts = boltsStr.split("×").firstOrNull()?.trim() ?: "4"
-        val boltSz = boltsStr.split("×").getOrNull(1)?.trim() ?: "5/8\""
+        val numBolts = boltsStr.split("×").firstOrNull()?.trim() ?: "—"
+        val boltSz = boltsStr.split("×").getOrNull(1)?.trim() ?: "—"
 
         // Dynamically inject real engineering values into all SVG parameter callout badges
         val placeholderRegex = Regex("\\[\\[(.*?)\\]\\]")
         themedSvg = placeholderRegex.replace(themedSvg) { matchResult ->
             val key = matchResult.groupValues[1].trim()
-            if (data.categoryId == "fittings_sw") {
-                val swSockDia = dimMap["sock_dia"] ?: if (isMetric) "22.2" else "0.88\""
-                val swSockDepth = dimMap["sock_depth"] ?: if (isMetric) "9.5" else "0.38\""
-                val swCenterEnd = dimMap["center_end"] ?: if (isMetric) "15.5" else "0.62\""
-                val swSockThk = dimMap["sock_thk"] ?: if (isMetric) "4.7" else "0.18\""
-                val swBore = dimMap["bore"] ?: if (isMetric) "16.6" else "0.65\""
-                val swWallThk = dimMap["wall_thk"] ?: if (isMetric) "3.7" else "0.15\""
-                val swLen = dimMap["length"] ?: if (isMetric) "22.5" else "0.88\""
-                val swCapThk = dimMap["cap_thk"] ?: if (isMetric) "6.4" else "0.25\""
+            if (data.categoryId == "fittings_thd") {
+                // Threaded drawings use A/H/G or Thread Length/Across Flats/Depth.
+                // Never reuse socket-weld dimensions for these CAD placeholders.
+                when (key) {
+                    "3" -> dimMap["c2e"] ?: dimMap["len"] ?: "—"
+                    "4" -> dimMap["height"] ?: dimMap["across_flats"] ?: dimMap["bore"] ?: "—"
+                    "5" -> dimMap["wall"] ?: dimMap["head_depth"] ?: dimMap["bore"] ?: "—"
+                    else -> dimMap[key.lowercase()] ?: "—"
+                }
+            } else if (data.categoryId == "fittings_sw") {
+                val swSockDia = dimMap["sock_dia"] ?: "—"
+                val swSockDepth = dimMap["sock_depth"] ?: "—"
+                val swCenterEnd = dimMap["center_end"] ?: "—"
+                val swSockThk = dimMap["sock_thk"] ?: "—"
+                val swBore = dimMap["bore"] ?: "—"
+                val swWallThk = dimMap["wall_thk"] ?: "—"
+                val swLen = dimMap["length"] ?: "—"
+                val swCapThk = dimMap["cap_thk"] ?: "—"
                 when (key) {
                     "3" -> swCenterEnd
                     "4" -> swSockDia
@@ -827,14 +873,14 @@ private fun getThemedSvgBytes(
                     else -> dimMap[key.lowercase()] ?: data.selectedPrimary
                 }
             } else if (data.categoryId == "fittings_bw") {
-                val bwOd = dimMap["od"] ?: if (isMetric) "60.3" else "2.375\""
-                val bwCenterEnd = dimMap["center_end"] ?: dimMap["length"] ?: if (isMetric) "76.2" else "3.00\""
-                val bwCenterCenter = dimMap["center_center"] ?: if (isMetric) "${fmt(dn * 3.0)}" else "${fmt(dn * 3.0 / 25.4)}\""
-                val bwBackFace = dimMap["back_to_face"] ?: if (isMetric) "${fmt(dn * 2.1)}" else "${fmt(dn * 2.1 / 25.4)}\""
-                val bwLen = dimMap["length"] ?: dimMap["center_end"] ?: if (isMetric) "63.5" else "2.50\""
-                val bwSmallOd = dimMap["small_od"] ?: dimMap["branch_center_end"] ?: if (isMetric) "${fmt(dn * 0.75)}" else "${fmt(dn * 0.75 / 25.4)}\""
-                val bwLapDia = dimMap["lap_dia"] ?: if (isMetric) "${fmt(dn * 1.5)}" else "${fmt(dn * 1.5 / 25.4)}\""
-                val bwRadius = dimMap["radius"] ?: if (isMetric) "8.0" else "5/16\""
+                val bwOd = dimMap["od"] ?: "—"
+                val bwCenterEnd = dimMap["center_end"] ?: dimMap["length"] ?: "—"
+                val bwCenterCenter = dimMap["center_center"] ?: "—"
+                val bwBackFace = dimMap["back_to_face"] ?: "—"
+                val bwLen = dimMap["length"] ?: dimMap["center_end"] ?: "—"
+                val bwSmallOd = dimMap["small_od"] ?: dimMap["branch_center_end"] ?: "—"
+                val bwLapDia = dimMap["lap_dia"] ?: "—"
+                val bwRadius = dimMap["radius"] ?: "—"
                 when (key) {
                     "3" -> bwOd
                     "4" -> if (dimMap.containsKey("center_center")) bwCenterCenter else bwCenterEnd
@@ -844,7 +890,7 @@ private fun getThemedSvgBytes(
                     "10" -> data.selectedPrimary
                     "13", "14", "15" -> wtStr
                     "39" -> bwSmallOd
-                    "DB2_4" -> if (isMetric) "3.9" else "0.15\""
+                    "DB2_4" -> thkStr
                     else -> dimMap[key.lowercase()] ?: data.selectedPrimary
                 }
             } else {
@@ -852,14 +898,14 @@ private fun getThemedSvgBytes(
                     "3" -> odStr
                     "4" -> thkStr
                     "5" -> hubStr
-                    "6" -> boreStr
+                    "6" -> if (data.categoryId == "flanges") dimMap["hub_a"] ?: "—" else boreStr
                     "7" -> dimMap["hgt"] ?: if (isMetric) "125" else "4.92\""
                     "8" -> dimMap["rad"] ?: if (isMetric) "3.0" else "1/8\""
                     "9" -> lenStr
                     "10" -> dimMap["socket"] ?: if (isMetric) "16.0" else "5/8\""
                     "11" -> rfStr
-                    "12" -> if (isMetric) "2.0" else "1/16\""
-                    "13" -> dimMap["rtj_dia"] ?: if (isMetric) "${fmt(dn * 1.6)}" else "${fmt(dn * 1.6 / 25.4)}\""
+                    "12" -> dimMap["rf_height"] ?: "—"
+                    "13" -> dimMap["rtj_dia"] ?: "—"
                     "14" -> dimMap["ring"] ?: "R23"
                     "15" -> if (isMetric) "6.4" else "1/4\""
                     "16" -> if (isMetric) "8.7" else "11/32\""
@@ -874,11 +920,11 @@ private fun getThemedSvgBytes(
                     "25" -> if (isMetric) "19.0" else "3/4\""
                     "27", "28", "29" -> wtStr
                     "32" -> boreStr
-                    "36" -> pcdStr
-                    "37" -> if (isMetric) "6.4" else "1/4\""
-                    "38" -> if (isMetric) "8.7" else "11/32\""
-                    "43" -> if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
-                    "44" -> if (isMetric) "3.9" else "0.154\""
+                    "36" -> dimMap["rtj_pitch"] ?: "—"
+                    "37" -> dimMap["rtj_depth"] ?: "—"
+                    "38" -> dimMap["rtj_width"] ?: "—"
+                    "43" -> dimMap["long_neck_od"] ?: hubStr
+                    "44" -> dimMap["weld_flat"] ?: "—"
                     "46" -> "$numBolts × $boltSz"
                     "48" -> "37.5°"
                     "49" -> "10°"

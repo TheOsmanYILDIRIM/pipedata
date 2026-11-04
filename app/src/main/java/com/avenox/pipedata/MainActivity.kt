@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                     categoryId = selectedCategory.id,
                     defaultSubtype = 0,
                     defaultNps = "2\"",
-                    defaultPrimary = if (selectedCategory.id == "pipes") "40" else if (selectedCategory.id == "fittings_bw") "STD" else if (selectedCategory.id == "fittings_sw") "3000#" else "150#",
+                    defaultPrimary = if (selectedCategory.id == "pipes") "40" else if (selectedCategory.id == "fittings_bw") "STD" else if (selectedCategory.id == "fittings_sw" || selectedCategory.id == "fittings_thd") "3000#" else "150#",
                     defaultSecondary = if (selectedCategory.id == "flanges") "RF" else null
                 )
             }
@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
             var selectedNps by remember { mutableStateOf(initialSelection.nps) }
             var selectedPrimary by remember { mutableStateOf(initialSelection.primary) }
             var selectedSecondary by remember { mutableStateOf<String?>(initialSelection.secondary) }
+            var flangeSchedule by remember { mutableStateOf("STD") }
 
             // Modals & Splash
             var showSplash by remember { mutableStateOf(true) }
@@ -100,18 +101,21 @@ class MainActivity : ComponentActivity() {
                 currentSubtypeIndex,
                 selectedNps,
                 selectedPrimary,
-                selectedSecondary
+                selectedSecondary,
+                flangeSchedule
             ) {
                 dbHelper.getComponentData(
                     categoryId = selectedCategory.id,
                     subtypeIndex = currentSubtypeIndex,
                     nps = selectedNps,
                     primarySel = selectedPrimary,
-                    secondarySel = selectedSecondary
+                    secondarySel = selectedSecondary,
+                    flangeSchedule = flangeSchedule
                 )
             }
 
             LaunchedEffect(currentData) {
+                currentData.selectedFlangeSchedule?.let { if (flangeSchedule != it) flangeSchedule = it }
                 if (selectedPrimary != currentData.selectedPrimary) {
                     selectedPrimary = currentData.selectedPrimary
                 }
@@ -193,6 +197,7 @@ class MainActivity : ComponentActivity() {
                                                 "pipes" -> "40"
                                                 "fittings_bw" -> "STD"
                                                 "fittings_sw" -> "3000#"
+                                                "fittings_thd" -> "3000#"
                                                 "valves" -> "150#"
                                                 "gaskets" -> "150#"
                                                 "blanks" -> "150#"
@@ -252,18 +257,17 @@ class MainActivity : ComponentActivity() {
                                                 secondary = selectedSecondary
                                             )
                                         },
-                                        onSecondaryChange = if (selectedSecondary != null) {
-                                            {
-                                                selectedSecondary = it
-                                                prefsManager.saveCategorySelection(
-                                                    categoryId = selectedCategory.id,
-                                                    subtypeIndex = currentSubtypeIndex,
-                                                    nps = selectedNps,
-                                                    primary = selectedPrimary,
-                                                    secondary = it
-                                                )
-                                            }
-                                        } else null,
+                                        onFlangeScheduleChange = { flangeSchedule = it },
+                                        onSecondaryChange = { newSelection ->
+                                            selectedSecondary = newSelection
+                                            prefsManager.saveCategorySelection(
+                                                categoryId = selectedCategory.id,
+                                                subtypeIndex = currentSubtypeIndex,
+                                                nps = selectedNps,
+                                                primary = selectedPrimary,
+                                                secondary = newSelection
+                                            )
+                                        },
                                         currentUnit = currentUnit,
                                         onUnitToggle = onUnitToggle,
                                         fontScale = fontScale,
