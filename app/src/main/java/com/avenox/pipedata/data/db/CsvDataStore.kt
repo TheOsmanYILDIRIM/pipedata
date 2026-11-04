@@ -443,10 +443,24 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         selectedSchedule: String
     ): ComponentData {
-        val primaryOptions = listOf(
-            "5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"
+        val preferredSchedules = listOf(
+            "5", "5S", "10", "10S", "20", "30", "40", "40S", "STD",
+            "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS"
         )
-        val effectiveSchedule = if (selectedSchedule in primaryOptions) selectedSchedule else "STD"
+        val pipeRows = tableData("tbl_pipes")
+        val validRows = pipeRows.filter { d(it, "wall_thickness_mm") > 0.0 && d(it, "outer_diameter_mm") > 0.0 }
+        val npsChoices = listOf("1/8", "1/4", "3/8", "1/2", "3/4", "1",
+            "1 1/4", "1 1/2", "2", "2 1/2", "3", "3 1/2", "4",
+            "5", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24",
+            "26", "28", "30", "32", "34", "36", "38", "40", "42", "44", "46", "48")
+        val validNps = validRows.map { s(it, "nps") }.toSet()
+        val availableSizes = npsChoices.filter { it in validNps }
+        val requestedNps = nps.replace("\"", "").trim()
+        val effectiveNps = requestedNps.takeIf { it in validNps } ?: availableSizes.firstOrNull() ?: requestedNps
+        val optionsAvailable = validRows.filter { s(it, "nps") == effectiveNps }.map { s(it, "schedule") }.toSet()
+        val primaryOptions = preferredSchedules.filter { it in optionsAvailable }
+        val effectiveSchedule = selectedSchedule.takeIf { it in primaryOptions }
+            ?: (if ("40" in primaryOptions) "40" else primaryOptions.firstOrNull() ?: "STD")
 
         var odMm = Double.NaN
         var wallThkMm = Double.NaN
@@ -455,8 +469,8 @@ class CsvDataStore(private val context: Context) {
         var wtWaterKgM = Double.NaN
         var inertia = Double.NaN
 
-        val cleanNps = nps.replace("\"", "").trim()
-        val pipeRow = tableData("tbl_pipes").firstOrNull { r ->
+        val cleanNps = effectiveNps
+        val pipeRow = validRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "schedule").equals(effectiveSchedule, ignoreCase = true)
@@ -486,9 +500,9 @@ class CsvDataStore(private val context: Context) {
             categoryId = "pipes",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/8\"", "1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "3 1/2\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableSizes.map { "$it\"" },
+            selectedNps = "$effectiveNps\"",
+            dn = getNpsDn(effectiveNps),
             primarySelectorLabelEn = "Schedule",
             primarySelectorLabelTr = "Et Kalınlığı",
             primaryOptions = primaryOptions,
