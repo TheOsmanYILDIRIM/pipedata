@@ -348,6 +348,30 @@ if spacer:
     check("paddle-spacer-own-mass", abs(float(spacer["weight_spectacle_kg"])-0.06)<0.001,
           spacer["weight_spectacle_kg"])
 
+
+# Ensure threaded fittings are an actual reachable UI category, not orphan CSV.
+from pathlib import Path
+app_source = (Path(__file__).parent / "app" / "src" / "main" / "java" /
+              "com" / "avenox" / "pipedata" / "data" / "db" / "CsvDataStore.kt").read_text(encoding="utf-8")
+main_source = (Path(__file__).parent / "app" / "src" / "main" / "java" /
+               "com" / "avenox" / "pipedata" / "MainActivity.kt").read_text(encoding="utf-8")
+check("threaded-category-registered", 'id = "fittings_thd"' in app_source)
+check("threaded-data-wired", '"fittings_thd" -> buildThreadedData' in app_source)
+check("threaded-class-default", '"fittings_thd" -> "3000#"' in main_source)
+check("threaded-13-subtypes", all(marker in app_source for marker in (
+    "thd_elbow_90", "thd_elbow_45", "thd_tee", "thd_cross", "thd_street",
+    "thd_full", "thd_half", "thd_cap", "thd_square", "thd_hex",
+    "thd_round", "thd_bushing", "thd_flush"
+)))
+for kind, source_col in (("90° Elbow", "center_to_end_mm"),
+                         ("Round Head Plug", "weight_kg"),
+                         ("Full Coupling", "length_mm")):
+    candidates = [r for r in rows("tbl_fittings_threaded_b16_11") if
+                  r["nps"] == "1" and r["rating"] == "3000" and
+                  r["component_type"] == kind and float(r[source_col] or 0) > 0]
+    check("threaded-3000-1in-" + kind, bool(candidates),
+          candidates[0][source_col] if candidates else "missing")
+
 print(f"\nSONUC: {len(FAILS)} FAIL")
 sys.exit(1 if FAILS else 0)
 
