@@ -534,6 +534,7 @@ class CsvDataStore(private val context: Context) {
         var od = Double.NaN
         var centerEnd = Double.NaN
         var radiusMm = Double.NaN
+        var branchCenterEnd = Double.NaN
         var centerCenter = Double.NaN
         var backToFace = Double.NaN
         var lengthHeight = Double.NaN
@@ -557,6 +558,7 @@ class CsvDataStore(private val context: Context) {
             od = d(found, "outer_diameter_mm")
             centerEnd = d(found, "center_to_end_mm")
             radiusMm = found["radius_mm"]?.toDoubleOrNull() ?: Double.NaN
+            branchCenterEnd = d(found, "branch_center_to_end_mm")
             centerCenter = d(found, "center_to_center_mm")
             backToFace = d(found, "back_to_face_mm")
             lengthHeight = d(found, "overall_length_height_mm")
@@ -584,15 +586,15 @@ class CsvDataStore(private val context: Context) {
             }
             "tee_red" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End Run (C)", "Gövde Merkez-Uç (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                val branchCe = if (lengthHeight > 0) lengthHeight else centerEnd * 0.8
+                val branchCe = branchCenterEnd
                 rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(branchCe)} mm", "${fmt(branchCe / 25.4)}\"", "buttweld"))
             }
             "cap_bw" -> {
                 rows.add(DimensionRow("length", "Length / Height (E)", "Kep Toplam Boyu (E)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "red_con", "red_ecc" -> {
-                val smallOd = Double.NaN // small-end diameter requires separate source geometry
-                rows.add(DimensionRow("small_od", "Small End Diameter (OD₂)", "Küçük Çap (OD₂)", "${fmt(smallOd)} mm", "${fmt(smallOd / 25.4)}\"", "buttweld"))
+                val branch = selectedBranch?.let { "$it\"" } ?: "N/A"
+                rows.add(DimensionRow("small_nps", "Small End Nominal Size (NPS)", "Küçük Uç Anma Çapı (NPS)", branch, branch, "buttweld"))
                 rows.add(DimensionRow("length", "End-to-End Length (H)", "Toplam Redüksiyon Boyu (H)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "stub_end" -> {
