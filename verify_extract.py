@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cikarma dogrulama: app sorgulariyla ayni filtre, kritik hucreler dolu mu?
 Sessiz fallback YOK: bos hucre = FAIL."""
-import csv, os, sys
+import csv, os, sys, math
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app", "src", "main", "assets", "csv")
 
@@ -167,6 +167,68 @@ for t in ["tbl_flanges_asme_b16_5","tbl_pipes"]:
         except ValueError: v = 0
         if v != 0 and (v < 3 or v > 3000): bad += 1
 check("OD-aralik-temiz", bad == 0, f"anormal={bad}")
+
+# 11) INDEPENDENT standard and physical checks.
+# Not an APK equality check: geometry and mass identities independently
+# validate every populated pipe row, with tolerance for tabular rounding.
+audit_count = 0
+invalid = []
+for p in rows("tbl_pipes"):
+    def n(field):
+        try: return float(p[field]) if p.get(field, "") not in ("", "None") else None
+        except (TypeError, ValueError): return None
+    od, t = n("outer_diameter_mm"), n("wall_thickness_mm")
+    if od is None or t is None: continue  # No invented schedule or wall value.
+    label = (p["nps"], p["schedule"])
+    audit_count += 1
+    if not (0 < t < od / 2):
+        invalid.append((label, "impossible wall", od, t))
+        continue
+    inner = n("inner_diameter_mm")
+    mass = n("weight_empty_kg_m")
+    filled = n("weight_water_kg_m")
+    inertia = n("moment_of_inertia_cm4")
+    if None in (inner, mass, filled, inertia):
+        invalid.append((label, "missing independently computable value"))
+        continue
+    expected_id = od - 2 * t
+    expected_mass = 0.0246615 * t * (od - t)  # B36.10 plain-end mass
+    expected_filled = mass + (math.pi / 4) * (inner / 1000) ** 2 * 1000
+    expected_inertia = (math.pi / 64) * (od ** 4 - inner ** 4) / 10000
+    limits = (
+        ("ID", inner, expected_id, max(0.12, od * 0.0002)),
+        ("steel kg/m", mass, expected_mass, max(0.20, expected_mass * 0.01)),
+        ("water-filled kg/m", filled, expected_filled, max(0.65, expected_filled * 0.005)),
+        ("I cm4", inertia, expected_inertia, max(0.12, expected_inertia * 0.008)),
+    )
+    for field, measured, expected, tolerance in limits:
+        if abs(measured - expected) > tolerance:
+            invalid.append((label, field, measured, round(expected, 4), tolerance))
+check("independent-physics-pipes", not invalid,
+      f"{audit_count} independently checked; {len(invalid)} physical contradictions: {invalid[:12]}")
+
+# Ground-truth anchors from separately published ASME B36.10/B16.9/B16.5 tables.
+for sch, wall in (("STD", 1.73), ("XS", 2.41)):
+    p = first("tbl_pipes", nps="1/8", schedule=sch)
+    check("B36.10-1-8-"+sch, p is not None and abs(float(p["wall_thickness_mm"])-wall) < 0.001,
+          p["wall_thickness_mm"] if p else "missing")
+p = first("tbl_pipes", nps="22", schedule="80S")
+check("pipe-22-80S-inside", p is not None and abs(float(p["inner_diameter_mm"])-533.6)<0.01,
+      p["inner_diameter_mm"] if p else "missing")
+for sch in ("40S", "80S"):
+    p = first("tbl_pipes", nps="18", schedule=sch)
+    check("pipe-18-"+sch+"-filled-is-heavy", p is not None and
+          float(p["weight_water_kg_m"]) > float(p["weight_empty_kg_m"])+140,
+          p["weight_water_kg_m"] if p else "missing")
+for nps, sch, name, expected in (
+    ("2", "40", "45° Elbow", 35),
+    ("2", "40", "90° Long Radius Elbow", 76),
+    ("14", "40", "90° Long Radius Elbow", 533)):
+    fitting = first("tbl_fittings_buttweld_b16_9",
+                    nps=nps, schedule=sch, component_type=name)
+    check("B16.9-" + nps + "-" + name,
+          fitting is not None and abs(float(fitting["center_to_end_mm"])-expected) <= 1.0,
+          fitting["center_to_end_mm"] if fitting else "missing")
 
 print(f"\nSONUC: {len(FAILS)} FAIL")
 sys.exit(1 if FAILS else 0)
