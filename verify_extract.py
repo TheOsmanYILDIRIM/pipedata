@@ -121,6 +121,16 @@ if ring:
     check("RTJ-R23-width-11.13", ring["ring_width_mm"] == "11.13", ring["ring_width_mm"])
     check("RTJ-R23-no-fake-OD", ring["outer_diameter_mm"] == "", ring["outer_diameter_mm"])
 
+# 7c) RTJ flange numerical ring must resolve to a real R-prefixed ring asset.
+flange_ring = first("tbl_flanges_asme_b16_5", nps="2", rating="150", flange_type="Welding Neck")
+check("flange-2-150-ring-source", flange_ring is not None)
+if flange_ring:
+    source_ring = flange_ring["rtj_ring_number"].strip().replace("'", "").replace("-", "")
+    canonical_ring = source_ring if source_ring.upper().startswith("R") else "R" + source_ring
+    ring_ref = next((x for x in rows("tbl_gaskets_and_rtj")
+                     if x["ring_number"].replace("-", "").upper() == canonical_ring.upper()), None)
+    check("flange-RTJ-ring-resolves", ring_ref is not None, canonical_ring)
+
 # 8) Blank 2" 150: OD/thk dolu
 r = first("tbl_line_blanks_asme_b16_48", nps="2", rating="150")
 check("blank-2-150-var", r is not None)
