@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                     categoryId = selectedCategory.id,
                     defaultSubtype = 0,
                     defaultNps = "2\"",
-                    defaultPrimary = if (selectedCategory.id == "pipes") "40" else if (selectedCategory.id == "fittings_bw") "STD" else if (selectedCategory.id == "fittings_sw") "3000#" else "150#",
+                    defaultPrimary = if (selectedCategory.id == "pipes") "40" else if (selectedCategory.id == "fittings_bw") "STD" else if (selectedCategory.id == "fittings_sw" || selectedCategory.id == "fittings_thd") "3000#" else "150#",
                     defaultSecondary = if (selectedCategory.id == "flanges") "RF" else null
                 )
             }
@@ -197,6 +197,7 @@ class MainActivity : ComponentActivity() {
                                                 "pipes" -> "40"
                                                 "fittings_bw" -> "STD"
                                                 "fittings_sw" -> "3000#"
+                                                "fittings_thd" -> "3000#"
                                                 "valves" -> "150#"
                                                 "gaskets" -> "150#"
                                                 "blanks" -> "150#"
