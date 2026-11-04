@@ -94,6 +94,9 @@ def extract_flanges():
             no_bolts = num(g("no of bolts"))
             bolt_sz = (g("bolt size unc") or "").strip()
             rf_sb_len = num(g("rf sb length", "c bolt length"))
+            rtj_sb_len = num(g("rtj sb len"))
+            socket_depth = num(g("socket depth"))
+            lap_radius = num(g("lapped rad"))
             ring_no = (g("ring no") or "").strip()
             
             wn_len = num(g("wn thk", "hub-a"))
@@ -134,6 +137,9 @@ def extract_flanges():
                     "num_bolts": int(no_bolts) if no_bolts else 4,
                     "bolt_diameter_in": bolt_sz,
                     "stud_bolt_length_mm": rf_sb_len,
+                    "stud_bolt_length_rtj_mm": rtj_sb_len,
+                    "socket_depth_mm": socket_depth,
+                    "lapped_radius_mm": lap_radius,
                     "weight_kg": wt,
                     "rtj_ring_number": ring_no,
                     "source_file": f
@@ -616,7 +622,8 @@ def main():
         "nps", "rating", "flange_type", "facing", "outer_diameter_mm",
         "thickness_mm", "hub_diameter_mm", "length_thru_hub_mm", "bore_diameter_mm",
         "rf_diameter_mm", "pcd_mm", "num_bolts", "bolt_diameter_in",
-        "stud_bolt_length_mm", "weight_kg", "rtj_ring_number", "source_file"
+        "stud_bolt_length_mm", "stud_bolt_length_rtj_mm",
+        "socket_depth_mm", "lapped_radius_mm", "weight_kg", "rtj_ring_number", "source_file"
     ])
     
     pipes = extract_pipes()
