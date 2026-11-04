@@ -470,15 +470,16 @@ class CsvDataStore(private val context: Context) {
             inertia = d(pipeRow, "moment_of_inertia_cm4")
         }
 
-        // Missing source row: never manufacture pipe dimensions.
+        // Imperial figures come from original APK CSV, not converted rounded metric values.
+        fun imperial(column: String): Double = pipeRow?.get(column)?.toDoubleOrNull() ?: Double.NaN
 
         val rows = listOf(
-            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(wallThkMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "pipes_sch"),
-            DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(wtEmptyKgM*0.6719)} lb/ft", "pipes_sch"),
-            DimensionRow("wt_water", "Water-Filled Pipe Weight", "Su Dolu Boru Ağırlığı", "${fmt(wtWaterKgM)} kg/m", "${fmt(wtWaterKgM*0.6719)} lb/ft", "pipes_sch"),
-            DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(inertia*0.0240)} in⁴", "pipes_sch")
+            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(imperial("outer_diameter_in"))}\"", "pipes_sch"),
+            DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(imperial("wall_thickness_in"))}\"", "pipes_sch"),
+            DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(imperial("inner_diameter_in"))}\"", "pipes_sch"),
+            DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(imperial("weight_empty_lb_ft"))} lb/ft", "pipes_sch"),
+            DimensionRow("wt_water", "Water-Filled Pipe Weight", "Su Dolu Boru Ağırlığı", "${fmt(wtWaterKgM)} kg/m", "${fmt(imperial("weight_water_lb_ft"))} lb/ft", "pipes_sch"),
+            DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(imperial("moment_of_inertia_in4"))} in⁴", "pipes_sch")
         )
 
         return ComponentData(
