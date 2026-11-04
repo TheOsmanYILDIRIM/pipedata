@@ -252,18 +252,16 @@ class MainActivity : ComponentActivity() {
                                                 secondary = selectedSecondary
                                             )
                                         },
-                                        onSecondaryChange = if (selectedSecondary != null) {
-                                            {
-                                                selectedSecondary = it
-                                                prefsManager.saveCategorySelection(
-                                                    categoryId = selectedCategory.id,
-                                                    subtypeIndex = currentSubtypeIndex,
-                                                    nps = selectedNps,
-                                                    primary = selectedPrimary,
-                                                    secondary = it
-                                                )
-                                            }
-                                        } else null,
+                                        onSecondaryChange = { newSelection ->
+                                            selectedSecondary = newSelection
+                                            prefsManager.saveCategorySelection(
+                                                categoryId = selectedCategory.id,
+                                                subtypeIndex = currentSubtypeIndex,
+                                                nps = selectedNps,
+                                                primary = selectedPrimary,
+                                                secondary = newSelection
+                                            )
+                                        },
                                         currentUnit = currentUnit,
                                         onUnitToggle = onUnitToggle,
                                         fontScale = fontScale,
