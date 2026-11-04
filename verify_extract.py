@@ -262,7 +262,9 @@ required_by_table = {
     "tbl_fittings_buttweld_b16_9": ("outer_diameter_mm",),
     "tbl_fittings_socketweld_b16_11": (),
     "tbl_fittings_threaded_b16_11": (),
-    "tbl_valves_asme_b16_10": ("weight_kg",),
+    # Check/plug valves may legitimately omit manufacturer mass.
+    # A missing optional weight must be reported, not treated as invalid geometry.
+    "tbl_valves_asme_b16_10": (),
     "tbl_gaskets_and_rtj": ("weight_kg",),
     "tbl_line_blanks_asme_b16_48": ("thickness_mm",),
 }
