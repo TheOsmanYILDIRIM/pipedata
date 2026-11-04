@@ -745,9 +745,6 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        if (subtype.id.startsWith("thd_")) {
-            return buildThreadedData(subtype, allSubtypes, nps, ratingStr)
-        }
         val compTypeLike = when (subtype.id) {
             "sw_elbow_90" -> "90° Elbow"
             "sw_elbow_45" -> "45° Elbow"
