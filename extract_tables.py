@@ -159,6 +159,16 @@ def extract_pipes():
         sched = fn.replace("pipe", "").upper()
         if not sched: continue
         
+        imperial_file = "pipe_imperial_" + sched.lower() + ".csv"
+        imperial_rows = {}
+        if os.path.isfile(os.path.join(SRC, imperial_file)):
+            _, imperial_header, imperial_body = b4a_rows(os.path.join(SRC, imperial_file))
+            for iv in imperial_body:
+                if len(iv) < 9: continue
+                raw_size = iv[12] if len(iv) > 12 and iv[12].strip() not in ("", "N/A") else iv[0]
+                imperial_nps = nps_norm(raw_size)
+                if not imperial_nps: continue
+                imperial_rows[imperial_nps] = iv
         _, header, body = b4a_rows(os.path.join(SRC, f))
         if not header: continue
         
@@ -174,6 +184,8 @@ def extract_pipes():
             wt_water = num(v[7]) if len(v) > 7 else None
             moi = num(v[8]) if len(v) > 8 else None
             
+            iv = imperial_rows.get(nps)
+            imp = (lambda index: num(iv[index]) if iv is not None and len(iv) > index else None)
             if od is None and wall is None: continue
             
             out.append({
@@ -185,7 +197,14 @@ def extract_pipes():
                 "weight_empty_kg_m": wt_empty,
                 "weight_water_kg_m": wt_water,
                 "moment_of_inertia_cm4": moi,
-                "source_file": f
+                "outer_diameter_in": imp(2),
+                "wall_thickness_in": imp(3),
+                "inner_diameter_in": imp(5),
+                "weight_empty_lb_ft": imp(6),
+                "weight_water_lb_ft": imp(7),
+                "moment_of_inertia_in4": imp(8),
+                "source_file": f,
+                "imperial_source_file": imperial_file if iv is not None else None
             })
     return out
 
@@ -682,7 +701,9 @@ def main():
     write_table_csv("tbl_pipes", pipes, [
         "nps", "schedule", "outer_diameter_mm", "wall_thickness_mm",
         "inner_diameter_mm", "weight_empty_kg_m", "weight_water_kg_m",
-        "moment_of_inertia_cm4", "source_file"
+        "moment_of_inertia_cm4", "outer_diameter_in", "wall_thickness_in",
+        "inner_diameter_in", "weight_empty_lb_ft", "weight_water_lb_ft",
+        "moment_of_inertia_in4", "source_file", "imperial_source_file"
     ])
     
     bw = extract_buttweld()
