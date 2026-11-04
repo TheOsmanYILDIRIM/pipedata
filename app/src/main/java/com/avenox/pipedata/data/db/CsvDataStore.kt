@@ -916,16 +916,21 @@ class CsvDataStore(private val context: Context) {
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
 
-        var odMm = 0.0
-        var thkMm = 0.0
-        var c2c = 0.0
-        var wt = 0.0
+        var odMm = Double.NaN
+        var thkMm = Double.NaN
+        var c2c = Double.NaN
+        var wt = Double.NaN
 
         val cleanNps = nps.replace("\"", "").trim()
+        val selectedBlankType = when (subtype.id) {
+            "blk_paddle" -> "Paddle Blank"
+            "blk_spacer" -> "Paddle Spacer"
+            else -> "Figure-8 Spectacle Blind"
+        }
         val blankRow = tableData("tbl_line_blanks_asme_b16_48").firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
-                    s(r, "rating") == rating.toString()
+                s(r, "rating") == rating.toString() && s(r, "blank_type") == selectedBlankType
         }
         if (blankRow != null) {
             odMm = d(blankRow, "outer_diameter_mm")
@@ -934,12 +939,7 @@ class CsvDataStore(private val context: Context) {
             wt = d(blankRow, "weight_spectacle_kg")
         }
 
-        if (odMm <= 0) {
-            odMm = 104.8
-            thkMm = 6.4
-            c2c = 120.7
-            wt = 1.8
-        }
+        // Missing blank measurements remain N/A.
 
         val rows = listOf(
             DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"),
