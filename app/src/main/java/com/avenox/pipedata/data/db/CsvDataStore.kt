@@ -690,14 +690,43 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = when (subtype.id) {
+        val compTypeLike = when (subtype.id) {
+            "sw_elbow_90" -> "90° Elbow"
+            "sw_elbow_45" -> "45° Elbow"
+            "sw_tee" -> "Tee"
+            "sw_cross" -> "Cross"
+            "sw_coupling" -> "Full Coupling"
+            "sw_half_coupling" -> "Half Coupling"
+            "sw_cap" -> "Cap"
+            "sw_red_coupling" -> "Reducing Coupling"
+            "sw_union" -> "Union"
+            else -> subtype.title
+        }
+
+        val allForType = tableData("tbl_fittings_socketweld_b16_11")
+            .filter { s(it, "component_type") == compTypeLike }
+        val measuredRows = allForType.filter { row ->
+            when (subtype.id) {
+                "sw_union", "sw_red_coupling", "sw_half_coupling", "sw_cap" ->
+                    d(row, "length_mm") > 0
+                else -> d(row, "socket_diameter_mm") > 0 && d(row, "socket_depth_mm") > 0
+            }
+        }
+        val requestedSize = nps.replace("\"", "").trim()
+        val supportedRatings = measuredRows.filter { s(it, "nps") == requestedSize }
+            .map { s(it, "rating") }.toSet()
+        val preferredRatings = when (subtype.id) {
             "sw_union", "sw_red_coupling" -> listOf("3000#", "6000#")
             else -> listOf("3000#", "6000#", "9000#")
         }
+        val primaryOptions = preferredRatings.filter { it.removeSuffix("#") in supportedRatings }
+            .ifEmpty { preferredRatings.filter { candidate ->
+                measuredRows.any { s(it, "rating") == candidate.removeSuffix("#") }
+            } }
         val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else primaryOptions.first()
         val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 3000
 
-        val availableNps = when (subtype.id) {
+        val potentialNps = when (subtype.id) {
             "sw_union" -> listOf("1/4\"", "3/8\"", "1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"")
             "sw_red_coupling" -> {
                 if (rating == 6000) {
@@ -729,8 +758,13 @@ class CsvDataStore(private val context: Context) {
             }
         }
 
+        val presentSizes = measuredRows.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = potentialNps.filter { it.replace("\"", "") in presentSizes }
         val cleanNpsWithQuote = if (nps.endsWith("\"")) nps else "$nps\""
-        val effectiveNpsWithQuote = if (cleanNpsWithQuote in availableNps) cleanNpsWithQuote else availableNps.first()
+        val effectiveNpsWithQuote = cleanNpsWithQuote.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: cleanNpsWithQuote
         val effectiveNps = effectiveNpsWithQuote.replace("\"", "")
 
         var sockDepth = Double.NaN
@@ -742,20 +776,8 @@ class CsvDataStore(private val context: Context) {
         var lenVal = Double.NaN
         var wt = Double.NaN
 
-        val compTypeLike = when (subtype.id) {
-            "sw_elbow_90" -> "90° Elbow"
-            "sw_elbow_45" -> "45° Elbow"
-            "sw_tee" -> "Tee"
-            "sw_cross" -> "Cross"
-            "sw_coupling" -> "Full Coupling"
-            "sw_half_coupling" -> "Half Coupling"
-            "sw_cap" -> "Cap"
-            "sw_red_coupling" -> "Reducing Coupling"
-            "sw_union" -> "Union"
-            else -> subtype.title
-        }
 
-        val swRows = tableData("tbl_fittings_socketweld_b16_11").filter { r ->
+        val swRows = measuredRows.filter { r ->
             val n = s(r, "nps")
             (n == effectiveNps || n == "$effectiveNps\"" || n == "0+$effectiveNps") &&
                     s(r, "rating") == rating.toString() &&
@@ -780,8 +802,8 @@ class CsvDataStore(private val context: Context) {
         }
 
         val rows = mutableListOf<DimensionRow>()
-        rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
-        rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
+        if (sockDia > 0) rows.add(DimensionRow("sock_dia", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(sockDia)} mm", "${fmt(sockDia/25.4)}\"", "forged"))
+        if (sockDepth > 0) rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(sockDepth)} mm", "${fmt(sockDepth/25.4)}\"", "forged"))
 
         when (subtype.id) {
             "sw_coupling" -> {
@@ -812,7 +834,7 @@ class CsvDataStore(private val context: Context) {
                 if (bodyWallThk > 0) rows.add(DimensionRow("wall_thk", "Body Wall (G)", "Gövde Et Kalınlığı (G)", "${fmt(bodyWallThk)} mm", "${fmt(bodyWallThk/25.4)}\"", "forged"))
             }
         }
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "forged"))
 
         return ComponentData(
             categoryId = "fittings_sw",
