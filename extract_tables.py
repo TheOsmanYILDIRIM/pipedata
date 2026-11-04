@@ -236,6 +236,7 @@ def extract_buttweld():
             
             od = num(g("od", "3-od"))
             c2e = num(g("90 ctr to end", "45 ctr to end", "ctr to e", "ctr to end", "m"))
+            branch_c2e = num(g("m"))
             radius = num(g("radius", "r"))
             c2c = num(g("total", "ctr to ctr"))
             b2f = num(g("flat to back", "back to face"))
@@ -251,6 +252,7 @@ def extract_buttweld():
                 "outer_diameter_mm": od,
                 "center_to_end_mm": c2e,
                 "radius_mm": radius,
+                "branch_center_to_end_mm": branch_c2e,
                 "center_to_center_mm": c2c,
                 "back_to_face_mm": b2f,
                 "overall_length_height_mm": length if length is not None else c2e,
