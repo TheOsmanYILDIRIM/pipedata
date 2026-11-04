@@ -575,7 +575,7 @@ class CsvDataStore(private val context: Context) {
             }
             "tee_eq" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End Run (C)", "Gövde Merkez-Uç (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
+                rows.add(DimensionRow("branch_center_end", "Center-to-End Branch (M)", "Branşman Merkez-Uç (M)", "${fmt(branchCenterEnd)} mm", "${fmt(branchCenterEnd / 25.4)}\"", "buttweld"))
             }
             "tee_red" -> {
                 rows.add(DimensionRow("center_end", "Center-to-End Run (C)", "Gövde Merkez-Uç (C)", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
