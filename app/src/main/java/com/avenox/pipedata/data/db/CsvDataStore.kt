@@ -549,11 +549,35 @@ class CsvDataStore(private val context: Context) {
             else -> subtype.title
         }
 
-        val primaryOptions = when (subtype.id) {
-            "stub_end" -> listOf("5", "5S", "10S", "40S", "STD")
-            else -> listOf("5", "5S", "10", "10S", "20", "30", "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS")
-        }
-        val effectiveSched = if (sched in primaryOptions) sched else "STD"
+        val preferredSchedules = listOf("5", "5S", "10", "10S", "20", "30",
+            "40", "40S", "STD", "60", "80", "80S", "XS", "100", "120", "140", "160", "XXS")
+        val componentRows = tableData("tbl_fittings_buttweld_b16_9")
+            .filter { r ->
+                s(r, "component_type") == compType &&
+                    when (subtype.id) {
+                        "elbow_90_lr", "elbow_90_sr", "elbow_45", "tee_eq" ->
+                            d(r, "center_to_end_mm") > 0
+                        "return_180_lr", "return_180_sr" ->
+                            d(r, "center_to_center_mm") > 0
+                        "tee_red" -> d(r, "branch_center_to_end_mm") > 0
+                        else -> d(r, "overall_length_height_mm") > 0
+                    }
+            }
+        val supportedNps = componentRows.map { s(it, "nps") }.toSet()
+        val sizeOrder = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12", "14",
+            "16", "18", "20", "22", "24", "26", "28", "30", "32", "34",
+            "36", "38", "40", "42", "44", "46", "48")
+        val availableSizes = sizeOrder.filter { it in supportedNps }
+        val requestedNps = nps.replace("\"", "").trim()
+        val effectiveNps = requestedNps.takeIf { it in supportedNps }
+            ?: "2".takeIf { it in supportedNps } ?: availableSizes.firstOrNull() ?: requestedNps
+        val presentSchedules = componentRows.filter { s(it, "nps") == effectiveNps }
+            .map { s(it, "schedule") }.toSet()
+        val primaryOptions = preferredSchedules.filter { it in presentSchedules }
+        val effectiveSched = sched.takeIf { it in primaryOptions }
+            ?: "STD".takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "STD"
 
         var od = Double.NaN
         var centerEnd = Double.NaN
@@ -564,13 +588,13 @@ class CsvDataStore(private val context: Context) {
         var lengthHeight = Double.NaN
         var wt = Double.NaN
 
-        val cleanNps = nps.replace("\"", "").trim()
-        val matrixType = subtype.id in setOf("tee_red", "red_con")
+        val cleanNps = effectiveNps
+        val matrixType = subtype.id in setOf("tee_red", "red_con", "red_ecc")
         val branchOptions = if (matrixType) tableData("tbl_fittings_buttweld_b16_9")
             .filter { s(it, "nps") == cleanNps && s(it, "schedule") == effectiveSched && s(it, "component_type") == compType }
             .map { s(it, "branch_nps") }.filter { it.isNotBlank() }.distinct() else emptyList()
         val selectedBranch = branchSel?.replace("\"", "")?.takeIf { it in branchOptions } ?: branchOptions.firstOrNull()
-        val found = tableData("tbl_fittings_buttweld_b16_9").firstOrNull { r ->
+        val found = componentRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "component_type") == compType &&
@@ -619,30 +643,36 @@ class CsvDataStore(private val context: Context) {
             "red_con", "red_ecc" -> {
                 val branch = selectedBranch?.let { "$it\"" } ?: "N/A"
                 rows.add(DimensionRow("small_nps", "Small End Nominal Size (NPS)", "Küçük Uç Anma Çapı (NPS)", branch, branch, "buttweld"))
+                val smallOd = found?.get("small_end_outer_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+                if (smallOd > 0) rows.add(DimensionRow("small_od", "Small End Outside Dia (OD2)", "Küçük Uç Dış Çapı (OD2)", "${fmt(smallOd)} mm", "${fmt(smallOd / 25.4)}\"", "buttweld"))
                 rows.add(DimensionRow("length", "End-to-End Length (H)", "Toplam Redüksiyon Boyu (H)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
             }
             "stub_end" -> {
-                val lapDia = backToFace // no estimated lap diameter
+                val lapDia = found?.get("lap_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+                val shortLen = found?.get("short_length_mm")?.toDoubleOrNull() ?: Double.NaN
+                val shortWt = found?.get("short_weight_kg")?.toDoubleOrNull() ?: Double.NaN
                 rows.add(DimensionRow("lap_dia", "Flared Lap Diameter (G)", "Yaka Flanş Çapı (G)", "${fmt(lapDia)} mm", "${fmt(lapDia / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("length", "Overall Length (F)", "Toplam Yaka Boyu (F)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
-                rows.add(DimensionRow("radius", "Corner Radius (r)", "Yaka Köşe Radyüsü (r)", if (dn <= 50) "8.0 mm" else "12.5 mm", if (dn <= 50) "0.31\"" else "0.50\"", "buttweld"))
+                if (shortLen > 0) rows.add(DimensionRow("short_len", "Short Pattern Length", "Kısa Tip Boy (F)", "${fmt(shortLen)} mm", "${fmt(shortLen / 25.4)}\"", "buttweld"))
+                rows.add(DimensionRow("length", "Long Pattern Length (F)", "Uzun Tip Boy (F)", "${fmt(lengthHeight)} mm", "${fmt(lengthHeight / 25.4)}\"", "buttweld"))
+                if (radiusMm > 0) rows.add(DimensionRow("radius", "Corner Radius (r)", "Yaka Köşe Radyüsü (r)", "${fmt(radiusMm)} mm", "${fmt(radiusMm / 25.4)}\"", "buttweld"))
+                if (shortWt > 0) rows.add(DimensionRow("short_wt", "Short Pattern Weight", "Kısa Tip Ağırlık", "${fmtWeight(shortWt)} kg", "${fmtWeight(shortWt * 2.20462)} lb", "buttweld"))
             }
             else -> {
                 rows.add(DimensionRow("center_end", "Center-to-End", "Merkez-Uç Mesafesi", "${fmt(centerEnd)} mm", "${fmt(centerEnd / 25.4)}\"", "buttweld"))
             }
         }
 
-        rows.add(DimensionRow("weight", "Approx. Weight", "Tahmini Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Source Weight", "Kaynak Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt * 2.20462)} lb", "buttweld"))
 
         return ComponentData(
             categoryId = "fittings_bw",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/4\"", "1 1/2\"", "2\"", "2 1/2\"", "3\"", "4\"", "5\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
-            primarySelectorLabelEn = "Schedule",
-            primarySelectorLabelTr = "Seri",
+            availableNps = availableSizes.map { "$it\"" },
+            selectedNps = "$effectiveNps\"",
+            dn = getNpsDn(effectiveNps),
+            primarySelectorLabelEn = "SCH / Schedule",
+            primarySelectorLabelTr = "SCH / Et Kalınlığı",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveSched,
             secondarySelectorLabelEn = if (matrixType) "Branch NPS" else null,
