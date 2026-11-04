@@ -257,9 +257,10 @@ class CsvDataStore(private val context: Context) {
         subtypeIndex: Int,
         nps: String,
         primarySel: String,
-        secondarySel: String?
+        secondarySel: String?,
+        flangeSchedule: String? = null
     ): ComponentData {
-        val cacheKey = "$categoryId|$subtypeIndex|$nps|$primarySel|$secondarySel"
+        val cacheKey = "$categoryId|$subtypeIndex|$nps|$primarySel|$secondarySel|$flangeSchedule"
         dataCache[cacheKey]?.let { return it }
 
         val subtypes = getCategorySubtypes(categoryId)
@@ -268,14 +269,14 @@ class CsvDataStore(private val context: Context) {
         val dn = getNpsDn(cleanNpsNum)
 
         val result = when (categoryId) {
-            "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+            "flanges" -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF", flangeSchedule)
             "pipes" -> buildPipeData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "fittings_bw" -> buildButtweldData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel)
             "fittings_sw" -> buildForgedData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "valves" -> buildValveData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
             "gaskets" -> buildGasketData(subtype, subtypes, cleanNpsNum, dn, primarySel)
             "blanks" -> buildBlankData(subtype, subtypes, cleanNpsNum, dn, primarySel)
-            else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF")
+            else -> buildFlangeData(subtype, subtypes, cleanNpsNum, dn, primarySel, secondarySel ?: "RF", flangeSchedule)
         }
         dataCache[cacheKey] = result
         return result
@@ -287,7 +288,8 @@ class CsvDataStore(private val context: Context) {
         nps: String,
         dn: Int,
         ratingStr: String,
-        facing: String
+        facing: String,
+        flangeSchedule: String?
     ): ComponentData {
         val primaryOptions = when (subtype.id) {
             "sw" -> listOf("150#", "300#", "600#", "1500#")
@@ -306,6 +308,11 @@ class CsvDataStore(private val context: Context) {
         val effectiveNps = if (rawNpsWithQuotes in availableNps) rawNpsWithQuotes else if (availableNps.contains("2\"")) "2\"" else availableNps.first()
         val cleanNps = effectiveNps.replace("\"", "").trim()
         val effectiveDn = getNpsDn(cleanNps)
+        val scheduleOptions = if (subtype.id == "wn") tableData("tbl_pipes")
+            .filter { s(it, "nps") == cleanNps && it["wall_thickness_mm"]?.toDoubleOrNull()?.let { w -> w > 0 } == true }
+            .map { s(it, "schedule") }.distinct() else emptyList()
+        val selectedSchedule = flangeSchedule?.takeIf { it in scheduleOptions }
+            ?: "STD".takeIf { it in scheduleOptions } ?: scheduleOptions.firstOrNull()
 
         val secondaryOptions = when {
             subtype.id == "lj" -> listOf("Flat (Stub End)")
@@ -351,6 +358,12 @@ class CsvDataStore(private val context: Context) {
             hubX = d(found, "hub_diameter_mm")
             lenY = d(found, "length_thru_hub_mm")
             bore = d(found, "bore_diameter_mm")
+            if (subtype.id == "wn" && selectedSchedule != null) {
+                val pipe = tableData("tbl_pipes").firstOrNull { r ->
+                    s(r, "nps") == cleanNps && s(r, "schedule") == selectedSchedule
+                }
+                bore = pipe?.get("inner_diameter_mm")?.toDoubleOrNull() ?: Double.NaN
+            }
             rf = d(found, "rf_diameter_mm")
             pcd = d(found, "pcd_mm")
             bolts = d(found, "num_bolts").toInt()
@@ -432,7 +445,9 @@ class CsvDataStore(private val context: Context) {
             secondarySelectorLabelTr = "Yüzey",
             secondaryOptions = secondaryOptions,
             selectedSecondary = effectiveFacing,
-            dimensions = rows
+            dimensions = rows,
+            flangeScheduleOptions = scheduleOptions,
+            selectedFlangeSchedule = selectedSchedule
         )
     }
 

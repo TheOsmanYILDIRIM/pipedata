@@ -52,6 +52,7 @@ fun ComponentDetailScreen(
     onNpsChange: (String) -> Unit,
     onPrimaryChange: (String) -> Unit,
     onSecondaryChange: ((String) -> Unit)? = null,
+    onFlangeScheduleChange: (String) -> Unit,
     currentUnit: UnitSystem,
     onUnitToggle: () -> Unit,
     fontScale: Float,
@@ -238,6 +239,40 @@ fun ComponentDetailScreen(
                 modifier = Modifier.padding(horizontal = 14.dp)
             )
 
+            if (data.flangeScheduleOptions.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = if (isTr) "BORU ET KALINLIĞI (SCH)" else "PIPE SCHEDULE (SCH)",
+                    color = colors.textSecondary,
+                    fontSize = (11 * fontScale).sp,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp)
+                ) {
+                    items(data.flangeScheduleOptions) { schedule ->
+                        val active = schedule == data.selectedFlangeSchedule
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(7.dp))
+                                .background(if (active) colors.accent else colors.chipBg)
+                                .border(1.dp, if (active) colors.accent else colors.border, RoundedCornerShape(7.dp))
+                                .clickable { onFlangeScheduleChange(schedule) }
+                                .padding(horizontal = 13.dp, vertical = 9.dp)
+                        ) {
+                            Text(
+                                text = schedule,
+                                color = if (active) colors.accentText else colors.textPrimary,
+                                fontSize = (12 * fontScale).sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(14.dp))
 
             // ================================================================
@@ -401,7 +436,7 @@ private fun CadDrawingStage(
     }
 
     val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
-    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
+    val dynamicCacheKey = "${svgAsset}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${data.selectedFlangeSchedule}_${isMetric}_$normScale"
 
     val svgBytes = remember(dynamicCacheKey) {
         getThemedSvgBytes(context, svgAsset, theme, data, isMetric, normScale)
@@ -594,7 +629,7 @@ private fun getThemedSvgBytes(
     fontScale: Float = 1.0f
 ): ByteArray? {
     val normScale = (Math.round(fontScale * 100.0) / 100.0).toFloat()
-    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${isMetric}_$normScale"
+    val cacheKey = "${assetName}_${theme.name}_${data.selectedNps}_${data.selectedPrimary}_${data.selectedSecondary}_${data.selectedFlangeSchedule}_${isMetric}_$normScale"
     renderedSvgBytesCache[cacheKey]?.let { return it }
 
     return try {

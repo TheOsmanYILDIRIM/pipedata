@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
             var selectedNps by remember { mutableStateOf(initialSelection.nps) }
             var selectedPrimary by remember { mutableStateOf(initialSelection.primary) }
             var selectedSecondary by remember { mutableStateOf<String?>(initialSelection.secondary) }
+            var flangeSchedule by remember { mutableStateOf("STD") }
 
             // Modals & Splash
             var showSplash by remember { mutableStateOf(true) }
@@ -100,18 +101,21 @@ class MainActivity : ComponentActivity() {
                 currentSubtypeIndex,
                 selectedNps,
                 selectedPrimary,
-                selectedSecondary
+                selectedSecondary,
+                flangeSchedule
             ) {
                 dbHelper.getComponentData(
                     categoryId = selectedCategory.id,
                     subtypeIndex = currentSubtypeIndex,
                     nps = selectedNps,
                     primarySel = selectedPrimary,
-                    secondarySel = selectedSecondary
+                    secondarySel = selectedSecondary,
+                    flangeSchedule = flangeSchedule
                 )
             }
 
             LaunchedEffect(currentData) {
+                currentData.selectedFlangeSchedule?.let { if (flangeSchedule != it) flangeSchedule = it }
                 if (selectedPrimary != currentData.selectedPrimary) {
                     selectedPrimary = currentData.selectedPrimary
                 }
@@ -252,6 +256,7 @@ class MainActivity : ComponentActivity() {
                                                 secondary = selectedSecondary
                                             )
                                         },
+                                        onFlangeScheduleChange = { flangeSchedule = it },
                                         onSecondaryChange = { newSelection ->
                                             selectedSecondary = newSelection
                                             prefsManager.saveCategorySelection(

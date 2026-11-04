@@ -64,7 +64,9 @@ data class ComponentData(
     val secondarySelectorLabelTr: String? = null,
     val secondaryOptions: List<String> = emptyList(),
     val selectedSecondary: String? = null,
-    val dimensions: List<DimensionRow>
+    val dimensions: List<DimensionRow>,
+    val flangeScheduleOptions: List<String> = emptyList(),
+    val selectedFlangeSchedule: String? = null
 )
 
 data class HelpTopic(
