@@ -621,6 +621,10 @@ class CsvDataStore(private val context: Context) {
             primarySelectorLabelTr = "Seri",
             primaryOptions = primaryOptions,
             selectedPrimary = effectiveSched,
+            secondarySelectorLabelEn = if (matrixType) "Branch NPS" else null,
+            secondarySelectorLabelTr = if (matrixType) "Branşman Çapı" else null,
+            secondaryOptions = branchOptions,
+            selectedSecondary = selectedBranch,
             dimensions = rows
         )
     }
