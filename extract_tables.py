@@ -18,7 +18,9 @@ def b4a_rows(path):
     rows = [r for r in rows if not (len(r) == 1 and r[0] == "")]
     if len(rows) < 2: return None, None, []
     first = [c.strip() for c in rows[0]]
-    idx_like = len(first) >= 2 and all(re.fullmatch(r"\d+", c) for c in first)
+    # B4A index header rows can contain empty column markers (e.g. reducersstd.csv).
+    idx_like = (len(first) >= 2 and bool(re.fullmatch(r"\d+", first[0]))
+                and all(c == "" or re.fullmatch(r"\d+", c) for c in first))
     ds = 1 if idx_like else 0
     if len(rows) <= ds: return None, None, []
     return rows[0] if idx_like else [], [c.strip() for c in rows[ds]], rows[ds + 1:]
