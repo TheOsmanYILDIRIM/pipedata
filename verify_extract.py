@@ -234,6 +234,15 @@ for nps, sch, name, expected in (
           fitting is not None and abs(float(fitting["center_to_end_mm"])-expected) <= 1.0,
           fitting["center_to_end_mm"] if fitting else "missing")
 
+# 11b) Previously missing subtype recovered from actual source tables.
+union = first("tbl_fittings_socketweld_b16_11",
+              nps="1/2", rating="3000", component_type="Union")
+check("socket-union-1-2-3000-present", union is not None)
+if union:
+    check("socket-union-length-33.34", union["length_mm"] in ("33.34", "33.340"), union["length_mm"])
+    check("socket-union-depth-10", union["socket_depth_mm"] in ("10", "10.0"), union["socket_depth_mm"])
+    check("socket-union-mass-0.145", union["weight_kg"] == "0.145", union["weight_kg"])
+
 # 12) Screen-level selection regression: actual fields must not get lost in CSV mapping.
 wn = first("tbl_flanges_asme_b16_5", nps="6", rating="300", flange_type="Welding Neck")
 check("screen-6-300-WN-exists", wn is not None)
