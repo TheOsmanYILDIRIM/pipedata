@@ -38,6 +38,15 @@ r_40 = first("tbl_pipes", nps="14", schedule="40")
 r_80 = first("tbl_pipes", nps="14", schedule="80")
 check("boru-14-std-var", r_std is not None)
 if r_std:
+    check("pipe-14-STD-OD-imperial", r_std["outer_diameter_in"] in ("14", "14.0"), r_std["outer_diameter_in"])
+    check("pipe-14-STD-WT-imperial", r_std["wall_thickness_in"] == "0.375", r_std["wall_thickness_in"])
+    check("pipe-14-STD-ID-imperial", r_std["inner_diameter_in"] == "13.25", r_std["inner_diameter_in"])
+    check("pipe-14-STD-empty-imperial", r_std["weight_empty_lb_ft"] == "54.62", r_std["weight_empty_lb_ft"])
+    check("pipe-14-STD-waterfilled-imperial", r_std["weight_water_lb_ft"] == "114.34", r_std["weight_water_lb_ft"])
+    check("pipe-14-STD-inertia-imperial", r_std["moment_of_inertia_in4"] == "372.57", r_std["moment_of_inertia_in4"])
+    check("pipe-14-STD-imperial-source", r_std["imperial_source_file"] == "pipe_imperial_std.csv", r_std["imperial_source_file"])
+
+if r_std:
     check("boru-14-std-wall-9.53", r_std["wall_thickness_mm"] in ("9.53", "9.525"), r_std["wall_thickness_mm"])
     check("boru-14-std-wt-81.33", r_std["weight_empty_kg_m"] in ("81.33", "81.28"), r_std["weight_empty_kg_m"])
 
