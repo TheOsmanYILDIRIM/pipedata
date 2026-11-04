@@ -1039,28 +1039,49 @@ class CsvDataStore(private val context: Context) {
         dn: Int,
         ratingStr: String
     ): ComponentData {
-        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
-        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
-
-        var odMm = Double.NaN
-        var thkMm = Double.NaN
-        var c2c = Double.NaN
-        var wt = Double.NaN
-
-        val cleanNps = nps.replace("\"", "").trim()
         val selectedBlankType = when (subtype.id) {
             "blk_paddle" -> "Paddle Blank"
             "blk_spacer" -> "Paddle Spacer"
             else -> "Figure-8 Spectacle Blind"
         }
-        val blankRow = tableData("tbl_line_blanks_asme_b16_48").firstOrNull { r ->
+        val validRecords = tableData("tbl_line_blanks_asme_b16_48").filter { row ->
+            s(row, "blank_type") == selectedBlankType && d(row, "thickness_mm") > 0 &&
+                if (subtype.id == "blk_spacer") d(row, "inner_diameter_mm") > 0
+                else d(row, "outer_diameter_mm") > 0
+        }
+        val requestedSize = nps.replace("\"", "").trim()
+        val presentRatings = validRecords.filter { s(it, "nps") == requestedSize }
+            .map { s(it, "rating") }.toSet()
+        val allowedRatings = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val primaryOptions = allowedRatings.filter { it.removeSuffix("#") in presentRatings }
+            .ifEmpty { allowedRatings.filter { c -> validRecords.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "150#"
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val presentSizes = validRecords.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "3 1/2", "4", "5", "6", "8", "10", "12",
+            "14", "16", "18", "20", "22", "24")
+            .filter { it in presentSizes }.map { "$it\"" }
+        val effectiveSize = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps } ?: availableNps.firstOrNull() ?: nps
+
+        var odMm = Double.NaN
+        var idMm = Double.NaN
+        var thkMm = Double.NaN
+        var c2c = Double.NaN
+        var wt = Double.NaN
+
+        val cleanNps = effectiveSize.replace("\"", "").trim()
+        val blankRow = validRecords.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                 s(r, "rating") == rating.toString() && s(r, "blank_type") == selectedBlankType
         }
         if (blankRow != null) {
             odMm = d(blankRow, "outer_diameter_mm")
+            idMm = d(blankRow, "inner_diameter_mm")
             thkMm = d(blankRow, "thickness_mm")
             c2c = d(blankRow, "center_to_center_mm")
             wt = d(blankRow, "weight_spectacle_kg")
@@ -1068,20 +1089,20 @@ class CsvDataStore(private val context: Context) {
 
         // Missing blank measurements remain N/A.
 
-        val rows = listOf(
-            DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"),
-            DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"),
-            DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"),
-            DimensionRow("weight", "Spectacle Weight", "Gözlük Ağırlığı", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def")
-        )
+        val rows = mutableListOf<DimensionRow>()
+        if (odMm > 0) rows.add(DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "blanks_def"))
+        if (idMm > 0) rows.add(DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "blanks_def"))
+        if (thkMm > 0) rows.add(DimensionRow("thk", "Plate Thickness (t)", "Plaka Kalınlığı (t)", "${fmt(thkMm)} mm", "${fmt(thkMm/25.4)}\"", "blanks_def"))
+        if (c2c > 0) rows.add(DimensionRow("c2c", "Center-to-Center (A)", "Eksenler Arası (A)", "${fmt(c2c)} mm", "${fmt(c2c/25.4)}\"", "blanks_def"))
+        if (wt > 0) rows.add(DimensionRow("weight", "Reference Weight", "Referans Ağırlık", "${fmtWeight(wt)} kg", "${fmtWeight(wt*2.20462)} lb", "blanks_def"))
 
         return ComponentData(
             categoryId = "blanks",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveSize,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
