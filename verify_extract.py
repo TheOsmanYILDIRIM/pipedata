@@ -249,6 +249,11 @@ check("screen-6-300-WN-exists", wn is not None)
 if wn:
     check("screen-6-300-WN-hub-X-206", wn["hub_diameter_mm"] in ("206.0", "206"), wn["hub_diameter_mm"])
     check("screen-6-300-WN-length-Y-97", wn["length_thru_hub_mm"] in ("97.0", "97"), wn["length_thru_hub_mm"])
+    check("screen-6-300-WN-hub-A-168.3", wn["hub_a_mm"] == "168.3", wn["hub_a_mm"])
+    check("screen-6-300-WN-long-neck-OD-206",
+          wn["long_neck_outer_diameter_mm"] in ("206.0", "206"), wn["long_neck_outer_diameter_mm"])
+    check("screen-6-300-WN-weld-flat-1.6", wn["weld_flat_mm"] in ("1.6", "1.60"), wn["weld_flat_mm"])
+    check("screen-6-300-WN-RF-height-1.5", wn["raised_face_height_mm"] in ("1.5", "1.50"), wn["raised_face_height_mm"])
     check("screen-6-300-WN-bore-from-source-152.4",
           wn["bore_diameter_mm"] in ("152.4", "152.40"), wn["bore_diameter_mm"])
     check("screen-6-300-WN-stud-RF-120",
