@@ -840,7 +840,16 @@ private fun getThemedSvgBytes(
         val placeholderRegex = Regex("\\[\\[(.*?)\\]\\]")
         themedSvg = placeholderRegex.replace(themedSvg) { matchResult ->
             val key = matchResult.groupValues[1].trim()
-            if (data.categoryId == "fittings_sw") {
+            if (data.categoryId == "fittings_thd") {
+                // Threaded drawings use A/H/G or Thread Length/Across Flats/Depth.
+                // Never reuse socket-weld dimensions for these CAD placeholders.
+                when (key) {
+                    "3" -> dimMap["c2e"] ?: dimMap["len"] ?: "—"
+                    "4" -> dimMap["height"] ?: dimMap["across_flats"] ?: dimMap["bore"] ?: "—"
+                    "5" -> dimMap["wall"] ?: dimMap["head_depth"] ?: dimMap["bore"] ?: "—"
+                    else -> dimMap[key.lowercase()] ?: "—"
+                }
+            } else if (data.categoryId == "fittings_sw") {
                 val swSockDia = dimMap["sock_dia"] ?: if (isMetric) "22.2" else "0.88\""
                 val swSockDepth = dimMap["sock_depth"] ?: if (isMetric) "9.5" else "0.38\""
                 val swCenterEnd = dimMap["center_end"] ?: if (isMetric) "15.5" else "0.62\""
