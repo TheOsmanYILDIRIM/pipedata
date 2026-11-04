@@ -889,14 +889,14 @@ private fun getThemedSvgBytes(
                     "3" -> odStr
                     "4" -> thkStr
                     "5" -> hubStr
-                    "6" -> boreStr
+                    "6" -> if (data.categoryId == "flanges") dimMap["hub_a"] ?: "—" else boreStr
                     "7" -> dimMap["hgt"] ?: if (isMetric) "125" else "4.92\""
                     "8" -> dimMap["rad"] ?: if (isMetric) "3.0" else "1/8\""
                     "9" -> lenStr
                     "10" -> dimMap["socket"] ?: if (isMetric) "16.0" else "5/8\""
                     "11" -> rfStr
-                    "12" -> if (isMetric) "2.0" else "1/16\""
-                    "13" -> dimMap["rtj_dia"] ?: if (isMetric) "${fmt(dn * 1.6)}" else "${fmt(dn * 1.6 / 25.4)}\""
+                    "12" -> dimMap["rf_height"] ?: "—"
+                    "13" -> dimMap["rtj_dia"] ?: "—"
                     "14" -> dimMap["ring"] ?: "R23"
                     "15" -> if (isMetric) "6.4" else "1/4\""
                     "16" -> if (isMetric) "8.7" else "11/32\""
@@ -911,11 +911,11 @@ private fun getThemedSvgBytes(
                     "25" -> if (isMetric) "19.0" else "3/4\""
                     "27", "28", "29" -> wtStr
                     "32" -> boreStr
-                    "36" -> pcdStr
-                    "37" -> if (isMetric) "6.4" else "1/4\""
-                    "38" -> if (isMetric) "8.7" else "11/32\""
-                    "43" -> if (isMetric) "${fmt(dn * 1.2)}" else "${fmt(dn * 1.2 / 25.4)}\""
-                    "44" -> if (isMetric) "3.9" else "0.154\""
+                    "36" -> dimMap["rtj_pitch"] ?: "—"
+                    "37" -> dimMap["rtj_depth"] ?: "—"
+                    "38" -> dimMap["rtj_width"] ?: "—"
+                    "43" -> dimMap["long_neck_od"] ?: hubStr
+                    "44" -> dimMap["weld_flat"] ?: "—"
                     "46" -> "$numBolts × $boltSz"
                     "48" -> "37.5°"
                     "49" -> "10°"

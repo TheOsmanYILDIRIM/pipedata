@@ -401,6 +401,22 @@ class CsvDataStore(private val context: Context) {
             if (hubX > 0) rows.add(DimensionRow("hub", "Base Hub (X)", "Boyun Tabanı (X)", "${fmt(hubX)} mm", "${fmt(hubX/25.4)}\"", "dimensions"))
             if (lenY > 0) rows.add(DimensionRow("len", "Length Thru Hub (Y)", "Toplam Boyun Boyu (Y)", "${fmt(lenY)} mm", "${fmt(lenY/25.4)}\"", "dimensions"))
         }
+        if (found != null) {
+            fun sourceDimension(column: String, key: String, en: String, tr: String) {
+                val number = found[column]?.toDoubleOrNull()
+                if (number != null && number > 0) rows.add(DimensionRow(key, en, tr,
+                    "${fmt(number)} mm", "${fmt(number / 25.4)}\"", "dimensions"))
+            }
+            sourceDimension("hub_a_mm", "hub_a", "Pipe-end Outside Dia (A)", "Boru Ucu Dış Çapı (A)")
+            if (subtype.id == "wn") {
+                sourceDimension("long_neck_outer_diameter_mm", "long_neck_od", "Long Neck Outside Dia", "Uzun Boyun Dış Çapı")
+                sourceDimension("weld_flat_mm", "weld_flat", "Weld Flat", "Kaynak Alın Düzlüğü")
+            }
+            sourceDimension("raised_face_height_mm", "rf_height", "Raised Face Height", "Conta Alnı Yüksekliği")
+            sourceDimension("rtj_pitch_diameter_mm", "rtj_pitch", "RTJ Pitch Diameter", "RTJ Hatve Çapı")
+            sourceDimension("rtj_depth_mm", "rtj_depth", "RTJ Groove Depth", "RTJ Kanal Derinliği")
+            sourceDimension("rtj_width_mm", "rtj_width", "RTJ Groove Width", "RTJ Kanal Genişliği")
+        }
 
         when (subtype.id) {
             "bld" -> {
