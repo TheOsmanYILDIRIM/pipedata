@@ -72,6 +72,8 @@ check("bw-45-2-var", r is not None)
 if r:
     check("bw-OD-dolu", float(r["outer_diameter_mm"] or 0) > 0, r["outer_diameter_mm"])
     check("bw-C2E-dolu", float(r["center_to_end_mm"] or 0) > 0, r["center_to_end_mm"])
+    raw45 = first("tbl_fittings_buttweld_b16_9", nps="2", schedule="10", component_type="45° Elbow")
+    check("bw-45-sch10-radius-76.2", raw45 is not None and raw45["radius_mm"] in ("76.2", "76.20"), str(raw45))
 
 # 4b) BW 90 LR 14" Sch 40 ve Sch 80 ayrimi
 bw_14_std = first("tbl_fittings_buttweld_b16_9", nps="14", schedule="STD", component_type="90° Long Radius Elbow")
@@ -98,6 +100,14 @@ check("thr-1-3000-wt-dolu", r is not None, (r["weight_kg"], r["source_file"]) if
 r = first("tbl_gaskets_and_rtj", nps="2", rating="150")
 check("conta-2-150-var", r is not None)
 if r: check("conta-OD-dolu", float(r["outer_diameter_mm"] or 0) > 0, r["outer_diameter_mm"])
+
+# 7b) Source ring geometry is pitch/width, not fabricated gasket ID/OD.
+ring = first("tbl_gaskets_and_rtj", ring_number="R-23")
+check("RTJ-R23-source", ring is not None)
+if ring:
+    check("RTJ-R23-pitch-82.55", ring["pitch_diameter_mm"] == "82.55", ring["pitch_diameter_mm"])
+    check("RTJ-R23-width-11.13", ring["ring_width_mm"] == "11.13", ring["ring_width_mm"])
+    check("RTJ-R23-no-fake-OD", ring["outer_diameter_mm"] == "", ring["outer_diameter_mm"])
 
 # 8) Blank 2" 150: OD/thk dolu
 r = first("tbl_line_blanks_asme_b16_48", nps="2", rating="150")
