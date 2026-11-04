@@ -119,7 +119,7 @@ def extract_flanges():
             so_kg = num(g("so kg"))
             bld_kg = num(g("bld kg"))
             
-            if od is None and pcd is None: continue
+            if od is None or pcd is None or no_bolts is None or no_bolts <= 0: continue
             
             subtypes = [
                 ("Welding Neck", "RF", wn_len, wn_bore, wn_kg),
@@ -319,13 +319,15 @@ def extract_buttweld():
             if comp_type == "Lap Joint Stub End":
                 # Stub-end data uses DO=pipe end, OD=flared lap: they are NOT
                 # interchangeable. The original file stores two patterns.
-                od = num(g("do"))
-                lap_dia = num(g("od"))
-                short_len = num(g("stub len sht"))
-                length = num(g("stub len lg"))
-                radius = num(g("radius"))
-                short_weight = num(g("wt short"))
-                wt = num(g("wt long"))
+                # Stub end headers may use OD and od for different ends:
+                # source positions 2 (pipe end) and 6 (flared lap).
+                od = num(v[2]) if len(v) > 2 else None
+                lap_dia = num(v[6]) if len(v) > 6 else None
+                short_len = num(v[4]) if len(v) > 4 else None
+                length = num(v[5]) if len(v) > 5 else None
+                radius = num(v[9]) if len(v) > 9 else None
+                short_weight = num(v[10]) if len(v) > 10 else None
+                wt = num(v[11]) if len(v) > 11 else None
 
             if od is None and c2e is None and length is None and wt is None: continue
             
