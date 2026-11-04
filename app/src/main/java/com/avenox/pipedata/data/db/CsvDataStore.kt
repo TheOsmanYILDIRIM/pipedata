@@ -716,7 +716,13 @@ class CsvDataStore(private val context: Context) {
                     s(r, "rating") == rating.toString() &&
                     s(r, "component_type").contains(compTypeLike)
         }
-        val swFound = swRows.firstOrNull()
+        val swFound = swRows.maxByOrNull { row ->
+            listOf("socket_diameter_mm", "socket_depth_mm", "center_to_end_mm",
+                "bore_diameter_mm", "socket_wall_thickness_mm", "body_wall_thickness_mm",
+                "length_mm", "weight_kg").count { key ->
+                row[key]?.trim()?.toDoubleOrNull()?.let { it > 0.0 } == true
+            }
+        }
         if (swFound != null) {
             sockDepth = d(swFound, "socket_depth_mm")
             sockDia = d(swFound, "socket_diameter_mm")
