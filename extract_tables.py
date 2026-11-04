@@ -744,9 +744,16 @@ def extract_blanks():
             g = lambda *names: pick(ctx, [x.lower() for x in names])
             
             od = num(g("od", "outside dia"))
+            inner = num(g("id", "inside dia"))
             thk = num(g("thk", "thickness", "basic thickness", "total thickness"))
             c2c = num(g("crs", "dist", "center to center"))
-            wt = num(g("blank kg", "kg", "wt"))
+            # The three components have distinct mass fields in the source.
+            if btype == "Paddle Spacer":
+                wt = num(g("spacer kg", "kg"))
+            elif btype == "Paddle Blank":
+                wt = num(g("blank kg", "kg"))
+            else:
+                wt = num(g("kg", "wt"))
             
             if od is None and thk is None: continue
             
@@ -755,6 +762,7 @@ def extract_blanks():
                 "rating": rating,
                 "blank_type": btype,
                 "outer_diameter_mm": od,
+                "inner_diameter_mm": inner,
                 "thickness_mm": thk,
                 "center_to_center_mm": c2c,
                 "weight_spectacle_kg": wt,
@@ -835,7 +843,8 @@ def main():
     blanks = extract_blanks()
     write_table_csv("tbl_line_blanks_asme_b16_48", blanks, [
         "nps", "rating", "blank_type", "outer_diameter_mm",
-        "thickness_mm", "center_to_center_mm", "weight_spectacle_kg", "source_file"
+        "inner_diameter_mm", "thickness_mm", "center_to_center_mm",
+        "weight_spectacle_kg", "source_file"
     ])
     
     print("--- TAMAMLANDI ---")
