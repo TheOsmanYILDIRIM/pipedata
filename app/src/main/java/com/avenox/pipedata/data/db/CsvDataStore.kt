@@ -464,12 +464,12 @@ class CsvDataStore(private val context: Context) {
         )
         val effectiveSchedule = if (selectedSchedule in primaryOptions) selectedSchedule else "STD"
 
-        var odMm = 0.0
-        var wallThkMm = 0.0
-        var idMm = 0.0
-        var wtEmptyKgM = 0.0
-        var wtWaterKgM = 0.0
-        var inertia = 0.0
+        var odMm = Double.NaN
+        var wallThkMm = Double.NaN
+        var idMm = Double.NaN
+        var wtEmptyKgM = Double.NaN
+        var wtWaterKgM = Double.NaN
+        var inertia = Double.NaN
 
         val cleanNps = nps.replace("\"", "").trim()
         val pipeRow = tableData("tbl_pipes").firstOrNull { r ->
@@ -486,20 +486,14 @@ class CsvDataStore(private val context: Context) {
             inertia = d(pipeRow, "moment_of_inertia_cm4")
         }
 
-        if (odMm <= 0) {
-            odMm = if (dn <= 50) 60.3 else dn * 1.15
-            wallThkMm = if (effectiveSchedule == "80") 5.54 else 3.91
-            idMm = odMm - 2 * wallThkMm
-            wtEmptyKgM = (odMm - wallThkMm) * wallThkMm * 0.02466
-            wtWaterKgM = 0.7854 * (idMm / 1000.0) * (idMm / 1000.0) * 1000.0
-        }
+        // Missing source row: never manufacture pipe dimensions.
 
         val rows = listOf(
             DimensionRow("od", "Outside Diameter (OD)", "Dış Çap (OD)", "${fmt(odMm)} mm", "${fmt(odMm/25.4)}\"", "pipes_sch"),
             DimensionRow("thk", "Wall Thickness (t)", "Et Kalınlığı (t)", "${fmt(wallThkMm)} mm", "${fmt(wallThkMm/25.4)}\"", "pipes_sch"),
             DimensionRow("id", "Inside Diameter (ID)", "İç Çap (ID)", "${fmt(idMm)} mm", "${fmt(idMm/25.4)}\"", "pipes_sch"),
             DimensionRow("wt_empty", "Pipe Weight (Empty)", "Boru Ağırlığı (Boş)", "${fmt(wtEmptyKgM)} kg/m", "${fmt(wtEmptyKgM*0.6719)} lb/ft", "pipes_sch"),
-            DimensionRow("wt_water", "Water Content Weight", "Su Ağırlığı (Dolu)", "${fmt(wtWaterKgM)} kg/m", "${fmt(wtWaterKgM*0.6719)} lb/ft", "pipes_sch"),
+            DimensionRow("wt_water", "Water-Filled Pipe Weight", "Su Dolu Boru Ağırlığı", "${fmt(wtWaterKgM)} kg/m", "${fmt(wtWaterKgM*0.6719)} lb/ft", "pipes_sch"),
             DimensionRow("inertia", "Moment of Inertia (I)", "Atalet Momenti (I)", "${fmt(inertia)} cm⁴", "${fmt(inertia*0.0240)} in⁴", "pipes_sch")
         )
 
