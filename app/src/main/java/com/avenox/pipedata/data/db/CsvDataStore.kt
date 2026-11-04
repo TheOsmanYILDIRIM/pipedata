@@ -1035,7 +1035,10 @@ class CsvDataStore(private val context: Context) {
         } else {
             rows.add(dim("id", "Inside Diameter (d1)", "İç Çap (d1)", measured("inner_diameter_mm")))
             rows.add(dim("od", "Outside Diameter (d2)", "Dış Çap (d2)", measured("outer_diameter_mm")))
-            rows.add(dim("thk", "Gasket Thickness", "Conta Kalınlığı", measured("thickness_mm")))
+            val thickness = measured("thickness_mm")
+            if (thickness > 0) {
+                rows.add(dim("thk", "Gasket Thickness", "Conta Kalınlığı", thickness))
+            }
         }
 
         return ComponentData(
