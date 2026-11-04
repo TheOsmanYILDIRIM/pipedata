@@ -102,6 +102,7 @@ def extract_flanges():
             ring_no = (g("ring no") or "").strip()
             
             wn_len = num(g("wn thk", "hub-a"))
+            wn_bore = num(g("wn & long neck id"))
             thd_len = num(g("thd thk", "hub-a"))
             lapped_len = num(g("lapped thk", "hub-a"))
             so_bore = num(g("so bore"))
@@ -115,12 +116,12 @@ def extract_flanges():
             if od is None and pcd is None: continue
             
             subtypes = [
-                ("Welding Neck", "RF", wn_len, hub_a, wn_kg),
+                ("Welding Neck", "RF", wn_len, wn_bore, wn_kg),
                 ("Slip On", "RF", thd_len, so_bore, so_kg),
                 ("Blind", "RF", bld_thk, 0.0, bld_kg),
-                ("Threaded", "RF", thd_len, so_bore, so_kg),
-                ("Lap Joint", "Flat (Stub End)", lapped_len, lapped_bore, so_kg),
-                ("Socket Weld", "RF", thd_len, so_bore, so_kg)
+                ("Threaded", "RF", thd_len, None, None),
+                ("Lap Joint", "Flat (Stub End)", lapped_len, lapped_bore, None),
+                ("Socket Weld", "RF", None, None, None)
             ]
             
             for stype, facing, len_y, bore, wt in subtypes:
