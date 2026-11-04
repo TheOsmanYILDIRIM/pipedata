@@ -197,7 +197,7 @@ for p in rows("tbl_pipes"):
     expected_inertia = (math.pi / 64) * (od ** 4 - inner ** 4) / 10000
     limits = (
         ("ID", inner, expected_id, max(0.12, od * 0.0002)),
-        ("steel kg/m", mass, expected_mass, max(0.20, expected_mass * 0.01)),
+        ("steel kg/m", mass, expected_mass, max(0.12, expected_mass * 0.001)),
         ("water-filled kg/m", filled, expected_filled, max(0.65, expected_filled * 0.005)),
         ("I cm4", inertia, expected_inertia, max(0.12, expected_inertia * 0.008)),
     )
@@ -207,6 +207,10 @@ for p in rows("tbl_pipes"):
 check("independent-physics-pipes", not invalid,
       f"{audit_count} independently checked; {len(invalid)} physical contradictions: {invalid[:12]}")
 
+p24 = first("tbl_pipes", nps="24", schedule="STD")
+check("B36.10-24-STD-imperial-OD", p24 is not None and
+      abs(float(p24["outer_diameter_in"])-24.0) < 0.001,
+      p24["outer_diameter_in"] if p24 else "missing")
 # Ground-truth anchors from separately published ASME B36.10/B16.9/B16.5 tables.
 for sch, wall in (("STD", 1.73), ("XS", 2.41)):
     p = first("tbl_pipes", nps="1/8", schedule=sch)
