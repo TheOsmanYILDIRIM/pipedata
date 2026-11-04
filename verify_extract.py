@@ -234,6 +234,64 @@ for nps, sch, name, expected in (
           fitting is not None and abs(float(fitting["center_to_end_mm"])-expected) <= 1.0,
           fitting["center_to_end_mm"] if fitting else "missing")
 
+# 12) Screen-level selection regression: actual fields must not get lost in CSV mapping.
+wn = first("tbl_flanges_asme_b16_5", nps="6", rating="300", flange_type="Welding Neck")
+check("screen-6-300-WN-exists", wn is not None)
+if wn:
+    check("screen-6-300-WN-hub-X-206", wn["hub_diameter_mm"] in ("206.0", "206"), wn["hub_diameter_mm"])
+    check("screen-6-300-WN-length-Y-97", wn["length_thru_hub_mm"] in ("97.0", "97"), wn["length_thru_hub_mm"])
+    check("screen-6-300-WN-bore-from-source-152.4",
+          wn["bore_diameter_mm"] in ("152.4", "152.40"), wn["bore_diameter_mm"])
+    check("screen-6-300-WN-stud-RF-120",
+          wn["stud_bolt_length_mm"] in ("120.0", "120"), wn["stud_bolt_length_mm"])
+sch40 = first("tbl_pipes", nps="6", schedule="40")
+sch80 = first("tbl_pipes", nps="6", schedule="80")
+check("screen-6-SCH40-bore-154.08",
+      sch40 is not None and abs(float(sch40["inner_diameter_mm"])-154.08)<0.03,
+      sch40["inner_diameter_mm"] if sch40 else "")
+check("screen-6-SCH80-bore-146.36",
+      sch80 is not None and abs(float(sch80["inner_diameter_mm"])-146.36)<0.03,
+      sch80["inner_diameter_mm"] if sch80 else "")
+
+# Coverage ledger covers ALL live category tables and their subtypes, not a few screenshots.
+# A blank is not automatically an error: a blind flange has no bore; a check valve has
+# no handwheel. The diagnostic reports raw nulls; mandatory fields are asserted separately.
+required_by_table = {
+    "tbl_flanges_asme_b16_5": ("outer_diameter_mm", "thickness_mm", "pcd_mm", "num_bolts"),
+    "tbl_pipes": ("outer_diameter_mm",),
+    "tbl_fittings_buttweld_b16_9": ("outer_diameter_mm",),
+    "tbl_fittings_socketweld_b16_11": (),
+    "tbl_fittings_threaded_b16_11": (),
+    "tbl_valves_asme_b16_10": ("weight_kg",),
+    "tbl_gaskets_and_rtj": ("weight_kg",),
+    "tbl_line_blanks_asme_b16_48": ("thickness_mm",),
+}
+category_fields = ("flange_type", "component_type", "valve_type", "gasket_type", "blank_type")
+for tablename, essentials in required_by_table.items():
+    data = rows(tablename)
+    check("coverage-table-"+tablename, bool(data), f"{len(data)} rows")
+    headers = list(data[0]) if data else []
+    measures = [h for h in headers if h.endswith(("_mm", "_kg", "_kg_m", "_lb_ft", "_in4"))]
+    summary = {}
+    critical_missing = []
+    for item in data:
+        kind = next((item.get(k) for k in category_fields if item.get(k)), "pipe")
+        category = summary.setdefault(kind, {"total":0, "missing_measurements":0, "all_measures_missing":0})
+        category["total"] += 1
+        missing = [h for h in measures if not item.get(h)]
+        if missing:
+            category["missing_measurements"] += 1
+        if measures and len(missing) == len(measures):
+            category["all_measures_missing"] += 1
+        for field in essentials:
+            if not item.get(field):
+                critical_missing.append((kind, item.get("nps"), item.get("rating") or item.get("schedule"),
+                                         field, item.get("source_file")))
+    print("COVERAGE", tablename, "rows", len(data), "by_type", summary,
+          "critical_missing_examples", critical_missing[:12])
+    check("coverage-essential-"+tablename, not critical_missing,
+          f"{len(critical_missing)} mandatory blanks: {critical_missing[:8]}")
+
 print(f"\nSONUC: {len(FAILS)} FAIL")
 sys.exit(1 if FAILS else 0)
 
