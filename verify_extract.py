@@ -303,6 +303,46 @@ for tablename, essentials in required_by_table.items():
     check("coverage-essential-"+tablename, not critical_missing,
           f"{len(critical_missing)} mandatory blanks: {critical_missing[:8]}")
 
+
+# 13) User-visible selector regression grid: measurements must resolve for
+# each concrete fitting variant, not just pass a general row-count test.
+check("SCH-present-for-2in", all(first("tbl_pipes", nps="2", schedule=sch)
+    and first("tbl_pipes", nps="2", schedule=sch)["wall_thickness_mm"]
+    for sch in ("10", "40", "80", "STD")))
+for family in ("90° Elbow", "45° Elbow", "Tee", "Cross"):
+    fixture = first("tbl_fittings_socketweld_b16_11",
+                    nps="1", rating="9000", component_type=family)
+    check("socket-9000-1in-"+family, fixture is not None and
+          float(fixture["socket_diameter_mm"] or 0) > 0 and
+          float(fixture["socket_depth_mm"] or 0) > 0,
+          fixture.get("source_file", "") if fixture else "missing")
+stub = first("tbl_fittings_buttweld_b16_9",
+             nps="2", schedule="40S", component_type="Lap Joint Stub End")
+check("stub-2-40S-found", stub is not None)
+if stub:
+    check("stub-pipe-end-60", float(stub["outer_diameter_mm"]) in (60,60.0,60.3), stub["outer_diameter_mm"])
+    check("stub-lap-G-92", abs(float(stub["lap_diameter_mm"])-92)<1, stub["lap_diameter_mm"])
+    check("stub-long-F-152", abs(float(stub["overall_length_height_mm"])-152)<1, stub["overall_length_height_mm"])
+    check("stub-short-F-64", abs(float(stub["short_length_mm"])-64)<1, stub["short_length_mm"])
+reducer = first("tbl_fittings_buttweld_b16_9",
+                nps="2", branch_nps="3/4", schedule="STD", component_type="Eccentric Reducer")
+check("eccentric-2x3-4-exists", reducer is not None)
+if reducer:
+    check("eccentric-shares-H-76", abs(float(reducer["overall_length_height_mm"])-76)<1,
+          reducer["overall_length_height_mm"])
+    check("eccentric-small-OD-26.7", abs(float(reducer["small_end_outer_diameter_mm"])-26.7)<1,
+          reducer["small_end_outer_diameter_mm"])
+    check("eccentric-weight-unknown", reducer["weight_kg"] == "", reducer["weight_kg"])
+spacer = first("tbl_line_blanks_asme_b16_48",
+               nps="1", rating="150", blank_type="Paddle Spacer")
+check("paddle-spacer-1in-exists", spacer is not None)
+if spacer:
+    check("paddle-spacer-1in-ID-34", abs(float(spacer["inner_diameter_mm"])-34)<1,
+          spacer["inner_diameter_mm"])
+    check("paddle-spacer-no-fake-OD", spacer["outer_diameter_mm"] == "", spacer["outer_diameter_mm"])
+    check("paddle-spacer-own-mass", abs(float(spacer["weight_spectacle_kg"])-0.06)<0.001,
+          spacer["weight_spectacle_kg"])
+
 print(f"\nSONUC: {len(FAILS)} FAIL")
 sys.exit(1 if FAILS else 0)
 
