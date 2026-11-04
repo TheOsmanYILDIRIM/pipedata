@@ -86,6 +86,18 @@ if bw_14_std: check("bw-14-std-wt-68", bw_14_std["weight_kg"] in ("68", "68.0"),
 if bw_14_40: check("bw-14-40-wt-79.96", bw_14_40["weight_kg"] in ("79.96", "80.0"), bw_14_40["weight_kg"])
 if bw_14_80: check("bw-14-80-wt-132.16", bw_14_80["weight_kg"] in ("132.16", "132.2"), bw_14_80["weight_kg"])
 
+# 4c) Source branch matrices: no guessed geometry, correct NPS pair.
+r_red = first("tbl_fittings_buttweld_b16_9", nps="2", branch_nps="3/4",
+              schedule="STD", component_type="Concentric Reducer")
+r_tee = first("tbl_fittings_buttweld_b16_9", nps="2", branch_nps="3/4",
+              schedule="STD", component_type="Reducing Tee")
+check("reducer-2x3-4-source", r_red is not None)
+check("reducer-2x3-4-length-76", r_red is not None and r_red["overall_length_height_mm"] in ("76.0", "76"), str(r_red))
+check("reducer-2x3-4-weight-0.41", r_red is not None and r_red["weight_kg"] == "0.41", str(r_red))
+check("tee-2x3-4-source", r_tee is not None)
+check("tee-2x3-4-run-64", r_tee is not None and r_tee["center_to_end_mm"] in ("64.0", "64"), str(r_tee))
+check("tee-2x3-4-branch-44", r_tee is not None and r_tee["branch_center_to_end_mm"] in ("44.0", "44"), str(r_tee))
+
 # 5) SW 1" 3000: soket capi + derinlik dolu
 S = rows("tbl_fittings_socketweld_b16_11")
 r = next((x for x in S if x["nps"]=="1" and x["rating"]=="3000" and float(x["socket_diameter_mm"] or 0) > 0), None)
