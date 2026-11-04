@@ -452,9 +452,9 @@ class CsvDataStore(private val context: Context) {
                 rows.add(DimensionRow("bore", "Thread Standard", "Diş Standardı", "$cleanNps\" NPT (ASME B1.20.1)", "$cleanNps\" NPT (ASME B1.20.1)", "dimensions"))
             }
             "sw" -> {
-                rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
+                if (bore > 0) rows.add(DimensionRow("bore", "Socket Bore (B)", "Soket Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
                 val socketDepth = found?.get("socket_depth_mm")?.toDoubleOrNull() ?: Double.NaN
-                rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
+                if (socketDepth > 0) rows.add(DimensionRow("sock_depth", "Socket Depth (J)", "Soket Derinliği (J)", "${fmt(socketDepth)} mm", "${fmt(socketDepth/25.4)}\"", "dimensions"))
             }
             "lj" -> {
                 rows.add(DimensionRow("bore", "Bore Clearance (B)", "Yaka Boşluk Çapı (B)", "${fmt(bore)} mm", "${fmt(bore/25.4)}\"", "dimensions"))
