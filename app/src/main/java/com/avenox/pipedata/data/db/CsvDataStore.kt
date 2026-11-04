@@ -316,17 +316,17 @@ class CsvDataStore(private val context: Context) {
         }
         val effectiveFacing = if (facing in secondaryOptions) facing else secondaryOptions.first()
 
-        var od = 0.0
-        var thk = 0.0
-        var hubX = 0.0
-        var lenY = 0.0
-        var bore = 0.0
-        var rf = 0.0
-        var pcd = 0.0
-        var bolts = 4
-        var boltSz = "5/8\""
-        var studL = 70.0
-        var wt = 2.5
+        var od = Double.NaN
+        var thk = Double.NaN
+        var hubX = Double.NaN
+        var lenY = Double.NaN
+        var bore = Double.NaN
+        var rf = Double.NaN
+        var pcd = Double.NaN
+        var bolts = 0
+        var boltSz = "N/A"
+        var studL = Double.NaN
+        var wt = Double.NaN
         var ringNumber = ""
 
         val flgLike = when (subtype.id) {
@@ -354,7 +354,7 @@ class CsvDataStore(private val context: Context) {
             rf = d(found, "rf_diameter_mm")
             pcd = d(found, "pcd_mm")
             bolts = d(found, "num_bolts").toInt()
-            val rawBolt = s(found, "bolt_diameter_in").ifBlank { "5/8\"" }
+            val rawBolt = s(found, "bolt_diameter_in")
             boltSz = rawBolt.replace("0+", "").replace("\"", "").trim() + "\""
             studL = d(found, "stud_bolt_length_mm")
             wt = d(found, "weight_kg")
@@ -365,17 +365,7 @@ class CsvDataStore(private val context: Context) {
             } else ""
         }
 
-        if (od <= 0) {
-            val mult = if (rating >= 600) 1.25 else if (rating >= 300) 1.15 else 1.0
-            od = (if (effectiveDn == 50) 152.4 else effectiveDn * 2.8) * mult
-            thk = 17.5 * mult
-            hubX = 77.7 * mult
-            lenY = 63.5 * mult
-            bore = effectiveDn * 1.05
-            pcd = od * 0.79
-            bolts = if (effectiveDn >= 200) 8 else 4
-            wt = 2.45 * mult * (effectiveDn / 50.0)
-        }
+        // Missing flange rows remain N/A; no estimated dimensions.
 
         val rows = mutableListOf<DimensionRow>()
         rows.add(DimensionRow("od", "Outside Diameter (O)", "Dış Çap (O)", "${fmt(od)} mm", "${fmt(od/25.4)}\"", "dimensions"))
