@@ -872,16 +872,6 @@ class CsvDataStore(private val context: Context) {
         ratingStr: String,
         connection: String
     ): ComponentData {
-        val primaryOptions = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
-        val effectiveRatingStr = if (ratingStr in primaryOptions) ratingStr else "150#"
-        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
-
-        var faceToFace = Double.NaN
-        var hwH = Double.NaN
-        var hwD = Double.NaN
-        var wt = Double.NaN
-
-        val cleanNps = nps.replace("\"", "").trim()
         val valveType = when (subtype.id) {
             "vlv_gate" -> "Gate Valve"
             "vlv_globe" -> "Globe Valve"
@@ -889,8 +879,39 @@ class CsvDataStore(private val context: Context) {
             "vlv_ball" -> "Ball Valve"
             else -> subtype.title
         }
+        val allValveRows = tableData("tbl_valves_asme_b16_10").filter {
+            s(it, "valve_type").equals(valveType, ignoreCase = true) &&
+                (d(it, "face_to_face_mm") > 0 || d(it, "face_to_face_rtj_mm") > 0 ||
+                    d(it, "face_to_face_bw_mm") > 0)
+        }
+        val requestedNps = nps.replace("\"", "").trim()
+        val ratingsAtSize = allValveRows.filter { s(it, "nps") == requestedNps }
+            .map { s(it, "rating") }.toSet()
+        val allowedRatings = listOf("150#", "300#", "400#", "600#", "900#", "1500#", "2500#")
+        val primaryOptions = allowedRatings.filter { it.removeSuffix("#") in ratingsAtSize }
+            .ifEmpty { allowedRatings.filter { c -> allValveRows.any { s(it, "rating") == c.removeSuffix("#") } } }
+        val effectiveRatingStr = ratingStr.takeIf { it in primaryOptions }
+            ?: primaryOptions.firstOrNull() ?: "150#"
+        val rating = effectiveRatingStr.replace("#", "").toIntOrNull() ?: 150
+        val presentSizes = allValveRows.filter { s(it, "rating") == rating.toString() }
+            .map { s(it, "nps") }.toSet()
+        val availableNps = listOf("1/2", "3/4", "1", "1 1/4", "1 1/2", "2",
+            "2 1/2", "3", "4", "5", "6", "8", "10", "12", "14",
+            "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36")
+            .filter { it in presentSizes }.map { "$it\"" }
+        val effectiveNps = nps.takeIf { it in availableNps }
+            ?: "2\"".takeIf { it in availableNps }
+            ?: availableNps.firstOrNull() ?: nps
 
-        val valveRow = tableData("tbl_valves_asme_b16_10").firstOrNull { r ->
+        var faceToFace = Double.NaN
+        var hwH = Double.NaN
+        var hwD = Double.NaN
+        var wt = Double.NaN
+
+        val cleanNps = effectiveNps.replace("\"", "").trim()
+
+
+        val valveRow = allValveRows.firstOrNull { r ->
             val n = s(r, "nps")
             (n == cleanNps || n == "$cleanNps\"" || n == cleanNps.replace(" ", "+")) &&
                     s(r, "rating") == rating.toString() &&
@@ -946,9 +967,9 @@ class CsvDataStore(private val context: Context) {
             categoryId = "valves",
             currentSubtype = subtype,
             allSubtypes = allSubtypes,
-            availableNps = listOf("1/2\"", "3/4\"", "1\"", "1 1/2\"", "2\"", "3\"", "4\"", "6\"", "8\"", "10\"", "12\"", "14\"", "16\"", "18\"", "20\"", "24\""),
-            selectedNps = if (nps.endsWith("\"")) nps else "$nps\"",
-            dn = dn,
+            availableNps = availableNps,
+            selectedNps = effectiveNps,
+            dn = getNpsDn(cleanNps),
             primarySelectorLabelEn = "Class",
             primarySelectorLabelTr = "Sınıf",
             primaryOptions = primaryOptions,
