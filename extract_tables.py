@@ -500,6 +500,33 @@ def extract_socketweld():
                 "weight_kg": wt,
                 "source_file": f
             })
+    # Union (ftsw930 / ftsw960) is stored only under legacy short names,
+    # with 30=Class 3000 and 60=Class 6000. Do not suppress a whole subtype.
+    for suffix, rating in (("30", "3000"), ("60", "6000")):
+        file_name = "ftsw9" + suffix + ".csv"
+        file_path = os.path.join(SRC, file_name)
+        if not os.path.isfile(file_path): continue
+        _, header, records = b4a_rows(file_path)
+        if not header: continue
+        for row in records:
+            if len(row) < 11: continue
+            nominal = nps_norm(row[0])
+            union_length = num(row[2])
+            if not nominal or union_length is None: continue
+            out.append({
+                "nps": nominal,
+                "rating": rating,
+                "component_type": "Union",
+                "socket_diameter_mm": num(row[8]),
+                "socket_depth_mm": num(row[10]),
+                "center_to_end_mm": None,
+                "bore_diameter_mm": num(row[9]),
+                "socket_wall_thickness_mm": None,
+                "body_wall_thickness_mm": None,
+                "length_mm": union_length,
+                "weight_kg": num(row[6]),
+                "source_file": file_name
+            })
     return out
 
 # ==============================================================================
