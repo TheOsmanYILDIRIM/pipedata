@@ -33,9 +33,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -276,104 +278,95 @@ private fun CalculatorPage(
 
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
+    // Rotary gesture continues smoothly across the -PI / +PI seam.
+    // A stable pointer handler avoids restarting a drag on every NPS recomposition.
+    val currentOnStep by rememberUpdatedState(onStep)
+    var wheelRotation by remember { mutableFloatStateOf(0f) }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(285.dp)
-                .pointerInput(onStep) {
-                    var lastAngle = 0f
-                    var accumulated = 0f
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(285.dp)
+                .semantics {
+                    contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
+                    onClick(label = "Sonraki boru çapı") {
+                        currentOnStep(1)
+                        true
+                    }
+                }
+                .pointerInput(Unit) {
+                    var previousAngle = 0f
+                    var rotationRemainder = 0f
+                    var touchOnWheel = false
+                    val oneStep = 0.22f // about 12.6 degrees per nominal size
                     detectDragGestures(
                         onDragStart = { point ->
-                            lastAngle = atan2(point.y - size.height / 2f, point.x - size.width / 2f)
-                            accumulated = 0f
+                            val centerX = size.width / 2f
+                            val centerY = size.height / 2f
+                            val dx = point.x - centerX
+                            val dy = point.y - centerY
+                            val radius = hypot(dx, dy)
+                            val minDimension = minOf(size.width, size.height).toFloat()
+                            // Only an annulus responds; touching the center value cannot
+                            // accidentally change the selected nominal diameter.
+                            touchOnWheel = radius >= minDimension * 0.24f &&
+                                radius <= minDimension * 0.53f
+                            previousAngle = atan2(dy, dx)
+                            rotationRemainder = 0f
                         },
-                        onDragEnd = { accumulated = 0f },
-                        onDragCancel = { accumulated = 0f }
+                        onDragCancel = { touchOnWheel = false; rotationRemainder = 0f },
+                        onDragEnd = { touchOnWheel = false; rotationRemainder = 0f }
                     ) { change, _ ->
-                        change.consume()
-                        val angle = atan2(
-                            change.position.y - size.height / 2f,
-                            change.position.x - size.width / 2f
-                        )
-                        val deltaAngle = atan2(sin(angle - lastAngle), cos(angle - lastAngle))
-                        accumulated += deltaAngle
-                        if (abs(accumulated) >= 0.16f) {
-                            onStep(if (accumulated > 0f) 1 else -1)
-                            accumulated = 0f
+                        if (touchOnWheel) {
+                            change.consume()
+                            val dx = change.position.x - size.width / 2f
+                            val dy = change.position.y - size.height / 2f
+                            val angle = atan2(dy, dx)
+                            val delta = atan2(sin(angle - previousAngle), cos(angle - previousAngle))
+                            previousAngle = angle
+                            wheelRotation = (wheelRotation + Math.toDegrees(delta.toDouble()).toFloat()) % 360f
+                            rotationRemainder += delta
+                            while (abs(rotationRemainder) >= oneStep) {
+                                val direction = if (rotationRemainder > 0f) 1 else -1
+                                currentOnStep(direction)
+                                rotationRemainder -= direction * oneStep
+                            }
                         }
-                        lastAngle = angle
                     }
                 },
             contentAlignment = Alignment.Center
         ) {
-            Canvas(modifier = Modifier.fillMaxHeight().aspectRatio(1f)) {
-                val r = size.minDimension / 2f
-                val center = Offset(size.width / 2f, size.height / 2f)
-                // Wheel: contrasting engraved ticks and warm gold measurement accent.
-                for (i in 0 until 84) {
-                    val a = (i.toFloat() / 84f) * (2f * PI.toFloat()) - PI.toFloat() / 2f
-                    val outer = r * 0.97f
-                    val inner = r * if (i % 7 == 0) 0.86f else 0.91f
-                    val color = if (i in 12..22) Gold else Color(0xFF7E9A93)
-                    drawLine(
-                        color = color,
-                        start = Offset(center.x + cos(a) * inner, center.y + sin(a) * inner),
-                        end = Offset(center.x + cos(a) * outer, center.y + sin(a) * outer),
-                        strokeWidth = if (i % 7 == 0) 2.6.dp.toPx() else 1.2.dp.toPx(),
-                        cap = StrokeCap.Round
-                    )
-                }
-                val metal = Brush.sweepGradient(
-                    colors = listOf(
-                        Color(0xFFB8BABC), Color(0xFF4B5558), Color(0xFFE6E5DF),
-                        Color(0xFF59666A), Color(0xFFB8BABC)
-                    ), center = center
-                )
-                drawCircle(brush = metal, radius = r * 0.76f, center = center)
-                drawCircle(color = Color(0xFF293A3A), radius = r * 0.60f, center = center)
-                drawCircle(
-                    brush = Brush.radialGradient(
-                        listOf(Color(0xFF112F2B), Color(0xFF071B1B), Color(0xFF020D0F)),
-                        center = center, radius = r * 0.61f
-                    ), radius = r * 0.57f, center = center
-                )
-                drawCircle(color = Color(0xFFCDD1CD), radius = r * 0.60f, center = center, style = Stroke(1.3.dp.toPx()))
-                drawArc(
-                    color = Gold, startAngle = -48f, sweepAngle = 76f, useCenter = false,
-                    topLeft = Offset(center.x - r * 0.79f, center.y - r * 0.79f),
-                    size = Size(r * 1.58f, r * 1.58f),
-                    style = Stroke(2.5.dp.toPx())
-                )
-                val y = center.y + r * 0.25f
-                drawLine(White, Offset(center.x - r * 0.47f, y), Offset(center.x + r * 0.47f, y), 2.dp.toPx())
-                drawCircle(White, 3.dp.toPx(), Offset(center.x - r * 0.47f, y))
-                drawCircle(White, 3.dp.toPx(), Offset(center.x + r * 0.47f, y))
-            }
+            // Real transparent user-provided assets, not duplicated Canvas rings.
             Image(
-                painter = painterResource(id = R.drawable.pipe_ring),
-                contentDescription = "Metal boru kesiti",
-                modifier = Modifier.fillMaxHeight(0.76f).aspectRatio(1f),
+                painter = painterResource(R.drawable.dial_ticks),
+                contentDescription = null,
+                modifier = Modifier.fillMaxHeight(0.98f).aspectRatio(1f)
+                    .graphicsLayer(rotationZ = wheelRotation),
                 contentScale = ContentScale.Fit
             )
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(nps + "\"", color = White, fontSize = 53.sp, fontWeight = FontWeight.Bold)
-                Text("NPS", color = Muted, fontSize = 18.sp)
-            }
-            Text("▼", color = Gold, fontSize = 27.sp, modifier = Modifier.align(Alignment.TopCenter))
-            Row(
-                modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Image(
+                painter = painterResource(R.drawable.dial_metal),
+                contentDescription = null,
+                modifier = Modifier.fillMaxHeight(0.72f).aspectRatio(1f),
+                contentScale = ContentScale.Fit
+            )
+            Image(
+                painter = painterResource(R.drawable.dial_pointer),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.TopCenter)
+                    .offset(y = 3.dp).height(47.dp).aspectRatio(0.88f),
+                contentScale = ContentScale.Fit
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.offset(y = (-2).dp)
             ) {
-                IconButton(onClick = { onStep(-1) }, modifier = Modifier.size(55.dp)) {
-                    Icon(Icons.Default.ChevronLeft, "Önceki çap", tint = Gold, modifier = Modifier.size(40.dp))
-                }
-                IconButton(onClick = { onStep(1) }, modifier = Modifier.size(55.dp)) {
-                    Icon(Icons.Default.ChevronRight, "Sonraki çap", tint = Gold, modifier = Modifier.size(40.dp))
-                }
+                Text(nps + "\"", color = White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
+                Text("NPS", color = Muted, fontSize = 17.sp)
             }
         }
-        Text("Dış çap ve et kalınlığı seçime göre değişir", color = Muted, fontSize = 12.sp)
+        Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
 }
 

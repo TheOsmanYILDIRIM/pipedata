@@ -10,7 +10,7 @@ Yeni, yalnızca endüstriyel boru ustaları için geliştirilmiş çevrimdışı
 4. **Standart** — ASME B36.10M, B36.19M kapsamı ve hesap formülleri.
 5. **Ayarlar** — Büyük metin, mm/kg/L veya in/lb/US gal birimleri.
 
-Döner gösterge, kullanıcı tarafından sağlanan metal boru PNG'sinin şeffaf WebP optimizasyonunu kullanır (`app/src/main/res/drawable-nodpi/pipe_ring.webp`). Etkileşimli tıklama, döndürme ve veri katmanı Jetpack Compose ile yazılmıştır.
+Döner NPS sayacı, kullanıcı tarafından ayrıştırılarak verilen üç şeffaf katmandan oluşur: `dial_metal.webp`, `dial_ticks.webp`, `dial_pointer.webp`. Taksimat parmakla **dairesel** döner; sol/sağ ok düğmeleri kaldırılmıştır. Erişilebilirlikte bir sonraki NPS için tıklama eylemi bulunur. Etkileşim Compose ile uygulanır; gerçek zamanlı 3D model değildir.
 
 Tamamen **Jetpack Compose** ile yeniden yazılmıştır. Eski Pipedata flanş/vana/CAD/CSV çıkarıcı ekranları bu sürüme dahil edilmemiştir.
 
