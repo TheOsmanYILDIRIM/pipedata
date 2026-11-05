@@ -63,7 +63,7 @@ assert "detectDragGestures" in dial and "remainder" in dial
 assert "currentOnStep(direction)" in dial and "graphicsLayer(rotationZ = wheelRotation)" in dial
 assert "BoxWithConstraints" in dial and "val metal = wheel * 0.76f" in dial
 assert "pipe.odMm" in dial and "it.idMm" in dial and "pipe.wallMm" in dial
-for forbidden in ("ChevronLeft", "ChevronRight", "drawCircle("):
+for forbidden in ("ChevronLeft", "ChevronRight", "sweepGradient(", "drawArc("):
     assert forbidden not in dial, f"Legacy wheel shape/button survived: {forbidden}"
 for resource in ("dial_metal.webp", "dial_ticks.webp", "dial_pointer.webp"):
     assert (ROOT / "app/src/main/res/drawable-nodpi" / resource).stat().st_size > 1000
