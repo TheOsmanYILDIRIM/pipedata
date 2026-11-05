@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
 private fun PipeApp(catalog: PipeCatalog) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("pipe_preferences_v2", 0) }
-    var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", false)) }
+    var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", true)) }
     var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", true)) }
     var page by rememberSaveable { mutableIntStateOf(0) }
     var standard by rememberSaveable { mutableStateOf("B36.10") }
@@ -142,7 +142,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                 )
                 1 -> LookupPage(catalog, standard, normalSp, unitImperial)
                 2 -> CombinedTableStandardsPage(catalog, activeNps, sizes,
-                    { nps = it }, normalSp, onSelect = { chosen ->
+                    { nps = it }, normalSp, unitImperial, onSelect = { chosen ->
                         standard = chosen.standard; nps = chosen.nps
                         schedule = chosen.schedule; page = 0
                     })
@@ -256,25 +256,24 @@ private fun CalculatorPage(
         Text("Schedule (SCH)", color = White, fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
                 .clickable { editing = "SCH" }.padding(vertical = 5.dp))
-        // Mixed numeric and S schedules: only physically available catalog rows.
-        schedules.chunked(4).forEach { rowValues ->
-            Row(Modifier.fillMaxWidth().padding(bottom = 7.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                rowValues.forEach { sch ->
-                    Surface(
-                        color = if (sch == schedule) Gold else Panel,
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.weight(1f).heightIn(min = 53.dp)
-                            .border(1.dp, if (sch == schedule) Gold else StrokeColor,
-                                RoundedCornerShape(16.dp)).clickable { onSch(sch) }
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(sch, color = if (sch == schedule) Deep else White,
-                                fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        }
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(schedules) { sch ->
+                Surface(
+                    color = if (sch == schedule) Gold else Panel,
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier.heightIn(min = 56.dp)
+                        .border(1.dp, if (sch == schedule) Gold else StrokeColor,
+                            RoundedCornerShape(24.dp))
+                        .clickable { onSch(sch) }
+                ) {
+                    Box(Modifier.padding(horizontal = 19.dp), contentAlignment = Alignment.Center) {
+                        Text(sch, color = if (sch == schedule) Deep else White,
+                            fontWeight = FontWeight.Bold, fontSize = 21.sp)
                     }
                 }
-                repeat(4 - rowValues.size) { Spacer(Modifier.weight(1f)) }
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -681,26 +680,59 @@ private fun PageHeading(title: String, subtitle: String) {
 
 @Composable
 private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, imperial: Boolean) {
-    var outer by rememberSaveable { mutableStateOf("168,3") }
-    var thick by rememberSaveable { mutableStateOf("7,11") }
+    var useInches by rememberSaveable { mutableStateOf(imperial) }
+    var outer by rememberSaveable { mutableStateOf(if (imperial) "6.626" else "168,3") }
+    var thick by rememberSaveable { mutableStateOf(if (imperial) "0.280" else "7,11") }
     var searched by remember { mutableStateOf(false) }
-    val odValue = outer.replace(",", ".").toDoubleOrNull()
-    val tValue = thick.replace(",", ".").toDoubleOrNull()
-    val matches = if (searched && odValue != null && tValue != null)
-        catalog.findByMeasurement(odValue, tValue, standard) else emptyList()
+    val odInput = outer.replace(",", ".").toDoubleOrNull()
+    val tInput = thick.replace(",", ".").toDoubleOrNull()
+    val odMm = odInput?.let { if (useInches) it * 25.4 else it }
+    val wallMm = tInput?.let { if (useInches) it * 25.4 else it }
+    val matches = if (searched && odMm != null && wallMm != null)
+        catalog.findByMeasurement(odMm, wallMm) else emptyList()
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
-        PageHeading("SCH Bul", "Kumpasla ölçtüğünüz dış çap ve et kalınlığını girin.")
+        PageHeading("SCH Bul", "Ölçtüğünüz dış çapı ve et kalınlığını girin.")
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Ölçü birimi", color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
+            listOf(true to "inç", false to "mm").forEach { (inch, label) ->
+                Surface(
+                    color = if (useInches == inch) Gold else Panel,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.heightIn(min = 50.dp)
+                        .clickable {
+                            if (useInches != inch) {
+                                val factor = if (inch) 1.0 / 25.4 else 25.4
+                                outer = odInput?.let { decimal(it * factor, if (inch) 3 else 2) } ?: ""
+                                thick = tInput?.let { decimal(it * factor, if (inch) 3 else 2) } ?: ""
+                                useInches = inch
+                                searched = false
+                            }
+                        }
+                ) {
+                    Box(Modifier.padding(horizontal = 18.dp), contentAlignment = Alignment.Center) {
+                        Text(label, color = if (useInches == inch) Deep else White,
+                            fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
         OutlinedTextField(
             outer, { outer = it; searched = false }, modifier = Modifier.fillMaxWidth(),
-            label = { Text("Dış çap (mm)") }, singleLine = true,
+            label = { Text("Dış çap (" + if (useInches) "inç)" else "mm)") },
+            singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         Spacer(Modifier.height(17.dp))
         OutlinedTextField(
             thick, { thick = it; searched = false }, modifier = Modifier.fillMaxWidth(),
-            label = { Text("Et kalınlığı (mm)") }, singleLine = true,
+            label = { Text("Et kalınlığı (" + if (useInches) "inç)" else "mm)") },
+            singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
@@ -709,32 +741,36 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
         Spacer(Modifier.height(24.dp))
         if (searched) {
             if (matches.isEmpty()) {
-                Text(
-                    "Bu ölçülere yakın, doğrulanmış bir " + standard + " kaydı bulunamadı. Ölçümü ve standardı kontrol edin.",
-                    fontSize = textSp.sp, color = Gold
-                )
+                Text("Bu ölçüye yakın kayıt bulunamadı. Birimi ve ölçüleri kontrol edin.",
+                    fontSize = textSp.sp, color = Gold)
             } else {
-                Text("Olası nominal eşleşmeler", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text("Olası nominal eşleşmeler", color = White,
+                    fontSize = 21.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(10.dp))
                 matches.take(12).forEach { pipe ->
                     Surface(
                         color = Panel, shape = RoundedCornerShape(15.dp),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).border(1.dp, StrokeColor, RoundedCornerShape(15.dp))
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                            .border(1.dp, StrokeColor, RoundedCornerShape(15.dp))
                     ) {
                         Column(Modifier.padding(16.dp)) {
-                            Text(pipe.nps + "\"  ·  DN " + pipe.dn + "  ·  SCH " + pipe.schedule,
+                            Text(pipe.nps + "″  ·  DN " + pipe.dn + "  ·  SCH " + pipe.schedule,
                                 fontSize = 22.sp, color = Gold, fontWeight = FontWeight.Bold)
-                            Text("Nominal dış çap " + decimal(pipe.odMm) + " mm  |  et " + decimal(pipe.wallMm) + " mm",
-                                color = White, fontSize = 16.sp)
+                            Text("ASME " + pipe.standard, color = Muted, fontSize = 14.sp)
+                            val odDisplay = if (useInches) pipe.odMm / 25.4 else pipe.odMm
+                            val wallDisplay = if (useInches) pipe.wallMm / 25.4 else pipe.wallMm
+                            val unit = if (useInches) "in" else "mm"
+                            Text("OD " + decimal(odDisplay, if (useInches) 3 else 2) + " " + unit,
+                                color = White, fontSize = 17.sp)
+                            Text("t " + decimal(wallDisplay, if (useInches) 3 else 2) + " " + unit,
+                                color = White, fontSize = 17.sp)
                         }
                     }
                 }
             }
             Spacer(Modifier.height(13.dp))
-            Text(
-                "Bu sonuç ölçüden nominal sınıf tahminidir; basınç dayanımı veya boru uygunluk sertifikası değildir.",
-                color = Muted, fontSize = 14.sp
-            )
+            Text("Nominal eşleştirmedir; basınç uygunluğu veya sertifika değildir.",
+                color = Muted, fontSize = 14.sp)
         }
     }
 }
@@ -742,7 +778,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
 @Composable
 private fun CombinedTableStandardsPage(
     catalog: PipeCatalog, nps: String, sizes: List<String>, onNps: (String) -> Unit,
-    textSp: Int, onSelect: (PipeSpec) -> Unit
+    textSp: Int, imperial: Boolean, onSelect: (PipeSpec) -> Unit
 ) {
     val rows = remember(nps) {
         catalog.rows.filter { it.nps == nps }.sortedWith(
@@ -750,29 +786,7 @@ private fun CombinedTableStandardsPage(
                 .thenBy { it.schedule }.thenBy { it.standard })
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        PageHeading("Tablo / Standart", "B36.10 ve B36.19 kayıtları birlikte gösterilir.")
-        Picker("NPS (inç)", nps + "″", sizes.map { it + "″" },
-            { onNps(it.removeSuffix("″")) }, Modifier.fillMaxWidth())
-        Spacer(Modifier.height(14.dp))
-        Text("SCH   ·   Standart   ·   Et kalınlığı   ·   İç çap",
-            color = Muted, fontSize = 14.sp)
-        rows.forEach { p ->
-            Row(
-                Modifier.fillMaxWidth().padding(top = 7.dp)
-                    .clip(RoundedCornerShape(12.dp)).background(Panel)
-                    .clickable { onSelect(p) }.padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(p.schedule, color = Gold, fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.9f))
-                Column(Modifier.weight(2.2f)) {
-                    Text("ASME " + p.standard, color = Muted, fontSize = 14.sp)
-                    Text("t " + decimal(p.wallMm) + " mm · ID " +
-                        decimal(p.idMm) + " mm", color = White, fontSize = 16.sp)
-                }
-            }
-        }
-        Spacer(Modifier.height(24.dp))
+        PageHeading("Tablo / Standart", "ASME standartları ve nominal ölçüler")
         InfoPanel("ASME B36.10M", "Karbon çelik boruların nominal çap, et ve Schedule serileri.", textSp)
         Spacer(Modifier.height(12.dp))
         InfoPanel("ASME B36.19M", "Paslanmaz çelik borularda S işaretli Schedule serileri ayrı kayıtlardır.", textSp)
@@ -782,6 +796,35 @@ private fun CombinedTableStandardsPage(
             "Kütle: çelik kesit alanı × 7850 kg/m³.\n" +
             "İç hacim: π × iç çap² / 4 × uzunluk.\n" +
             "Değerler nominaldir; basınç tasarım hesabı değildir.", textSp)
+        Spacer(Modifier.height(22.dp))
+        Picker("NPS (inç)", nps + "″", sizes.map { it + "″" },
+            { onNps(it.removeSuffix("″")) }, Modifier.fillMaxWidth())
+        Spacer(Modifier.height(16.dp))
+        Text("Nominal SCH ölçüleri", color = White, fontWeight = FontWeight.Bold,
+            fontSize = 20.sp)
+        rows.forEach { p ->
+            Column(
+                Modifier.fillMaxWidth().padding(top = 8.dp)
+                    .clip(RoundedCornerShape(12.dp)).background(Panel)
+                    .clickable { onSelect(p) }.padding(14.dp)
+            ) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text("SCH " + p.schedule, color = Gold, fontSize = 21.sp,
+                        fontWeight = FontWeight.Bold)
+                    Text("ASME " + p.standard, color = Muted, fontSize = 14.sp)
+                }
+                Spacer(Modifier.height(6.dp))
+                val unit = if (imperial) "in" else "mm"
+                val thick = if (imperial) p.wallMm / 25.4 else p.wallMm
+                val inner = if (imperial) p.idMm / 25.4 else p.idMm
+                Text("Et: " + decimal(thick, if (imperial) 3 else 2) + " " + unit,
+                    color = White, fontSize = 17.sp)
+                Text("İç çap: " + decimal(inner, if (imperial) 3 else 2) + " " + unit,
+                    color = White, fontSize = 17.sp)
+            }
+        }
+        Spacer(Modifier.height(24.dp))
     }
 }
 
