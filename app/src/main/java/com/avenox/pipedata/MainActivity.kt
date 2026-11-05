@@ -484,8 +484,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
         }
         if (pipe != null) {
             val dimensionUnit = if (imperial) "in" else "mm"
-            val outer = if (imperial) pipe.odMm / 25.4 else pipe.odMm
-            Text("Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
+            val outer = if (imperial) pipe.odInches else pipe.odMm
+            Text("Dış Çap (OD)  " + decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + dimensionUnit,
                 color = White, fontSize = 19.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable { onEdit("NPS") }.padding(8.dp))
         }
@@ -497,13 +497,13 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
 private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     onEdit: (String) -> Unit) {
     val thicknessUnit = if (imperial) "in" else "mm"
-    val od = if (imperial) pipe.odMm / 25.4 else pipe.odMm
+    val od = if (imperial) pipe.odInches else pipe.odMm
     val id = if (imperial) pipe.idMm / 25.4 else pipe.idMm
     val t = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
     val specs = listOf(
-        Triple("Dış Çap (OD)", decimal(od) + " " + thicknessUnit, Icons.Default.Straighten),
+        Triple("Dış Çap (OD)", decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.Straighten),
         Triple("İç Çap (ID)", decimal(id) + " " + thicknessUnit, Icons.Default.Circle),
         Triple("Et Kalınlığı", decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.Tune),
         Triple("Ağırlık", decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
@@ -537,7 +537,7 @@ private fun NumericPipeDialog(
     val initial = when (field) {
         "NPS" -> nps
         "SCH" -> schedule
-        "OD" -> selected?.odMm?.let { decimal(if (imperial) it / 25.4 else it) }
+        "OD" -> selected?.let { decimal(if (imperial) it.odInches else it.odMm, if (imperial && it.odInches < 14.0) 3 else 2) }
         "ID" -> selected?.idMm?.let { decimal(if (imperial) it / 25.4 else it) }
         "t" -> selected?.wallMm?.let { decimal(if (imperial) it / 25.4 else it, if (imperial) 3 else 2) }
         "mass" -> selected?.kgPerMetre?.let { decimal(if (imperial) it * 0.671968975 else it) }
@@ -557,13 +557,13 @@ private fun NumericPipeDialog(
                     (input.isEmpty() || row.schedule.startsWith(input, ignoreCase = true))
                 else -> {
                     val actual = when (field) {
-                        "OD" -> if (imperial) row.odMm / 25.4 else row.odMm
+                        "OD" -> if (imperial) row.odInches else row.odMm
                         "ID" -> if (imperial) row.idMm / 25.4 else row.idMm
                         "t" -> if (imperial) row.wallMm / 25.4 else row.wallMm
                         "mass" -> if (imperial) row.kgPerMetre * 0.671968975 else row.kgPerMetre
                         else -> if (imperial) row.litresPerMetre * 0.08052 else row.litresPerMetre
                     }
-                    val tolerance = if (field == "t" && imperial) 0.00051 else 0.0051
+                    val tolerance = if (imperial && (field == "t" || (field == "OD" && row.odInches < 14.0))) 0.00051 else 0.0051
                     number != null && number.isFinite() && abs(actual - number) <= tolerance
                 }
             }
@@ -671,7 +671,7 @@ private fun PageHeading(title: String, subtitle: String) {
 @Composable
 private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, imperial: Boolean) {
     var useInches by rememberSaveable { mutableStateOf(imperial) }
-    var outer by rememberSaveable { mutableStateOf(if (imperial) "6.626" else "168,3") }
+    var outer by rememberSaveable { mutableStateOf(if (imperial) "6.625" else "168,3") }
     var thick by rememberSaveable { mutableStateOf(if (imperial) "0.280" else "7,11") }
     var searched by remember { mutableStateOf(false) }
     val odInput = outer.replace(",", ".").toDoubleOrNull()
@@ -747,10 +747,10 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                             Text(pipe.nps + "″  ·  DN " + pipe.dn + "  ·  SCH " + pipe.schedule,
                                 fontSize = 22.sp, color = Gold, fontWeight = FontWeight.Bold)
                             Text("ASME " + pipe.standard, color = Muted, fontSize = 14.sp)
-                            val odDisplay = if (useInches) pipe.odMm / 25.4 else pipe.odMm
+                            val odDisplay = if (useInches) pipe.odInches else pipe.odMm
                             val wallDisplay = if (useInches) pipe.wallMm / 25.4 else pipe.wallMm
                             val unit = if (useInches) "in" else "mm"
-                            Text("OD " + decimal(odDisplay, if (useInches) 3 else 2) + " " + unit,
+                            Text("OD " + decimal(odDisplay, if (useInches && pipe.odInches < 14.0) 3 else 2) + " " + unit,
                                 color = White, fontSize = 17.sp)
                             Text("t " + decimal(wallDisplay, if (useInches) 3 else 2) + " " + unit,
                                 color = White, fontSize = 17.sp)

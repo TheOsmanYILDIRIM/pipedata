@@ -48,6 +48,13 @@ check("B36.10", "46", "XS", 1168.4, 12.70)
 check("B36.10", "48", "STD", 1219.2, 9.53)
 check("B36.10", "48", "XS", 1219.2, 12.70)
 assert abs(1219.2 / 25.4 - 48) < 0.000001
+pipe_catalog = (ROOT / "app/src/main/java/com/avenox/pipedata/PipeCatalog.kt").read_text()
+assert "val odInches: Double" in pipe_catalog
+for exact in ('"6" -> 6.625', '"8" -> 8.625', '"10" -> 10.750', '"12" -> 12.750'):
+    assert exact in pipe_catalog, exact
+assert "pipe.odInches" in screen
+assert 'if (imperial) "6.625"' in screen
+
 
 
 # Full regression: large nominal series NPS >= 14 has exact OD = NPS * 25.4.

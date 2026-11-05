@@ -18,6 +18,33 @@ data class PipeSpec(
         require(odMm > 0.0 && wallMm > 0.0 && wallMm < odMm / 2.0)
     }
 
+    /**
+     * Native ASME outside diameter in inches. Sub-14 NPS is a nominal label,
+     * not an OD. Rounded metric catalog values must not be reconverted into
+     * false inch measurements (168.3 mm must display 6.625 in, not 6.626).
+     */
+    val odInches: Double get() = when (nps) {
+        "1/8" -> 0.405
+        "1/4" -> 0.540
+        "3/8" -> 0.675
+        "1/2" -> 0.840
+        "3/4" -> 1.050
+        "1" -> 1.315
+        "1 1/4" -> 1.660
+        "1 1/2" -> 1.900
+        "2" -> 2.375
+        "2 1/2" -> 2.875
+        "3" -> 3.500
+        "3 1/2" -> 4.000
+        "4" -> 4.500
+        "5" -> 5.563
+        "6" -> 6.625
+        "8" -> 8.625
+        "10" -> 10.750
+        "12" -> 12.750
+        else -> nps.toDoubleOrNull()?.takeIf { it >= 14.0 } ?: odMm / 25.4
+    }
+
     val idMm: Double get() = odMm - 2.0 * wallMm
     val metalAreaMm2: Double get() = PI / 4.0 * (odMm * odMm - idMm * idMm)
     val boreAreaMm2: Double get() = PI / 4.0 * idMm * idMm
