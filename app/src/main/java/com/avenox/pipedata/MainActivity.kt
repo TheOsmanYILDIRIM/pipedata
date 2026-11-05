@@ -338,7 +338,7 @@ private fun PipeDial(nps: String, pipe: PipeSpec?, imperial: Boolean, onStep: (I
                                 val dx = pos.x - size.width / 2f
                                 val dy = pos.y - size.height / 2f
                                 val radius = hypot(dx, dy)
-                                val half = size.minDimension / 2f
+                                val half = minOf(size.width, size.height) / 2f
                                 onRing = radius >= half * 0.50f &&
                                     radius <= half * 1.04f
                                 previousAngle = atan2(dy, dx)
