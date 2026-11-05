@@ -217,6 +217,44 @@ private fun GoldButton(label: String, onClick: () -> Unit, modifier: Modifier = 
     }
 }
 
+
+@Composable
+private fun CompactPipePicker(
+    title: String, value: String, options: List<String>,
+    onSelect: (String) -> Unit, modifier: Modifier = Modifier,
+    emphasized: Boolean = false
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(modifier) {
+        Text(title, fontSize = 12.sp, color = Muted, maxLines = 1,
+            modifier = Modifier.padding(bottom = 5.dp))
+        Box {
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .border(1.5.dp, if (emphasized) Gold else StrokeColor, RoundedCornerShape(15.dp))
+                    .clickable { expanded = true }.padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(value, color = White, fontSize = 17.sp, fontWeight = FontWeight.Bold,
+                    maxLines = 1, modifier = Modifier.weight(1f))
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "Seç",
+                    tint = if (emphasized) Gold else White,
+                    modifier = Modifier.size(20.dp))
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option, fontSize = 19.sp) },
+                        modifier = Modifier.heightIn(min = 52.dp),
+                        onClick = { onSelect(option); expanded = false }
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun CalculatorPage(
     standard: String, setStandard: (String) -> Unit,
@@ -234,35 +272,23 @@ private fun CalculatorPage(
             .padding(horizontal = 18.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Picker("Standart", "ASME " + standard, listOf("ASME B36.10", "ASME B36.19"),
-            onChange = { setStandard(it.removePrefix("ASME ")) },
-            modifier = Modifier.fillMaxWidth(0.68f)
-        )
-        Spacer(Modifier.height(8.dp))
-        Text("ÇEVİREREK NPS SEÇİN", color = Muted, fontSize = 14.sp, letterSpacing = 1.sp)
-        PipeDial(nps, step)
-        Spacer(Modifier.height(7.dp))
-        Text("Schedule (SCH)", fontSize = textSp.sp, color = White, fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.Start))
-        Spacer(Modifier.height(8.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(schedules) { sch ->
-                Surface(
-                    color = if (sch == schedule) Gold else Panel,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier.heightIn(min = 53.dp)
-                        .border(1.dp, if (sch == schedule) Gold else StrokeColor, RoundedCornerShape(24.dp))
-                        .clickable { onSch(sch) }
-                ) {
-                    Box(Modifier.padding(horizontal = 19.dp), contentAlignment = Alignment.Center) {
-                        Text(sch, color = if (sch == schedule) Deep else White, fontWeight = FontWeight.Bold, fontSize = 21.sp)
-                    }
-                }
-            }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            CompactPipePicker(
+                "Standart", standard, listOf("B36.10", "B36.19"), setStandard,
+                Modifier.weight(1.18f)
+            )
+            CompactPipePicker(
+                "NPS (inç)", nps + "\"", sizes.map { it + "\"" },
+                { onNps(it.removeSuffix("\"")) }, Modifier.weight(0.77f)
+            )
+            CompactPipePicker(
+                "SCH", schedule, schedules, onSch, Modifier.weight(0.80f),
+                emphasized = true
+            )
         }
+        Spacer(Modifier.height(10.dp))
+        PipeDial(nps, pipe, imperial, step)
+        Spacer(Modifier.height(9.dp))
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
             Text("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
@@ -277,98 +303,172 @@ private fun CalculatorPage(
 }
 
 @Composable
-private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
-    // Rotary gesture continues smoothly across the -PI / +PI seam.
-    // A stable pointer handler avoids restarting a drag on every NPS recomposition.
+private fun PipeDial(nps: String, pipe: PipeSpec?, imperial: Boolean, onStep: (Int) -> Unit) {
+    // All visual layers share ONE measured center and radius. No duplicated Canvas wheel.
     val currentOnStep by rememberUpdatedState(onStep)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
+    val unit = if (imperial) "in" else "mm"
+    fun dimension(mm: Double): String =
+        decimal(if (imperial) mm / 25.4 else mm, if (imperial) 3 else 2)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val wheel = minOf(maxWidth * 0.92f, 330.dp)
+        val metal = wheel * 0.76f
+        val height = wheel + 81.dp
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(285.dp)
-                .semantics {
-                    contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
-                    onClick(label = "Sonraki boru çapı") {
-                        currentOnStep(1)
-                        true
-                    }
-                }
-                .pointerInput(Unit) {
-                    var previousAngle = 0f
-                    var rotationRemainder = 0f
-                    var touchOnWheel = false
-                    val oneStep = 0.22f // about 12.6 degrees per nominal size
-                    detectDragGestures(
-                        onDragStart = { point ->
-                            val centerX = size.width / 2f
-                            val centerY = size.height / 2f
-                            val dx = point.x - centerX
-                            val dy = point.y - centerY
-                            val radius = hypot(dx, dy)
-                            val minDimension = minOf(size.width, size.height).toFloat()
-                            // Only an annulus responds; touching the center value cannot
-                            // accidentally change the selected nominal diameter.
-                            touchOnWheel = radius >= minDimension * 0.24f &&
-                                radius <= minDimension * 0.53f
-                            previousAngle = atan2(dy, dx)
-                            rotationRemainder = 0f
-                        },
-                        onDragCancel = { touchOnWheel = false; rotationRemainder = 0f },
-                        onDragEnd = { touchOnWheel = false; rotationRemainder = 0f }
-                    ) { change, _ ->
-                        if (touchOnWheel) {
-                            change.consume()
-                            val dx = change.position.x - size.width / 2f
-                            val dy = change.position.y - size.height / 2f
-                            val angle = atan2(dy, dx)
-                            val delta = atan2(sin(angle - previousAngle), cos(angle - previousAngle))
-                            previousAngle = angle
-                            wheelRotation = (wheelRotation + Math.toDegrees(delta.toDouble()).toFloat()) % 360f
-                            rotationRemainder += delta
-                            while (abs(rotationRemainder) >= oneStep) {
-                                val direction = if (rotationRemainder > 0f) 1 else -1
-                                currentOnStep(direction)
-                                rotationRemainder -= direction * oneStep
-                            }
+            Modifier.fillMaxWidth().height(height),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Box(
+                modifier = Modifier.size(wheel)
+                    .semantics {
+                        contentDescription = "Döner NPS sayacı, çap " + nps + " inç"
+                        onClick(label = "Sonraki boru çapı") {
+                            currentOnStep(1)
+                            true
                         }
                     }
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            // Real transparent user-provided assets, not duplicated Canvas rings.
-            Image(
-                painter = painterResource(R.drawable.dial_ticks),
-                contentDescription = null,
-                modifier = Modifier.fillMaxHeight(0.98f).aspectRatio(1f)
-                    .graphicsLayer(rotationZ = wheelRotation),
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                painter = painterResource(R.drawable.dial_metal),
-                contentDescription = null,
-                modifier = Modifier.fillMaxHeight(0.72f).aspectRatio(1f)
-                    .graphicsLayer(rotationZ = wheelRotation),
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                painter = painterResource(R.drawable.dial_pointer),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.TopCenter)
-                    .offset(y = 3.dp).height(47.dp).aspectRatio(0.88f),
-                contentScale = ContentScale.Fit
-            )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.offset(y = (-2).dp)
+                    .pointerInput(Unit) {
+                        var previousAngle = 0f
+                        var remainder = 0f
+                        var onRing = false
+                        val stepAngle = 0.22f
+                        detectDragGestures(
+                            onDragStart = { pos ->
+                                val dx = pos.x - size.width / 2f
+                                val dy = pos.y - size.height / 2f
+                                val radius = hypot(dx, dy)
+                                val half = size.minDimension / 2f
+                                onRing = radius >= half * 0.50f &&
+                                    radius <= half * 1.04f
+                                previousAngle = atan2(dy, dx)
+                                remainder = 0f
+                            },
+                            onDragEnd = { onRing = false; remainder = 0f },
+                            onDragCancel = { onRing = false; remainder = 0f }
+                        ) { change, _ ->
+                            if (onRing) {
+                                change.consume()
+                                val angle = atan2(
+                                    change.position.y - size.height / 2f,
+                                    change.position.x - size.width / 2f
+                                )
+                                val delta = atan2(
+                                    sin(angle - previousAngle), cos(angle - previousAngle)
+                                )
+                                wheelRotation = (wheelRotation +
+                                    Math.toDegrees(delta.toDouble()).toFloat()) % 360f
+                                remainder += delta
+                                while (abs(remainder) >= stepAngle) {
+                                    val direction = if (remainder > 0f) 1 else -1
+                                    currentOnStep(direction)
+                                    remainder -= direction * stepAngle
+                                }
+                                previousAngle = angle
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
             ) {
-                Text(nps + "\"", color = White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
-                Text("NPS", color = Muted, fontSize = 17.sp)
+                Image(
+                    painter = painterResource(R.drawable.dial_ticks),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                        .graphicsLayer(rotationZ = wheelRotation),
+                    contentScale = ContentScale.Fit
+                )
+                Image(
+                    painter = painterResource(R.drawable.dial_metal),
+                    contentDescription = null,
+                    modifier = Modifier.size(metal)
+                        .graphicsLayer(rotationZ = wheelRotation),
+                    contentScale = ContentScale.Fit
+                )
+                Image(
+                    painter = painterResource(R.drawable.dial_pointer),
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                        .offset(y = (-2).dp).size(width = 31.dp, height = 40.dp),
+                    contentScale = ContentScale.Fit
+                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.Center).offset(y = (-11).dp)
+                ) {
+                    Text(nps + "\" NPS", color = Muted, fontSize = 14.sp)
+                    Text("İç Çap (ID)", color = White, fontSize = 14.sp)
+                    Text(
+                        pipe?.let { dimension(it.idMm) + " " + unit } ?: "—",
+                        color = White, fontSize = 23.sp, fontWeight = FontWeight.Bold,
+                        maxLines = 1
+                    )
+                }
+                Canvas(Modifier.fillMaxSize()) {
+                    val cx = size.width / 2
+                    val cy = size.height / 2
+                    val halfHole = metal.toPx() * 0.35f
+                    val y = cy + metal.toPx() * 0.22f
+                    drawLine(White, Offset(cx - halfHole, y),
+                        Offset(cx + halfHole, y), 1.5.dp.toPx())
+                    val tip = 7.dp.toPx()
+                    for (direction in listOf(-1f, 1f)) {
+                        val px = cx + direction * halfHole
+                        drawLine(White, Offset(px, y),
+                            Offset(px - direction * tip, y - tip * 0.38f), 1.5.dp.toPx())
+                        drawLine(White, Offset(px, y),
+                            Offset(px - direction * tip, y + tip * 0.38f), 1.5.dp.toPx())
+                    }
+                }
+            }
+
+            if (pipe != null) {
+                // The guides are anchored to the same center as the metal source.
+                Canvas(Modifier.fillMaxWidth().height(height)) {
+                    val cx = size.width / 2
+                    val halfMetal = metal.toPx() / 2f
+                    val startY = wheel.toPx() * 0.69f
+                    val bottomY = wheel.toPx() + 68.dp.toPx()
+                    val lineWidth = 1.dp.toPx()
+                    val left = cx - halfMetal
+                    val right = cx + halfMetal
+                    drawLine(White, Offset(left, startY), Offset(left, bottomY), lineWidth)
+                    drawLine(White, Offset(right, startY), Offset(right, bottomY), lineWidth)
+                    drawLine(White, Offset(left, bottomY), Offset(right, bottomY), lineWidth)
+                    val arrow = 7.dp.toPx()
+                    for (direction in listOf(-1f, 1f)) {
+                        val x = cx + direction * halfMetal
+                        drawLine(White, Offset(x, bottomY),
+                            Offset(x - direction * arrow, bottomY - arrow * 0.38f), lineWidth)
+                        drawLine(White, Offset(x, bottomY),
+                            Offset(x - direction * arrow, bottomY + arrow * 0.38f), lineWidth)
+                    }
+                    // Accurate wall callout at upper right of the same source ring.
+                    val leadStart = Offset(cx + halfMetal * 0.57f,
+                        wheel.toPx() * 0.27f)
+                    val elbow = Offset(cx + wheel.toPx() * 0.39f,
+                        wheel.toPx() * 0.12f)
+                    drawLine(Gold, leadStart, elbow, 2.dp.toPx())
+                    drawCircle(Gold, 4.dp.toPx(), leadStart)
+                }
+
+                Text(
+                    "t " + dimension(pipe.wallMm) + " " + unit,
+                    color = White, fontSize = 17.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.TopEnd).offset(y = 3.dp)
+                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                        .offset(y = wheel + 4.dp)
+                ) {
+                    Text("Dış Çap (OD)", fontSize = 15.sp, color = White)
+                    Text(dimension(pipe.odMm) + " " + unit,
+                        fontSize = 22.sp, fontWeight = FontWeight.Bold, color = White)
+                }
             }
         }
-        Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
+    Text("Halkayı parmağınızla çevirin", fontSize = 12.sp, color = Muted)
 }
 
 @Composable
