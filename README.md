@@ -10,6 +10,8 @@ Yeni, yalnızca endüstriyel boru ustaları için geliştirilmiş çevrimdışı
 4. **Standart** — ASME B36.10M, B36.19M kapsamı ve hesap formülleri.
 5. **Ayarlar** — Büyük metin, mm/kg/L veya in/lb/US gal birimleri.
 
+Döner gösterge, kullanıcı tarafından sağlanan metal boru PNG'sinin şeffaf WebP optimizasyonunu kullanır (`app/src/main/res/drawable-nodpi/pipe_ring.webp`). Etkileşimli tıklama, döndürme ve veri katmanı Jetpack Compose ile yazılmıştır.
+
 Tamamen **Jetpack Compose** ile yeniden yazılmıştır. Eski Pipedata flanş/vana/CAD/CSV çıkarıcı ekranları bu sürüme dahil edilmemiştir.
 
 ### Veri ve dürüst kapsam

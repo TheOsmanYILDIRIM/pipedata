@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -332,6 +335,12 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
                 drawCircle(White, 3.dp.toPx(), Offset(center.x - r * 0.47f, y))
                 drawCircle(White, 3.dp.toPx(), Offset(center.x + r * 0.47f, y))
             }
+            Image(
+                painter = painterResource(id = R.drawable.pipe_ring),
+                contentDescription = "Metal boru kesiti",
+                modifier = Modifier.fillMaxHeight(0.76f).aspectRatio(1f),
+                contentScale = ContentScale.Fit
+            )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(nps + "\"", color = White, fontSize = 53.sp, fontWeight = FontWeight.Bold)
                 Text("NPS", color = Muted, fontSize = 18.sp)
