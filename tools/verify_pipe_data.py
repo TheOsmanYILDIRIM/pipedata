@@ -40,6 +40,15 @@ check("B36.19", "6", "40S", 168.3, 7.11)
 check("B36.19", "6", "10S", 168.3, 3.4)
 check("B36.10", "1/8", "STD", 10.3, 1.73)
 check("B36.10", "1/8", "XS", 10.3, 2.41)
+# Large-diameter B36.10 regression: exact inches and non-invented STD/XS rows.
+check("B36.10", "44", "STD", 1117.6, 9.53)
+check("B36.10", "44", "XS", 1117.6, 12.70)
+check("B36.10", "46", "STD", 1168.4, 9.53)
+check("B36.10", "46", "XS", 1168.4, 12.70)
+check("B36.10", "48", "STD", 1219.2, 9.53)
+check("B36.10", "48", "XS", 1219.2, 12.70)
+assert abs(1219.2 / 25.4 - 48) < 0.000001
+
 
 # Independent sample: 6in Sch40, 28.3 kg/m and ~18.6 L/m.
 p = next(r for r in ROWS if
@@ -74,5 +83,8 @@ for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDi
 assert "Triple(\"Tablo/Standart\"" in screen
 assert "val schedules = remember(activeNps)" in screen
 assert "row.nps.startsWith(input" in screen
+assert "PipeDial(nps, step, pipe, imperial)" in screen
+assert screen.index("PipeDial(nps, step, pipe, imperial)") < screen.index('Text("Schedule (SCH)"')
+assert 'Text("NPS (inç)"' not in screen
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")

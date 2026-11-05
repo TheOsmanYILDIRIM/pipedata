@@ -240,19 +240,11 @@ private fun CalculatorPage(
             .padding(horizontal = 18.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier.fillMaxWidth().heightIn(min = 62.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .border(1.5.dp, StrokeColor, RoundedCornerShape(18.dp))
-                .clickable { editing = "NPS" }.padding(horizontal = 18.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("NPS (inç)", color = Muted, fontSize = 19.sp)
-            Text(nps + "″", color = White, fontSize = 27.sp, fontWeight = FontWeight.Bold)
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "NPS seç", tint = Gold)
-        }
-        Spacer(Modifier.height(10.dp))
+        Text("Dış çapa dokunarak NPS seçebilir veya halkayı çevirebilirsiniz.",
+            color = Muted, fontSize = 15.sp, textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp))
+        PipeDial(nps, step, pipe, imperial) { editing = it }
+        Spacer(Modifier.height(12.dp))
         Text("Schedule (SCH)", color = White, fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
                 .clickable { editing = "SCH" }.padding(vertical = 5.dp))
@@ -276,8 +268,6 @@ private fun CalculatorPage(
                 }
             }
         }
-        Spacer(Modifier.height(8.dp))
-        PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
             Text("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
@@ -497,7 +487,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             val outer = if (imperial) pipe.odMm / 25.4 else pipe.odMm
             Text("Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
                 color = White, fontSize = 19.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onEdit("OD") }.padding(8.dp))
+                modifier = Modifier.clickable { onEdit("NPS") }.padding(8.dp))
         }
         Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
@@ -525,7 +515,7 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     ) {
         specs.forEachIndexed { i, item ->
             Row(Modifier.fillMaxWidth().heightIn(min = 61.dp)
-                .clickable { onEdit(listOf("OD", "ID", "t", "mass", "volume")[i]) }
+                .clickable { onEdit(listOf("NPS", "ID", "t", "mass", "volume")[i]) }
                 .padding(horizontal = 13.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(item.third, contentDescription = null, tint = White, modifier = Modifier.size(25.dp))
