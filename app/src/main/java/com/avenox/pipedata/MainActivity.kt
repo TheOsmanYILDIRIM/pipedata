@@ -31,12 +31,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -277,77 +274,17 @@ private fun CalculatorPage(
     if (showLength && pipe != null) LengthDialog(pipe, imperial) { showLength = false }
 }
 
-/**
- * Removes transparent edge imbalance from a dial layer. The visible pixel bounds are
- * normalized to equal width and height, so graphicsLayer and touch share one pivot.
- * Computed once per resource, never during a drag or recomposition.
- */
-@Composable
-private fun centeredDialArtwork(resourceId: Int): androidx.compose.ui.graphics.ImageBitmap {
-    val context = LocalContext.current
-    return remember(context, resourceId) {
-        val source = requireNotNull(
-            android.graphics.BitmapFactory.decodeResource(context.resources, resourceId)
-        ) { "Cannot decode dial artwork: $resourceId" }
-        val width = source.width
-        val height = source.height
-        val pixels = IntArray(width * height)
-        source.getPixels(pixels, 0, width, 0, 0, width, height)
-        var left = width
-        var top = height
-        var right = -1
-        var bottom = -1
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                if ((pixels[y * width + x] ushr 24) > 12) {
-                    left = minOf(left, x)
-                    top = minOf(top, y)
-                    right = maxOf(right, x)
-                    bottom = maxOf(bottom, y)
-                }
-            }
-        }
-        if (right < left || bottom < top) {
-            source.asImageBitmap()
-        } else {
-            val visibleWidth = right - left + 1
-            val visibleHeight = bottom - top + 1
-            val side = maxOf(visibleWidth, visibleHeight)
-            val centered = android.graphics.Bitmap.createBitmap(
-                side, side, android.graphics.Bitmap.Config.ARGB_8888
-            )
-            // The supplied cutouts can have non-square visible bounds even though
-            // the physical dial is circular. Normalize the *visible* geometry to
-            // a true square before Compose scales or rotates either layer.
-            android.graphics.Canvas(centered).drawBitmap(
-                source,
-                android.graphics.Rect(left, top, right + 1, bottom + 1),
-                android.graphics.Rect(0, 0, side, side),
-                android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
-            )
-            source.recycle()
-            centered.asImageBitmap()
-        }
-    }
-}
-
+/** Entirely procedural dial; no image assets or bitmap transformations. */
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
     val currentOnStep by rememberUpdatedState(onStep)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
-    val ticks = centeredDialArtwork(R.drawable.dial_ticks)
-    val metal = centeredDialArtwork(R.drawable.dial_metal)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            // The render bounds and gesture bounds must be exactly the same square.
+        BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val dialSide = minOf(maxWidth, 285.dp)
             Box(
-                modifier = Modifier
-                    .size(dialSide)
+                modifier = Modifier.size(dialSide)
                     .semantics {
                         contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
                         onClick(label = "Sonraki boru çapı") {
@@ -357,23 +294,22 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
                     }
                     .pointerInput(Unit) {
                         var previousAngle = 0f
-                        var rotationRemainder = 0f
-                        var touchOnWheel = false
-                        val oneStep = 0.22f
+                        var remainder = 0f
+                        var draggingRing = false
+                        val stepAngle = 0.22f
                         detectDragGestures(
                             onDragStart = { point ->
-                                val cx = size.width / 2f
-                                val cy = size.height / 2f
-                                val radius = hypot(point.x - cx, point.y - cy)
-                                val outerRadius = minOf(size.width, size.height) / 2f
-                                touchOnWheel = radius in (outerRadius * 0.48f)..outerRadius
-                                previousAngle = atan2(point.y - cy, point.x - cx)
-                                rotationRemainder = 0f
+                                val dx = point.x - size.width / 2f
+                                val dy = point.y - size.height / 2f
+                                val outer = minOf(size.width, size.height) / 2f
+                                draggingRing = hypot(dx, dy) in (outer * 0.42f)..outer
+                                previousAngle = atan2(dy, dx)
+                                remainder = 0f
                             },
-                            onDragCancel = { touchOnWheel = false; rotationRemainder = 0f },
-                            onDragEnd = { touchOnWheel = false; rotationRemainder = 0f }
+                            onDragCancel = { draggingRing = false; remainder = 0f },
+                            onDragEnd = { draggingRing = false; remainder = 0f }
                         ) { change, _ ->
-                            if (touchOnWheel) {
+                            if (draggingRing) {
                                 change.consume()
                                 val dx = change.position.x - size.width / 2f
                                 val dy = change.position.y - size.height / 2f
@@ -382,38 +318,87 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
                                 previousAngle = angle
                                 wheelRotation =
                                     (wheelRotation + Math.toDegrees(delta.toDouble()).toFloat()) % 360f
-                                rotationRemainder += delta
-                                while (abs(rotationRemainder) >= oneStep) {
-                                    val direction = if (rotationRemainder > 0f) 1 else -1
+                                remainder += delta
+                                while (abs(remainder) >= stepAngle) {
+                                    val direction = if (remainder > 0f) 1 else -1
                                     currentOnStep(direction)
-                                    rotationRemainder -= direction * oneStep
+                                    remainder -= direction * stepAngle
                                 }
                             }
                         }
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    bitmap = ticks,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
-                        .graphicsLayer(rotationZ = wheelRotation),
-                    contentScale = ContentScale.Fit
-                )
-                Image(
-                    bitmap = metal,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(0.72f)
-                        .graphicsLayer(rotationZ = wheelRotation),
-                    contentScale = ContentScale.Fit
-                )
-                Image(
-                    painter = painterResource(R.drawable.dial_pointer),
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.TopCenter)
-                        .offset(y = 3.dp).height(47.dp).aspectRatio(0.88f),
-                    contentScale = ContentScale.Fit
-                )
+                Canvas(Modifier.fillMaxSize()) {
+                    val c = center
+                    val r = size.minDimension / 2f
+                    val outerTick = r * 0.935f
+                    val innerTick = r * 0.875f
+                    val metalRadius = r * 0.675f
+                    val metalWidth = r * 0.145f
+
+                    rotate(wheelRotation, pivot = c) {
+                        for (index in 0 until 64) {
+                            val angle = (index * 2.0 * PI / 64.0 - PI / 2.0).toFloat()
+                            val major = index % 8 == 0
+                            val from = if (major) innerTick - r * 0.014f else innerTick
+                            drawLine(
+                                color = Color(0xFFE6ECE9),
+                                start = Offset(c.x + cos(angle) * from, c.y + sin(angle) * from),
+                                end = Offset(c.x + cos(angle) * outerTick, c.y + sin(angle) * outerTick),
+                                strokeWidth = if (major) r * 0.024f else r * 0.018f,
+                                cap = StrokeCap.Round
+                            )
+                        }
+                        drawCircle(Color(0xFF152421), metalRadius + metalWidth * 0.56f)
+                        drawCircle(
+                            brush = Brush.sweepGradient(
+                                listOf(
+                                    Color(0xFF69726F), Color(0xFFF3F3EE),
+                                    Color(0xFF8E9694), Color(0xFF434B49),
+                                    Color(0xFFD2D5CF), Color(0xFF717976),
+                                    Color(0xFF69726F)
+                                ),
+                                center = c
+                            ),
+                            radius = metalRadius,
+                            style = Stroke(width = metalWidth)
+                        )
+                        // Thin concentric machined grooves: no texture allocations.
+                        for (index in 0 until 24) {
+                            val t = index / 23f
+                            val grooveRadius = metalRadius - metalWidth * 0.47f +
+                                metalWidth * 0.94f * t
+                            val alpha = if (index % 3 == 0) 0.22f else 0.10f
+                            drawCircle(
+                                color = if (index % 2 == 0) Color.White.copy(alpha = alpha)
+                                    else Color.Black.copy(alpha = alpha),
+                                radius = grooveRadius,
+                                style = Stroke(width = r * 0.0022f)
+                            )
+                        }
+                        drawCircle(Color(0xFFE8ECE7), metalRadius - metalWidth * 0.49f,
+                            style = Stroke(width = r * 0.011f))
+                        drawCircle(Color(0xFF33413E), metalRadius - metalWidth * 0.55f,
+                            style = Stroke(width = r * 0.013f))
+                        drawCircle(Color(0xFF454D4A), metalRadius + metalWidth * 0.51f,
+                            style = Stroke(width = r * 0.009f))
+                    }
+
+                    // Fixed twelve-o'clock pointer; independent of rotary layers.
+                    val pointer = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(c.x, r * 0.115f)
+                        lineTo(c.x - r * 0.092f, r * 0.265f)
+                        lineTo(c.x + r * 0.092f, r * 0.265f)
+                        close()
+                    }
+                    drawPath(pointer, Color(0xFF382900),
+                        style = Stroke(width = r * 0.032f,
+                            join = androidx.compose.ui.graphics.StrokeJoin.Round))
+                    drawPath(pointer, Gold)
+                    drawLine(Gold, Offset(c.x, r * 0.105f), Offset(c.x, r * 0.045f),
+                        strokeWidth = r * 0.018f, cap = StrokeCap.Round)
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.offset(y = (-2).dp)
