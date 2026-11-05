@@ -1,27 +1,24 @@
-# Antigravity Workspace Guidelines & Rules (Avenox Doktrini)
+# Boru Hesaplayıcı — Geliştirme Sözleşmesi
 
-## 1. Kural Senkronizasyonu (Sync Rule - Zorunlu)
-* **Otomatik Eşzamanlılık:** `AGENTS.md`, `GEMINI.md` veya `CLAUDE.md` dosyalarından herhangi biri güncellendiğinde, diğer tüm kural dosyaları da birebir aynı içerikle senkronize olarak güncellenmek ZORUNDADIR. Kurallar şişirilmez, öz ve net tutulur.
+## Güncel kapsam (2026-11-05)
+Bu repo artık endüstriyel boru montaj ustalarının kullanacağı, çevrimdışı, dikey **NPS/DN/SCH** hesaplayıcı Android uygulamasıdır. Önceki Pipedata mühendislik/CAD/kapsamlı fitting sürümü silinmemiştir: `backup/legacy-main-2026-11-05` dalında `06b7e209` commit'i ile korunmuştur. Eski sayfaları, çıkarıcıları ve sahte fallback alanlarını geri taşımayın.
 
-## 2. Beyin (Vault) ile Atölye (Proje) Ayrımı
-* **Beyin Ayrı Oda, Atölye Ayrı Oda:** Bu vault; notların, kuralların, kararların, sözlüğün ve proje özetlerinin yaşadığı yerdir. Kodun kendisi doğrudan vault köküne saçılmaz.
-* **Proje İskeleti:** Her projenin kendi atölye klasöründe `AGENTS.md`/`CLAUDE.md`, `notes.md` (dump & mimari), `reports/` (araştırmalar), `backlog.md` (yarım kalan işler) ve `constants` dosyası bulunur.
+## Tek kaynak ve doğruluk
+- Nominal boru kayıtları yalnız `app/src/main/assets/pipe_schedules.csv` kaynağında tutulur. Her satırın standardı, NPS, DN, OD, SCH ve et kalınlığı bulunur.
+- Herhangi bir et kalınlığı 0, negatif veya eksikse kullanıcıya ilgili SCH gösterilmez. Kodla keyfî et kalınlığı/OD üretmeyin.
+- Hesaplar `PipeCatalog.kt` içinde: ID=OD−2t; çelik kütlesi nominal 7850 kg/m³; su içeriği nominal 1000 kg/m³. Basınç tasarımı ayrı iş kapsamıdır.
+- B36.10 ve B36.19 tablolarının S serilerini karıştırmayın. Veri kapsamını lisanslı standartlara karşı doğrulanmış sanmayın; ilk aşamada 373 filtrelenmiş nominal satır vardır.
+- Değerler fiziksel/nominal hesaplar, gerçek tolerans/sertifika değildir. Kullanıcıyı yanıltabilecek sessiz fallback yasaktır.
 
-## 3. Agentic Engineering & "Bitti" Protokolü
-* **Sınır Çiz, Yol Çizme:** Ajan brief'i 5 parçadan oluşur: *Hedef* (ne olursa bitti sayılır) + *Eldekiler/Ham Veri* + *Sert Sınırlar* (dokunma listesi) + *Ölçü* + *Serbestlik* (hata görürse söyleme inisiyatifi).
-* **Vibe Coding Yasaktır:** Ajanın "bitti" demesine körü körüne güvenilmez. Yapılan her değişiklik `git diff` ve CLI kontrolleri ile doğrulanır.
-* **Slop ve Yarım İş Engeli:** Yarım kalan veya sonraki oturuma devreden her iş projenin `backlog.md` dosyasına kaydedilir.
+## Mobil arayüz
+- Jetpack Compose; 320–411dp portre ekran ve büyük yazı için tasarım.
+- Koyu teal/altın tasarım, döndürülebilir NPS göstergesi, kullanıcının sağladığı şeffaf metal halka (`drawable-nodpi/pipe_ring.webp`), büyük tıklama hedefleri.
+- Sayfalar: Boru, SCH Bul, Tablo, Standart, Ayarlar. Asıl boyut yazıları Compose tarafından üretilir; fotoğraf üstüne yazı basmayın.
+- Mevcut Android `applicationId` ve `antigravity.keystore` korunur; cihazdaki uygulama güncellemeleri için imza değiştirilmez.
 
-## 4. Termux Araç Tercihi & CLI Entegrasyonu
-* **Native CLI Önceliği:** Veri işleme, metin manipülasyonu, JSON sorgulama veya dosya incelemelerinde Termux native araçları (`jq`, `fd`, `rg`, `curl`, `tree`, `bat`, `sqlite3`, `esbuild` vb.) kullanılır. Karmaşık scriptler yerine Unix pipeline'ları (`curl | jq`) tercih edilir.
-* **No Termux API / Bildirim Yok:** `termux-api` kurulmaz ve Android sistem bildirimleri tetiklenmez. Gerekli araçlar `pkg install -y <paket>` ile kurulur.
-* **Termal Yönetim & Python Optimizasyonu:** Python scriptleri çalıştırılırken `py-cool` veya `nice -n 15 taskset -c 0-5 python3` kullanılır. CPU yoğun derleme ve arama işlemleri batarya ve ısınmayı korumak için 2 thread (`-j 2`) ile sınırlandırılır.
-
-## 5. Qwen MCP Danışmanlık Kuralı
-* **Zengin Context ile Danışma:** Karmaşık algoritmalar, mimari tasarım, procedural generation ve çetrefilli hata ayıklama süreçlerinde `qwen` MCP aracı (`qwen_chat`) üzerinden Qwen modeline danışılır. Asla yüzeysel prompt gönderilmez; kaynak kod, veri yapıları, teknik kısıtlar ve uç durumlar eksiksiz aktarılır.
-
-## 6. Asla Yerelde Derleme Yapma & Git Operatörü Kuralı (GitHub CI/CD Kuralı - Kesin Kural)
-* **Yerel Derleme Yasaktır:** Asla ama asla yerelde (cihaz / Termux üzerinde) ağır derleme (Gradle assembleDebug/Release, APK build vb.) yapılmaz. Değişiklikler GitHub'a pushlanır ve derleme GitHub Actions üzerinde gerçekleştirilir.
-* **Ana Ajan Git İşlemi Yapamaz (Kesin Yasak):** Ana ajan, doğrudan kendisi `git add`, `git commit` veya `git push` komutlarını ÇALIŞTIRAMAZ.
-* **`git-operator` Subagent Zorunluluğu:** Tüm Git süreci (status, diff kontrolü, stage, commit mesajı ve `git push`) baştan itibaren MUTLAKA `git-operator` subagent'ına (`gemini-3.8-flash-low`, `Model: 'flash'`, Low) devredilmek zorundadır.
-* **Build Takibi Şartı:** Push işlemi yapıldıktan sonra `git-operator`, tetiklenen GitHub Actions CI/CD derleme/test sürecini (`gh run watch` vb.) sonuna kadar izlemek, sonucu beklemek ve build başarı durumunu ana ajana raporlamakla yükümlüdür.
+## Kabul ve değişiklik güvenliği
+1. Önce GitHub HEAD + ilgili dosya blob SHA'sını inceleyin; ana dal/yedeklere kör reset veya force yazmayın.
+2. `python3 tools/verify_pipe_data.py` tüm kayıtları ve kontrol örneklerini doğrulamalı.
+3. GitHub Actions `assembleDebug assembleRelease` ve APK artefaktı olumlu sonuçlanmalı.
+4. CI ≠ gerçek cihaz testi. Dokunmatik halka, 320/360/411dp görünümü ve fontScale testi gerçek cihazda ayrıca doğrulanmalı.
+5. `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` değiştiğinde üçü birebir senkron tutulur.
