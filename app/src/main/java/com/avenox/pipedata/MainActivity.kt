@@ -8,7 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -276,18 +276,32 @@ private fun CalculatorPage(
 
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
-    var fingerDx by remember { mutableFloatStateOf(0f) }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier.fillMaxWidth().height(285.dp)
                 .pointerInput(onStep) {
-                    detectHorizontalDragGestures(onDragEnd = { fingerDx = 0f }) { change, amount ->
+                    var lastAngle = 0f
+                    var accumulated = 0f
+                    detectDragGestures(
+                        onDragStart = { point ->
+                            lastAngle = atan2(point.y - size.height / 2f, point.x - size.width / 2f)
+                            accumulated = 0f
+                        },
+                        onDragEnd = { accumulated = 0f },
+                        onDragCancel = { accumulated = 0f }
+                    ) { change, _ ->
                         change.consume()
-                        fingerDx += amount
-                        if (abs(fingerDx) > 32f) {
-                            onStep(if (fingerDx < 0f) 1 else -1)
-                            fingerDx = 0f
+                        val angle = atan2(
+                            change.position.y - size.height / 2f,
+                            change.position.x - size.width / 2f
+                        )
+                        val deltaAngle = atan2(sin(angle - lastAngle), cos(angle - lastAngle))
+                        accumulated += deltaAngle
+                        if (abs(accumulated) >= 0.16f) {
+                            onStep(if (accumulated > 0f) 1 else -1)
+                            accumulated = 0f
                         }
+                        lastAngle = angle
                     }
                 },
             contentAlignment = Alignment.Center
