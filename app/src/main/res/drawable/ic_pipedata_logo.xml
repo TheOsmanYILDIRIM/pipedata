@@ -3,26 +3,35 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:fillColor="#0B111E"
-        android:pathData="M0,0h108v108h-108z"/>
-    <!-- Outer flange circle -->
-    <path
-        android:strokeColor="#38BDF8"
-        android:strokeWidth="4"
-        android:pathData="M54,18 A36,36 0 1,1 53.9,18 Z"/>
-    <!-- Inner pipe bore -->
-    <path
-        android:strokeColor="#38BDF8"
-        android:strokeWidth="3"
-        android:pathData="M54,36 A18,18 0 1,1 53.9,36 Z"/>
-    <!-- Bolt holes -->
-    <path
-        android:fillColor="#38BDF8"
-        android:pathData="M54,23a3,3 0 1,0 0.01,0 Z M54,85a3,3 0 1,0 0.01,0 Z M23,54a3,3 0 1,0 0.01,0 Z M85,54a3,3 0 1,0 0.01,0 Z"/>
-    <!-- Center lines -->
-    <path
-        android:strokeColor="#FBBF24"
-        android:strokeWidth="1.5"
-        android:pathData="M54,10 L54,98 M10,54 L98,54"/>
+    <!-- BORUZI logo: geometric redraw of GPT Image's pipe-section mark. -->
+    <path android:fillColor="#00302C" android:pathData="M0,0h108v108h-108z"/>
+    <!-- Gold measuring ring with cardinal gaps for the axis markers -->
+    <path android:strokeColor="#FBBF24" android:strokeWidth="4.3"
+        android:strokeLineCap="butt"
+        android:pathData="M49,11 A43,43 0,0 0,11 49 M59,11 A43,43 0,0 1,97 49 M97,59 A43,43 0,0 1,59 97 M49,97 A43,43 0,0 1,11 59"/>
+    <path android:strokeColor="#FFCF42" android:strokeWidth="3.3"
+        android:strokeLineCap="round"
+        android:pathData="M54,7 L54,14 M54,94 L54,101 M7,54 L14,54 M94,54 L101,54"/>
+    <!-- Brushed steel pipe face (subtle multi-ring bevel) -->
+    <path android:fillColor="#A3ADA9"
+        android:pathData="M54,21 A33,33 0,1 1,53.99 21 Z M54,35 A19,19 0,1 0,53.99 35 Z"
+        android:fillType="evenOdd"/>
+    <path android:strokeColor="#F7F8F5" android:strokeWidth="2.0"
+        android:pathData="M54,23 A31,31 0,1 1,53.99 23 Z"/>
+    <path android:strokeColor="#66746F" android:strokeWidth="2.0"
+        android:pathData="M54,34 A20,20 0,1 1,53.99 34 Z"/>
+    <path android:strokeColor="#D7DDDA" android:strokeWidth="0.8"
+        android:pathData="M54,26 A28,28 0,1 1,53.99 26 Z M54,28 A26,26 0,1 1,53.99 28 Z M54,30 A24,24 0,1 1,53.99 30 Z"/>
+    <path android:fillColor="#00302C" android:pathData="M54,36 A18,18 0,1 1,53.99 36 Z"/>
+    <!-- Bore diameter ruler and arrowheads -->
+    <path android:strokeColor="#FBBF24" android:strokeWidth="2.6"
+        android:strokeLineCap="round" android:pathData="M35,54 L73,54"/>
+    <path android:fillColor="#FFCA36"
+        android:pathData="M32,54 L41,49 L41,59 Z M76,54 L67,49 L67,59 Z"/>
+    <!-- Wall thickness leader -->
+    <path android:strokeColor="#FFC629" android:strokeWidth="2.9"
+        android:strokeLineJoin="round" android:strokeLineCap="round"
+        android:pathData="M72,37 L84,25 L98,25"/>
+    <path android:fillColor="#FFCB32"
+        android:pathData="M72,33 A4,4 0,1 1,71.99 33 Z"/>
 </vector>

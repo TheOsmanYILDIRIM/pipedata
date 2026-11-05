@@ -120,7 +120,7 @@ private fun PipeApp(catalog: PipeCatalog) {
     ) {
         Box(Modifier.fillMaxWidth().heightIn(min = 62.dp).padding(horizontal = 12.dp),
             contentAlignment = Alignment.Center) {
-            Text("Boru Hesaplayıcı", color = White, fontWeight = FontWeight.SemiBold,
+            Text("Boruzi", color = White, fontWeight = FontWeight.SemiBold,
                 fontSize = if (largeText) 25.sp else 22.sp, textAlign = TextAlign.Center)
         }
         Box(Modifier.weight(1f)) {
