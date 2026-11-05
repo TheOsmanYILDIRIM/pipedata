@@ -130,7 +130,10 @@ private fun PipeApp(catalog: PipeCatalog) {
                 0 -> CalculatorPage(
                     standard, { standard = it }, activeNps, sizes,
                     onNps = { nps = it }, activeSch, schedules,
-                    onSch = { schedule = it }, pipe, unitImperial, normalSp
+                    onSch = { schedule = it }, pipe, unitImperial, normalSp,
+                    catalog = catalog, onChoose = { chosen ->
+                        standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
+                    }
                 )
                 1 -> LookupPage(catalog, standard, normalSp, unitImperial)
                 2 -> TablePage(
@@ -220,8 +223,10 @@ private fun CalculatorPage(
     standard: String, setStandard: (String) -> Unit,
     nps: String, sizes: List<String>, onNps: (String) -> Unit,
     schedule: String, schedules: List<String>, onSch: (String) -> Unit,
-    pipe: PipeSpec?, imperial: Boolean, textSp: Int
+    pipe: PipeSpec?, imperial: Boolean, textSp: Int,
+    catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit
 ) {
+    var editing by remember { mutableStateOf<String?>(null) }
     var showLength by remember { mutableStateOf(false) }
     val index = sizes.indexOf(nps).coerceAtLeast(0)
     val step: (Int) -> Unit = { delta ->
@@ -238,10 +243,16 @@ private fun CalculatorPage(
         )
         Spacer(Modifier.height(8.dp))
         Text("ÇEVİREREK NPS SEÇİN", color = Muted, fontSize = 14.sp, letterSpacing = 1.sp)
-        PipeDial(nps, step)
+        Text("NPS " + nps + "″ · Dokunarak yazın",
+            color = Gold, fontWeight = FontWeight.Bold, fontSize = 19.sp,
+            modifier = Modifier.clickable { editing = "NPS" }
+                .padding(horizontal = 14.dp, vertical = 8.dp))
+        PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(7.dp))
-        Text("Schedule (SCH)", fontSize = textSp.sp, color = White, fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.Start))
+        Text("Schedule (SCH) · Yazmak için dokunun", fontSize = textSp.sp,
+            color = White, fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.Start).clickable { editing = "SCH" }
+                .padding(vertical = 7.dp))
         Spacer(Modifier.height(8.dp))
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -265,18 +276,24 @@ private fun CalculatorPage(
         if (pipe == null) {
             Text("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
         } else {
-            ResultRows(pipe, imperial, textSp)
+            ResultRows(pipe, imperial, textSp) { editing = it }
         }
         Spacer(Modifier.height(18.dp))
         GoldButton("Hesapla", { showLength = true }, Modifier.fillMaxWidth())
         Spacer(Modifier.height(20.dp))
     }
     if (showLength && pipe != null) LengthDialog(pipe, imperial) { showLength = false }
+    editing?.let { field ->
+        NumericPipeDialog(field, standard, nps, schedule, pipe, imperial, catalog,
+            onDismiss = { editing = null },
+            onChoose = { chosen -> onChoose(chosen); editing = null })
+    }
 }
 
 /** Entirely procedural dial; no image assets or bitmap transformations. */
 @Composable
-private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
+private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
+    imperial: Boolean, onEdit: (String) -> Unit) {
     val currentOnStep by rememberUpdatedState(onStep)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
 
@@ -385,6 +402,27 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
                             style = Stroke(width = r * 0.009f))
                     }
 
+                    if (pipe != null) {
+                        val bore = metalRadius - metalWidth * 0.55f
+                        val y = c.y + r * 0.22f
+                        val half = sqrt(maxOf(0f, bore * bore - (y - c.y) * (y - c.y)))
+                        drawLine(White, Offset(c.x - half, y), Offset(c.x + half, y),
+                            strokeWidth = r * 0.009f)
+                        for (side in listOf(-1f, 1f)) {
+                            val tip = Offset(c.x + side * half, y)
+                            drawLine(White, tip, Offset(tip.x - side * r * 0.065f, y - r * 0.030f),
+                                strokeWidth = r * 0.01f)
+                            drawLine(White, tip, Offset(tip.x - side * r * 0.065f, y + r * 0.030f),
+                                strokeWidth = r * 0.01f)
+                        }
+                        val anchor = Offset(c.x + r * 0.43f, c.y - r * 0.46f)
+                        val elbow = Offset(c.x + r * 0.67f, c.y - r * 0.70f)
+                        val end = Offset(c.x + r * 0.92f, elbow.y)
+                        drawLine(Gold, anchor, elbow, strokeWidth = r * 0.013f)
+                        drawLine(Gold, elbow, end, strokeWidth = r * 0.013f)
+                        drawCircle(Gold, r * 0.027f, anchor)
+                        drawCircle(Gold, r * 0.027f, Offset(c.x + r * 0.49f, c.y - r * 0.52f))
+                    }
                     // Fixed twelve-o'clock pointer; independent of rotary layers.
                     val pointer = androidx.compose.ui.graphics.Path().apply {
                         moveTo(c.x, r * 0.115f)
@@ -399,21 +437,41 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
                     drawLine(Gold, Offset(c.x, r * 0.105f), Offset(c.x, r * 0.045f),
                         strokeWidth = r * 0.018f, cap = StrokeCap.Round)
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.offset(y = (-2).dp)
-                ) {
-                    Text(nps + "\"", color = White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
-                    Text("NPS", color = Muted, fontSize = 17.sp)
+                if (pipe != null) {
+                    val dimensionUnit = if (imperial) "in" else "mm"
+                    val inner = if (imperial) pipe.idMm / 25.4 else pipe.idMm
+                    val wall = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.align(Alignment.Center)
+                            .clickable { onEdit("ID") }.padding(6.dp)) {
+                        Text("İç Çap (ID)", color = Muted, fontSize = 13.sp)
+                        Text(decimal(inner) + " " + dimensionUnit, color = White,
+                            fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                    }
+                    Text("t " + decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
+                        color = Gold, fontWeight = FontWeight.Bold, fontSize = 13.sp,
+                        modifier = Modifier.align(Alignment.TopEnd)
+                            .padding(top = 34.dp, end = 2.dp).clickable { onEdit("t") })
+                } else {
+                    Text(nps + "\"", color = White, fontSize = 42.sp,
+                        modifier = Modifier.clickable { onEdit("NPS") })
                 }
             }
+        }
+        if (pipe != null) {
+            val dimensionUnit = if (imperial) "in" else "mm"
+            val outer = if (imperial) pipe.odMm / 25.4 else pipe.odMm
+            Text("↔  Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
+                color = White, fontSize = 19.sp, fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { onEdit("OD") }.padding(8.dp))
         }
         Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
 }
 
 @Composable
-private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int) {
+private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
+    onEdit: (String) -> Unit) {
     val thicknessUnit = if (imperial) "in" else "mm"
     val od = if (imperial) pipe.odMm / 25.4 else pipe.odMm
     val id = if (imperial) pipe.idMm / 25.4 else pipe.idMm
@@ -432,7 +490,9 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int) {
             .border(1.dp, StrokeColor, RoundedCornerShape(22.dp)).background(Panel)
     ) {
         specs.forEachIndexed { i, item ->
-            Row(Modifier.fillMaxWidth().heightIn(min = 61.dp).padding(horizontal = 13.dp),
+            Row(Modifier.fillMaxWidth().heightIn(min = 61.dp)
+                .clickable { onEdit(listOf("OD", "ID", "t", "mass", "volume")[i]) }
+                .padding(horizontal = 13.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(item.third, contentDescription = null, tint = White, modifier = Modifier.size(25.dp))
                 Spacer(Modifier.width(10.dp))
@@ -442,6 +502,93 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int) {
             if (i < specs.lastIndex) HorizontalDivider(color = StrokeColor.copy(alpha = 0.6f))
         }
     }
+}
+
+@Composable
+private fun NumericPipeDialog(
+    field: String, standard: String, nps: String, schedule: String,
+    selected: PipeSpec?, imperial: Boolean, catalog: PipeCatalog,
+    onDismiss: () -> Unit, onChoose: (PipeSpec) -> Unit
+) {
+    val initial = when (field) {
+        "NPS" -> nps
+        "SCH" -> schedule
+        "OD" -> selected?.odMm?.let { decimal(if (imperial) it / 25.4 else it) }
+        "ID" -> selected?.idMm?.let { decimal(if (imperial) it / 25.4 else it) }
+        "t" -> selected?.wallMm?.let { decimal(if (imperial) it / 25.4 else it, if (imperial) 3 else 2) }
+        "mass" -> selected?.kgPerMetre?.let { decimal(if (imperial) it * 0.671968975 else it) }
+        else -> selected?.litresPerMetre?.let { decimal(if (imperial) it * 0.08052 else it) }
+    } ?: ""
+    var value by remember(field) { mutableStateOf(initial) }
+    val input = value.trim().replace(",", ".").replace("″", "").replace("\"", "").trim()
+    val number = input.toDoubleOrNull()
+    val candidates = catalog.rows.asSequence().filter { it.standard == standard }
+        .filter { row ->
+            when (field) {
+                "NPS" -> row.nps.equals(input, ignoreCase = true)
+                "SCH" -> row.nps == nps && row.schedule.equals(input, ignoreCase = true)
+                else -> {
+                    val actual = when (field) {
+                        "OD" -> if (imperial) row.odMm / 25.4 else row.odMm
+                        "ID" -> if (imperial) row.idMm / 25.4 else row.idMm
+                        "t" -> if (imperial) row.wallMm / 25.4 else row.wallMm
+                        "mass" -> if (imperial) row.kgPerMetre * 0.671968975 else row.kgPerMetre
+                        else -> if (imperial) row.litresPerMetre * 0.08052 else row.litresPerMetre
+                    }
+                    val tolerance = if (field == "t" && imperial) 0.00051 else 0.0051
+                    number != null && number.isFinite() && abs(actual - number) <= tolerance
+                }
+            }
+        }.distinctBy { it.nps + "|" + it.schedule }.take(30).toList()
+    val title = when (field) {
+        "NPS" -> "NPS çapı"
+        "SCH" -> "Schedule (SCH)"
+        "OD" -> "Dış çap (OD)"
+        "ID" -> "İç çap (ID)"
+        "t" -> "Et kalınlığı"
+        "mass" -> "Ağırlık"
+        else -> "İç hacim"
+    }
+    AlertDialog(onDismissRequest = onDismiss,
+        title = { Text(title + " yazın", color = White) },
+        text = {
+            Column {
+                OutlinedTextField(value = value, onValueChange = { value = it },
+                    singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 25.sp, color = White),
+                    keyboardOptions = KeyboardOptions(keyboardType =
+                        if (field == "NPS" || field == "SCH") KeyboardType.Text else KeyboardType.Decimal),
+                    label = { Text("Değer") })
+                Spacer(Modifier.height(9.dp))
+                Text("Yalnız standartta kayıtlı nominal ölçüler kullanılabilir.",
+                    color = Muted, fontSize = 13.sp)
+                Spacer(Modifier.height(8.dp))
+                if (candidates.isEmpty()) {
+                    Text("Eşleşen kayıt yok. NPS, SCH veya değeri kontrol edin.",
+                        color = Gold, fontSize = 14.sp)
+                } else {
+                    Column(Modifier.heightIn(max = 210.dp).verticalScroll(rememberScrollState())) {
+                        candidates.forEach { candidate ->
+                            Text(candidate.nps + "″  ·  SCH " + candidate.schedule +
+                                "  ·  OD " + decimal(candidate.odMm) + " mm",
+                                color = White, fontSize = 17.sp,
+                                modifier = Modifier.fillMaxWidth()
+                                    .clip(RoundedCornerShape(9.dp))
+                                    .clickable { onChoose(candidate) }
+                                    .padding(vertical = 12.dp, horizontal = 7.dp))
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = candidates.size == 1,
+                onClick = { candidates.singleOrNull()?.let(onChoose) }) {
+                Text("Seç", color = if (candidates.size == 1) Gold else Muted)
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("İptal", color = Muted) } }
+    )
 }
 
 @Composable
