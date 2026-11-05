@@ -57,13 +57,16 @@ for screen_name in ("CalculatorPage", "LookupPage", "TablePage", "StandardsPage"
 for banned in ("CsvDataStore", "flanges", "gaskets", "valves", "blanks"):
     assert banned not in screen, f"Legacy UI accidentally referenced: {banned}"
 
-# Visual and interaction contract for the dial regression.
+# Procedural dial contract: circle geometry and touch must share a square pivot.
 dial = screen.split("private fun PipeDial(", 1)[1].split("private fun ResultRows(", 1)[0]
-assert "detectDragGestures" in dial and "rotationRemainder" in dial
-assert "currentOnStep(direction)" in dial and "graphicsLayer(rotationZ = wheelRotation)" in dial
-for forbidden in ("ChevronLeft", "ChevronRight", "drawLine(", "drawCircle("):
-    assert forbidden not in dial, f"Legacy wheel shape/button survived: {forbidden}"
-for resource in ("dial_metal.webp", "dial_ticks.webp", "dial_pointer.webp"):
-    assert (ROOT / "app/src/main/res/drawable-nodpi" / resource).stat().st_size > 1000
+assert "detectDragGestures" in dial and "currentOnStep(direction)" in dial
+assert "Canvas(Modifier.fillMaxSize())" in dial
+assert "rotate(wheelRotation, pivot = c)" in dial
+assert "val r = size.minDimension / 2f" in dial
+assert "Brush.sweepGradient(" in dial and "drawCircle(" in dial
+assert "drawPath(pointer, Gold)" in dial
+assert "dialSide = minOf(maxWidth, 285.dp)" in dial
+for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):
+    assert forbidden not in dial, f"Obsolete raster dial or control survived: {forbidden}"
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
-      "derived geometry/mass, UI sections, and no legacy components")
+      "derived geometry/mass, procedural circular NPS dial, and no legacy components")
