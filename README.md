@@ -1,75 +1,42 @@
-# Pipedata (Modern Piping Engineering Reference & Calculator)
+# Boru Hesaplayıcı — Android
 
-Endüstri standardı borulama mühendisliği referans uygulaması olan **Pipedata**'nın tersine mühendislikle çözümlenmiş tam veri tabanına dayanan, modern, platform bağımsız ve akıllı bir mühendislik referans ve hesaplama kütüphanesi.
+Yeni, yalnızca endüstriyel boru ustaları için geliştirilmiş çevrimdışı **NPS / DN / SCH** hesaplama uygulaması.
 
----
+## Ekranlar
 
-## 1. Proje Özeti ve Kapsam
+1. **Boru** — Döner NPS halkası, mevcut çapa uygun SCH seçenekleri, ölçüler, ağırlık ve iç hacim.
+2. **SCH Bul** — Ölçülen OD ve et kalınlığından yakın nominal SCH kayıtlarını gösterir.
+3. **Tablo** — Seçilen standarda/NPS'ye ait tüm geçerli nominal SCH satırları.
+4. **Standart** — ASME B36.10M, B36.19M kapsamı ve hesap formülleri.
+5. **Ayarlar** — Büyük metin, mm/kg/L veya in/lb/US gal birimleri.
 
-Pipedata projesi; petrol, doğalgaz, petrokimya ve enerji santrali borulama mühendisliğinde kullanılan standart boyutları, toleransları, malzeme ağırlıklarını ve teknik resimleri tek bir yüksek performanslı SQLite veritabanında ve modern vektörel CAD motorunda bir araya getirir.
+Tamamen **Jetpack Compose** ile yeniden yazılmıştır. Eski Pipedata flanş/vana/CAD/CSV çıkarıcı ekranları bu sürüme dahil edilmemiştir.
 
-### Desteklenen Küresel Standartlar:
-* **Borular:** ASME B36.10M (Karbon Çelik), ASME B36.19M (Paslanmaz Çelik) (NPS 1/8" - 80", Sch 5 - XXS)
-* **Flanşlar:** ASME B16.5, ASME B16.47 (Seri A & B), ASME B16.36 (Orifice), API Spec 6A (6B/6BX), DIN EN 1092-1
-* **Fittingler:** ASME B16.9 (Alın Kaynaklı / Buttweld), ASME B16.11 (Dövme Çelik Soket & Dişli)
-* **Endüstriyel Vanalar:** ASME B16.10, ASME B16.34 (Gate, Globe, Ball, Check, Butterfly - Class 150-2500)
-* **Contalar & Bağlantı Elemanları:** ASME B16.20 (Spiral-Wound, RTJ R/RX/BX), ASME B16.21 (Flat), ASME B18.2.1/B18.2.2 (Saplama & Somun)
-* **Hat Körlemeleri:** ASME B16.48 (Figure-8, Paddle Blanks & Spacers)
-* **Nozullar & Branşmanlar:** MSS-SP-97 (Weldolet, Sockolet, Thredolet, Elbolet, Latrolet), MSS-SP-95 (Swage Nipples)
+### Veri ve dürüst kapsam
 
----
+Kaynak başlangıcı: Önceki uygulamanın nomimal boru ölçü tablosundan **sadece fiziksel olarak mümkün, dolu et kalınlığı olan** satırlar filtrelenerek hazırlanan yerel \`app/src/main/assets/pipe_schedules.csv\`. İlk veri setinde **373 kayıt** vardır; eksik/0 mm et kalınlıklı **101 kayıt görünmez**. Bu, eksiksiz resmî ASME lisanslı bir tablo veya tüm kombinasyonların doğrulanması değildir. Saha öncesi kritik boyutları güncel lisanslı ASME B36.10M/B36.19M veya üretici sertifikasıyla kontrol edin.
 
-## 2. Veri Tabanı Mimarisi
+- OD ve t: mevcut nominal veri kaydından.
+- ID = OD − 2t.
+- Çelik kütle = π(OD² − ID²)/4 × 0,00785 kg/m (7850 kg/m³ nominal).
+- İç hacim = πID²/4 / 1000 L/m.
+- Su dolu toplam kütle = boş boru kütlesi + su içeriği (1000 kg/m³).
+- Hesaplar nominal; üretim toleransı/korozif payı/basınç derecesi içermez.
+- **SCH Bul**, toleranslı nominal ölçü eşleştirmesi yapar, basınç hesabı değildir.
 
-* **SQLite Veritabanı (`pipedata.db`):** 17 Tablo, 956 CSV kaynağından normalize edilmiş 22,525 veri satırı.
-* **Master Manifest (`schema_manifest.json`):** 956/956 dosya %100 haritalandı (0 veri kaybı).
-* **Teknik Çizim Motoru (`svg_manifest.json`):** 122 SVG teknik çizimi, AutoCAD ASME Y14.5M vektörel standartlarına dönüştürüldü (45° ASME 31 tarama deseni, 3:1 standart ok uçları, kontrast ölçü rozetleri).
-* **CAD Çizimleri:** 214 tam ölçekli 2D DXF vektör dosyası.
+## Derleme / test
 
----
+\`\`\`bash
+python3 tools/verify_pipe_data.py
+./gradlew assembleDebug assembleRelease
+\`\`\`
 
-## 3. Doğrulama ve Test Protokolü
+GitHub Actions hem veri doğrulamasını hem Gradle APK derlemesini koşar. Release imzası önceki sürümün mevcut \`app/antigravity.keystore\` dosyasıyla korunmuştur. Anahtar değiştirilmemiştir.
 
-Proje, 17/17 otomatik kabul testinden oluşan dondurulmuş bir test şartnamesine (`test.md` & `test_suite.py`) sahiptir:
+## Yedek
 
-```bash
-# Test paketini çalıştırma
-python3 test_suite.py
-```
-* **Test Kapsamı:** CSV dosya ve satır bütünlüğü, 18 schedule serisi ve basınç kademesi, Benchmark A (14" STD Boru), Benchmark B (14" STD Kep), Kesirli inç dönüştürücüler, Atalet momenti ($I = \frac{\pi}{64}(OD^4 - ID^4)$), Güvenli Açıklık (Safe Span) sehim/gerilme motoru ve 122 SVG şablonunun XML geçerliliği.
+Eski uygulama ve 956 ham CSV kaynağı **\`backup/legacy-main-2026-11-05\`** dalında, \`06b7e2095c1e08d3654fc33f267b9aadf76d8344\` commit'inde korunur. Yeni \`main\` ağacı sıfırdan oluşturulur.
 
----
+## Bekleyen doğrulama
 
-## 4. UI & Etkileşim Paradigmaları (Industrial UX)
-
-Kıdemli saha ve tasarım mühendislerinin ihtiyaçlarına göre 7 farklı profesyonel arayüz mimarisi modellenmiştir:
-1. **The Industrial Keypad Terminal:** HP 48G / Fluke referanslı, sıfır scroll, 4x4 donanım tuş takımı.
-2. **The Rotary Caliper Jog-Dial:** Leica DISTO referanslı, sağ kenara gömülü sonsuz tambur.
-3. **The McMaster Density Table:** Kompakt, yüksek yoğunluklu veri matrisi.
-4. **The Cockpit Multi-HUD:** Garmin havacılık göstergeleri tarzı çoklu bilgi kadranları.
-5. **The Interactive Drawing Hotspots:** Teknik çizim üzerindeki ölçülere dokunarak doğrudan veri alma.
-6. **The Split Workbench:** Üstte canlı CAD çizimi, altta filtreleme ve hesaplama modülleri.
-7. **The Swipe Roller:** Tam ekran akıcı silindir kaydırma.
-
-*Canlı interaktif prototipler `pipedata_tester.html` ve `pipedata_interaction_paradigms.html` üzerinden doğrudan görüntülenebilir.*
-
----
-
-## 5. Proje Yapısı
-
-```
-projects/pipedata/
-├── AGENTS.md / CLAUDE.md / GEMINI.md  # Avenox doktrini proje kuralları
-├── notes.md                           # Detaylı tersine mühendislik ve mimari döküm
-├── backlog.md                         # Geliştirme yol haritası ve durum takibi
-├── constants.py                       # Mühendislik katsayıları ve yoğunluklar
-├── schema_manifest.json               # 956 CSV şema haritası
-├── svg_manifest.json                  # 122 SVG teknik resim manifestosu
-├── pipedata.db                        # Tam SQLite3 veritabanı
-├── pipedata_tester.html               # WebAssembly sql.js canlı SQL test konsolu
-├── pipedata_interaction_paradigms.html # 7 Etkileşim paradigması interaktif HTML
-├── data/                              # Çıkarılan CSV, SVG, DXF ve görseller
-├── reports/                           # Araştırma ve tersine mühendislik raporları
-├── test.md                            # Dondurulmuş test şartnamesi
-└── test_suite.py                      # 17/17 Otomatik kabul testi
-```
+Gerçek Android cihazda görsel, döner göstergenin dokunma ergonomisi, 320–411dp ekranlarda taşma ve \`fontScale=1.3\` kontrol edilmelidir. CI başarısı cihaz testi değildir.
