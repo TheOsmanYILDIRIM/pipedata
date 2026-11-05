@@ -279,7 +279,7 @@ private fun CalculatorPage(
 
 /**
  * Removes transparent edge imbalance from a dial layer. The visible pixel bounds are
- * placed at the centre of a square bitmap, so graphicsLayer and touch share one pivot.
+ * normalized to equal width and height, so graphicsLayer and touch share one pivot.
  * Computed once per resource, never during a drag or recomposition.
  */
 @Composable
@@ -316,11 +316,14 @@ private fun centeredDialArtwork(resourceId: Int): androidx.compose.ui.graphics.I
             val centered = android.graphics.Bitmap.createBitmap(
                 side, side, android.graphics.Bitmap.Config.ARGB_8888
             )
+            // The supplied cutouts can have non-square visible bounds even though
+            // the physical dial is circular. Normalize the *visible* geometry to
+            // a true square before Compose scales or rotates either layer.
             android.graphics.Canvas(centered).drawBitmap(
                 source,
-                (side - visibleWidth) / 2f - left,
-                (side - visibleHeight) / 2f - top,
-                null
+                android.graphics.Rect(left, top, right + 1, bottom + 1),
+                android.graphics.Rect(0, 0, side, side),
+                android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
             )
             source.recycle()
             centered.asImageBitmap()
