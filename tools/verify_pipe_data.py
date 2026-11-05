@@ -52,8 +52,6 @@ pipe_catalog = (ROOT / "app/src/main/java/com/avenox/pipedata/PipeCatalog.kt").r
 assert "val odInches: Double" in pipe_catalog
 for exact in ('"6" -> 6.625', '"8" -> 8.625', '"10" -> 10.750', '"12" -> 12.750'):
     assert exact in pipe_catalog, exact
-assert "pipe.odInches" in screen
-assert 'if (imperial) "6.625"' in screen
 
 
 
@@ -79,6 +77,8 @@ assert 28.0 < steel < 28.7, steel
 assert 18.4 < water < 18.9, water
 
 screen = (ROOT / "app/src/main/java/com/avenox/pipedata/MainActivity.kt").read_text()
+assert "pipe.odInches" in screen
+assert 'if (imperial) "6.625"' in screen
 for screen_name in ("CalculatorPage", "LookupPage", "CombinedTableStandardsPage", "SettingsPage", "PipeDial", "NumericPipeDialog"):
     assert screen_name in screen, screen_name
 for banned in ("CsvDataStore", "flanges", "gaskets", "valves", "blanks"):
