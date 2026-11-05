@@ -348,7 +348,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
             Image(
                 painter = painterResource(R.drawable.dial_metal),
                 contentDescription = null,
-                modifier = Modifier.fillMaxHeight(0.72f).aspectRatio(1f),
+                modifier = Modifier.fillMaxHeight(0.72f).aspectRatio(1f)
+                    .graphicsLayer(rotationZ = wheelRotation),
                 contentScale = ContentScale.Fit
             )
             Image(
