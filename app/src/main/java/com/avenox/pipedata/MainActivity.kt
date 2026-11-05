@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -276,95 +277,147 @@ private fun CalculatorPage(
     if (showLength && pipe != null) LengthDialog(pipe, imperial) { showLength = false }
 }
 
+/**
+ * Removes transparent edge imbalance from a dial layer. The visible pixel bounds are
+ * placed at the centre of a square bitmap, so graphicsLayer and touch share one pivot.
+ * Computed once per resource, never during a drag or recomposition.
+ */
+@Composable
+private fun centeredDialArtwork(resourceId: Int): androidx.compose.ui.graphics.ImageBitmap {
+    val context = LocalContext.current
+    return remember(context, resourceId) {
+        val source = requireNotNull(
+            android.graphics.BitmapFactory.decodeResource(context.resources, resourceId)
+        ) { "Cannot decode dial artwork: $resourceId" }
+        val width = source.width
+        val height = source.height
+        val pixels = IntArray(width * height)
+        source.getPixels(pixels, 0, width, 0, 0, width, height)
+        var left = width
+        var top = height
+        var right = -1
+        var bottom = -1
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                if ((pixels[y * width + x] ushr 24) > 12) {
+                    left = minOf(left, x)
+                    top = minOf(top, y)
+                    right = maxOf(right, x)
+                    bottom = maxOf(bottom, y)
+                }
+            }
+        }
+        if (right < left || bottom < top) {
+            source.asImageBitmap()
+        } else {
+            val visibleWidth = right - left + 1
+            val visibleHeight = bottom - top + 1
+            val side = maxOf(visibleWidth, visibleHeight)
+            val centered = android.graphics.Bitmap.createBitmap(
+                side, side, android.graphics.Bitmap.Config.ARGB_8888
+            )
+            android.graphics.Canvas(centered).drawBitmap(
+                source,
+                (side - visibleWidth) / 2f - left,
+                (side - visibleHeight) / 2f - top,
+                null
+            )
+            source.recycle()
+            centered.asImageBitmap()
+        }
+    }
+}
+
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit) {
-    // Rotary gesture continues smoothly across the -PI / +PI seam.
-    // A stable pointer handler avoids restarting a drag on every NPS recomposition.
     val currentOnStep by rememberUpdatedState(onStep)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
+    val ticks = centeredDialArtwork(R.drawable.dial_ticks)
+    val metal = centeredDialArtwork(R.drawable.dial_metal)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(285.dp)
-                .semantics {
-                    contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
-                    onClick(label = "Sonraki boru çapı") {
-                        currentOnStep(1)
-                        true
-                    }
-                }
-                .pointerInput(Unit) {
-                    var previousAngle = 0f
-                    var rotationRemainder = 0f
-                    var touchOnWheel = false
-                    val oneStep = 0.22f // about 12.6 degrees per nominal size
-                    detectDragGestures(
-                        onDragStart = { point ->
-                            val centerX = size.width / 2f
-                            val centerY = size.height / 2f
-                            val dx = point.x - centerX
-                            val dy = point.y - centerY
-                            val radius = hypot(dx, dy)
-                            val minDimension = minOf(size.width, size.height).toFloat()
-                            // Only an annulus responds; touching the center value cannot
-                            // accidentally change the selected nominal diameter.
-                            touchOnWheel = radius >= minDimension * 0.24f &&
-                                radius <= minDimension * 0.53f
-                            previousAngle = atan2(dy, dx)
-                            rotationRemainder = 0f
-                        },
-                        onDragCancel = { touchOnWheel = false; rotationRemainder = 0f },
-                        onDragEnd = { touchOnWheel = false; rotationRemainder = 0f }
-                    ) { change, _ ->
-                        if (touchOnWheel) {
-                            change.consume()
-                            val dx = change.position.x - size.width / 2f
-                            val dy = change.position.y - size.height / 2f
-                            val angle = atan2(dy, dx)
-                            val delta = atan2(sin(angle - previousAngle), cos(angle - previousAngle))
-                            previousAngle = angle
-                            wheelRotation = (wheelRotation + Math.toDegrees(delta.toDouble()).toFloat()) % 360f
-                            rotationRemainder += delta
-                            while (abs(rotationRemainder) >= oneStep) {
-                                val direction = if (rotationRemainder > 0f) 1 else -1
-                                currentOnStep(direction)
-                                rotationRemainder -= direction * oneStep
-                            }
-                        }
-                    }
-                },
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            // Real transparent user-provided assets, not duplicated Canvas rings.
-            Image(
-                painter = painterResource(R.drawable.dial_ticks),
-                contentDescription = null,
-                modifier = Modifier.fillMaxHeight(0.98f).aspectRatio(1f)
-                    .graphicsLayer(rotationZ = wheelRotation),
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                painter = painterResource(R.drawable.dial_metal),
-                contentDescription = null,
-                modifier = Modifier.fillMaxHeight(0.72f).aspectRatio(1f)
-                    .graphicsLayer(rotationZ = wheelRotation),
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                painter = painterResource(R.drawable.dial_pointer),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.TopCenter)
-                    .offset(y = 3.dp).height(47.dp).aspectRatio(0.88f),
-                contentScale = ContentScale.Fit
-            )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.offset(y = (-2).dp)
+            // The render bounds and gesture bounds must be exactly the same square.
+            val dialSide = minOf(maxWidth, 285.dp)
+            Box(
+                modifier = Modifier
+                    .size(dialSide)
+                    .semantics {
+                        contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
+                        onClick(label = "Sonraki boru çapı") {
+                            currentOnStep(1)
+                            true
+                        }
+                    }
+                    .pointerInput(Unit) {
+                        var previousAngle = 0f
+                        var rotationRemainder = 0f
+                        var touchOnWheel = false
+                        val oneStep = 0.22f
+                        detectDragGestures(
+                            onDragStart = { point ->
+                                val cx = size.width / 2f
+                                val cy = size.height / 2f
+                                val radius = hypot(point.x - cx, point.y - cy)
+                                val outerRadius = minOf(size.width, size.height) / 2f
+                                touchOnWheel = radius in (outerRadius * 0.48f)..outerRadius
+                                previousAngle = atan2(point.y - cy, point.x - cx)
+                                rotationRemainder = 0f
+                            },
+                            onDragCancel = { touchOnWheel = false; rotationRemainder = 0f },
+                            onDragEnd = { touchOnWheel = false; rotationRemainder = 0f }
+                        ) { change, _ ->
+                            if (touchOnWheel) {
+                                change.consume()
+                                val dx = change.position.x - size.width / 2f
+                                val dy = change.position.y - size.height / 2f
+                                val angle = atan2(dy, dx)
+                                val delta = atan2(sin(angle - previousAngle), cos(angle - previousAngle))
+                                previousAngle = angle
+                                wheelRotation =
+                                    (wheelRotation + Math.toDegrees(delta.toDouble()).toFloat()) % 360f
+                                rotationRemainder += delta
+                                while (abs(rotationRemainder) >= oneStep) {
+                                    val direction = if (rotationRemainder > 0f) 1 else -1
+                                    currentOnStep(direction)
+                                    rotationRemainder -= direction * oneStep
+                                }
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
             ) {
-                Text(nps + "\"", color = White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
-                Text("NPS", color = Muted, fontSize = 17.sp)
+                Image(
+                    bitmap = ticks,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                        .graphicsLayer(rotationZ = wheelRotation),
+                    contentScale = ContentScale.Fit
+                )
+                Image(
+                    bitmap = metal,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(0.72f)
+                        .graphicsLayer(rotationZ = wheelRotation),
+                    contentScale = ContentScale.Fit
+                )
+                Image(
+                    painter = painterResource(R.drawable.dial_pointer),
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                        .offset(y = 3.dp).height(47.dp).aspectRatio(0.88f),
+                    contentScale = ContentScale.Fit
+                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.offset(y = (-2).dp)
+                ) {
+                    Text(nps + "\"", color = White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
+                    Text("NPS", color = Muted, fontSize = 17.sp)
+                }
             }
         }
         Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
