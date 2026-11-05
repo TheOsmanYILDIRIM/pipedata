@@ -50,6 +50,17 @@ check("B36.10", "48", "XS", 1219.2, 12.70)
 assert abs(1219.2 / 25.4 - 48) < 0.000001
 
 
+# Full regression: large nominal series NPS >= 14 has exact OD = NPS * 25.4.
+# Prevent integer-mm truncation (e.g. 18 -> 457.0 instead of 457.2).
+large = [r for r in ROWS if r["nps"].isdigit() and int(r["nps"]) >= 14]
+assert large, "No large-pipe dimensions"
+for row in large:
+    expected_od = int(row["nps"]) * 25.4
+    assert abs(float(row["outer_diameter_mm"]) - expected_od) < 0.005, row
+for size in ("44", "46", "48"):
+    found = {(r["standard"], r["schedule"]) for r in large if r["nps"] == size}
+    assert ("B36.10", "STD") in found and ("B36.10", "XS") in found, size
+
 # Independent sample: 6in Sch40, 28.3 kg/m and ~18.6 L/m.
 p = next(r for r in ROWS if
          (r["standard"],r["nps"],r["schedule"]) == ("B36.10","6","40"))
