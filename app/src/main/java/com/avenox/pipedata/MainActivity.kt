@@ -305,6 +305,18 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     var wheelRotation by remember { mutableFloatStateOf(0f) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        if (pipe != null) {
+            val dimensionUnit = if (imperial) "in" else "mm"
+            val wall = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
+            Column(Modifier.fillMaxWidth().clickable { onEdit("t") }
+                .padding(top = 6.dp, bottom = 4.dp),
+                horizontalAlignment = Alignment.End) {
+                Text("Et Kalınlığı (t)", color = Gold, fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold)
+                Text(decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
+                    color = Gold, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            }
+        }
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val dialSide = minOf(maxWidth, 285.dp)
             Box(
@@ -424,11 +436,32 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         }
                         val anchor = Offset(c.x + r * 0.43f, c.y - r * 0.46f)
                         val elbow = Offset(c.x + r * 0.67f, c.y - r * 0.70f)
-                        val end = Offset(c.x + r * 0.92f, elbow.y)
+                        val end = Offset(c.x + r * 0.94f, elbow.y)
                         drawLine(Gold, anchor, elbow, strokeWidth = r * 0.013f)
                         drawLine(Gold, elbow, end, strokeWidth = r * 0.013f)
                         drawCircle(Gold, r * 0.027f, anchor)
-                        drawCircle(Gold, r * 0.027f, Offset(c.x + r * 0.49f, c.y - r * 0.52f))
+
+                        // Proper technical drawing: extension lines from the
+                        // outer pipe tangents, joining a double-arrow dimension.
+                        val tangent = metalRadius + metalWidth * 0.52f
+                        val dimensionY = size.height - r * 0.075f
+                        val leftX = c.x - tangent
+                        val rightX = c.x + tangent
+                        for (x in listOf(leftX, rightX)) {
+                            drawLine(White, Offset(x, c.y), Offset(x, dimensionY + r * 0.028f),
+                                strokeWidth = r * 0.009f)
+                        }
+                        drawLine(White, Offset(leftX, dimensionY),
+                            Offset(rightX, dimensionY), strokeWidth = r * 0.009f)
+                        for (sign in listOf(-1f, 1f)) {
+                            val tip = Offset(c.x + sign * tangent, dimensionY)
+                            drawLine(White, tip,
+                                Offset(tip.x - sign * r * 0.065f,
+                                    dimensionY - r * 0.029f), strokeWidth = r * 0.009f)
+                            drawLine(White, tip,
+                                Offset(tip.x - sign * r * 0.065f,
+                                    dimensionY + r * 0.029f), strokeWidth = r * 0.009f)
+                        }
                     }
                     // Fixed twelve-o'clock pointer; independent of rotary layers.
                     val pointer = androidx.compose.ui.graphics.Path().apply {
@@ -447,7 +480,6 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 if (pipe != null) {
                     val dimensionUnit = if (imperial) "in" else "mm"
                     val inner = if (imperial) pipe.idMm / 25.4 else pipe.idMm
-                    val wall = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.align(Alignment.Center)
                             .clickable { onEdit("ID") }.padding(6.dp)) {
@@ -455,10 +487,6 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         Text(decimal(inner) + " " + dimensionUnit, color = White,
                             fontWeight = FontWeight.Bold, fontSize = 21.sp)
                     }
-                    Text("t " + decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
-                        color = Gold, fontWeight = FontWeight.Bold, fontSize = 13.sp,
-                        modifier = Modifier.align(Alignment.TopEnd)
-                            .padding(top = 34.dp, end = 2.dp).clickable { onEdit("t") })
                 } else {
                     Text(nps + "\"", color = White, fontSize = 42.sp,
                         modifier = Modifier.clickable { onEdit("NPS") })
@@ -466,20 +494,6 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             }
         }
         if (pipe != null) {
-            // Full outside diameter dimension bar beneath the physical ring.
-            Canvas(Modifier.fillMaxWidth(0.76f).height(20.dp)) {
-                val left = Offset(size.width * 0.04f, center.y)
-                val right = Offset(size.width * 0.96f, center.y)
-                drawLine(White, left, right, strokeWidth = 1.6.dp.toPx())
-                for (side in listOf(-1f, 1f)) {
-                    val tip = if (side < 0f) left else right
-                    val head = tip.x - side * 9.dp.toPx()
-                    drawLine(White, tip, Offset(head, tip.y - 4.dp.toPx()),
-                        strokeWidth = 1.6.dp.toPx())
-                    drawLine(White, tip, Offset(head, tip.y + 4.dp.toPx()),
-                        strokeWidth = 1.6.dp.toPx())
-                }
-            }
             val dimensionUnit = if (imperial) "in" else "mm"
             val outer = if (imperial) pipe.odMm / 25.4 else pipe.odMm
             Text("Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
@@ -543,11 +557,15 @@ private fun NumericPipeDialog(
     var value by remember(field) { mutableStateOf(initial) }
     val input = value.trim().replace(",", ".").replace("″", "").replace("\"", "").trim()
     val number = input.toDoubleOrNull()
-    val candidates = catalog.rows.asSequence().filter { it.standard == standard }
+    val candidates = catalog.rows.asSequence()
         .filter { row ->
             when (field) {
-                "NPS" -> row.nps.equals(input, ignoreCase = true)
-                "SCH" -> row.nps == nps && row.schedule.equals(input, ignoreCase = true)
+                // The NPS picker is a catalogue, not a list of other SCHs for
+                // the current size. A blank/current query lists every size.
+                "NPS" -> input.isEmpty() || input == nps ||
+                    row.nps.startsWith(input, ignoreCase = true)
+                "SCH" -> row.nps == nps &&
+                    (input.isEmpty() || row.schedule.startsWith(input, ignoreCase = true))
                 else -> {
                     val actual = when (field) {
                         "OD" -> if (imperial) row.odMm / 25.4 else row.odMm
@@ -560,7 +578,9 @@ private fun NumericPipeDialog(
                     number != null && number.isFinite() && abs(actual - number) <= tolerance
                 }
             }
-        }.distinctBy { it.nps + "|" + it.schedule }.take(30).toList()
+        }.distinctBy { if (field == "NPS") it.nps else
+            it.standard + "|" + it.nps + "|" + it.schedule }
+            .take(100).toList()
     val title = when (field) {
         "NPS" -> "NPS çapı"
         "SCH" -> "Schedule (SCH)"
@@ -581,7 +601,7 @@ private fun NumericPipeDialog(
                         if (field == "NPS" || field == "SCH") KeyboardType.Text else KeyboardType.Decimal),
                     label = { Text("Değer") })
                 Spacer(Modifier.height(9.dp))
-                Text("Yalnız standartta kayıtlı nominal ölçüler kullanılabilir.",
+                Text("Yalnız tabloda kayıtlı nominal ölçüler kullanılabilir.",
                     color = Muted, fontSize = 13.sp)
                 Spacer(Modifier.height(8.dp))
                 if (candidates.isEmpty()) {
@@ -590,12 +610,23 @@ private fun NumericPipeDialog(
                 } else {
                     Column(Modifier.heightIn(max = 210.dp).verticalScroll(rememberScrollState())) {
                         candidates.forEach { candidate ->
-                            Text(candidate.nps + "″  ·  SCH " + candidate.schedule +
-                                "  ·  OD " + decimal(candidate.odMm) + " mm",
+                            Text(if (field == "NPS") candidate.nps + "″" else
+                                candidate.nps + "″  ·  SCH " + candidate.schedule +
+                                "  ·  ASME " + candidate.standard,
                                 color = White, fontSize = 17.sp,
                                 modifier = Modifier.fillMaxWidth()
                                     .clip(RoundedCornerShape(9.dp))
-                                    .clickable { onChoose(candidate) }
+                                    .clickable {
+                                        val match = if (field == "NPS") {
+                                            catalog.rows.firstOrNull {
+                                                it.nps == candidate.nps && it.schedule == schedule &&
+                                                    it.standard == standard
+                                            } ?: catalog.rows.firstOrNull {
+                                                it.nps == candidate.nps && it.schedule == schedule
+                                            } ?: candidate
+                                        } else candidate
+                                        onChoose(match)
+                                    }
                                     .padding(vertical = 12.dp, horizontal = 7.dp))
                         }
                     }
