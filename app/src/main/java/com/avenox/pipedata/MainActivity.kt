@@ -459,9 +459,23 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             }
         }
         if (pipe != null) {
+            // Full outside diameter dimension bar beneath the physical ring.
+            Canvas(Modifier.fillMaxWidth(0.76f).height(20.dp)) {
+                val left = Offset(size.width * 0.04f, center.y)
+                val right = Offset(size.width * 0.96f, center.y)
+                drawLine(White, left, right, strokeWidth = 1.6.dp.toPx())
+                for (side in listOf(-1f, 1f)) {
+                    val tip = if (side < 0f) left else right
+                    val head = tip.x - side * 9.dp.toPx()
+                    drawLine(White, tip, Offset(head, tip.y - 4.dp.toPx()),
+                        strokeWidth = 1.6.dp.toPx())
+                    drawLine(White, tip, Offset(head, tip.y + 4.dp.toPx()),
+                        strokeWidth = 1.6.dp.toPx())
+                }
+            }
             val dimensionUnit = if (imperial) "in" else "mm"
             val outer = if (imperial) pipe.odMm / 25.4 else pipe.odMm
-            Text("↔  Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
+            Text("Dış Çap (OD)  " + decimal(outer) + " " + dimensionUnit,
                 color = White, fontSize = 19.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable { onEdit("OD") }.padding(8.dp))
         }
