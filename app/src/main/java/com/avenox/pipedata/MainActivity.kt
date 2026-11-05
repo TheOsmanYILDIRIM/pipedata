@@ -92,56 +92,60 @@ private fun PipeApp(catalog: PipeCatalog) {
     var standard by rememberSaveable { mutableStateOf("B36.10") }
     var nps by rememberSaveable { mutableStateOf("6") }
     var schedule by rememberSaveable { mutableStateOf("40") }
-    val sizes = remember(standard) { catalog.sizes(standard) }
-    val activeNps = nps.takeIf { sizes.contains(it) } ?: sizes.first()
-    val schedules = remember(standard, activeNps) { catalog.schedules(standard, activeNps) }
-    val activeSch = schedule.takeIf { schedules.contains(it) }
-        ?: ("40".takeIf { schedules.contains(it) } ?: "40S".takeIf { schedules.contains(it) }
-        ?: schedules.first())
-    val pipe = catalog.get(standard, activeNps, activeSch)
+    // B36.10 and B36.19 are different sources, but the user sees one union list.
+    // The actual standard always comes from the selected catalog record.
+    val sizes = remember(catalog) { catalog.rows.map { it.nps }.distinct() }
+    val activeNps = nps.takeIf { it in sizes } ?: sizes.first()
+    val schedules = remember(activeNps) {
+        catalog.rows.filter { it.nps == activeNps }.map { it.schedule }
+            .distinct().sortedWith(compareBy<String> {
+                it.filter(Char::isDigit).toIntOrNull() ?: Int.MAX_VALUE
+            }.thenBy { it })
+    }
+    val activeSch = schedule.takeIf { it in schedules }
+        ?: ("40".takeIf { it in schedules } ?: schedules.first())
+    val pipe = catalog.rows.firstOrNull {
+        it.nps == activeNps && it.schedule == activeSch && it.standard == standard
+    } ?: catalog.rows.firstOrNull { it.nps == activeNps && it.schedule == activeSch }
     val normalSp = if (largeText) 18 else 16
 
-    LaunchedEffect(standard, activeNps, activeSch) {
+    LaunchedEffect(activeNps, activeSch, pipe?.standard) {
         if (nps != activeNps) nps = activeNps
         if (schedule != activeSch) schedule = activeSch
+        if (pipe != null && standard != pipe.standard) standard = pipe.standard
     }
 
     Column(
         modifier = Modifier.fillMaxSize().background(Background).systemBarsPadding()
     ) {
-        Row(
-            Modifier.fillMaxWidth().heightIn(min = 68.dp).padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { page = 4 }, modifier = Modifier.size(52.dp)) {
-                Icon(Icons.Default.Settings, contentDescription = "Ayarlar", tint = White, modifier = Modifier.size(29.dp))
-            }
-            Text(
-                "Boru Hesaplayıcı", color = White, fontWeight = FontWeight.SemiBold,
-                fontSize = if (largeText) 25.sp else 22.sp,
-                textAlign = TextAlign.Center, modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = { page = 3 }, modifier = Modifier.size(52.dp)) {
-                Icon(Icons.Default.MenuBook, contentDescription = "Standartlar", tint = White, modifier = Modifier.size(28.dp))
-            }
+        Box(Modifier.fillMaxWidth().heightIn(min = 62.dp).padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center) {
+            Text("Boru Hesaplayıcı", color = White, fontWeight = FontWeight.SemiBold,
+                fontSize = if (largeText) 25.sp else 22.sp, textAlign = TextAlign.Center)
         }
         Box(Modifier.weight(1f)) {
             when (page) {
                 0 -> CalculatorPage(
                     standard, { standard = it }, activeNps, sizes,
                     onNps = { nps = it }, activeSch, schedules,
-                    onSch = { schedule = it }, pipe, unitImperial, normalSp,
+                    onSch = { selectedSch ->
+                        catalog.rows.firstOrNull { it.nps == activeNps &&
+                            it.schedule == selectedSch && it.standard == standard }
+                            ?.let { standard = it.standard }
+                            ?: catalog.rows.firstOrNull { it.nps == activeNps &&
+                                it.schedule == selectedSch }?.let { standard = it.standard }
+                        schedule = selectedSch
+                    }, pipe, unitImperial, normalSp,
                     catalog = catalog, onChoose = { chosen ->
                         standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
                     }
                 )
                 1 -> LookupPage(catalog, standard, normalSp, unitImperial)
-                2 -> TablePage(
-                    catalog, standard, { standard = it },
-                    activeNps, sizes, { nps = it },
-                    normalSp, unitImperial, onSelect = { schedule = it; page = 0 }
-                )
-                3 -> StandardsPage(normalSp)
+                2 -> CombinedTableStandardsPage(catalog, activeNps, sizes,
+                    { nps = it }, normalSp, onSelect = { chosen ->
+                        standard = chosen.standard; nps = chosen.nps
+                        schedule = chosen.schedule; page = 0
+                    })
                 else -> SettingsPage(
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
@@ -156,9 +160,8 @@ private fun PipeApp(catalog: PipeCatalog) {
             val items = listOf(
                 Triple("Boru", Icons.Default.Tune, 0),
                 Triple("SCH Bul", Icons.Default.Search, 1),
-                Triple("Tablo", Icons.Default.TableRows, 2),
-                Triple("Standart", Icons.Default.MenuBook, 3),
-                Triple("Ayarlar", Icons.Default.Settings, 4)
+                Triple("Tablo/Standart", Icons.Default.MenuBook, 2),
+                Triple("Ayarlar", Icons.Default.Settings, 3)
             )
             items.forEach { (label, icon, index) ->
                 Column(
@@ -237,41 +240,45 @@ private fun CalculatorPage(
             .padding(horizontal = 18.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Picker("Standart", "ASME " + standard, listOf("ASME B36.10", "ASME B36.19"),
-            onChange = { setStandard(it.removePrefix("ASME ")) },
-            modifier = Modifier.fillMaxWidth(0.68f)
-        )
-        Spacer(Modifier.height(8.dp))
-        Text("ÇEVİREREK NPS SEÇİN", color = Muted, fontSize = 14.sp, letterSpacing = 1.sp)
-        Text("NPS " + nps + "″ · Dokunarak yazın",
-            color = Gold, fontWeight = FontWeight.Bold, fontSize = 19.sp,
-            modifier = Modifier.clickable { editing = "NPS" }
-                .padding(horizontal = 14.dp, vertical = 8.dp))
-        PipeDial(nps, step, pipe, imperial) { editing = it }
-        Spacer(Modifier.height(7.dp))
-        Text("Schedule (SCH) · Yazmak için dokunun", fontSize = textSp.sp,
-            color = White, fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.Start).clickable { editing = "SCH" }
-                .padding(vertical = 7.dp))
-        Spacer(Modifier.height(8.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 62.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .border(1.5.dp, StrokeColor, RoundedCornerShape(18.dp))
+                .clickable { editing = "NPS" }.padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            items(schedules) { sch ->
-                Surface(
-                    color = if (sch == schedule) Gold else Panel,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier.heightIn(min = 53.dp)
-                        .border(1.dp, if (sch == schedule) Gold else StrokeColor, RoundedCornerShape(24.dp))
-                        .clickable { onSch(sch) }
-                ) {
-                    Box(Modifier.padding(horizontal = 19.dp), contentAlignment = Alignment.Center) {
-                        Text(sch, color = if (sch == schedule) Deep else White, fontWeight = FontWeight.Bold, fontSize = 21.sp)
+            Text("NPS (inç)", color = Muted, fontSize = 19.sp)
+            Text(nps + "″", color = White, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "NPS seç", tint = Gold)
+        }
+        Spacer(Modifier.height(10.dp))
+        Text("Schedule (SCH)", color = White, fontSize = 20.sp,
+            fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
+                .clickable { editing = "SCH" }.padding(vertical = 5.dp))
+        // Mixed numeric and S schedules: only physically available catalog rows.
+        schedules.chunked(4).forEach { rowValues ->
+            Row(Modifier.fillMaxWidth().padding(bottom = 7.dp),
+                horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                rowValues.forEach { sch ->
+                    Surface(
+                        color = if (sch == schedule) Gold else Panel,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.weight(1f).heightIn(min = 53.dp)
+                            .border(1.dp, if (sch == schedule) Gold else StrokeColor,
+                                RoundedCornerShape(16.dp)).clickable { onSch(sch) }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(sch, color = if (sch == schedule) Deep else White,
+                                fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        }
                     }
                 }
+                repeat(4 - rowValues.size) { Spacer(Modifier.weight(1f)) }
             }
         }
+        Spacer(Modifier.height(8.dp))
+        PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
             Text("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
@@ -702,53 +709,48 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
 }
 
 @Composable
-private fun TablePage(
-    catalog: PipeCatalog, standard: String, setStandard: (String) -> Unit,
-    nps: String, sizes: List<String>, onNps: (String) -> Unit,
-    textSp: Int, imperial: Boolean, onSelect: (String) -> Unit
+private fun CombinedTableStandardsPage(
+    catalog: PipeCatalog, nps: String, sizes: List<String>, onNps: (String) -> Unit,
+    textSp: Int, onSelect: (PipeSpec) -> Unit
 ) {
-    val rows = remember(standard, nps) { catalog.rows.filter { it.standard == standard && it.nps == nps } }
+    val rows = remember(nps) {
+        catalog.rows.filter { it.nps == nps }.sortedWith(
+            compareBy<PipeSpec> { it.schedule.filter(Char::isDigit).toIntOrNull() ?: Int.MAX_VALUE }
+                .thenBy { it.schedule }.thenBy { it.standard })
+    }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        PageHeading("SCH Tabloları", "Geçerli Schedule ve et kalınlıklarını karşılaştırın.")
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Picker("Standart", standard, catalog.standards, setStandard, Modifier.weight(1.2f))
-            Picker("NPS", nps + "\"", sizes.map { it + "\"" }, { onNps(it.removeSuffix("\"")) }, Modifier.weight(0.8f))
-        }
-        Spacer(Modifier.height(20.dp))
-        Text("SCH      ET KALINLIĞI      İÇ ÇAP", color = Muted, fontSize = 14.sp)
-        Spacer(Modifier.height(9.dp))
+        PageHeading("Tablo / Standart", "B36.10 ve B36.19 kayıtları birlikte gösterilir.")
+        Picker("NPS (inç)", nps + "″", sizes.map { it + "″" },
+            { onNps(it.removeSuffix("″")) }, Modifier.fillMaxWidth())
+        Spacer(Modifier.height(14.dp))
+        Text("SCH   ·   Standart   ·   Et kalınlığı   ·   İç çap",
+            color = Muted, fontSize = 14.sp)
         rows.forEach { p ->
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                Modifier.fillMaxWidth().padding(top = 7.dp)
                     .clip(RoundedCornerShape(12.dp)).background(Panel)
-                    .clickable { onSelect(p.schedule) }.padding(horizontal = 16.dp, vertical = 13.dp),
+                    .clickable { onSelect(p) }.padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(p.schedule, color = Gold, fontSize = (textSp + 2).sp,
-                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.8f))
-                Text(decimal(p.wallMm) + " mm", color = White, fontSize = textSp.sp, modifier = Modifier.weight(1f))
-                Text(decimal(p.idMm) + " mm", color = White, fontSize = textSp.sp, modifier = Modifier.weight(1f))
+                Text(p.schedule, color = Gold, fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.9f))
+                Column(Modifier.weight(2.2f)) {
+                    Text("ASME " + p.standard, color = Muted, fontSize = 14.sp)
+                    Text("t " + decimal(p.wallMm) + " mm · ID " +
+                        decimal(p.idMm) + " mm", color = White, fontSize = 16.sp)
+                }
             }
         }
-        Text("Bir satıra dokunarak hesaplayıcıda açın.", color = Muted, fontSize = 14.sp)
-    }
-}
-
-@Composable
-private fun StandardsPage(textSp: Int) {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
-        PageHeading("Standartlar", "Boru ustaları için hızlı saha referansı")
-        InfoPanel("ASME B36.10M", "Karbon çelik ve kaynaklı/kaynaksız çelik borular: NPS, dış çap, nominal et kalınlığı ve Schedule serileri.", textSp)
-        Spacer(Modifier.height(14.dp))
-        InfoPanel("ASME B36.19M", "Paslanmaz çelik borularda 5S, 10S, 40S ve 80S serileri. S işareti diğer SCH tablolarından ayrı tutulur.", textSp)
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(24.dp))
+        InfoPanel("ASME B36.10M", "Karbon çelik boruların nominal çap, et ve Schedule serileri.", textSp)
+        Spacer(Modifier.height(12.dp))
+        InfoPanel("ASME B36.19M", "Paslanmaz çelik borularda S işaretli Schedule serileri ayrı kayıtlardır.", textSp)
+        Spacer(Modifier.height(12.dp))
         InfoPanel("Hesap formülleri",
-            "İç çap = Dış çap − 2 × et kalınlığı\n" +
-            "Çelik ağırlığı = kesit alanı × 7850 kg/m³\n" +
-            "İç hacim = π × iç çap² / 4 × uzunluk.\n" +
-            "Ölçüler nominaldir; toleranslar ve gerçek yoğunluk farklı olabilir.", textSp)
-        Spacer(Modifier.height(14.dp))
-        Text("SCH, yalnız dış çaptan hesaplanmaz. Basınç tasarımı ayrıca mühendislik hesabı gerektirir.", color = Gold, fontSize = textSp.sp)
+            "İç çap = dış çap − 2 × et kalınlığı.\n" +
+            "Kütle: çelik kesit alanı × 7850 kg/m³.\n" +
+            "İç hacim: π × iç çap² / 4 × uzunluk.\n" +
+            "Değerler nominaldir; basınç tasarım hesabı değildir.", textSp)
     }
 }
 
