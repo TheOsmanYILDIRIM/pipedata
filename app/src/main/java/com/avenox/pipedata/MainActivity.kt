@@ -406,7 +406,7 @@ private fun PipeDial(nps: String, pipe: PipeSpec?, imperial: Boolean, onStep: (I
                 Canvas(Modifier.fillMaxSize()) {
                     val cx = size.width / 2
                     val cy = size.height / 2
-                    val halfHole = metal.toPx() * 0.35f
+                    val halfHole = metal.toPx() * 0.29f
                     val y = cy + metal.toPx() * 0.22f
                     drawLine(White, Offset(cx - halfHole, y),
                         Offset(cx + halfHole, y), 1.5.dp.toPx())
