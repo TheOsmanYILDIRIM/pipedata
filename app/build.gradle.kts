@@ -11,8 +11,8 @@ android {
         applicationId = "com.avenox.pipedata"
         minSdk = 24
         targetSdk = 35
-        versionCode = 200
-        versionName = "2.0.0"
+        versionCode = 201
+        versionName = "2.0.1"
     }
     signingConfigs {
         create("release") {
