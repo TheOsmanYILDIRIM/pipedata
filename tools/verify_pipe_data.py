@@ -52,7 +52,7 @@ assert 28.0 < steel < 28.7, steel
 assert 18.4 < water < 18.9, water
 
 screen = (ROOT / "app/src/main/java/com/avenox/pipedata/MainActivity.kt").read_text()
-for screen_name in ("CalculatorPage", "LookupPage", "TablePage", "StandardsPage", "SettingsPage", "PipeDial"):
+for screen_name in ("CalculatorPage", "LookupPage", "CombinedTableStandardsPage", "SettingsPage", "PipeDial", "NumericPipeDialog"):
     assert screen_name in screen, screen_name
 for banned in ("CsvDataStore", "flanges", "gaskets", "valves", "blanks"):
     assert banned not in screen, f"Legacy UI accidentally referenced: {banned}"
@@ -65,8 +65,14 @@ assert "rotate(wheelRotation, pivot = c)" in dial
 assert "val r = size.minDimension / 2f" in dial
 assert "Brush.sweepGradient(" in dial and "drawCircle(" in dial
 assert "drawPath(pointer, Gold)" in dial
+assert "val tangent = metalRadius + metalWidth * 0.52f" in dial
+assert "Et Kalınlığı (t)" in dial
+assert "dimensionY" in dial
 assert "dialSide = minOf(maxWidth, 285.dp)" in dial
 for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):
     assert forbidden not in dial, f"Obsolete raster dial or control survived: {forbidden}"
+assert "Triple(\"Tablo/Standart\"" in screen
+assert "val schedules = remember(activeNps)" in screen
+assert "row.nps.startsWith(input" in screen
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")
