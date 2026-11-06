@@ -1,4 +1,5 @@
 name: Boruzi Android UI Screenshots
+# Re-run smoke on main after addressing enlarged-text inner-diameter overlap.
 
 on:
   push:

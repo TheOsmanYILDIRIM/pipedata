@@ -105,6 +105,7 @@ assert "drawPath(pointer, Gold)" in dial
 assert "val tangent = metalRadius + metalWidth * 0.52f" in dial
 assert "Et Kalınlığı (t)" in dial
 assert "dimensionY" in dial
+assert "if (fontScale >= 1.2f) 0.43f else 0.22f" in dial
 assert "dialSide = minOf(maxWidth, dialCap)" in dial
 assert "widthDp <= 340 && fontScale >= 1.2f -> 208.dp" in dial
 for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):

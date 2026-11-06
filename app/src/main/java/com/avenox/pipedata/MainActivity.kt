@@ -440,7 +440,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
 
                     if (pipe != null) {
                         val bore = metalRadius - metalWidth * 0.55f
-                        val y = c.y + r * 0.22f
+                        val y = c.y + r * (if (fontScale >= 1.2f) 0.43f else 0.22f)
                         val half = sqrt(maxOf(0f, bore * bore - (y - c.y) * (y - c.y)))
                         drawLine(White, Offset(c.x - half, y), Offset(c.x + half, y),
                             strokeWidth = r * 0.009f)
