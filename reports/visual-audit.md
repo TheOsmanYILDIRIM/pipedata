@@ -1,12 +1,13 @@
 # Boruzi Android görsel ve etkileşim denetimi
 
-**Durum:** İlk koşu iptal, hızlı ikinci koşu emülatör başlatma hatasıyla başarısız; KVM izin düzeltmesiyle üçüncü koşu başladı. PNG/görsel kusur hâlâ doğrulanmadı (`pending_unverified`).  
+**Durum:** KVM düzeltmesiyle gerçek Android emülatörü çalıştı, 21 PNG üretildi ve incelendi; otomatik etkileşim doğrulaması önceki koşuda üç eksikle başarısız. Erişilebilirlik/diyalog test sürücüsü onarıldı, yeni koşu başladı. Tam matris hâlâ açık.  
 **Tarih:** 2026-11-06  
 **Kaynak:** `TheOsmanYILDIRIM/pipedata`  
 **Başlangıç main HEAD:** `d435597615dbdba8bc341d9976ba0745d2503079`  
 **İzole dal:** `audit/boruzi-android-screenshots-20261106`  
 **Test iş akışı:** [ui-screenshots.yml](../.github/workflows/ui-screenshots.yml)  
-**Güncel KVM düzeltmeli Actions koşusu:** [42216238840](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840) (`97019d2deeb3a9180e227705bb84be8fec110c6a`)
+**Güncel düzeltilmiş Actions koşusu:** [42217141656](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42217141656) (`0bac6360dac5ac4a68eb902a9ac84ed9f660ce69`)
+**İlk gerçek Android PNG koşusu:** [42216238840](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840), [PNG/XML/JSON artefaktı](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840/artifacts/13501661494). Emülatör Android 13, açılış 33.5 sn; 21 PNG üretildi. `results.json` üç SCH giriş alanı erişilebilirlik araması hatası içeriyor; adım `failure`. Tam koşu 3 dakika 18 saniye sürdü (12:15:11–12:18:29 UTC).
 **Hızlı koşunun doğrulanmış arızası:** [42215367381](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42215367381): `ProbeKVM: ... doesn't have permissions to use KVM (/dev/kvm)`, `-accel off`, `Timeout waiting for emulator to boot`, ADB `device offline`. UI testi hiç başlamadı; 210 baytlık tek artefakt yalnızca `run-metadata.txt` içeriyor. Sorun Android uygulama render'ı olarak sınıflandırılmaz.
 **Önceki başarısız koşu:** [42188972565](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42188972565), `cancelled`; Android emülatörü step `failure`, PNG artefaktı yok. Doğrudan log indirme API'si `BlobNotFound` döndürdü; kesin hata nedeni teşhis edilemedi.
 
@@ -40,7 +41,25 @@
 
 ## Görsel bulgular
 
-**Henüz doğrulanmış hata yok; ekran görüntüleri incelenmedi.** Bu ifade tüm testlerin geçtiği anlamına gelmez.
+**Bir görsel kusur doğrulandı; tam matris ve diğer etkileşimler açık.** Görsel değerlendirme yalnızca gerçek Android 13 PNG'lerine dayanır.
+
+### V-01 — Dar ekranda alt gezinme etiketinin iki satıra taşması
+
+- **Ekran:** Tüm alt gezinme öğeleri, özellikle `Tablo/Standart`
+- **Boyut / ölçek / birim:** 320dp, `font_scale=1.3`, mm; NPS 6 / SCH 40 varsayılanı
+- **Önem:** Orta (görsel tutarlılık ve dokunmatik alan yerleşimi)
+- **Yeniden üretim:** Android 13 emülatörünü 320dp/160dpi ve 1.3 font ölçeğine ayarla; Boruzi'yi başlat; `Tablo/Standart` alt öğesine bak.
+- **PNG kanıtı:** `320dp_font1p3_mm_boru.png` ve `320dp_font1p3_mm_tablo_standart.png`, [artefakt 13501661494](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840/artifacts/13501661494).
+- **Gözlem:** `Tablo/Standart` yazısı iki satıra bölünüyor; diğer üç alt öğe tek satır ve aynı yükseklikte değil. İlgili dokunma alanlarının gerçekten çakıştığı kanıtlanmadı.
+- **Öneri:** Alt gezinme etiketlerini daha kısa tutmak veya etiket alanını tüm öğeler için eşit/sabit yükseklikte, erişilebilir büyük yazıyla uyumlu düzenlemek. Uygulama kaynak kodu bu denetim dalında değiştirilmedi.
+
+### E-01 — UI sürücüsünde SCH alanının metin etiketiyle bulunamaması (test altyapısı)
+
+- **Ekran:** SCH Bul; 320dp/1.3/mm, 360dp/1.0/inç, 411dp/1.0/mm
+- **Önem:** Yüksek, otomatik test güvenilirliği açısından; uygulama hatası olarak sınıflandırılmadı.
+- **Yeniden üretim:** Eski test sürücüsü `uiautomator dump` üzerinde `Dış çap (mm)` / `Dış çap (inç)` metnini arar; Compose `OutlinedTextField` etiketi bu düğümde bağımsız metin olarak görünmez. Ekran geçişi için 180 ms bekleme de yetersizdir.
+- **Kanıt:** Aynı artefaktın `results.json` dosyasında 3 hata; `*_lookup_source.xml` Android hiyerarşisinde beklenen etiket yok.
+- **Çözüm:** EditText sınıfını ve bounds değerini kullan; ekran başlığını doğrula; geçişi bekle. Düzeltme commit `0bac6360` ile yeni CI koşusunda test ediliyor.
 
 ### Statik incelemede kontrol edilmesi gereken riskler (görsel kanıt değil)
 
@@ -62,11 +81,12 @@ Gerçek hata doğrulandığında her kayıt için **ekran, ekran boyutu (dp), fo
 | İzole dal ve workflow GitHub'a kaydedildi | Doğrulandı |
 | İlk GitHub Actions emülatör koşusu | İptal edildi; PNG artefaktı yok |
 | İkinci hızlı koşu | Başarısız: `/dev/kvm` izni yok, emülatör açılış timeout; yalnız metadata artefaktı |
-| KVM düzeltmeli quick koşusu | [42216238840](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840), sonuç bekleniyor |
+| KVM düzeltmeli ilk quick koşusu | Android 13 emülatör açıldı, 21 PNG artefaktı PASS; 3 test sürücüsü erişilebilirlik hatası nedeniyle CI FAIL |
+| Erişilebilirlik düzeltmeli yeni quick koşusu | [42217141656](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42217141656), sonuç bekleniyor |
 | Önceki koşuda Debug APK derlemesi | PASS; yeni koşu ayrıca doğrulanacak |
-| Gerçek Android emülatörü çalıştı | Doğrulanmadı |
-| PNG artefaktı üretildi | Doğrulanmadı |
-| PNG dosyaları açılıp görsel olarak incelendi | Doğrulanmadı |
+| Gerçek Android emülatörü çalıştı | PASS: Android 13 log + 21 gerçek PNG |
+| PNG artefaktı üretildi | PASS: 21 PNG, XML ve JSON, artefakt 13501661494 |
+| PNG dosyaları açılıp görsel olarak incelendi | Evet, ilk quick matris montajı; V-01 saptandı, tam matris açık |
 | Tüm dokunmatik hedefler çalışıyor | Doğrulanmadı |
 | Gerçek Android cihaz testi | Yapılmadı |
 | Avenox görev ilerleme güncellemesi | Ayrı resmî Beyin işlemiyle doğrulanmalı |
