@@ -46,6 +46,8 @@ data class PipeSpec(
     }
 
     val idMm: Double get() = odMm - 2.0 * wallMm
+    /** Imperial ID derives from the native inch OD, not rounded SI OD. */
+    val idInches: Double get() = odInches - 2.0 * (wallMm / 25.4)
     val metalAreaMm2: Double get() = PI / 4.0 * (odMm * odMm - idMm * idMm)
     val boreAreaMm2: Double get() = PI / 4.0 * idMm * idMm
     val kgPerMetre: Double get() = metalAreaMm2 * 0.00785  // 7850 kg/m³

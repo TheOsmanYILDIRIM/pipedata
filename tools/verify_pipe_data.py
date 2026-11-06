@@ -2,6 +2,7 @@
 """Independent integrity and physics gate for the clean pipe-only app."""
 import csv
 import math
+from decimal import Decimal, ROUND_HALF_EVEN
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,12 +52,12 @@ assert sum(r["standard"] == "B36.19" and r["schedule"] == "160S" for r in ROWS) 
 check("B36.10", "1/8", "STD", 10.3, 1.73)
 check("B36.10", "1/8", "XS", 10.3, 2.41)
 # Large-diameter B36.10 regression: exact inches and non-invented STD/XS rows.
-check("B36.10", "44", "STD", 1117.6, 9.53)
-check("B36.10", "44", "XS", 1117.6, 12.70)
-check("B36.10", "46", "STD", 1168.4, 9.53)
-check("B36.10", "46", "XS", 1168.4, 12.70)
-check("B36.10", "48", "STD", 1219.2, 9.53)
-check("B36.10", "48", "XS", 1219.2, 12.70)
+check("B36.10", "44", "STD", 1118, 9.52)
+check("B36.10", "44", "XS", 1118, 12.70)
+check("B36.10", "46", "STD", 1168, 9.52)
+check("B36.10", "46", "XS", 1168, 12.70)
+check("B36.10", "48", "STD", 1219, 9.52)
+check("B36.10", "48", "XS", 1219, 12.70)
 assert abs(1219.2 / 25.4 - 48) < 0.000001
 pipe_catalog = (ROOT / "app/src/main/java/com/avenox/pipedata/PipeCatalog.kt").read_text()
 assert "val odInches: Double" in pipe_catalog
@@ -65,16 +66,67 @@ for exact in ('"6" -> 6.625', '"8" -> 8.625', '"10" -> 10.750', '"12" -> 12.750'
 
 
 
-# Full regression: large nominal series NPS >= 14 has exact OD = NPS * 25.4.
-# Prevent integer-mm truncation (e.g. 18 -> 457.0 instead of 457.2).
+# ASME B36.10/B36.19 2022: native OD in inches; SI OD roundings differ
+# by DN: to 0.1 mm through DN750, whole mm from DN800 onward.
 large = [r for r in ROWS if r["nps"].isdigit() and int(r["nps"]) >= 14]
 assert large, "No large-pipe dimensions"
 for row in large:
-    expected_od = int(row["nps"]) * 25.4
-    assert abs(float(row["outer_diameter_mm"]) - expected_od) < 0.005, row
+    n = int(row["nps"])
+    expected_od = (Decimal(n) * Decimal("25.4"))
+    places = Decimal("1") if n >= 32 else Decimal("0.1")
+    expected_si = expected_od.quantize(places, rounding=ROUND_HALF_EVEN)
+    assert Decimal(row["outer_diameter_mm"]) == expected_si, row
+# Independent exact-inch benchmarks for the imperial presentation path.
+assert "val idInches: Double get() = odInches - 2.0 * (wallMm / 25.4)" in pipe_catalog
 for size in ("44", "46", "48"):
     found = {(r["standard"], r["schedule"]) for r in large if r["nps"] == size}
     assert ("B36.10", "STD") in found and ("B36.10", "XS") in found, size
+
+# PASS 2: independent, exact-decimal standard SI wall rounding on every record.
+# Published 2022 tables use ties-to-even: 0.375in -> 9.52mm,
+# 0.875in -> 22.22mm, 1.375in -> 34.92mm.
+by_key = {(r["standard"], r["nps"], r["schedule"]): r for r in ROWS}
+for row in ROWS:
+    wall_mm = Decimal(row["wall_thickness_mm"])
+    thousandth_in = (wall_mm / Decimal("25.4")).quantize(
+        Decimal("0.001"), rounding=ROUND_HALF_EVEN
+    )
+    reference_si = (thousandth_in * Decimal("25.4")).quantize(
+        Decimal("0.01"), rounding=ROUND_HALF_EVEN
+    )
+    assert wall_mm == reference_si, ("ASME 2022 SI wall conversion", row, reference_si)
+    # Check the two independent algebraic expressions for the same bore.
+    od, t = Decimal(row["outer_diameter_mm"]), wall_mm
+    assert od - 2 * t == (od / 2 - t) * 2, row
+# Full alias relationships for existing nominal records.
+for (std, nps, sch), row in by_key.items():
+    if std != "B36.10": continue
+    nominal = Decimal(nps.split()[-1]) if nps.isdigit() else None
+    if sch in ("STD", "XS"):
+        expected = (Decimal("9.52") if sch == "STD" and nominal and nominal > 10
+                    else Decimal("12.70") if sch == "XS" and nominal and nominal > 8
+                    else None)
+        if expected is not None:
+            assert Decimal(row["wall_thickness_mm"]) == expected, row
+        alias = "40" if sch == "STD" and nominal and nominal <= 10 else (
+            "80" if sch == "XS" and nominal and nominal <= 8 else None)
+        if alias and (std, nps, alias) in by_key:
+            assert (Decimal(row["wall_thickness_mm"]) ==
+                    Decimal(by_key[(std, nps, alias)]["wall_thickness_mm"])), row
+# Published 2022 benchmark cases, including the three user screenshots.
+check("B36.10", "8", "40", 219.1, 8.18)
+check("B36.10", "10", "40", 273.0, 9.27)
+check("B36.19", "12", "40S", 323.8, 9.52)
+check("B36.10", "12", "STD", 323.8, 9.52)
+check("B36.10", "12", "40", 323.8, 10.31)
+check("B36.10", "1 1/2", "XXS", 48.3, 10.16)
+check("B36.10", "8", "XXS", 219.1, 22.22)
+check("B36.10", "22", "140", 558.8, 47.62)
+for size, si in (("32", 813), ("34", 864), ("36", 914),
+                 ("42", 1067), ("44", 1118), ("46", 1168), ("48", 1219)):
+    for item in ROWS:
+        if item["nps"] == size:
+            assert Decimal(item["outer_diameter_mm"]) == Decimal(si), item
 
 # Independent sample: 6in Sch40, 28.3 kg/m and ~18.6 L/m.
 p = next(r for r in ROWS if

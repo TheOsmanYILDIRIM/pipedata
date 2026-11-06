@@ -694,7 +694,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 if (tutorialStep == 0) TutorialRingGesture(Modifier.fillMaxSize())
                 if (pipe != null) {
                     val dimensionUnit = if (imperial) "in" else "mm"
-                    val inner = if (imperial) pipe.idMm / 25.4 else pipe.idMm
+                    val inner = if (imperial) pipe.idInches else pipe.idMm
                     // Keep the bore annotation inside the pipe without allowing
                     // translated titles to cover the metallic ring or diameter marks.
                     // Full localized name remains available to accessibility services.
@@ -793,7 +793,7 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     onEdit: (String) -> Unit) {
     val thicknessUnit = if (imperial) "in" else "mm"
     val od = if (imperial) pipe.odInches else pipe.odMm
-    val id = if (imperial) pipe.idMm / 25.4 else pipe.idMm
+    val id = if (imperial) pipe.idInches else pipe.idMm
     val t = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
@@ -839,7 +839,7 @@ private fun NumericPipeDialog(
         "NPS" -> nps
         "SCH" -> schedule
         "OD" -> selected?.let { decimal(if (imperial) it.odInches else it.odMm, if (imperial && it.odInches < 14.0) 3 else 2) }
-        "ID" -> selected?.idMm?.let { decimal(if (imperial) it / 25.4 else it) }
+        "ID" -> selected?.let { decimal(if (imperial) it.idInches else it.idMm) }
         "t" -> selected?.wallMm?.let { decimal(if (imperial) it / 25.4 else it, if (imperial) 3 else 2) }
         "mass" -> selected?.kgPerMetre?.let { decimal(if (imperial) it * 0.671968975 else it) }
         else -> selected?.litresPerMetre?.let { decimal(if (imperial) it * 0.08052 else it) }
@@ -859,7 +859,7 @@ private fun NumericPipeDialog(
                 else -> {
                     val actual = when (field) {
                         "OD" -> if (imperial) row.odInches else row.odMm
-                        "ID" -> if (imperial) row.idMm / 25.4 else row.idMm
+                        "ID" -> if (imperial) row.idInches else row.idMm
                         "t" -> if (imperial) row.wallMm / 25.4 else row.wallMm
                         "mass" -> if (imperial) row.kgPerMetre * 0.671968975 else row.kgPerMetre
                         else -> if (imperial) row.litresPerMetre * 0.08052 else row.litresPerMetre
@@ -1187,7 +1187,7 @@ private fun CombinedTableStandardsPage(
                 Spacer(Modifier.height(6.dp))
                 val unit = if (imperial) "in" else "mm"
                 val thick = if (imperial) p.wallMm / 25.4 else p.wallMm
-                val inner = if (imperial) p.idMm / 25.4 else p.idMm
+                val inner = if (imperial) p.idInches else p.idMm
                 Text(ui("Et: ") + decimal(thick, if (imperial) 3 else 2) + " " + unit,
                     color = White, fontSize = 17.sp)
                 Text(ui("İç çap: ") + decimal(inner, if (imperial) 3 else 2) + " " + unit,
