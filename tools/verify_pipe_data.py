@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CSV = ROOT / "app/src/main/assets/pipe_schedules.csv"
 ROWS = list(csv.DictReader(CSV.open(encoding="utf-8", newline="")))
-assert len(ROWS) >= 300, f"Too few validated nominal records: {len(ROWS)}"
+assert len(ROWS) >= 390, f"Too few validated nominal records: {len(ROWS)}"
 assert set(ROWS[0]) == {
     "standard", "nps", "dn", "outer_diameter_mm", "schedule", "wall_thickness_mm"
 }
@@ -38,6 +38,16 @@ check("B36.10", "4", "40", 114.3, 6.02)
 check("B36.10", "2", "40", 60.3, 3.91)
 check("B36.19", "6", "40S", 168.3, 7.11)
 check("B36.19", "6", "10S", 168.3, 3.4)
+# Regression against B36.19-2022's defined Schedule 160S values.
+assert ("B36.19", "22", "80S") not in seen
+expected_160s = {"1":6.35,"2":8.74,"3":11.13,"4":13.49,"5":15.88,"6":18.26,"1/8":3.15,"1/4":3.68,"3/8":4.01,"1/2":4.78,"3/4":5.56,"1 1/4":6.35,"1 1/2":7.14,"2 1/2":9.52}
+for nps, wall in expected_160s.items():
+    rec = next((r for r in ROWS if (r["standard"],r["nps"],r["schedule"]) ==
+                ("B36.19",nps,"160S")), None)
+    assert rec, f"Missing B36.19 160S NPS {nps}"
+    assert abs(float(rec["wall_thickness_mm"]) - wall) < 0.005
+assert sum(r["standard"] == "B36.19" and r["schedule"] == "160S" for r in ROWS) == 14
+
 check("B36.10", "1/8", "STD", 10.3, 1.73)
 check("B36.10", "1/8", "XS", 10.3, 2.41)
 # Large-diameter B36.10 regression: exact inches and non-invented STD/XS rows.
@@ -95,14 +105,21 @@ assert "drawPath(pointer, Gold)" in dial
 assert "val tangent = metalRadius + metalWidth * 0.52f" in dial
 assert "Et Kalınlığı (t)" in dial
 assert "dimensionY" in dial
-assert "dialSide = minOf(maxWidth, 285.dp)" in dial
+assert "dialSide = minOf(maxWidth, dialCap)" in dial
+assert "widthDp <= 340 && fontScale >= 1.2f -> 208.dp" in dial
 for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):
     assert forbidden not in dial, f"Obsolete raster dial or control survived: {forbidden}"
-assert "Triple(\"Tablo/Standart\"" in screen
+assert 'Triple("Tablo", Icons.Default.MenuBook, 2)' in screen
+assert 'if (index == 2) "Tablo/Standart" else label' in screen
 assert "val schedules = remember(activeNps)" in screen
 assert "row.nps.startsWith(input" in screen
 assert "PipeDial(nps, step, pipe, imperial)" in screen
 assert screen.index("PipeDial(nps, step, pipe, imperial)") < screen.index('Text("Schedule (SCH)"')
 assert 'Text("NPS (inç)"' not in screen
+assert 'if (imperial) it * 0.3048 else it' in screen
+assert 'val massFactor = if (imperial) 2.20462262185' in screen
+assert 'val volumeFactor = if (imperial) 0.26417205236' in screen
+assert 'if (imperial) "Uzunluk (ft)"' in screen
+
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")

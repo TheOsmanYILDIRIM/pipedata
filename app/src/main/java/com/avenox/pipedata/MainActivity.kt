@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -161,7 +163,7 @@ private fun PipeApp(catalog: PipeCatalog) {
             val items = listOf(
                 Triple("Boru", Icons.Default.Tune, 0),
                 Triple("SCH Bul", Icons.Default.Search, 1),
-                Triple("Tablo/Standart", Icons.Default.MenuBook, 2),
+                Triple("Tablo", Icons.Default.MenuBook, 2),
                 Triple("Ayarlar", Icons.Default.Settings, 3)
             )
             items.forEach { (label, icon, index) ->
@@ -169,11 +171,12 @@ private fun PipeApp(catalog: PipeCatalog) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f).clip(RoundedCornerShape(8.dp))
                         .clickable { page = index }.padding(vertical = 8.dp)
-                        .semantics { contentDescription = label }
+                        .semantics { contentDescription = if (index == 2) "Tablo/Standart" else label }
                 ) {
                     Icon(icon, contentDescription = null, tint = if (page == index) Gold else Muted, modifier = Modifier.size(26.dp))
                     Spacer(Modifier.height(2.dp))
-                    Text(label, color = if (page == index) Gold else Muted, fontSize = 11.sp)
+                    Text(label, color = if (page == index) Gold else Muted,
+                        fontSize = 11.sp, maxLines = 1, softWrap = false)
                 }
             }
         }
@@ -324,7 +327,15 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             }
         }
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            val dialSide = minOf(maxWidth, 285.dp)
+            val widthDp = LocalConfiguration.current.screenWidthDp
+            val fontScale = LocalDensity.current.fontScale
+            val dialCap = when {
+                widthDp <= 340 && fontScale >= 1.2f -> 208.dp
+                widthDp <= 360 && fontScale >= 1.2f -> 238.dp
+                widthDp <= 340 -> 250.dp
+                else -> 285.dp
+            }
+            val dialSide = minOf(maxWidth, dialCap)
             Box(
                 modifier = Modifier.size(dialSide)
                     .semantics {
@@ -705,22 +716,33 @@ private fun NumericPipeDialog(
 @Composable
 private fun LengthDialog(pipe: PipeSpec, imperial: Boolean, onDismiss: () -> Unit) {
     var length by remember { mutableStateOf("6") }
-    val metres = length.replace(",", ".").toDoubleOrNull()
+    val rawLength = length.replace(",", ".").toDoubleOrNull()
+    val metres = rawLength?.let { if (imperial) it * 0.3048 else it }
+    val massFactor = if (imperial) 2.20462262185 else 1.0
+    val volumeFactor = if (imperial) 0.26417205236 else 1.0
+    val massUnit = if (imperial) " lb" else " kg"
+    val volumeUnit = if (imperial) " US gal" else " L"
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Boru uzunluğu hesabı", color = White) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Uzunluğu metre olarak girin.", color = White, fontSize = 17.sp)
+                Text(if (imperial) "Uzunluğu fit (ft) olarak girin." else
+                    "Uzunluğu metre olarak girin.", color = White, fontSize = 17.sp)
                 OutlinedTextField(
-                    length, { length = it }, label = { Text("Uzunluk (m)") },
+                    length, { length = it },
+                    label = { Text(if (imperial) "Uzunluk (ft)" else "Uzunluk (m)") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true, modifier = Modifier.fillMaxWidth()
                 )
                 if (metres != null && metres > 0 && metres <= 100000) {
-                    Text("Boş ağırlık: " + decimal(pipe.kgPerMetre * metres) + " kg", fontSize = 19.sp, color = White)
-                    Text("İç hacim: " + decimal(pipe.litresPerMetre * metres) + " L", fontSize = 19.sp, color = White)
-                    Text("Su dolu ağırlık: " + decimal(pipe.waterFilledKgPerMetre * metres) + " kg", fontSize = 19.sp, color = White)
+                    Text("Boş ağırlık: " + decimal(pipe.kgPerMetre * metres * massFactor) +
+                        massUnit, fontSize = 19.sp, color = White)
+                    Text("İç hacim: " + decimal(pipe.litresPerMetre * metres * volumeFactor) +
+                        volumeUnit, fontSize = 19.sp, color = White)
+                    Text("Su dolu ağırlık: " +
+                        decimal(pipe.waterFilledKgPerMetre * metres * massFactor) +
+                        massUnit, fontSize = 19.sp, color = White)
                 } else {
                     Text("Pozitif ve geçerli bir uzunluk girin.", color = Gold)
                 }
