@@ -136,6 +136,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                                 it.schedule == selectedSch }?.let { standard = it.standard }
                         schedule = selectedSch
                     }, pipe, unitImperial, normalSp,
+                    onImperial = { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
                     catalog = catalog, onChoose = { chosen ->
                         standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
                     }
@@ -227,6 +228,7 @@ private fun CalculatorPage(
     nps: String, sizes: List<String>, onNps: (String) -> Unit,
     schedule: String, schedules: List<String>, onSch: (String) -> Unit,
     pipe: PipeSpec?, imperial: Boolean, textSp: Int,
+    onImperial: (Boolean) -> Unit,
     catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit
 ) {
     var editing by remember { mutableStateOf<String?>(null) }
@@ -240,9 +242,24 @@ private fun CalculatorPage(
             .padding(horizontal = 18.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Dış çapa dokunarak NPS seçebilir veya halkayı çevirebilirsiniz.",
-            color = Muted, fontSize = 15.sp, textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp))
+        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Ölçü birimi", color = Muted, fontSize = 16.sp)
+            Row(Modifier.clip(RoundedCornerShape(14.dp))
+                .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
+                listOf(true to "inç", false to "mm").forEach { (inch, label) ->
+                    Box(Modifier.clip(RoundedCornerShape(12.dp))
+                        .background(if (imperial == inch) Gold else Color.Transparent)
+                        .clickable { onImperial(inch) }
+                        .heightIn(min = 48.dp).padding(horizontal = 18.dp),
+                        contentAlignment = Alignment.Center) {
+                        Text(label, color = if (imperial == inch) Deep else White,
+                            fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
         PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(12.dp))
         Text("Schedule (SCH)", color = White, fontSize = 20.sp,
@@ -472,9 +489,10 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.align(Alignment.Center)
                             .clickable { onEdit("ID") }.padding(6.dp)) {
-                        Text("İç Çap (ID)", color = Muted, fontSize = 13.sp)
+                        Text("İç Çap (ID)", color = White, fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold)
                         Text(decimal(inner) + " " + dimensionUnit, color = White,
-                            fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                            fontWeight = FontWeight.SemiBold, fontSize = 23.sp)
                     }
                 } else {
                     Text(nps + "\"", color = White, fontSize = 42.sp,
@@ -485,9 +503,18 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
         if (pipe != null) {
             val dimensionUnit = if (imperial) "in" else "mm"
             val outer = if (imperial) pipe.odInches else pipe.odMm
-            Text("Dış Çap (OD)  " + decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + dimensionUnit,
-                color = White, fontSize = 19.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onEdit("NPS") }.padding(8.dp))
+            Column(Modifier.fillMaxWidth().padding(top = 5.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(1.5.dp, Gold.copy(alpha = 0.85f), RoundedCornerShape(16.dp))
+                .clickable { onEdit("NPS") }
+                .padding(horizontal = 14.dp, vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Dış Çap (OD) · Seçmek için dokunun", color = Muted,
+                    fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) +
+                    " " + dimensionUnit, color = White, fontSize = 29.sp,
+                    fontWeight = FontWeight.Bold)
+            }
         }
         Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
