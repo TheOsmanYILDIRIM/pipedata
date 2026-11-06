@@ -149,5 +149,16 @@ locale = (ROOT / "app/src/main/java/com/avenox/pipedata/UiLanguage.kt").read_tex
 for phrase in ('"İlk kullanım"', '"Atla"', '"İleri"', '"Öğreticiyi tekrar göster"'):
     assert phrase in locale
 
+# Language names are written in each language, independently of current locale.
+assert '"tr" to "Türkçe"' in screen
+assert '"en" to "English"' in screen
+assert '"ru" to "Русский"' in screen
+assert '"system" to ui("Sistem dili")' in screen
+# Long translated ID titles must not obscure the real annular pipe graphic.
+assert 'Text("ID", color = Muted' in screen
+assert '.widthIn(max = dialSide * 0.55f)' in screen
+assert '.background(Deep.copy(alpha = 0.88f))' in screen
+assert 'contentDescription = uiInnerDiameterDescription' in screen
+
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")

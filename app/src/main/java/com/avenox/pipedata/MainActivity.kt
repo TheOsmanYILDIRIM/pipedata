@@ -465,6 +465,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     var wheelRotation by remember { mutableFloatStateOf(0f) }
     val dialDescription = ui("Döner NPS sayacı, seçili çap ") + nps + " " + ui("inç")
     val nextDiameter = ui("Sonraki boru çapı")
+    val uiInnerDiameterDescription = ui("İç Çap (ID)")
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         if (pipe != null) {
@@ -652,13 +653,24 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 if (pipe != null) {
                     val dimensionUnit = if (imperial) "in" else "mm"
                     val inner = if (imperial) pipe.idMm / 25.4 else pipe.idMm
+                    // Keep the bore annotation inside the pipe without allowing
+                    // translated titles to cover the metallic ring or diameter marks.
+                    // Full localized name remains available to accessibility services.
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.align(Alignment.Center)
-                            .clickable { onEdit("ID") }.padding(6.dp)) {
-                        Text(ui("İç Çap (ID)"), color = White, fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold)
+                            .widthIn(max = dialSide * 0.55f)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Deep.copy(alpha = 0.88f))
+                            .border(1.dp, StrokeColor.copy(alpha = 0.65f),
+                                RoundedCornerShape(12.dp))
+                            .semantics { contentDescription = uiInnerDiameterDescription }
+                            .clickable { onEdit("ID") }
+                            .padding(horizontal = 8.dp, vertical = 7.dp)) {
+                        Text("ID", color = Muted, fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold, maxLines = 1)
                         Text(decimal(inner) + " " + dimensionUnit, color = White,
-                            fontWeight = FontWeight.SemiBold, fontSize = 23.sp)
+                            fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                            maxLines = 1, softWrap = false)
                     }
                 } else {
                     Text(nps + "\"", color = White, fontSize = 42.sp,
@@ -1179,11 +1191,12 @@ private fun SettingsPage(
         }
         HorizontalDivider(color = StrokeColor)
         Spacer(Modifier.height(18.dp))
+        // Language names are autonyms: they must not change when the UI language changes.
         val languageOptions = listOf(
             "system" to ui("Sistem dili"),
-            "tr" to ui("Türkçe"),
-            "en" to ui("İngilizce"),
-            "ru" to ui("Rusça")
+            "tr" to "Türkçe",
+            "en" to "English",
+            "ru" to "Русский"
         )
         Picker(ui("Dil"), languageOptions.first { it.first == languageSelection }.second,
             languageOptions.map { it.second },
