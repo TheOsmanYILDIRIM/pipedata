@@ -179,6 +179,11 @@ jobs:
               main()
           PY
           python3 -m py_compile "$RUNNER_TEMP/boruzi_quick.py"
+      - name: Enable KVM hardware acceleration
+        run: |
+          ls -l /dev/kvm
+          sudo chmod 666 /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
       - name: Boot one emulator and capture screenshots
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -187,7 +192,8 @@ jobs:
           target: default
           profile: pixel_4
           disable-animations: true
-          emulator-boot-timeout: 180
+          disable-linux-hw-accel: false
+          emulator-boot-timeout: 120
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           script: python3 "$RUNNER_TEMP/boruzi_quick.py"
       - name: Record run evidence
