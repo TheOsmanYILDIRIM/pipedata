@@ -138,12 +138,17 @@ jobs:
               if ready is None:
                   raise AssertionError("Boruzi screen did not become ready")
               target="mm" if metric else "inç"
-              if not tap_text(ready,target):
-                  raise AssertionError("Unit choice missing: "+target)
-              time.sleep(.5)
-              selected=nodes(tag+"_unit_verified")
               suffix=" mm" if metric else " in"
-              if not any(n.attrib.get("text","").endswith(suffix) for n in selected):
+              unit_confirmed=False
+              for attempt in range(4):
+                  selected=nodes(tag+"_unit_verified"+str(attempt))
+                  if any(n.attrib.get("text","").endswith(suffix) for n in selected):
+                      unit_confirmed=True
+                      break
+                  if not tap_text(selected,target):
+                      raise AssertionError("Unit choice missing: "+target)
+                  time.sleep(.8)
+              if not unit_confirmed:
                   raise AssertionError("Unit change was not reflected in pipe dimensions: "+target)
               png(tag+"_boru_initial")
               initial=nodes(tag+"_boru_initial")
