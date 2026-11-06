@@ -1,24 +1,24 @@
 # Boru Hesaplayıcı — Geliştirme Sözleşmesi
 
-## Güncel kapsam (2026-11-05)
-Bu repo artık endüstriyel boru montaj ustalarının kullanacağı, çevrimdışı, dikey **NPS/DN/SCH** hesaplayıcı Android uygulamasıdır. Önceki Pipedata mühendislik/CAD/kapsamlı fitting sürümü silinmemiştir: `backup/legacy-main-2026-11-05` dalında `06b7e209` commit'i ile korunmuştur. Eski sayfaları, çıkarıcıları ve sahte fallback alanlarını geri taşımayın.
+## Kapsam
+Bu depo, çevrimdışı NPS / DN / SCH boru ölçüleri ve nominal hesaplar için Android uygulamasıdır. Kapsam dışı ekranları ve doğrulanmamış veri varsayımlarını eklemeyin.
 
-## Tek kaynak ve doğruluk
-- Nominal boru kayıtları yalnız `app/src/main/assets/pipe_schedules.csv` kaynağında tutulur. Her satırın standardı, NPS, DN, OD, SCH ve et kalınlığı bulunur.
-- Herhangi bir et kalınlığı 0, negatif veya eksikse kullanıcıya ilgili SCH gösterilmez. Kodla keyfî et kalınlığı/OD üretmeyin.
-- Hesaplar `PipeCatalog.kt` içinde: ID=OD−2t; çelik kütlesi nominal 7850 kg/m³; su içeriği nominal 1000 kg/m³. Basınç tasarımı ayrı iş kapsamıdır.
-- B36.10 ve B36.19 tablolarının S serilerini karıştırmayın. Veri kapsamını lisanslı standartlara karşı doğrulanmış sanmayın; ilk aşamada 373 filtrelenmiş nominal satır vardır.
-- Değerler fiziksel/nominal hesaplar, gerçek tolerans/sertifika değildir. Kullanıcıyı yanıltabilecek sessiz fallback yasaktır.
+## Veri doğruluğu
+- Nominal ölçü kayıtları `app/src/main/assets/pipe_schedules.csv` dosyasından okunur.
+- Eksik, sıfır veya negatif et kalınlığı kullanıcıya gösterilmez; sentetik OD veya et kalınlığı oluşturulmaz.
+- `PipeCatalog.kt`: ID = OD − 2t; nominal çelik yoğunluğu 7850 kg/m³, su yoğunluğu 1000 kg/m³.
+- ASME B36.10 ve B36.19 kayıtları ile S-serisi etiketleri karıştırılmaz.
+- Veri setinin eksiksiz veya lisanslı standartla tamamen doğrulanmış olduğu ileri sürülmez.
+- Hesaplar nominaldir; üretim toleransları ve basınç tasarımı kapsam dışıdır.
 
-## Mobil arayüz
-- Jetpack Compose; 320–411dp portre ekran ve büyük yazı için tasarım.
-- Koyu teal/altın tasarım, döndürülebilir NPS göstergesi, kullanıcının sağladığı şeffaf metal halka (`drawable-nodpi/pipe_ring.webp`), büyük tıklama hedefleri.
-- Sayfalar: Boru, SCH Bul, Tablo, Standart, Ayarlar. Asıl boyut yazıları Compose tarafından üretilir; fotoğraf üstüne yazı basmayın.
-- Mevcut Android `applicationId` ve `antigravity.keystore` korunur; cihazdaki uygulama güncellemeleri için imza değiştirilmez.
+## Arayüz
+- Jetpack Compose, portre ekranlar ve büyük yazı desteği.
+- Boru, SCH Bul, Tablo, Standart ve Ayarlar sayfaları.
+- Görsel bileşenler ölçü değerlerini gizlememeli; ölçüler koddan üretilmelidir.
 
-## Kabul ve değişiklik güvenliği
-1. Önce GitHub HEAD + ilgili dosya blob SHA'sını inceleyin; ana dal/yedeklere kör reset veya force yazmayın.
-2. `python3 tools/verify_pipe_data.py` tüm kayıtları ve kontrol örneklerini doğrulamalı.
-3. GitHub Actions `assembleDebug assembleRelease` ve APK artefaktı olumlu sonuçlanmalı.
-4. CI ≠ gerçek cihaz testi. Dokunmatik halka, 320/360/411dp görünümü ve fontScale testi gerçek cihazda ayrıca doğrulanmalı.
-5. `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` değiştiğinde üçü birebir senkron tutulur.
+## Güvenlik ve teslim
+1. Yazmadan önce güncel GitHub HEAD ve ilgili dosya blob SHA'sını doğrulayın; force/reset uygulamayın.
+2. API anahtarı, parola, imzalama materyali veya diğer sırları repoya eklemeyin. Mevcut Android uygulamasının imza sürekliliğini koruyacak güvenli geçiş planı olmadan imza değişikliği yapmayın.
+3. `python3 tools/verify_pipe_data.py` ile veri testlerini, GitHub Actions ile Android derlemesini doğrulayın.
+4. CI ≠ gerçek cihaz testi; çeşitli ekran genişliği, büyük yazı ve dokunmatik etkileşim ayrıca doğrulanmalıdır.
+5. `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` daima aynı içerikte tutulur.
