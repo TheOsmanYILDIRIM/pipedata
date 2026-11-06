@@ -778,12 +778,32 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
     var outer by rememberSaveable { mutableStateOf(if (imperial) "6.625" else "168,3") }
     var thick by rememberSaveable { mutableStateOf(if (imperial) "0.280" else "7,11") }
     var searched by remember { mutableStateOf(false) }
+    var selectedSchKey by rememberSaveable { mutableStateOf<String?>(null) }
+    val keyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
     val odInput = outer.replace(",", ".").toDoubleOrNull()
     val tInput = thick.replace(",", ".").toDoubleOrNull()
     val odMm = odInput?.let { if (useInches) it * 25.4 else it }
     val wallMm = tInput?.let { if (useInches) it * 25.4 else it }
-    val matches = if (searched && odMm != null && wallMm != null)
-        catalog.findByMeasurement(odMm, wallMm) else emptyList()
+    val suggestions = remember(odMm, catalog) {
+        if (odMm == null || !odMm.isFinite() || odMm <= 0) emptyList()
+        else catalog.rows
+            .filter { kotlin.math.abs(it.odMm - odMm) <=
+                maxOf(0.6, it.odMm * 0.002) }
+            .sortedWith(compareBy<PipeSpec> { it.wallMm }
+                .thenBy { it.schedule }.thenBy { it.standard })
+            .distinctBy { it.standard + "|" + it.nps + "|" + it.schedule }
+    }
+    val matches = if (searched && odMm != null && wallMm != null) {
+        val selected = selectedSchKey?.let { key ->
+            suggestions.firstOrNull {
+                it.standard + "|" + it.nps + "|" + it.schedule == key &&
+                    kotlin.math.abs(it.wallMm - wallMm) < 0.015
+            }
+        }
+        if (selected != null) listOf(selected)
+        else catalog.findByMeasurement(odMm, wallMm)
+    } else emptyList()
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
         PageHeading(ui("SCH Bul"), ui("Ölçtüğünüz dış çapı ve et kalınlığını girin."))
@@ -805,6 +825,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                                 thick = tInput?.let { decimal(it * factor, if (inch) 3 else 2) } ?: ""
                                 useInches = inch
                                 searched = false
+                                selectedSchKey = null
                             }
                         }
                 ) {
@@ -816,7 +837,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
             }
         }
         OutlinedTextField(
-            outer, { outer = it; searched = false }, modifier = Modifier.fillMaxWidth(),
+            outer, { outer = it; searched = false; selectedSchKey = null }, modifier = Modifier.fillMaxWidth(),
             label = { Text(ui("Dış çap (") + if (useInches) ui("inç") + ")" else "mm)") },
             singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
@@ -824,18 +845,62 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
         )
         Spacer(Modifier.height(17.dp))
         OutlinedTextField(
-            thick, { thick = it; searched = false }, modifier = Modifier.fillMaxWidth(),
+            thick, { thick = it; searched = false; selectedSchKey = null }, modifier = Modifier.fillMaxWidth(),
             label = { Text(ui("Et kalınlığı (") + if (useInches) ui("inç") + ")" else "mm)") },
             singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
+        if (suggestions.isNotEmpty()) {
+            Spacer(Modifier.height(13.dp))
+            Text(ui("Dış çapa uygun et kalınlıkları"), color = White,
+                fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text(ui("Bir öneriye dokunarak SCH seçin"), color = Muted,
+                fontSize = 14.sp)
+            Spacer(Modifier.height(9.dp))
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(suggestions) { option ->
+                    val wall = if (useInches) option.wallMm / 25.4 else option.wallMm
+                    val formatted = decimal(wall, if (useInches) 3 else 2)
+                    val unit = if (useInches) "in" else "mm"
+                    val key = option.standard + "|" + option.nps + "|" + option.schedule
+                    Surface(
+                        modifier = Modifier.heightIn(min = 58.dp)
+                            .clickable {
+                                thick = formatted
+                                selectedSchKey = key
+                                searched = true
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            },
+                        color = if (selectedSchKey == key) Gold else Panel,
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Column(Modifier.padding(horizontal = 14.dp, vertical = 8.dp)) {
+                            Text("SCH " + option.schedule,
+                                color = if (selectedSchKey == key) Deep else White,
+                                fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(formatted + " " + unit + " · " + option.standard,
+                                color = if (selectedSchKey == key) Deep else Muted,
+                                fontSize = 14.sp)
+                        }
+                    }
+                }
+            }
+        } else if (odMm != null && odMm.isFinite() && odMm > 0) {
+            Spacer(Modifier.height(10.dp))
+            Text(ui("Bu dış çapa uygun kayıt bulunamadı."),
+                color = Muted, fontSize = 14.sp)
+        }
         Spacer(Modifier.height(20.dp))
         GoldButton(ui("SCH Bul"), { searched = true })
         Spacer(Modifier.height(24.dp))
         if (searched) {
             if (matches.isEmpty()) {
-                Text("Bu ölçüye yakın kayıt bulunamadı. Birimi ve ölçüleri kontrol edin.",
+                Text(ui("Bu ölçüye yakın kayıt bulunamadı. Birimi ve ölçüleri kontrol edin."),
                     fontSize = textSp.sp, color = Gold)
             } else {
                 Text(ui("Olası nominal eşleşmeler"), color = White,
