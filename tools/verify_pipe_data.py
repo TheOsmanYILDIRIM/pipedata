@@ -143,6 +143,12 @@ assert 'onReplayTutorial = {' in screen
 assert 'currentOnWheelDragged()' in screen
 assert 'if (tutorialStep == 1) onTutorialNext()' in screen
 assert 'if (tutorialStep == 2) onOdTapped()' in screen
+# Real SCH chips and OD selection visibly pulse during their tutorial steps.
+assert 'bringIntoViewRequester(schTarget)' in screen
+assert 'if (tutorialStep == 1) TutorialPulseFrame(Modifier.matchParentSize())' in screen
+assert 'if (tutorialStep == 2) TutorialPulseFrame(Modifier.matchParentSize())' in screen
+assert 'if (tutorialStep == 1 && sch == schedules.first())' in screen
+assert 'TutorialTouchMarker()' in screen
 assert 'private fun TutorialRingGesture(' in screen
 assert 'animateFloat(' in screen and 'drawArc(' in screen
 locale = (ROOT / "app/src/main/java/com/avenox/pipedata/UiLanguage.kt").read_text()

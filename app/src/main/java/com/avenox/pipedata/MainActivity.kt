@@ -324,36 +324,50 @@ private fun CalculatorPage(
             odTarget = odTarget)
         Spacer(Modifier.height(12.dp))
         if (tutorialStep == 1) {
-            Column(Modifier.fillMaxWidth().bringIntoViewRequester(schTarget)) {
-                TutorialHint(1, onTutorialNext, onTutorialSkip)
-                Spacer(Modifier.height(8.dp))
-            }
+            TutorialHint(1, onTutorialNext, onTutorialSkip)
+            Spacer(Modifier.height(8.dp))
         }
-        Text(ui("Schedule (SCH)"), color = White, fontSize = 20.sp,
-            fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
-                .clickable { editing = "SCH" }.padding(vertical = 5.dp))
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(schedules) { sch ->
-                Surface(
-                    color = if (sch == schedule) Gold else Panel,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier.heightIn(min = 56.dp)
-                        .border(1.dp, if (sch == schedule) Gold else StrokeColor,
-                            RoundedCornerShape(24.dp))
-                        .clickable {
-                            onSch(sch)
-                            if (tutorialStep == 1) onTutorialNext()
-                        }
+        // The target is the actual SCH controls, not the explanatory text above.
+        // Scroll and draw the spotlight around the choices themselves.
+        Box(Modifier.fillMaxWidth().bringIntoViewRequester(schTarget)
+            .clip(RoundedCornerShape(18.dp))) {
+            Column(Modifier.fillMaxWidth().padding(if (tutorialStep == 1) 7.dp else 0.dp)) {
+                Text(ui("Schedule (SCH)"), color = White, fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
+                        .clickable { editing = "SCH" }.padding(vertical = 5.dp))
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Box(Modifier.padding(horizontal = 19.dp), contentAlignment = Alignment.Center) {
-                        Text(sch, color = if (sch == schedule) Deep else White,
-                            fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                    items(schedules) { sch ->
+                        Surface(
+                            color = if (sch == schedule) Gold else Panel,
+                            shape = RoundedCornerShape(24.dp),
+                            modifier = Modifier.heightIn(min = 56.dp)
+                                .border(
+                                    if (tutorialStep == 1) 2.5.dp else 1.dp,
+                                    if (tutorialStep == 1 || sch == schedule) Gold else StrokeColor,
+                                    RoundedCornerShape(24.dp))
+                                .clickable {
+                                    onSch(sch)
+                                    if (tutorialStep == 1) onTutorialNext()
+                                }
+                        ) {
+                            Row(Modifier.padding(horizontal = 17.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically) {
+                                // Animated touch marker identifies the actual selectable chip.
+                                if (tutorialStep == 1 && sch == schedules.first()) {
+                                    TutorialTouchMarker()
+                                    Spacer(Modifier.width(6.dp))
+                                }
+                                Text(sch, color = if (sch == schedule) Deep else White,
+                                    fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                            }
+                        }
                     }
                 }
             }
+            if (tutorialStep == 1) TutorialPulseFrame(Modifier.matchParentSize())
         }
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
@@ -411,6 +425,34 @@ private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
             }
         }
     }
+}
+
+/** Repeating, non-intercepting spotlight around the exact control the user should tap. */
+@Composable
+private fun TutorialPulseFrame(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "tutorial_target_pulse")
+    val alpha by transition.animateFloat(
+        initialValue = 0.35f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(780), repeatMode = RepeatMode.Reverse),
+        label = "target_glow"
+    )
+    Box(modifier.border(3.dp, Gold.copy(alpha = alpha), RoundedCornerShape(18.dp)))
+}
+
+/** Small finger icon pulses on the first selectable SCH chip, without blocking taps. */
+@Composable
+private fun TutorialTouchMarker() {
+    val transition = rememberInfiniteTransition(label = "tutorial_touch")
+    val alpha by transition.animateFloat(
+        initialValue = 0.45f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(680), repeatMode = RepeatMode.Reverse),
+        label = "finger_pulse"
+    )
+    Icon(Icons.Default.TouchApp, contentDescription = null,
+        tint = if (alpha > 0.72f) White else Gold,
+        modifier = Modifier.size(24.dp))
 }
 
 /** Procedural curved swipe arrow and moving fingertip on the real rotary dial. */
@@ -689,19 +731,20 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     Spacer(Modifier.height(7.dp))
                 }
             }
-            Column(Modifier.fillMaxWidth().padding(top = 5.dp)
-                .clip(RoundedCornerShape(16.dp))
-                 .border(if (tutorialStep == 2) 3.dp else 1.5.dp,
-                    Gold.copy(alpha = if (tutorialStep == 2) 1f else 0.85f),
-                    RoundedCornerShape(16.dp))
-                .clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() }
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(ui("Dış Çap (OD) · Seçmek için dokunun"), color = Muted,
-                    fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-                Text(decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) +
-                    " " + dimensionUnit, color = White, fontSize = 29.sp,
-                    fontWeight = FontWeight.Bold)
+            Box(Modifier.fillMaxWidth().padding(top = 5.dp)
+                .clip(RoundedCornerShape(16.dp))) {
+                Column(Modifier.fillMaxWidth()
+                    .border(1.5.dp, Gold.copy(alpha = 0.85f), RoundedCornerShape(16.dp))
+                    .clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() }
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(ui("Dış Çap (OD) · Seçmek için dokunun"), color = Muted,
+                        fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                    Text(decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) +
+                        " " + dimensionUnit, color = White, fontSize = 29.sp,
+                        fontWeight = FontWeight.Bold)
+                }
+                if (tutorialStep == 2) TutorialPulseFrame(Modifier.matchParentSize())
             }
         }
         Text(ui("Halkayı parmağınızla çevirin"), color = Muted, fontSize = 14.sp)
