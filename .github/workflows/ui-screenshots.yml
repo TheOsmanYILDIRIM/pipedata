@@ -161,7 +161,7 @@ jobs:
                   ready=dismissed
               detected={n.attrib.get("text","") for n in ready}
               target=("mm" if metric else
-                      "inch" if "Unit" in detected else
+                      "inch" if "Pipe" in {n.attrib.get("content-desc","") for n in ready} else
                       "дюйм" if "Единицы" in detected else "inç")
               suffix=" mm" if metric else " in"
               unit_confirmed=False
