@@ -673,6 +673,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 else -> 226.dp
             })
             val dialSide = minOf(maxWidth, dialCap)
+            val leftMargin = ((maxWidth - dialSide) / 2f - 5.dp).coerceAtLeast(0.dp)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier.size(dialSide)
@@ -862,7 +863,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         Column(horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.align(Alignment.CenterStart)
                                 .offset(x = -minOf(dialSide * 0.12f,
-                                    ((maxWidth - dialSide) / 2f - 5.dp).coerceAtLeast(0.dp)),
+                                    leftMargin),
                                     y = dialSide * 0.15f)
                                 .widthIn(max = dialSide * 0.54f)
                                 .clip(RoundedCornerShape(12.dp))
