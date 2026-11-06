@@ -429,6 +429,7 @@ private fun CalculatorPage(
         }
         // One compact SCH row stays above the bottom navigation on short screens.
         // The selected schedule scrolls into view when NPS or SCH changes.
+        val schAccessibilityLabel = ui("Schedule (SCH)")
         val schListState = rememberLazyListState()
         LaunchedEffect(schedule, schedules) {
             val selectedIndex = schedules.indexOf(schedule)
@@ -443,7 +444,7 @@ private fun CalculatorPage(
                 Text("SCH", color = White, fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { editing = "SCH" }
-                        .semantics { contentDescription = ui("Schedule (SCH)") }
+                        .semantics { contentDescription = schAccessibilityLabel }
                         .padding(end = 10.dp))
                 LazyRow(
                     modifier = Modifier.weight(1f),
