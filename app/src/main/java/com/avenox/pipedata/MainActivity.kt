@@ -893,7 +893,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Exact outer tangents and double-arrow share one Canvas width.
-                        Canvas(Modifier.fillMaxWidth().height(20.dp)) {
+                        Canvas(Modifier.width(dialSide).height(20.dp)) {
                             val x1 = size.width * 0.035f
                             val x2 = size.width * 0.965f
                             val y = 8.dp.toPx()
