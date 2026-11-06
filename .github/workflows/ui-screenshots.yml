@@ -131,7 +131,8 @@ jobs:
                   try:
                       items=nodes(tag+"_ready"+str(attempt))
                       if (any(n.attrib.get("text")=="Boruzi" for n in items) and
-                          any(n.attrib.get("text")=="Ölçü birimi" for n in items)):
+                          any(n.attrib.get("text") in ("Ölçü birimi","Unit","Единицы")
+                              for n in items)):
                           ready=items
                           break
                   except RuntimeError:
@@ -161,22 +162,42 @@ jobs:
                   if not od:
                       raise AssertionError("OD value not visible in first viewport: "+expected)
                   bottom=int(re.findall(r"\d+",od[0].attrib["bounds"])[3])
-                  nav=[n for n in initial if n.attrib.get("content-desc")=="Tablo/Standart"]
+                  nav=[n for n in initial if n.attrib.get("content-desc") in ("Tablo / Standart","Table / Standards","Таблица / Стандарты")]
                   if nav:
                       nav_top=int(re.findall(r"\d+",nav[0].attrib["bounds"])[1])
                       if bottom >= nav_top:
                           raise AssertionError("OD value overlaps bottom navigation")
 
-              nav=["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
+              ready_text={n.attrib.get("text","") for n in initial}
+              if "Unit" in ready_text:
+                  nav=["Find SCH","Table / Standards","Settings","Pipe"]
+                  headings={"Find SCH":"Find SCH",
+                            "Table / Standards":"Table / Standards",
+                            "Settings":"Settings"}
+                  id_label="Inner diameter (ID)"
+                  dialog_title=id_label+" Enter"
+              elif "Единицы" in ready_text:
+                  nav=["Найти SCH","Таблица / Стандарты","Настройки","Труба"]
+                  headings={"Найти SCH":"Найти SCH",
+                            "Таблица / Стандарты":"Таблица / Стандарты",
+                            "Настройки":"Настройки"}
+                  id_label="Внутренний диаметр (ID)"
+                  dialog_title=id_label+" Введите"
+              else:
+                  nav=["SCH Bul","Tablo / Standart","Ayarlar","Boru"]
+                  headings={"SCH Bul":"SCH Bul",
+                            "Tablo / Standart":"Tablo / Standart",
+                            "Ayarlar":"Ayarlar"}
+                  id_label="İç Çap (ID)"
+                  dialog_title=id_label+" yazın"
+              lookup_label=nav[0]
+              pipe_label=nav[3]
               coords={}
               for name in nav:
                   found=[n for n in initial if n.attrib.get("content-desc")==name]
                   if not found:
                       raise AssertionError("Missing navigation semantics: "+name)
                   coords[name]=center(found[0].attrib["bounds"])
-              headings={"SCH Bul":"SCH Bul",
-                        "Tablo/Standart":"Tablo / Standart",
-                        "Ayarlar":"Ayarlar"}
               for name in nav:
                   adb("shell","input","tap",*coords[name])
                   time.sleep(.55)
@@ -188,25 +209,25 @@ jobs:
 
               # Dialog is verified using a real UI hierarchy and dismissed by its button.
               visible=nodes(tag+"_id_source")
-              if not tap_text(visible,"İç Çap (ID)"):
+              if not tap_text(visible,id_label):
                   raise AssertionError("ID tappable label missing")
               time.sleep(.4)
               dialog=nodes(tag+"_id_open")
-              if not any("İç çap (ID) yazın" in n.attrib.get("text","") for n in dialog):
+              if not any(dialog_title in n.attrib.get("text","") for n in dialog):
                   raise AssertionError("ID dialog did not open")
               png(tag+"_id_dialog")
-              if not tap_text(dialog,"İptal"):
+              if not tap_text(dialog,{"Pipe":"Cancel","Труба":"Отмена"}.get(pipe_label,"İptal")):
                   raise AssertionError("ID dialog dismiss button missing")
               time.sleep(.55)
               after=nodes(tag+"_id_closed")
-              if any("İç çap (ID) yazın" in n.attrib.get("text","") for n in after):
+              if any(dialog_title in n.attrib.get("text","") for n in after):
                   raise AssertionError("ID dialog failed to close")
 
               # Actual Compose text field exposes its value as EditText, not the label.
-              adb("shell","input","tap",*coords["SCH Bul"])
+              adb("shell","input","tap",*coords[lookup_label])
               time.sleep(.55)
               lookup=nodes(tag+"_lookup")
-              if not any(n.attrib.get("text")=="SCH Bul" for n in lookup):
+              if not any(n.attrib.get("text")==lookup_label for n in lookup):
                   raise AssertionError("SCH page failed to open")
               edits=[n for n in lookup if n.attrib.get("class")=="android.widget.EditText"]
               if len(edits)<2:
@@ -219,7 +240,7 @@ jobs:
               time.sleep(.35)
 
               # NPS dial gesture is evaluated separately; don't fake success.
-              adb("shell","input","tap",*coords["Boru"])
+              adb("shell","input","tap",*coords[pipe_label])
               time.sleep(.55)
               dial_source=nodes(tag+"_dial_before")
               dial=next((n for n in dial_source if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
