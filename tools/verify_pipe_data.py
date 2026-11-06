@@ -58,6 +58,11 @@ check("B36.10", "46", "STD", 1168, 9.52)
 check("B36.10", "46", "XS", 1168, 12.70)
 check("B36.10", "48", "STD", 1219, 9.52)
 check("B36.10", "48", "XS", 1219, 12.70)
+# NPS 38 / DN950 exists in B36.10-2022, including STD and XS.
+check("B36.10", "38", "STD", 965, 9.52)
+check("B36.10", "38", "XS", 965, 12.70)
+assert {r["schedule"] for r in ROWS if r["nps"] == "38"} == {"STD", "XS"}
+
 assert abs(1219.2 / 25.4 - 48) < 0.000001
 pipe_catalog = (ROOT / "app/src/main/java/com/avenox/pipedata/PipeCatalog.kt").read_text()
 assert "val odInches: Double" in pipe_catalog
@@ -167,6 +172,13 @@ assert 'if (index == 2) ui("Tablo / Standart") else label' in screen
 assert "val schedules = remember(activeNps)" in screen
 assert "row.nps.startsWith(input" in screen
 assert "PipeDial(nps, step, pipe, imperial," in screen
+# Both calculator and table NPS selectors must reach their final item on small screens.
+assert "private fun ScrollableOptionDialog(" in screen
+assert "rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)" in screen
+assert "LazyColumn(" in screen
+assert "if (npsMenuExpanded) ScrollableOptionDialog(" in screen
+assert "if (options.size > 20)" in screen
+
 assert screen.index("PipeDial(nps, step, pipe, imperial,") < screen.index('Text(ui("Schedule (SCH)")')
 assert 'Text("NPS (inç)"' not in screen
 assert 'if (imperial) it * 0.3048 else it' in screen
