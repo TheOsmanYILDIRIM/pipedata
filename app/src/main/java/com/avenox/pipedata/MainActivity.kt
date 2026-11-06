@@ -355,11 +355,10 @@ private fun CalculatorPage(
                 // Accessible previous/next targets plus the full-size dialog are faster.
                 IconButton(
                     onClick = { step(-1) },
-                    modifier = Modifier.size(42.dp).semantics {
-                        contentDescription = ui("Önceki boru çapı")
-                    }
+                    modifier = Modifier.size(42.dp)
                 ) {
-                    Icon(Icons.Default.ChevronLeft, contentDescription = null,
+                    Icon(Icons.Default.ChevronLeft,
+                        contentDescription = ui("Önceki boru çapı"),
                         tint = Gold, modifier = Modifier.size(30.dp))
                 }
                 Row(Modifier.weight(1f)
@@ -369,18 +368,18 @@ private fun CalculatorPage(
                     .heightIn(min = 52.dp).padding(horizontal = 7.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center) {
-                    Text("NPS " + nps + "″", color = White, fontSize = 19.sp,
+                    Text("NPS " + nps + "″", color = White,
+                        fontSize = if (LocalConfiguration.current.screenWidthDp <= 340) 16.sp else 19.sp,
                         fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = ui("NPS seç"),
                         tint = Gold, modifier = Modifier.size(20.dp))
                 }
                 IconButton(
                     onClick = { step(1) },
-                    modifier = Modifier.size(42.dp).semantics {
-                        contentDescription = ui("Sonraki boru çapı")
-                    }
+                    modifier = Modifier.size(42.dp)
                 ) {
-                    Icon(Icons.Default.ChevronRight, contentDescription = null,
+                    Icon(Icons.Default.ChevronRight,
+                        contentDescription = ui("Sonraki boru çapı"),
                         tint = Gold, modifier = Modifier.size(30.dp))
                 }
                 if (npsMenuExpanded) ScrollableOptionDialog(
