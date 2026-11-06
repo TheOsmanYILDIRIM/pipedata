@@ -16,16 +16,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: boruzi-visual-\${{ github.ref }}
+  group: boruzi-visual-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   emulator-screenshots:
-    name: Android screenshot smoke (\${{ inputs.matrix || 'quick' }})
+    name: Android screenshot smoke (${{ inputs.matrix || 'quick' }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      AUDIT_MATRIX: \${{ inputs.matrix || 'quick' }}
+      AUDIT_MATRIX: ${{ inputs.matrix || 'quick' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -194,13 +194,13 @@ jobs:
         if: always()
         run: |
           mkdir -p ui-screenshots
-          echo "run_id=\${{ github.run_id }}" > ui-screenshots/run-metadata.txt
-          echo "commit=\${{ github.sha }}" >> ui-screenshots/run-metadata.txt
+          echo "run_id=${{ github.run_id }}" > ui-screenshots/run-metadata.txt
+          echo "commit=${{ github.sha }}" >> ui-screenshots/run-metadata.txt
       - name: Upload PNG, accessibility XML and results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: boruzi-ui-quick-\${{ github.run_id }}
+          name: boruzi-ui-quick-${{ github.run_id }}
           path: ui-screenshots/
           if-no-files-found: error
           retention-days: 14
