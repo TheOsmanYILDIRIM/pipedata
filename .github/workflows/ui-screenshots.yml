@@ -159,10 +159,10 @@ jobs:
                   od=[n for n in initial if n.attrib.get("text")==expected]
                   if not od:
                       raise AssertionError("OD value not visible in first viewport: "+expected)
-                  bottom=int(re.findall(r"\\d+",od[0].attrib["bounds"])[3])
+                  bottom=int(re.findall(r"\d+",od[0].attrib["bounds"])[3])
                   nav=[n for n in initial if n.attrib.get("content-desc")=="Tablo/Standart"]
                   if nav:
-                      nav_top=int(re.findall(r"\\d+",nav[0].attrib["bounds"])[1])
+                      nav_top=int(re.findall(r"\d+",nav[0].attrib["bounds"])[1])
                       if bottom >= nav_top:
                           raise AssertionError("OD value overlaps bottom navigation")
 
