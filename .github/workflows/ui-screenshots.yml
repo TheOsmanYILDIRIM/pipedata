@@ -4,7 +4,11 @@ name: Boruzi Android UI Screenshots
 on:
   push:
     branches: [main, 'audit/boruzi-android-screenshots-*']
-    paths: ['.github/workflows/ui-screenshots.yml']
+    paths:
+      - '.github/workflows/ui-screenshots.yml'
+      - 'app/src/main/java/com/avenox/pipedata/MainActivity.kt'
+      - 'app/src/main/java/com/avenox/pipedata/UiLanguage.kt'
+      - 'tools/verify_pipe_data.py'
   workflow_dispatch:
     inputs:
       matrix:
@@ -139,6 +143,22 @@ jobs:
                       pass
               if ready is None:
                   raise AssertionError("Boruzi screen did not become ready")
+              # Capture the actual first-run walkthrough and dismiss it
+              # before ordinary layout assertions (not a fabricated screenshot).
+              onboarding=nodes(tag+"_onboarding_state")
+              skip=next((n.attrib.get("text") for n in onboarding
+                         if n.attrib.get("text") in ("Atla","Skip","Пропустить")),None)
+              if skip:
+                  if not any(n.attrib.get("text","").endswith("/3") for n in onboarding):
+                      raise AssertionError("First-run guide missing step counter")
+                  png(tag+"_onboarding_first_launch")
+                  if not tap_text(onboarding,skip):
+                      raise AssertionError("Cannot dismiss onboarding")
+                  time.sleep(.6)
+                  dismissed=nodes(tag+"_onboarding_dismissed")
+                  if any(n.attrib.get("text")==skip for n in dismissed):
+                      raise AssertionError("Onboarding did not dismiss")
+                  ready=dismissed
               detected={n.attrib.get("text","") for n in ready}
               target=("mm" if metric else
                       "inch" if "Unit" in detected else

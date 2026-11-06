@@ -114,8 +114,8 @@ assert 'Triple(ui("Tablo"), Icons.Default.MenuBook, 2)' in screen
 assert 'if (index == 2) ui("Tablo / Standart") else label' in screen
 assert "val schedules = remember(activeNps)" in screen
 assert "row.nps.startsWith(input" in screen
-assert "PipeDial(nps, step, pipe, imperial)" in screen
-assert screen.index("PipeDial(nps, step, pipe, imperial)") < screen.index('Text(ui("Schedule (SCH)")')
+assert "PipeDial(nps, step, pipe, imperial," in screen
+assert screen.index("PipeDial(nps, step, pipe, imperial,") < screen.index('Text(ui("Schedule (SCH)")')
 assert 'Text("NPS (inç)"' not in screen
 assert 'if (imperial) it * 0.3048 else it' in screen
 assert 'val massFactor = if (imperial) 2.20462262185' in screen
