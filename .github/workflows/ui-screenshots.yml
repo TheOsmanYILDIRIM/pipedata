@@ -123,12 +123,28 @@ jobs:
               adb("shell","settings","put","system","font_scale",str(scale))
               adb("shell","am","force-stop",pkg)
               adb("shell","am","start","-n",pkg+"/.MainActivity")
-              time.sleep(.65)
-              if metric:
-                  items=nodes(tag+"_unit")
-                  if not tap_text(items,"mm"):
-                      raise AssertionError("Boru metric switch not found")
-                  time.sleep(.35)
+              # Never screenshot the Android launcher as if it were the app.
+              ready=None
+              for attempt in range(6):
+                  time.sleep(.5)
+                  try:
+                      items=nodes(tag+"_ready"+str(attempt))
+                      if (any(n.attrib.get("text")=="Boruzi" for n in items) and
+                          any(n.attrib.get("text")=="Ölçü birimi" for n in items)):
+                          ready=items
+                          break
+                  except RuntimeError:
+                      pass
+              if ready is None:
+                  raise AssertionError("Boruzi screen did not become ready")
+              target="mm" if metric else "inç"
+              if not tap_text(ready,target):
+                  raise AssertionError("Unit choice missing: "+target)
+              time.sleep(.5)
+              selected=nodes(tag+"_unit_verified")
+              suffix=" mm" if metric else " in"
+              if not any(n.attrib.get("text","").endswith(suffix) for n in selected):
+                  raise AssertionError("Unit change was not reflected in pipe dimensions: "+target)
               png(tag+"_boru_initial")
               initial=nodes(tag+"_boru_initial")
               nav=["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
