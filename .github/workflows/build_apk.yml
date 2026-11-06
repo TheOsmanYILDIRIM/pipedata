@@ -35,14 +35,30 @@ jobs:
           java-version: '17'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Compile release APK only
+      - name: Restore release signing key
+        env:
+          SIGNING_BASE64: ${{ secrets.BORUZI_RELEASE_KEYSTORE_B64 }}
         run: |
+          test -n "$SIGNING_BASE64" || { echo "::error::Configure BORUZI_RELEASE_KEYSTORE_B64 secret before merging"; exit 1; }
+          printf '%s' "$SIGNING_BASE64" | base64 -d > "$RUNNER_TEMP/boruzi-release.keystore"
+          test -s "$RUNNER_TEMP/boruzi-release.keystore"
+      - name: Compile release APK only
+        env:
+          BORUZI_RELEASE_KEYSTORE_PATH: ${{ runner.temp }}/boruzi-release.keystore
+          BORUZI_RELEASE_STORE_PASSWORD: ${{ secrets.BORUZI_RELEASE_STORE_PASSWORD }}
+          BORUZI_RELEASE_KEY_ALIAS: ${{ secrets.BORUZI_RELEASE_KEY_ALIAS }}
+          BORUZI_RELEASE_KEY_PASSWORD: ${{ secrets.BORUZI_RELEASE_KEY_PASSWORD }}
+        run: |
+          test -n "$BORUZI_RELEASE_STORE_PASSWORD" && test -n "$BORUZI_RELEASE_KEY_ALIAS" && test -n "$BORUZI_RELEASE_KEY_PASSWORD"
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --stacktrace
       - name: Check APK output
         run: |
           test -s app/build/outputs/apk/release/app-release.apk
           ls -lh app/build/outputs/apk/release/app-release.apk
+      - name: Clean temporary signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/boruzi-release.keystore"
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
