@@ -1,0 +1,278 @@
+name: Boruzi Android UI Screenshots
+
+on:
+  push:
+    branches: ['audit/boruzi-android-screenshots-*']
+    paths: ['.github/workflows/ui-screenshots.yml']
+  workflow_dispatch:
+    inputs:
+      matrix:
+        description: 'quick: 3 representative configs, full: 12 configs'
+        type: choice
+        options: [quick, full]
+        default: quick
+
+permissions:
+  contents: read
+
+concurrency:
+  group: boruzi-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  emulator-screenshots:
+    name: Android screenshot smoke (${{ inputs.matrix || 'quick' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AUDIT_MATRIX: ${{ inputs.matrix || 'quick' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build debug APK and validate catalog
+        run: |
+          python3 tools/verify_pipe_data.py
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --console=plain
+          test -s app/build/outputs/apk/debug/app-debug.apk
+      - name: Prepare short-lived UI test script
+        run: |
+          cat > "$RUNNER_TEMP/boruzi_quick.py" <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import time
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          root = Path(os.environ["GITHUB_WORKSPACE"]) / "ui-screenshots"
+          root.mkdir(exist_ok=True)
+          apk = "app/build/outputs/apk/debug/app-debug.apk"
+          pkg = "com.avenox.pipedata"
+          passed, problems, warnings = [], [], []
+
+          def adb(*args, timeout=25):
+              p = subprocess.run(["adb", *map(str, args)], capture_output=True,
+                                 timeout=timeout)
+              if p.returncode:
+                  raise RuntimeError("adb " + " ".join(map(str,args)) +
+                                     ": " + p.stderr.decode(errors="replace")[-300:])
+              return p.stdout
+
+          def nodes(tag):
+              # ADB/UIAutomator sometimes returns an empty/incomplete XML during
+              # Compose transitions. Retry rather than treating transport flakiness
+              # as an application visual regression.
+              last_error=None
+              for attempt in range(4):
+                  try:
+                      adb("shell", "uiautomator", "dump", "/sdcard/boruzi.xml", timeout=30)
+                      data=adb("exec-out", "cat", "/sdcard/boruzi.xml")
+                      if not data.lstrip().startswith(b"<?xml"):
+                          raise ValueError("Empty/incomplete uiautomator XML")
+                      parsed=ET.fromstring(data)
+                      p=root / (tag + ".xml")
+                      p.write_bytes(data)
+                      return list(parsed.iter("node"))
+                  except (RuntimeError,ValueError,ET.ParseError) as exc:
+                      last_error=exc
+                      time.sleep(.4+attempt*.3)
+              raise RuntimeError(f"UI XML unavailable for {tag} after retries: {last_error}")
+
+          def center(bounds):
+              m = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", bounds)
+              if not m:
+                  raise AssertionError("Bad bounds: " + str(bounds))
+              a,b,c,d = map(int,m.groups())
+              return (a+c)//2, (b+d)//2
+
+          def tap_text(items, label, attr="text"):
+              for item in items:
+                  if item.attrib.get(attr) == label and item.attrib.get("bounds"):
+                      x,y = center(item.attrib["bounds"])
+                      adb("shell","input","tap",x,y)
+                      return True
+              return False
+
+          def png(tag):
+              p = root / (tag + ".png")
+              p.write_bytes(adb("exec-out","screencap","-p"))
+              data = p.read_bytes()
+              if not data.startswith(b"\x89PNG\r\n\x1a\n") or len(data)<1500:
+                  raise AssertionError("PNG invalid: "+tag)
+              passed.append({"name":tag,"bytes":len(data)})
+              print("CAPTURE",tag,len(data),flush=True)
+
+          def check(tag, operation):
+              try:
+                  operation()
+                  print("PASS",tag,flush=True)
+              except Exception as exc:
+                  print("FAIL",tag,repr(exc),flush=True)
+                  problems.append({"case":tag,"error":repr(exc)})
+
+          def exercise(width, scale, metric):
+              tag=f"{width}dp_font{scale}_{'mm' if metric else 'inch'}".replace(".","p")
+              adb("shell","wm","size",f"{width}x740")
+              adb("shell","wm","density","160")
+              adb("shell","settings","put","system","font_scale",str(scale))
+              adb("shell","am","force-stop",pkg)
+              adb("shell","am","start","-n",pkg+"/.MainActivity")
+              # Never screenshot the Android launcher as if it were the app.
+              ready=None
+              for attempt in range(6):
+                  time.sleep(.5)
+                  try:
+                      items=nodes(tag+"_ready"+str(attempt))
+                      if (any(n.attrib.get("text")=="Boruzi" for n in items) and
+                          any(n.attrib.get("text")=="Ölçü birimi" for n in items)):
+                          ready=items
+                          break
+                  except RuntimeError:
+                      pass
+              if ready is None:
+                  raise AssertionError("Boruzi screen did not become ready")
+              target="mm" if metric else "inç"
+              suffix=" mm" if metric else " in"
+              unit_confirmed=False
+              for attempt in range(4):
+                  selected=nodes(tag+"_unit_verified"+str(attempt))
+                  if any(n.attrib.get("text","").endswith(suffix) for n in selected):
+                      unit_confirmed=True
+                      break
+                  if not tap_text(selected,target):
+                      raise AssertionError("Unit choice missing: "+target)
+                  time.sleep(.8)
+              if not unit_confirmed:
+                  raise AssertionError("Unit change was not reflected in pipe dimensions: "+target)
+              png(tag+"_boru_initial")
+              initial=nodes(tag+"_boru_initial")
+              nav=["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
+              coords={}
+              for name in nav:
+                  found=[n for n in initial if n.attrib.get("content-desc")==name]
+                  if not found:
+                      raise AssertionError("Missing navigation semantics: "+name)
+                  coords[name]=center(found[0].attrib["bounds"])
+              headings={"SCH Bul":"SCH Bul",
+                        "Tablo/Standart":"Tablo / Standart",
+                        "Ayarlar":"Ayarlar"}
+              for name in nav:
+                  adb("shell","input","tap",*coords[name])
+                  time.sleep(.55)
+                  items=nodes(tag+"_page_"+name.replace("/","_").replace(" ","_"))
+                  if name in headings and not any(n.attrib.get("text")==headings[name] for n in items):
+                      raise AssertionError("Page did not open: "+name)
+                  suffix="boru_return" if name=="Boru" else name.lower().replace("/","_").replace(" ","_")
+                  png(tag+"_"+suffix)
+
+              # Dialog is verified using a real UI hierarchy and dismissed by its button.
+              visible=nodes(tag+"_id_source")
+              if not tap_text(visible,"İç Çap (ID)"):
+                  raise AssertionError("ID tappable label missing")
+              time.sleep(.4)
+              dialog=nodes(tag+"_id_open")
+              if not any("İç çap (ID) yazın" in n.attrib.get("text","") for n in dialog):
+                  raise AssertionError("ID dialog did not open")
+              png(tag+"_id_dialog")
+              if not tap_text(dialog,"İptal"):
+                  raise AssertionError("ID dialog dismiss button missing")
+              time.sleep(.55)
+              after=nodes(tag+"_id_closed")
+              if any("İç çap (ID) yazın" in n.attrib.get("text","") for n in after):
+                  raise AssertionError("ID dialog failed to close")
+
+              # Actual Compose text field exposes its value as EditText, not the label.
+              adb("shell","input","tap",*coords["SCH Bul"])
+              time.sleep(.55)
+              lookup=nodes(tag+"_lookup")
+              if not any(n.attrib.get("text")=="SCH Bul" for n in lookup):
+                  raise AssertionError("SCH page failed to open")
+              edits=[n for n in lookup if n.attrib.get("class")=="android.widget.EditText"]
+              if len(edits)<2:
+                  raise AssertionError(f"Expected two SCH EditText controls, found {len(edits)}")
+              x,y=center(edits[0].attrib["bounds"])
+              adb("shell","input","tap",x,y)
+              time.sleep(.4)
+              png(tag+"_sch_keyboard")
+              adb("shell","input","keyevent","4")
+              time.sleep(.35)
+
+              # NPS dial gesture is evaluated separately; don't fake success.
+              adb("shell","input","tap",*coords["Boru"])
+              time.sleep(.55)
+              dial_source=nodes(tag+"_dial_before")
+              dial=next((n for n in dial_source if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+              if dial is None:
+                  raise AssertionError("NPS dial accessibility node missing")
+              before=dial.attrib.get("content-desc")
+              a,b,c,d=map(int,re.findall(r"\d+",dial.attrib["bounds"]))
+              cx,cy=(a+c)//2,(b+d)//2
+              radius=min(c-a,d-b)//2
+              adb("shell","input","swipe",cx+int(radius*.8),cy,
+                  cx+int(radius*.5),cy+int(radius*.6),450)
+              time.sleep(.45)
+              dial_after=nodes(tag+"_dial_after")
+              after_desc=next((n.attrib.get("content-desc") for n in dial_after
+                               if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+              png(tag+"_dial_drag")
+              if after_desc==before:
+                  warnings.append({"case":tag,"issue":"Dial drag did not change NPS; needs manual check"})
+
+          def main():
+              try:
+                  print("EMULATOR",adb("shell","getprop","ro.build.version.release").decode().strip(),flush=True)
+                  adb("install","-r",apk,timeout=75)
+                  mode=os.environ.get("AUDIT_MATRIX","quick")
+                  cases=([(360,1.0,False),(320,1.3,True),(411,1.0,True)]
+                         if mode=="quick" else
+                         [(w,f,m) for w in (320,360,411) for f in (1.0,1.3) for m in (False,True)])
+                  for w,f,m in cases:
+                      check(f"{w}dp_{f}_{m}",lambda w=w,f=f,m=m: exercise(w,f,m))
+              finally:
+                  (root/"results.json").write_text(json.dumps(
+                      {"capture_count":len(passed),"captures":passed,"errors":problems,"warnings":warnings},
+                      indent=2,ensure_ascii=False))
+              print("SUMMARY",len(passed),"PNG",len(problems),"errors",len(warnings),"warnings",flush=True)
+              if problems or not passed: raise SystemExit(1)
+
+          if __name__ == "__main__":
+              main()
+          PY
+          python3 -m py_compile "$RUNNER_TEMP/boruzi_quick.py"
+      - name: Enable KVM hardware acceleration
+        run: |
+          ls -l /dev/kvm
+          sudo chmod 666 /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
+      - name: Boot one emulator and capture screenshots
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          target: default
+          profile: pixel_4
+          disable-animations: true
+          disable-linux-hw-accel: false
+          emulator-boot-timeout: 120
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: python3 "$RUNNER_TEMP/boruzi_quick.py"
+      - name: Record run evidence
+        if: always()
+        run: |
+          mkdir -p ui-screenshots
+          echo "run_id=${{ github.run_id }}" > ui-screenshots/run-metadata.txt
+          echo "commit=${{ github.sha }}" >> ui-screenshots/run-metadata.txt
+      - name: Upload PNG, accessibility XML and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boruzi-ui-quick-${{ github.run_id }}
+          path: ui-screenshots/
+          if-no-files-found: error
+          retention-days: 14
