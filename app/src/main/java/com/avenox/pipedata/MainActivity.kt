@@ -427,23 +427,34 @@ private fun CalculatorPage(
             TutorialHint(1, onTutorialNext, onTutorialSkip)
             Spacer(Modifier.height(8.dp))
         }
-        // The target is the actual SCH controls, not the explanatory text above.
-        // Scroll and draw the spotlight around the choices themselves.
+        // One compact SCH row stays above the bottom navigation on short screens.
+        // The selected schedule scrolls into view when NPS or SCH changes.
+        val schListState = rememberLazyListState()
+        LaunchedEffect(schedule, schedules) {
+            val selectedIndex = schedules.indexOf(schedule)
+            if (selectedIndex >= 0) schListState.animateScrollToItem(selectedIndex)
+        }
         Box(Modifier.fillMaxWidth().bringIntoViewRequester(schTarget)
             .clip(RoundedCornerShape(18.dp))) {
-            Column(Modifier.fillMaxWidth().padding(if (tutorialStep == 1) 7.dp else 0.dp)) {
-                Text(ui("Schedule (SCH)"), color = White, fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
-                        .clickable { editing = "SCH" }.padding(vertical = 5.dp))
+            Row(
+                Modifier.fillMaxWidth().padding(if (tutorialStep == 1) 7.dp else 0.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("SCH", color = White, fontSize = 19.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { editing = "SCH" }
+                        .semantics { contentDescription = ui("Schedule (SCH)") }
+                        .padding(end = 10.dp))
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.weight(1f),
+                    state = schListState,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)
                 ) {
                     items(schedules) { sch ->
                         Surface(
                             color = if (sch == schedule) Gold else Panel,
                             shape = RoundedCornerShape(24.dp),
-                            modifier = Modifier.heightIn(min = 56.dp)
+                            modifier = Modifier.heightIn(min = 48.dp)
                                 .border(
                                     if (tutorialStep == 1) 2.5.dp else 1.dp,
                                     if (tutorialStep == 1 || sch == schedule) Gold else StrokeColor,
@@ -453,15 +464,14 @@ private fun CalculatorPage(
                                     if (tutorialStep == 1) onTutorialNext()
                                 }
                         ) {
-                            Row(Modifier.padding(horizontal = 17.dp, vertical = 6.dp),
+                            Row(Modifier.padding(horizontal = 13.dp, vertical = 5.dp),
                                 verticalAlignment = Alignment.CenterVertically) {
-                                // Animated touch marker identifies the actual selectable chip.
                                 if (tutorialStep == 1 && sch == schedules.first()) {
                                     TutorialTouchMarker()
                                     Spacer(Modifier.width(6.dp))
                                 }
                                 Text(sch, color = if (sch == schedule) Deep else White,
-                                    fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                                    fontWeight = FontWeight.Bold, fontSize = 19.sp)
                             }
                         }
                     }
@@ -634,9 +644,12 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val widthDp = LocalConfiguration.current.screenWidthDp
             val fontScale = LocalDensity.current.fontScale
+            val heightDp = LocalConfiguration.current.screenHeightDp
             val dialCap = when {
-                widthDp <= 340 && fontScale >= 1.2f -> 256.dp
-                widthDp <= 360 && fontScale >= 1.2f -> 264.dp
+                heightDp <= 700 -> 218.dp
+                heightDp <= 790 -> 242.dp
+                widthDp <= 340 && fontScale >= 1.2f -> 242.dp
+                widthDp <= 360 && fontScale >= 1.2f -> 254.dp
                 else -> 282.dp
             }
             val dialSide = minOf(maxWidth, dialCap)
