@@ -71,6 +71,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val catalog = runCatching {
             assets.open("pipe_schedules.csv").bufferedReader().use { PipeCatalog.load(it) }
+        }.onFailure { error ->
+            android.util.Log.e("PipeCatalog", "Bundled pipe schedules could not be loaded", error)
         }.getOrNull()
         setContent {
             MaterialTheme(

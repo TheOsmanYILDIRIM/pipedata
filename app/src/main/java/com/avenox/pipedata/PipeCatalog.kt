@@ -36,14 +36,17 @@ class PipeCatalog private constructor(val rows: List<PipeSpec>) {
             val records = mutableListOf<PipeSpec>()
             val seen = mutableSetOf<String>()
             reader.buffered().useLines { lines ->
-                val header = lines.firstOrNull()?.trim()
-                require(header == "standard,nps,dn,outer_diameter_in,schedule,wall_thickness_in") {
-                    "Pipe catalogue must use original inch dimensions"
-                }
-                lines.drop(1).forEachIndexed { lineNo, raw ->
+                // A BufferedReader line sequence is one-shot; read header and data together.
+                lines.forEachIndexed { lineNo, raw ->
+                    if (lineNo == 0) {
+                        require(raw.trim() == "standard,nps,dn,outer_diameter_in,schedule,wall_thickness_in") {
+                            "Pipe catalogue must use original inch dimensions"
+                        }
+                        return@forEachIndexed
+                    }
                     if (raw.isBlank()) return@forEachIndexed
                     val parts = raw.trim().split(",")
-                    require(parts.size == 6) { "Invalid pipe table row " + (lineNo + 2) }
+                    require(parts.size == 6) { "Invalid pipe table row " + (lineNo + 1) }
                     val record = PipeSpec(
                         standard = parts[0].trim(),
                         nps = parts[1].trim(),
