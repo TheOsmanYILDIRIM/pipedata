@@ -110,17 +110,31 @@ assert "dialSide = minOf(maxWidth, dialCap)" in dial
 assert "widthDp <= 340 && fontScale >= 1.2f -> 208.dp" in dial
 for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):
     assert forbidden not in dial, f"Obsolete raster dial or control survived: {forbidden}"
-assert 'Triple("Tablo", Icons.Default.MenuBook, 2)' in screen
-assert 'if (index == 2) "Tablo/Standart" else label' in screen
+assert 'Triple(ui("Tablo"), Icons.Default.MenuBook, 2)' in screen
+assert 'if (index == 2) ui("Tablo / Standart") else label' in screen
 assert "val schedules = remember(activeNps)" in screen
 assert "row.nps.startsWith(input" in screen
 assert "PipeDial(nps, step, pipe, imperial)" in screen
-assert screen.index("PipeDial(nps, step, pipe, imperial)") < screen.index('Text("Schedule (SCH)"')
+assert screen.index("PipeDial(nps, step, pipe, imperial)") < screen.index('Text(ui("Schedule (SCH)")')
 assert 'Text("NPS (inç)"' not in screen
 assert 'if (imperial) it * 0.3048 else it' in screen
 assert 'val massFactor = if (imperial) 2.20462262185' in screen
 assert 'val volumeFactor = if (imperial) 0.26417205236' in screen
 assert 'if (imperial) "Uzunluk (ft)"' in screen
+
+# Locale + dynamic SCH search regression guards.
+locale = (ROOT / "app/src/main/java/com/avenox/pipedata/UiLanguage.kt").read_text()
+for key in ('"tr"', '"en"', '"ru"', '"Система"', '"Язык"', '"Language"'):
+    # Russian system display is "Язык системы"; case-insensitive presence is enough.
+    if key == '"Система"':
+        continue
+    assert key in (locale + screen), key
+assert 'LocalConfiguration.current.locales[0].language' in screen
+assert 'putString("language", it)' in screen
+assert 'languageSelection == "system"' in screen
+assert 'val suggestions = remember(odMm, catalog)' in screen
+assert 'catalog.rows' in screen and 'selectedSchKey = key' in screen
+assert 'option.wallMm / 25.4' in screen and 'selectedSchKey = null' in screen
 
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")
