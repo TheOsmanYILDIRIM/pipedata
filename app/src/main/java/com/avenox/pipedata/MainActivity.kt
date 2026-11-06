@@ -15,7 +15,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -235,17 +237,66 @@ private fun Picker(label: String, value: String, options: List<String>, onChange
                 Text(value, color = White, fontSize = 19.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
                 Icon(Icons.Default.ArrowDropDown, contentDescription = ui("Seç"), tint = Gold)
             }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option, fontSize = 20.sp) },
-                        modifier = Modifier.heightIn(min = 49.dp),
-                        onClick = { onChange(option); expanded = false }
-                    )
+            if (options.size > 20) {
+                if (expanded) ScrollableOptionDialog(
+                    title = label, selected = value, options = options,
+                    onDismiss = { expanded = false },
+                    onChoose = { onChange(it); expanded = false }
+                )
+            } else {
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option, fontSize = 20.sp) },
+                            modifier = Modifier.heightIn(min = 49.dp),
+                            onClick = { onChange(option); expanded = false }
+                        )
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ScrollableOptionDialog(
+    title: String, selected: String, options: List<String>,
+    onDismiss: () -> Unit, onChoose: (String) -> Unit
+) {
+    val initialIndex = options.indexOf(selected).coerceAtLeast(0)
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title, color = White) },
+        text = {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().heightIn(max = 440.dp),
+                state = listState
+            ) {
+                items(options) { option ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable { onChoose(option) }
+                            .heightIn(min = 52.dp)
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            option,
+                            color = if (option == selected) Gold else White,
+                            fontSize = 20.sp,
+                            fontWeight = if (option == selected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(ui("Kapat"), color = Gold) }
+        },
+        containerColor = Panel
+    )
 }
 
 @Composable
@@ -309,15 +360,16 @@ private fun CalculatorPage(
                     Icon(Icons.Default.ArrowDropDown, contentDescription = ui("NPS seç"),
                         tint = Gold, modifier = Modifier.size(24.dp))
                 }
-                DropdownMenu(expanded = npsMenuExpanded,
-                    onDismissRequest = { npsMenuExpanded = false }) {
-                    sizes.forEach { size ->
-                        DropdownMenuItem(
-                            text = { Text("NPS " + size + "″",
-                                color = if (size == nps) Gold else White) },
-                            onClick = { onNps(size); npsMenuExpanded = false })
+                if (npsMenuExpanded) ScrollableOptionDialog(
+                    title = ui("NPS seç"),
+                    selected = "NPS " + nps + "″",
+                    options = sizes.map { "NPS " + it + "″" },
+                    onDismiss = { npsMenuExpanded = false },
+                    onChoose = { option ->
+                        onNps(option.removePrefix("NPS ").removeSuffix("″"))
+                        npsMenuExpanded = false
                     }
-                }
+                )
             }
             Spacer(Modifier.width(8.dp))
             Row(Modifier.clip(RoundedCornerShape(14.dp))
