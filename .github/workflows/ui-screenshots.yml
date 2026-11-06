@@ -65,10 +65,24 @@ jobs:
               return p.stdout
 
           def nodes(tag):
-              adb("shell", "uiautomator", "dump", "/sdcard/boruzi.xml", timeout=25)
-              p = root / (tag + ".xml")
-              p.write_bytes(adb("exec-out", "cat", "/sdcard/boruzi.xml"))
-              return list(ET.fromstring(p.read_bytes()).iter("node"))
+              # ADB/UIAutomator sometimes returns an empty/incomplete XML during
+              # Compose transitions. Retry rather than treating transport flakiness
+              # as an application visual regression.
+              last_error=None
+              for attempt in range(4):
+                  try:
+                      adb("shell", "uiautomator", "dump", "/sdcard/boruzi.xml", timeout=30)
+                      data=adb("exec-out", "cat", "/sdcard/boruzi.xml")
+                      if not data.lstrip().startswith(b"<?xml"):
+                          raise ValueError("Empty/incomplete uiautomator XML")
+                      parsed=ET.fromstring(data)
+                      p=root / (tag + ".xml")
+                      p.write_bytes(data)
+                      return list(parsed.iter("node"))
+                  except (RuntimeError,ValueError,ET.ParseError) as exc:
+                      last_error=exc
+                      time.sleep(.4+attempt*.3)
+              raise RuntimeError(f"UI XML unavailable for {tag} after retries: {last_error}")
 
           def center(bounds):
               m = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", bounds)
