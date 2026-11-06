@@ -86,7 +86,15 @@ private val translations: Map<String, Pair<String, String>> = mapOf(
     "Döner NPS sayacı, seçili çap " to ("NPS dial, selected size " to "Шкала NPS, выбранный размер "),
     "Sonraki boru çapı" to ("Next pipe diameter" to "Следующий диаметр трубы"),
     "NPS seç" to ("Select NPS" to "Выбрать NPS"),
-    "Et kalınlığı önerileri" to ("Wall thickness suggestions" to "Варианты толщины стенки")
+    "Et kalınlığı önerileri" to ("Wall thickness suggestions" to "Варианты толщины стенки"),
+    "İlk kullanım" to ("Quick guide" to "Быстрый урок"),
+    "Halkanın kenarını parmağınla çevir. Hareketi dene!" to ("Drag the outer ring to rotate it. Try it now!" to "Проведите пальцем по краю кольца. Попробуйте!"),
+    "Aşağıdaki SCH değerlerinden birine dokun." to ("Tap one of the SCH options below." to "Нажмите на один из вариантов SCH ниже."),
+    "Dış çap değerine dokunarak NPS seç." to ("Tap the outside diameter to choose NPS." to "Нажмите на наружный диаметр для выбора NPS."),
+    "Atla" to ("Skip" to "Пропустить"),
+    "İleri" to ("Next" to "Далее"),
+    "Bitir" to ("Finish" to "Готово"),
+    "Öğreticiyi tekrar göster" to ("Show tutorial again" to "Повторить обучение")
 )
 
 internal fun translateUi(value: String, language: String): String = when (language) {

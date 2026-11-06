@@ -136,5 +136,18 @@ assert 'val suggestions = remember(odMm, catalog)' in screen
 assert 'catalog.rows' in screen and 'selectedSchKey = key' in screen
 assert 'option.wallMm / 25.4' in screen and 'selectedSchKey = null' in screen
 
+# First-run onboarding: real rotary input, persistent completion, replay, localized hints.
+assert 'prefs.getBoolean("onboarding_seen_v1", false)' in screen
+assert 'prefs.edit().putBoolean("onboarding_seen_v1", true)' in screen
+assert 'onReplayTutorial = {' in screen
+assert 'currentOnWheelDragged()' in screen
+assert 'if (tutorialStep == 1) onTutorialNext()' in screen
+assert 'if (tutorialStep == 2) onOdTapped()' in screen
+assert 'private fun TutorialRingGesture(' in screen
+assert 'animateFloat(' in screen and 'drawArc(' in screen
+locale = (ROOT / "app/src/main/java/com/avenox/pipedata/UiLanguage.kt").read_text()
+for phrase in ('"İlk kullanım"', '"Atla"', '"İleri"', '"Öğreticiyi tekrar göster"'):
+    assert phrase in locale
+
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")

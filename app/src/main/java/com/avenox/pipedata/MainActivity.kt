@@ -3,12 +3,15 @@ package com.avenox.pipedata
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.math.*
 
@@ -95,6 +99,17 @@ private fun PipeApp(catalog: PipeCatalog) {
     }
     val systemLanguage = LocalConfiguration.current.locales[0].language.lowercase(Locale.ROOT)
     val language = if (languageSelection == "system") systemLanguage else languageSelection
+    var tutorialStep by rememberSaveable {
+        mutableIntStateOf(if (prefs.getBoolean("onboarding_seen_v1", false)) -1 else 0)
+    }
+    val finishTutorial: () -> Unit = {
+        tutorialStep = -1
+        prefs.edit().putBoolean("onboarding_seen_v1", true).apply()
+    }
+    val advanceTutorial: () -> Unit = {
+        if (tutorialStep >= 2) finishTutorial()
+        else if (tutorialStep >= 0) tutorialStep += 1
+    }
     var page by rememberSaveable { mutableIntStateOf(0) }
     var standard by rememberSaveable { mutableStateOf("B36.10") }
     var nps by rememberSaveable { mutableStateOf("6") }
@@ -147,7 +162,10 @@ private fun PipeApp(catalog: PipeCatalog) {
                     onImperial = { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
                     catalog = catalog, onChoose = { chosen ->
                         standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
-                    }
+                    },
+                    tutorialStep = tutorialStep,
+                    onTutorialNext = advanceTutorial,
+                    onTutorialSkip = finishTutorial
                 )
                 1 -> LookupPage(catalog, standard, normalSp, unitImperial)
                 2 -> CombinedTableStandardsPage(catalog, activeNps, sizes,
@@ -162,6 +180,11 @@ private fun PipeApp(catalog: PipeCatalog) {
                     onLanguageChange = {
                         languageSelection = it
                         prefs.edit().putString("language", it).apply()
+                    },
+                    onReplayTutorial = {
+                        tutorialStep = 0
+                        page = 0
+                        prefs.edit().putBoolean("onboarding_seen_v1", false).apply()
                     }
                 )
             }
@@ -244,8 +267,20 @@ private fun CalculatorPage(
     schedule: String, schedules: List<String>, onSch: (String) -> Unit,
     pipe: PipeSpec?, imperial: Boolean, textSp: Int,
     onImperial: (Boolean) -> Unit,
-    catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit
+    catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit,
+    tutorialStep: Int, onTutorialNext: () -> Unit, onTutorialSkip: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+    val schTarget = remember { BringIntoViewRequester() }
+    val odTarget = remember { BringIntoViewRequester() }
+    LaunchedEffect(tutorialStep) {
+        if (tutorialStep == 0) scrollState.animateScrollTo(0)
+        if (tutorialStep == 1 || tutorialStep == 2) {
+            delay(160)
+            if (tutorialStep == 1) schTarget.bringIntoView()
+            else odTarget.bringIntoView()
+        }
+    }
     var editing by remember { mutableStateOf<String?>(null) }
     var showLength by remember { mutableStateOf(false) }
     val index = sizes.indexOf(nps).coerceAtLeast(0)
@@ -253,7 +288,7 @@ private fun CalculatorPage(
         onNps(sizes[(index + delta + sizes.size) % sizes.size])
     }
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        Modifier.fillMaxSize().verticalScroll(scrollState)
             .padding(horizontal = 18.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -275,8 +310,23 @@ private fun CalculatorPage(
                 }
             }
         }
-        PipeDial(nps, step, pipe, imperial) { editing = it }
+        if (tutorialStep == 0) {
+            TutorialHint(0, onTutorialNext, onTutorialSkip)
+            Spacer(Modifier.height(8.dp))
+        }
+        PipeDial(nps, step, pipe, imperial,
+            onEdit = { editing = it },
+            tutorialStep = tutorialStep,
+            onWheelDragged = { if (tutorialStep == 0) onTutorialNext() },
+            onOdTapped = { if (tutorialStep == 2) onTutorialNext() },
+            odTarget = odTarget)
         Spacer(Modifier.height(12.dp))
+        if (tutorialStep == 1) {
+            Column(Modifier.fillMaxWidth().bringIntoViewRequester(schTarget)) {
+                TutorialHint(1, onTutorialNext, onTutorialSkip)
+                Spacer(Modifier.height(8.dp))
+            }
+        }
         Text(ui("Schedule (SCH)"), color = White, fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
                 .clickable { editing = "SCH" }.padding(vertical = 5.dp))
@@ -291,7 +341,10 @@ private fun CalculatorPage(
                     modifier = Modifier.heightIn(min = 56.dp)
                         .border(1.dp, if (sch == schedule) Gold else StrokeColor,
                             RoundedCornerShape(24.dp))
-                        .clickable { onSch(sch) }
+                        .clickable {
+                            onSch(sch)
+                            if (tutorialStep == 1) onTutorialNext()
+                        }
                 ) {
                     Box(Modifier.padding(horizontal = 19.dp), contentAlignment = Alignment.Center) {
                         Text(sch, color = if (sch == schedule) Deep else White,
@@ -318,11 +371,95 @@ private fun CalculatorPage(
     }
 }
 
+
+/** Short, contextual hints; they do not block the actual controls. */
+@Composable
+private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
+    val message = when (step) {
+        0 -> ui("Halkanın kenarını parmağınla çevir. Hareketi dene!")
+        1 -> ui("Aşağıdaki SCH değerlerinden birine dokun.")
+        else -> ui("Dış çap değerine dokunarak NPS seç.")
+    }
+    Surface(
+        color = Color(0xFF17433D), shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth()
+            .border(2.dp, Gold.copy(alpha = 0.88f), RoundedCornerShape(16.dp))
+            .semantics { contentDescription = message }
+    ) {
+        Column(Modifier.padding(horizontal = 13.dp, vertical = 9.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.TouchApp, contentDescription = null, tint = Gold,
+                    modifier = Modifier.size(25.dp))
+                Spacer(Modifier.width(9.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(ui("İlk kullanım") + " · ${step + 1}/3",
+                        color = Gold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    Text(message, color = White, fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold, lineHeight = 21.sp)
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = onSkip) {
+                    Text(ui("Atla"), color = Muted, fontSize = 15.sp)
+                }
+                TextButton(onClick = onNext) {
+                    Text(ui(if (step == 2) "Bitir" else "İleri"),
+                        color = Gold, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                }
+            }
+        }
+    }
+}
+
+/** Procedural curved swipe arrow and moving fingertip on the real rotary dial. */
+@Composable
+private fun TutorialRingGesture(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "ring_guide")
+    val angle by transition.animateFloat(
+        initialValue = -70f, targetValue = 55f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1750, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Restart
+        ), label = "finger_angle"
+    )
+    Canvas(modifier) {
+        val ringR = size.minDimension * 0.395f
+        val ringBox = Offset(center.x - ringR, center.y - ringR)
+        drawArc(Gold.copy(alpha = 0.9f), startAngle = -73f, sweepAngle = 130f,
+            useCenter = false, topLeft = ringBox,
+            size = Size(2f * ringR, 2f * ringR),
+            style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round))
+        val endAngle = Math.toRadians(57.0)
+        val ax = center.x + cos(endAngle).toFloat() * ringR
+        val ay = center.y + sin(endAngle).toFloat() * ringR
+        val tangent = Offset(-sin(endAngle).toFloat(), cos(endAngle).toFloat())
+        val tip = Offset(ax, ay)
+        drawLine(Gold, tip,
+            Offset(ax - tangent.x * 15.dp.toPx() - 5.dp.toPx(),
+                ay - tangent.y * 15.dp.toPx()), 3.dp.toPx())
+        drawLine(Gold, tip,
+            Offset(ax - tangent.x * 15.dp.toPx() + 5.dp.toPx(),
+                ay - tangent.y * 15.dp.toPx()), 3.dp.toPx())
+        val radians = Math.toRadians(angle.toDouble())
+        val finger = Offset(center.x + cos(radians).toFloat() * ringR,
+            center.y + sin(radians).toFloat() * ringR)
+        drawCircle(Deep.copy(alpha = 0.62f), 19.dp.toPx(), finger)
+        drawCircle(White, 12.dp.toPx(), finger)
+        drawCircle(Gold, 12.dp.toPx(), finger,
+            style = Stroke(width = 3.dp.toPx()))
+        drawCircle(Deep, 3.dp.toPx(), finger)
+    }
+}
+
 /** Entirely procedural dial; no image assets or bitmap transformations. */
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
-    imperial: Boolean, onEdit: (String) -> Unit) {
+    imperial: Boolean, onEdit: (String) -> Unit,
+    tutorialStep: Int = -1,
+    onWheelDragged: () -> Unit = {}, onOdTapped: () -> Unit = {},
+    odTarget: BringIntoViewRequester? = null) {
     val currentOnStep by rememberUpdatedState(onStep)
+    val currentOnWheelDragged by rememberUpdatedState(onWheelDragged)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
     val dialDescription = ui("Döner NPS sayacı, seçili çap ") + nps + " " + ui("inç")
     val nextDiameter = ui("Sonraki boru çapı")
@@ -389,6 +526,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 while (abs(remainder) >= stepAngle) {
                                     val direction = if (remainder > 0f) 1 else -1
                                     currentOnStep(direction)
+                                    currentOnWheelDragged()
                                     remainder -= direction * stepAngle
                                 }
                             }
@@ -508,6 +646,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     drawLine(Gold, Offset(c.x, r * 0.105f), Offset(c.x, r * 0.045f),
                         strokeWidth = r * 0.018f, cap = StrokeCap.Round)
                 }
+                if (tutorialStep == 0) TutorialRingGesture(Modifier.fillMaxSize())
                 if (pipe != null) {
                     val dimensionUnit = if (imperial) "in" else "mm"
                     val inner = if (imperial) pipe.idMm / 25.4 else pipe.idMm
@@ -528,10 +667,20 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
         if (pipe != null) {
             val dimensionUnit = if (imperial) "in" else "mm"
             val outer = if (imperial) pipe.odInches else pipe.odMm
+            if (tutorialStep == 2) {
+                Column(Modifier.fillMaxWidth().then(
+                    if (odTarget != null) Modifier.bringIntoViewRequester(odTarget) else Modifier
+                )) {
+                    TutorialHint(2, onOdTapped, onOdTapped)
+                    Spacer(Modifier.height(7.dp))
+                }
+            }
             Column(Modifier.fillMaxWidth().padding(top = 5.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border(1.5.dp, Gold.copy(alpha = 0.85f), RoundedCornerShape(16.dp))
-                .clickable { onEdit("NPS") }
+                 .border(if (tutorialStep == 2) 3.dp else 1.5.dp,
+                    Gold.copy(alpha = if (tutorialStep == 2) 1f else 0.85f),
+                    RoundedCornerShape(16.dp))
+                .clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(ui("Dış Çap (OD) · Seçmek için dokunun"), color = Muted,
@@ -1006,7 +1155,8 @@ private fun InfoPanel(title: String, text: String, textSp: Int) {
 private fun SettingsPage(
     largeText: Boolean, onLargeText: (Boolean) -> Unit,
     imperial: Boolean, onImperial: (Boolean) -> Unit, textSp: Int,
-    languageSelection: String, onLanguageChange: (String) -> Unit
+    languageSelection: String, onLanguageChange: (String) -> Unit,
+    onReplayTutorial: () -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
         PageHeading(ui("Ayarlar"), ui("Sahada kolay okunabilen ekran"))
@@ -1041,5 +1191,7 @@ private fun SettingsPage(
         InfoPanel(ui("Çevrimdışı kullanım"), ui("Boru tablosu cihazda bulunur. Hesaplamak için internet gerekmez."), textSp)
         Spacer(Modifier.height(14.dp))
         InfoPanel(ui("Veri kapsamı"), ui("Uygulama yalnızca geçerli nominal et kalınlığı kaydı olan NPS / SCH seçeneklerini listeler. Bilinmeyen veriler tahmin edilmez."), textSp)
+        Spacer(Modifier.height(14.dp))
+        GoldButton(ui("Öğreticiyi tekrar göster"), onReplayTutorial)
     }
 }
