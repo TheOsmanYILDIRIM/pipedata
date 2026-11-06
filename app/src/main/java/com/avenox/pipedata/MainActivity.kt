@@ -349,11 +349,13 @@ private fun CalculatorPage(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             var npsMenuExpanded by remember { mutableStateOf(false) }
+            val compactNps = LocalConfiguration.current.screenWidthDp <= 340 ||
+                LocalDensity.current.fontScale >= 1.2f
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)) {
                 // 36 NPS options make an always-visible horizontal chip strip cumbersome.
                 // Accessible previous/next targets plus the full-size dialog are faster.
-                IconButton(
+                if (!compactNps) IconButton(
                     onClick = { step(-1) },
                     modifier = Modifier.size(42.dp)
                 ) {
@@ -369,12 +371,12 @@ private fun CalculatorPage(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center) {
                     Text("NPS " + nps + "″", color = White,
-                        fontSize = if (LocalConfiguration.current.screenWidthDp <= 340) 16.sp else 19.sp,
+                        fontSize = if (compactNps) 18.sp else 19.sp,
                         fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = ui("NPS seç"),
                         tint = Gold, modifier = Modifier.size(20.dp))
                 }
-                IconButton(
+                if (!compactNps) IconButton(
                     onClick = { step(1) },
                     modifier = Modifier.size(42.dp)
                 ) {
@@ -632,8 +634,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             val fontScale = LocalDensity.current.fontScale
             val dialCap = when {
                 widthDp <= 340 && fontScale >= 1.2f -> 256.dp
-                widthDp <= 360 && fontScale >= 1.2f -> 282.dp
-                else -> 320.dp
+                widthDp <= 360 && fontScale >= 1.2f -> 264.dp
+                else -> 282.dp
             }
             val dialSide = minOf(maxWidth, dialCap)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
