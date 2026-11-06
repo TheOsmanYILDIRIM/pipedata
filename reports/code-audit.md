@@ -86,3 +86,36 @@
 
 ---
 **Bağımsız denetçi sınırı:** Kaynağın görüntülenmesi, testin geçmesi veya gerçek cihazda doğrulama birbirinin yerine kullanılmadı.
+
+
+## Ek denetim — nominal boru veri tablosu (2026-11-06, UTC unknown)
+
+**Kaynak sabitleme:** `app/src/main/assets/pipe_schedules.csv` blob `7b51df527282dbe26ebc02d1a94f1d233463f3b0`, 377 kayıt. B36.19-2022 Tablo 2-1'in erişilebilir metin görünümü karşılaştırma kaynağı olarak kullanıldı: https://studylib.net/doc/27578163/asmeb36.19-2022-%E7%84%8A%E6%8E%A5%E5%92%8C%E6%97%A0%E7%BC%9E%E5%B7%A5%E8%89%BA%E4%B8%8D%E9%94%88%E9%92%A2%E7%AE%A1 . Bu görünüm yayınevinin doğrulanmış lisanslı kopyası değildir; saha kullanımında yetkili sürümle son kontrol gereklidir. **CSV'ye hiçbir yazma yapılmadı.**
+
+| ID | Önem | Güven | CSV kanıtı | Bulgular |
+|---|---|---|---|---|
+| BZ-A06 | High | Tablo karşılaştırmasıyla doğrulandı | `pipe_schedules.csv:311` | B36.19 NPS 22 / 80S = 12.70 mm mevcut; B36.19-2022 Tablo 2-1'de 22 / 80S et kalınlığı boş/üç nokta (tanımlı değil). |
+| BZ-A07 | Medium | Tablo karşılaştırmasıyla doğrulandı | `pipe_schedules.csv:1-378` | B36.19'da tablodaki **14 geçerli 160S** eşleşmesi CSV'de bulunmuyor; kullanıcı S serisini eksik görüyor. |
+
+### BZ-A06 — Tanımlanmamış B36.19 22 in / SCH 80S satırı (High)
+
+- **Kanıt:** CSV satır 311: `B36.19,22,550,558.80,80S,12.700`. B36.19-2022 Tablo 2-1'de `22 (550)` / `80S` için nominal et kalınlığı açık değer yerine `…` yazıyor; `22/5S = 4.78` ve `22/10S = 5.54` ise tanımlı. Kaynak metin: https://studylib.net/doc/27578163/asmeb36.19-2022-%E7%84%8A%E6%8E%A5%E5%92%8C%E6%97%A0%E7%BC%9E%E5%B7%A5%E8%89%BA%E4%B8%8D%E9%94%88%E9%92%A2%E7%AE%A1 (Tablo 2-1, NPS 22).
+- **Mekanizma:** Fiziksel olarak mümkün olan 12.7 mm kalınlığı, veri kaydı standartta tanımlanmış gibi gösteriyor; SCH seçimi, hesaplanan ID/kütle ve saha siparişi yanlış standarda atfedilebilir.
+- **Yeniden üretim:** CSV satır 311'i oku; Boru ekranında NPS 22 / 80S seçilebildiğini kodun `schedules` union filtresiyle kontrol et. B36.19-2022 NPS 22 / 80S hücresi ile karşılaştır. Cihaz UI yürütmesi yapılmadı.
+- **Önerilen düzeltme:** Yetkili B36.19 sürümünde kontrol ettikten sonra tanımsız kombinasyonu **B36.19 kaydından** çıkar; aynı ölçünün B36.10 XS gibi başka standart kaydı varsa onu ayrı koru. Otomatik varsayılan kalınlık kullanma.
+- **Doğrulama:** Data fixture/test `B36.19|22|80S` için kayıt olmadığını, `B36.10|22|XS` kaydının korunduğunu kontrol etmeli; UI standardı doğru göstermeli.
+
+### BZ-A07 — B36.19 SCH 160S satırlarının eksikliği (Medium)
+
+- **Kanıt:** CSV'de hiç `B36.19|*|160S` bulunmaz. B36.19-2022 Tablo 2-1'de şu 14 kombinasyon doğrudan listelenir (NPS → et, mm):
+  `1/8→3.15`, `1/4→3.68`, `3/8→4.01`, `1/2→4.78`, `3/4→5.56`, `1→6.35`, `1 1/4→6.35`, `1 1/2→7.14`, `2→8.74`, `2 1/2→9.52`, `3→11.13`, `4→13.49`, `5→15.88`, `6→18.26`. B36.19-2022 Tablo 2-1: https://studylib.net/doc/27578163/asmeb36.19-2022-%E7%84%8A%E6%8E%A5%E5%92%8C%E6%97%A0%E7%BC%9E%E5%B7%A5%E8%89%BA%E4%B8%8D%E9%94%88%E9%92%A2%E7%AE%A1 .
+- **Mekanizma:** Veri yükleyici yalnız CSV'yi kullanır; mevcut kayıt olmadığı için SCH listesi ve aramada 160S görünmez. `B36.10|...|160` varlığı **B36.19 160S'yi temsil etmez**.
+- **Yeniden üretim:** CSV'de `B36.19` ve `160S` kesişimini ara (0 sonuç); tabloda yukarıdaki NPS kayıtlarını karşılaştır.
+- **Önerilen düzeltme:** Yetkili standart sürümüyle kıyaslayıp doğru et kalınlığı ve DN/OD ile eksik B36.19 160S kayıtlarını ekle; mevcut standart ayrımını koru. B36.19 kapsamı daha dar seçilecekse kapsam dışı bırakmanın gerekçesini UI'da açıkla.
+- **Doğrulama:** 14 anahtarı ayrı fixture'larda doğru değerlerle kontrol et; `schedules` ve tablo ekranlarında 160S görünürlüğünü test et.
+
+### İlave kontroller — sonuç sınırları
+
+- **Geçti (kaynak üzerinde JavaScript taraması):** 35 farklı NPS; her NPS grubunda tek DN/OD; NPS 14 ve üzerinin `OD = 25.4 × NPS` tutarlılığı; aynı standard/NPS/SCH üçlüsünde mükerrer kayıt yok; fiziksel `0 < t < OD/2` aralığı. Aynı NPS+SCH için farklı et değerleri tespit edilmedi; bu, S ve düz SCH'nin **farklı isim** olması nedeniyle iki seriyi karşılaştırmaz.
+- **Açık:** B36.10'un her tekil SCH hücresinin yetkili standarda göre birebir ve tüm kapsam doğrulaması, ASME lisanslı orijinal belge, Python betiği, Android CI/emülatör/cihaz testi.
+- **Öncelik:** Önce BZ-A06'yı veri standardı eşleştirmesi bakımından çöz; sonra BZ-A07'deki eksik 160S satırlarını kontrollü kaynakla doğrula. Kaynak kod/CSV değişikliği bu sohbetin yetkisi dışında.
