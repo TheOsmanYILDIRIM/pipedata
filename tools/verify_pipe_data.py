@@ -323,7 +323,7 @@ assert 'if (tutorialStep == 2) onOdTapped()' in screen
 # Real SCH chips and OD selection visibly pulse during their tutorial steps.
 assert 'bringIntoViewRequester(schTarget)' in screen
 assert 'if (tutorialStep == 1) TutorialPulseFrame(Modifier.matchParentSize())' in screen
-assert 'if (tutorialStep == 2) TutorialPulseFrame(Modifier.matchParentSize())' in screen
+assert 'Modifier.border(3.dp, Gold, RoundedCornerShape(16.dp))' in screen
 assert 'if (tutorialStep == 1 && sch == schedules.first())' in screen
 assert 'TutorialTouchMarker()' in screen
 assert 'private fun TutorialRingGesture(' in screen
