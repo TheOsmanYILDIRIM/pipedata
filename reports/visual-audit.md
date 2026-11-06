@@ -1,12 +1,12 @@
 # Boruzi Android görsel ve etkileşim denetimi
 
-**Durum:** KVM düzeltmesiyle gerçek Android emülatörü çalıştı, 21 PNG üretildi ve incelendi; otomatik etkileşim doğrulaması önceki koşuda üç eksikle başarısız. Erişilebilirlik/diyalog test sürücüsü onarıldı, yeni koşu başladı. Tam matris hâlâ açık.  
+**Durum:** Hızlı Android 13 emülatör smoke testi **PASS**; üç temsilî konfigürasyonda 24 gerçek PNG doğrulandı ve açılıp incelendi. Geniş 12'li matris ve gerçek cihaz testi açık.
 **Tarih:** 2026-11-06  
 **Kaynak:** `TheOsmanYILDIRIM/pipedata`  
 **Başlangıç main HEAD:** `d435597615dbdba8bc341d9976ba0745d2503079`  
 **İzole dal:** `audit/boruzi-android-screenshots-20261106`  
 **Test iş akışı:** [ui-screenshots.yml](../.github/workflows/ui-screenshots.yml)  
-**Güncel düzeltilmiş Actions koşusu:** [42217141656](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42217141656) (`0bac6360dac5ac4a68eb902a9ac84ed9f660ce69`)
+**Güncel başarılı Actions koşusu:** [42219051125](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42219051125) (`e24d0f4f8f24420f6e4aa96391e8c89a046a2cf4`), **4 dakika 28 saniye** (12:37:09–12:41:37 UTC). [PNG/XML/JSON artefaktı](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42219051125/artifacts/13502148749), 24 PNG, 0 hata, 0 uyarı.
 **İlk gerçek Android PNG koşusu:** [42216238840](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840), [PNG/XML/JSON artefaktı](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42216238840/artifacts/13501661494). Emülatör Android 13, açılış 33.5 sn; 21 PNG üretildi. `results.json` üç SCH giriş alanı erişilebilirlik araması hatası içeriyor; adım `failure`. Tam koşu 3 dakika 18 saniye sürdü (12:15:11–12:18:29 UTC).
 **Hızlı koşunun doğrulanmış arızası:** [42215367381](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42215367381): `ProbeKVM: ... doesn't have permissions to use KVM (/dev/kvm)`, `-accel off`, `Timeout waiting for emulator to boot`, ADB `device offline`. UI testi hiç başlamadı; 210 baytlık tek artefakt yalnızca `run-metadata.txt` içeriyor. Sorun Android uygulama render'ı olarak sınıflandırılmaz.
 **Önceki başarısız koşu:** [42188972565](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42188972565), `cancelled`; Android emülatörü step `failure`, PNG artefaktı yok. Doğrudan log indirme API'si `BlobNotFound` döndürdü; kesin hata nedeni teşhis edilemedi.
@@ -41,7 +41,7 @@
 
 ## Görsel bulgular
 
-**Bir görsel kusur doğrulandı; tam matris ve diğer etkileşimler açık.** Görsel değerlendirme yalnızca gerçek Android 13 PNG'lerine dayanır.
+**Bir görsel kusur doğrulandı; son `quick` matrisi PASS, tam matris ve gerçek cihaz doğrulaması açık.** Görsel değerlendirme yalnızca gerçek Android 13 PNG'lerine dayanır.
 
 ### V-01 — Dar ekranda alt gezinme etiketinin iki satıra taşması
 
@@ -82,13 +82,23 @@ Gerçek hata doğrulandığında her kayıt için **ekran, ekran boyutu (dp), fo
 | İlk GitHub Actions emülatör koşusu | İptal edildi; PNG artefaktı yok |
 | İkinci hızlı koşu | Başarısız: `/dev/kvm` izni yok, emülatör açılış timeout; yalnız metadata artefaktı |
 | KVM düzeltmeli ilk quick koşusu | Android 13 emülatör açıldı, 21 PNG artefaktı PASS; 3 test sürücüsü erişilebilirlik hatası nedeniyle CI FAIL |
-| Erişilebilirlik düzeltmeli yeni quick koşusu | [42217141656](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42217141656), sonuç bekleniyor |
+| Erişilebilirlik düzeltmeli eski quick koşusu | CI FAIL (2 geçici XML parse hatası); retry eklendi |
+| Birim durumu kontrolü | 411dp ilk denemede geçiş doğrulanmadı; tekrar kontrol ile düzeltildi |
+| **Son quick koşusu** | **PASS**, [42219051125](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42219051125), **4 dk 28 sn**, 24 PNG, 0 hata/uyarı |
 | Önceki koşuda Debug APK derlemesi | PASS; yeni koşu ayrıca doğrulanacak |
-| Gerçek Android emülatörü çalıştı | PASS: Android 13 log + 21 gerçek PNG |
-| PNG artefaktı üretildi | PASS: 21 PNG, XML ve JSON, artefakt 13501661494 |
-| PNG dosyaları açılıp görsel olarak incelendi | Evet, ilk quick matris montajı; V-01 saptandı, tam matris açık |
+| Gerçek Android emülatörü çalıştı | PASS: Android 13 log + 24 gerçek PNG |
+| PNG artefaktı üretildi | PASS: 24 PNG, XML ve JSON, artefakt 13502148749 |
+| PNG dosyaları açılıp görsel olarak incelendi | Evet, son quick montajı; V-01 devam ediyor, tam matris açık |
 | Tüm dokunmatik hedefler çalışıyor | Doğrulanmadı |
 | Gerçek Android cihaz testi | Yapılmadı |
 | Avenox görev ilerleme güncellemesi | Ayrı resmî Beyin işlemiyle doğrulanmalı |
 
 > Not: GitHub Actions iş akışı başarısız olursa bu rapor **PASS** olarak okunmamalıdır. Kanıt için koşu logu, PNG ZIP artefaktı ve `results.json` birlikte incelenmelidir.
+
+## Son kabul özeti — 2026-11-06
+
+- **Gerçek emülatör:** Android 13, KVM etkin; uygulama ekranı hazır oluşu ve inç/mm seçiminin ölçü metnine yansıması kontrol edildi.
+- **Hız:** CI run 42219051125 başladı 12:37:09, tamamlandı 12:41:37 UTC = **4 dk 28 sn**. Bu bir ölçümdür; her GitHub sırasının 5 dakikada biteceği garantisi değildir.
+- **Kaynak artefakt:** [13502148749](https://github.com/TheOsmanYILDIRIM/pipedata/actions/runs/42219051125/artifacts/13502148749), gerçek Android `screencap` ile yakalanmış **24 PNG**, erişilebilirlik XML'leri, `results.json` (24 capture / 0 errors / 0 warnings).
+- **Görsel gözden geçirme:** 360dp/inç/1.0, 320dp/mm/1.3, 411dp/mm/1.0; Boru, SCH Bul, Tablo/Standart, Ayarlar, ID diyaloğu, klavye ve NPS sürükleme PNG'leri incelendi. V-01 (320dp büyük yazıda alt etiket iki satır) açık.
+- **Açık test borcu:** 12'li `full` matris, farklı SCH seçimleri, uzun değerler ve fiziksel Android cihaz. `quick` PASS bunların geçtiğini kanıtlamaz.
