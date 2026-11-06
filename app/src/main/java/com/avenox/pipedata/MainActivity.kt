@@ -530,9 +530,9 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
     val specs = listOf(
-        Triple("Dış Çap (OD)", decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.Straighten),
-        Triple("İç Çap (ID)", decimal(id) + " " + thicknessUnit, Icons.Default.Circle),
-        Triple("Et Kalınlığı", decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.Tune),
+        Triple("Dış Çap (OD)", decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.OpenInFull),
+        Triple("İç Çap (ID)", decimal(id) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
+        Triple("Et Kalınlığı", decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.LineWeight),
         Triple("Ağırlık", decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
         Triple("İç Hacim", decimal(volume) + if (imperial) " gal/ft" else " L/m", Icons.Default.WaterDrop)
     )
