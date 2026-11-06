@@ -257,22 +257,29 @@ for screen_name in ("CalculatorPage", "LookupPage", "CombinedTableStandardsPage"
 for banned in ("CsvDataStore", "flanges", "gaskets", "valves", "blanks"):
     assert banned not in screen, f"Legacy UI accidentally referenced: {banned}"
 
-# Procedural dial contract: circle geometry and touch must share a square pivot.
-dial = screen.split("private fun PipeDial(", 1)[1].split("private fun ResultRows(", 1)[0]
+# Procedural metallic bore and large technical dimension markers.
+dial = screen.split("private fun PipeDial(", 1)[1].split("private fun PipeDimensionIcon(", 1)[0]
 assert "detectDragGestures" in dial and "currentOnStep(direction)" in dial
 assert "Canvas(Modifier.fillMaxSize())" in dial
-assert "rotate(wheelRotation, pivot = c)" in dial
-assert "val r = size.minDimension / 2f" in dial
-assert "Brush.sweepGradient(" in dial and "drawCircle(" in dial
-assert "drawPath(pointer, Gold)" in dial
-assert "val tangent = metalRadius + metalWidth * 0.52f" in dial
+assert "rotate(wheelRotation * 0.25f, pivot = c)" in dial
+assert "Brush.sweepGradient(" in dial and "Brush.radialGradient(" in dial
+assert "Brush.verticalGradient(" in dial
+assert "val metalWidth = outer - bore" in dial
+assert "Color(0xFF80F889)" in dial and "drawLine(innerGreen" in dial
+assert "drawLine(Gold, innerTip, outerTip" in dial
+assert "drawLine(Gold, Offset(x1, y), Offset(x2, y)" in dial
+assert 'Text(ui("İç Çap (ID)")' in dial and 'Text(ui("Dış Çap (OD)")' in dial
 assert "Et Kalınlığı (t)" in dial
-assert "dimensionY" in dial
-assert "if (fontScale >= 1.2f) 0.43f else 0.22f" in dial
+assert ".clickable { onEdit(\"ID\") }" in dial
+assert '.clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() }' in dial
 assert "dialSide = minOf(maxWidth, dialCap)" in dial
-assert "widthDp <= 340 && fontScale >= 1.2f -> 208.dp" in dial
-for forbidden in ("ChevronLeft", "ChevronRight", "painterResource(", "centeredDialArtwork", "graphicsLayer("):
-    assert forbidden not in dial, f"Obsolete raster dial or control survived: {forbidden}"
+assert "widthDp <= 340 && fontScale >= 1.2f -> 256.dp" in dial
+for forbidden in ("painterResource(", "centeredDialArtwork", "graphicsLayer(", "drawPath(pointer"):
+    assert forbidden not in dial, f"Old texture or tick pointer survived: {forbidden}"
+# 36 NPS sizes: explicit previous/next buttons plus complete dialog, not a long chip strip.
+assert 'Icons.Default.ChevronLeft' in screen
+assert 'Icons.Default.ChevronRight' in screen
+assert 'if (npsMenuExpanded) ScrollableOptionDialog(' in screen
 assert 'Triple(ui("Tablo"), Icons.Default.MenuBook, 2)' in screen
 assert 'if (index == 2) ui("Tablo / Standart") else label' in screen
 assert "val schedules = remember(activeNps)" in screen
@@ -330,11 +337,11 @@ assert '"tr" to "Türkçe"' in screen
 assert '"en" to "English"' in screen
 assert '"ru" to "Русский"' in screen
 assert '"system" to ui("Sistem dili")' in screen
-# Long translated ID titles must not obscure the real annular pipe graphic.
-assert 'Text("ID", color = Muted' in screen
-assert '.widthIn(max = dialSide * 0.55f)' in screen
-assert '.background(Deep.copy(alpha = 0.88f))' in screen
+# Large translated labels stay bounded inside the pipe and remain tappable.
+assert '.widthIn(max = dialSide * 0.68f)' in screen
+assert '.background(boreDark.copy(alpha = 0.90f))' in screen
 assert 'contentDescription = uiInnerDiameterDescription' in screen
+assert 'ui("Önceki boru çapı")' in screen
 
 print(f"PASS: {len(ROWS)} valid, nonduplicated pipe dimensions; benchmarks, "
       "derived geometry/mass, procedural circular NPS dial, and no legacy components")
