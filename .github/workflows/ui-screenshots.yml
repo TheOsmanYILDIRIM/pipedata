@@ -162,7 +162,7 @@ jobs:
               detected={n.attrib.get("text","") for n in ready}
               target=("mm" if metric else
                       "inch" if "Pipe" in {n.attrib.get("content-desc","") for n in ready} else
-                      "дюйм" if "Единицы" in detected else "inç")
+                      "дюйм" if "Труба" in {n.attrib.get("content-desc","") for n in ready} else "inç")
               suffix=" mm" if metric else " in"
               unit_confirmed=False
               for attempt in range(4):
@@ -192,14 +192,14 @@ jobs:
                           raise AssertionError("OD value overlaps bottom navigation")
 
               ready_text={n.attrib.get("text","") for n in initial}
-              if "Unit" in ready_text:
+              if "Pipe" in {n.attrib.get("content-desc","") for n in initial}:
                   nav=["Find SCH","Table / Standards","Settings","Pipe"]
                   headings={"Find SCH":"Find SCH",
                             "Table / Standards":"Table / Standards",
                             "Settings":"Settings"}
                   id_label="Inner diameter (ID)"
                   dialog_title="Enter "+id_label
-              elif "Единицы" in ready_text:
+              elif "Труба" in {n.attrib.get("content-desc","") for n in initial}:
                   nav=["Найти SCH","Таблица / Стандарты","Настройки","Труба"]
                   headings={"Найти SCH":"Найти SCH",
                             "Таблица / Стандарты":"Таблица / Стандарты",
