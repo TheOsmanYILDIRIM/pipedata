@@ -139,7 +139,10 @@ jobs:
                       pass
               if ready is None:
                   raise AssertionError("Boruzi screen did not become ready")
-              target="mm" if metric else "inç"
+              detected={n.attrib.get("text","") for n in ready}
+              target=("mm" if metric else
+                      "inch" if "Unit" in detected else
+                      "дюйм" if "Единицы" in detected else "inç")
               suffix=" mm" if metric else " in"
               unit_confirmed=False
               for attempt in range(4):
@@ -175,14 +178,14 @@ jobs:
                             "Table / Standards":"Table / Standards",
                             "Settings":"Settings"}
                   id_label="Inner diameter (ID)"
-                  dialog_title=id_label+" Enter"
+                  dialog_title="Enter "+id_label
               elif "Единицы" in ready_text:
                   nav=["Найти SCH","Таблица / Стандарты","Настройки","Труба"]
                   headings={"Найти SCH":"Найти SCH",
                             "Таблица / Стандарты":"Таблица / Стандарты",
                             "Настройки":"Настройки"}
                   id_label="Внутренний диаметр (ID)"
-                  dialog_title=id_label+" Введите"
+                  dialog_title="Введите "+id_label
               else:
                   nav=["SCH Bul","Tablo / Standart","Ayarlar","Boru"]
                   headings={"SCH Bul":"SCH Bul",
@@ -243,7 +246,7 @@ jobs:
               adb("shell","input","tap",*coords[pipe_label])
               time.sleep(.55)
               dial_source=nodes(tag+"_dial_before")
-              dial=next((n for n in dial_source if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+              dial=next((n for n in dial_source if n.attrib.get("content-desc","").startswith(("Döner NPS sayacı","NPS dial","Шкала NPS"))),None)
               if dial is None:
                   raise AssertionError("NPS dial accessibility node missing")
               before=dial.attrib.get("content-desc")
@@ -255,7 +258,7 @@ jobs:
               time.sleep(.45)
               dial_after=nodes(tag+"_dial_after")
               after_desc=next((n.attrib.get("content-desc") for n in dial_after
-                               if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+                               if n.attrib.get("content-desc","").startswith(("Döner NPS sayacı","NPS dial","Шкала NPS"))),None)
               png(tag+"_dial_drag")
               if after_desc==before:
                   warnings.append({"case":tag,"issue":"Dial drag did not change NPS; needs manual check"})

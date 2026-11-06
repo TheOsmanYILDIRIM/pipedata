@@ -263,7 +263,7 @@ private fun CalculatorPage(
             Text(ui("Ölçü birimi"), color = Muted, fontSize = 16.sp)
             Row(Modifier.clip(RoundedCornerShape(14.dp))
                 .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
-                listOf(true to "inç", false to "mm").forEach { (inch, label) ->
+                listOf(true to ui("inç"), false to "mm").forEach { (inch, label) ->
                     Box(Modifier.clip(RoundedCornerShape(12.dp))
                         .background(if (imperial == inch) Gold else Color.Transparent)
                         .clickable { onImperial(inch) }
@@ -324,6 +324,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     imperial: Boolean, onEdit: (String) -> Unit) {
     val currentOnStep by rememberUpdatedState(onStep)
     var wheelRotation by remember { mutableFloatStateOf(0f) }
+    val dialDescription = ui("Döner NPS sayacı, seçili çap ") + nps + " " + ui("inç")
+    val nextDiameter = ui("Sonraki boru çapı")
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         if (pipe != null) {
@@ -351,8 +353,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             Box(
                 modifier = Modifier.size(dialSide)
                     .semantics {
-                        contentDescription = "Döner NPS sayacı, seçili çap " + nps + " inç"
-                        onClick(label = "Sonraki boru çapı") {
+                        contentDescription = dialDescription
+                        onClick(label = nextDiameter) {
                             currentOnStep(1)
                             true
                         }
@@ -673,7 +675,10 @@ private fun NumericPipeDialog(
         else -> ui("İç hacim")
     }
     AlertDialog(onDismissRequest = onDismiss,
-        title = { Text(title + " " + ui("yazın"), color = White) },
+        title = { Text(
+            if (CurrentUiLanguage.current == "tr") title + " " + ui("yazın")
+            else ui("yazın") + " " + title, color = White
+        ) },
         text = {
             Column {
                 OutlinedTextField(value = value, onValueChange = { value = it },
@@ -813,7 +818,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(ui("Ölçü birimi"), color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
-            listOf(true to "inç", false to "mm").forEach { (inch, label) ->
+            listOf(true to ui("inç"), false to "mm").forEach { (inch, label) ->
                 Surface(
                     color = if (useInches == inch) Gold else Panel,
                     shape = RoundedCornerShape(14.dp),
