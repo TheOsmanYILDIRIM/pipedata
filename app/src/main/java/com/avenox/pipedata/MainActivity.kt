@@ -100,6 +100,7 @@ private fun PipeApp(catalog: PipeCatalog) {
     val prefs = remember { context.getSharedPreferences("pipe_preferences_v2", 0) }
     var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", true)) }
     var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", true)) }
+    var wheelEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("wheel_enabled", false)) }
     var languageSelection by rememberSaveable {
         mutableStateOf(prefs.getString("language", "system") ?: "system")
     }
@@ -170,6 +171,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                         standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
                     },
                     tutorialStep = tutorialStep,
+                    wheelEnabled = wheelEnabled,
                     onTutorialNext = advanceTutorial,
                     onTutorialSkip = finishTutorial
                 )
@@ -183,6 +185,11 @@ private fun PipeApp(catalog: PipeCatalog) {
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
                     normalSp, languageSelection,
+                    wheelEnabled = wheelEnabled,
+                    onWheelEnabled = {
+                        wheelEnabled = it
+                        prefs.edit().putBoolean("wheel_enabled", it).apply()
+                    },
                     onLanguageChange = {
                         languageSelection = it
                         prefs.edit().putString("language", it).apply()
@@ -323,7 +330,8 @@ private fun CalculatorPage(
     pipe: PipeSpec?, imperial: Boolean, textSp: Int,
     onImperial: (Boolean) -> Unit,
     catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit,
-    tutorialStep: Int, onTutorialNext: () -> Unit, onTutorialSkip: () -> Unit
+    tutorialStep: Int, wheelEnabled: Boolean,
+    onTutorialNext: () -> Unit, onTutorialSkip: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val schTarget = remember { BringIntoViewRequester() }
@@ -342,12 +350,18 @@ private fun CalculatorPage(
     val step: (Int) -> Unit = { delta ->
         onNps(sizes[(index + delta + sizes.size) % sizes.size])
     }
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+    // Available height excludes the app header and bottom navigation.
+    // Scale the illustration to 80% of its previous 282dp maximum;
+    // smaller viewports reserve space for the SCH selector.
+    val dialLimit = minOf(226.dp, maxOf(150.dp, maxHeight * 0.34f))
+    val compactHeight = maxHeight < 620.dp
     Column(
         Modifier.fillMaxSize().verticalScroll(scrollState)
-            .padding(horizontal = 18.dp, vertical = 8.dp),
+            .padding(horizontal = 18.dp, vertical = if (compactHeight) 3.dp else 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp),
+        Row(Modifier.fillMaxWidth().padding(bottom = if (compactHeight) 3.dp else 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             var npsMenuExpanded by remember { mutableStateOf(false) }
@@ -418,11 +432,12 @@ private fun CalculatorPage(
         }
         PipeDial(nps, step, pipe, imperial,
             onEdit = { editing = it },
+            dialLimit = dialLimit, wheelEnabled = wheelEnabled,
             tutorialStep = tutorialStep,
             onWheelDragged = { if (tutorialStep == 0) onTutorialNext() },
             onOdTapped = { if (tutorialStep == 2) onTutorialNext() },
             odTarget = odTarget)
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(if (compactHeight) 3.dp else 8.dp))
         if (tutorialStep == 1) {
             TutorialHint(1, onTutorialNext, onTutorialSkip)
             Spacer(Modifier.height(8.dp))
@@ -480,7 +495,7 @@ private fun CalculatorPage(
             }
             if (tutorialStep == 1) TutorialPulseFrame(Modifier.matchParentSize())
         }
-        Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.height(if (compactHeight) 8.dp else 14.dp))
         if (pipe == null) {
             Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok."), color = Gold, fontSize = textSp.sp)
         } else {
@@ -488,7 +503,8 @@ private fun CalculatorPage(
         }
         Spacer(Modifier.height(18.dp))
         GoldButton(ui("Hesapla"), { showLength = true }, Modifier.fillMaxWidth())
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(if (compactHeight) 8.dp else 16.dp))
+    }
     }
     if (showLength && pipe != null) LengthDialog(pipe, imperial) { showLength = false }
     editing?.let { field ->
@@ -610,6 +626,7 @@ private fun TutorialRingGesture(modifier: Modifier = Modifier) {
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     imperial: Boolean, onEdit: (String) -> Unit,
+    dialLimit: androidx.compose.ui.unit.Dp, wheelEnabled: Boolean,
     tutorialStep: Int = -1,
     onWheelDragged: () -> Unit = {}, onOdTapped: () -> Unit = {},
     odTarget: BringIntoViewRequester? = null) {
@@ -645,14 +662,11 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val widthDp = LocalConfiguration.current.screenWidthDp
             val fontScale = LocalDensity.current.fontScale
-            val heightDp = LocalConfiguration.current.screenHeightDp
-            val dialCap = when {
-                heightDp <= 700 -> 218.dp
-                heightDp <= 790 -> 242.dp
-                widthDp <= 340 && fontScale >= 1.2f -> 242.dp
-                widthDp <= 360 && fontScale >= 1.2f -> 254.dp
-                else -> 282.dp
-            }
+            val dialCap = minOf(dialLimit, when {
+                widthDp <= 340 && fontScale >= 1.2f -> 190.dp
+                widthDp <= 360 && fontScale >= 1.2f -> 206.dp
+                else -> 226.dp
+            })
             val dialSide = minOf(maxWidth, dialCap)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
@@ -664,7 +678,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 true
                             }
                         }
-                        .pointerInput(Unit) {
+                        .then(if (wheelEnabled) Modifier.pointerInput(wheelEnabled) {
                             var previousAngle = 0f
                             var remainder = 0f
                             var draggingRing = false
@@ -700,7 +714,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                     }
                                 }
                             }
-                        },
+                        } else Modifier),
                     contentAlignment = Alignment.Center
                 ) {
                     Canvas(Modifier.fillMaxSize()) {
@@ -826,7 +840,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
                         }
                     }
-                    if (tutorialStep == 0) TutorialRingGesture(Modifier.fillMaxSize())
+                    if (tutorialStep == 0 && wheelEnabled) TutorialRingGesture(Modifier.fillMaxSize())
                     if (pipe != null) {
                         val dimensionUnit = if (imperial) "in" else "mm"
                         val inner = if (imperial) pipe.idInches else pipe.idMm
@@ -875,16 +889,16 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Exact outer tangents and double-arrow share one Canvas width.
-                        Canvas(Modifier.fillMaxWidth().height(30.dp)) {
+                        Canvas(Modifier.fillMaxWidth().height(20.dp)) {
                             val x1 = size.width * 0.035f
                             val x2 = size.width * 0.965f
-                            val y = 11.dp.toPx()
+                            val y = 8.dp.toPx()
                             drawLine(Gold, Offset(x1, y), Offset(x2, y),
                                 3.dp.toPx(), cap = StrokeCap.Round)
                             for (sign in listOf(-1f, 1f)) {
                                 val x = if (sign < 0f) x1 else x2
                                 drawLine(Gold, Offset(x, 0f),
-                                    Offset(x, 24.dp.toPx()), 2.dp.toPx())
+                                    Offset(x, 18.dp.toPx()), 2.dp.toPx())
                                 drawLine(Gold, Offset(x, y),
                                     Offset(x - sign * 14.dp.toPx(),
                                         y - 7.dp.toPx()), 3.dp.toPx())
@@ -897,7 +911,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             modifier = Modifier
                                 .border(2.dp, Gold, RoundedCornerShape(16.dp))
                                 .clip(RoundedCornerShape(16.dp))
-                                .padding(horizontal = 22.dp, vertical = 5.dp)) {
+                                .padding(horizontal = 15.dp, vertical = 2.dp)) {
                             Text(ui("Dış Çap (OD)"), color = White,
                                 fontWeight = FontWeight.Bold, fontSize = 17.sp)
                             Text(decimal(outer,
@@ -910,8 +924,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 }
             }
         }
-        Text(ui("Halkayı parmağınızla çevirin"), color = Muted,
-            fontSize = 15.sp, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
+        if (wheelEnabled) Text(ui("Halkayı parmağınızla çevirin"), color = Muted,
+            fontSize = 13.sp, modifier = Modifier.padding(top = 3.dp, bottom = 2.dp))
     }
 }
 
@@ -1377,6 +1391,7 @@ private fun SettingsPage(
     largeText: Boolean, onLargeText: (Boolean) -> Unit,
     imperial: Boolean, onImperial: (Boolean) -> Unit, textSp: Int,
     languageSelection: String, onLanguageChange: (String) -> Unit,
+    wheelEnabled: Boolean, onWheelEnabled: (Boolean) -> Unit,
     onReplayTutorial: () -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
@@ -1395,6 +1410,17 @@ private fun SettingsPage(
                 Text(ui("Metrik yerine Imperial göster"), color = Muted, fontSize = 15.sp)
             }
             Switch(checked = imperial, onCheckedChange = onImperial)
+        }
+        HorizontalDivider(color = StrokeColor)
+        Row(Modifier.fillMaxWidth().heightIn(min = 72.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Boru halkasıyla NPS değiştir", color = White,
+                    fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                Text("Varsayılan kapalı. NPS menüsü her zaman kullanılabilir.",
+                    color = Muted, fontSize = 14.sp)
+            }
+            Switch(checked = wheelEnabled, onCheckedChange = onWheelEnabled)
         }
         HorizontalDivider(color = StrokeColor)
         Spacer(Modifier.height(18.dp))
