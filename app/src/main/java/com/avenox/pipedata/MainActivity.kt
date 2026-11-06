@@ -349,6 +349,7 @@ private fun CalculatorPage(
     val index = sizes.indexOf(nps).coerceAtLeast(0)
     val step: (Int) -> Unit = { delta ->
         onNps(sizes[(index + delta + sizes.size) % sizes.size])
+        if (tutorialStep == 0 && !wheelEnabled) onTutorialNext()
     }
     BoxWithConstraints(Modifier.fillMaxSize()) {
     // Available height excludes the app header and bottom navigation.
@@ -407,6 +408,7 @@ private fun CalculatorPage(
                     onDismiss = { npsMenuExpanded = false },
                     onChoose = { option ->
                         onNps(option.removePrefix("NPS ").removeSuffix("″"))
+                        if (tutorialStep == 0 && !wheelEnabled) onTutorialNext()
                         npsMenuExpanded = false
                     }
                 )
@@ -427,7 +429,7 @@ private fun CalculatorPage(
             }
         }
         if (tutorialStep == 0) {
-            TutorialHint(0, onTutorialNext, onTutorialSkip)
+            TutorialHint(0, onTutorialNext, onTutorialSkip, wheelEnabled)
             Spacer(Modifier.height(8.dp))
         }
         PipeDial(nps, step, pipe, imperial,
@@ -517,9 +519,11 @@ private fun CalculatorPage(
 
 /** Short, contextual hints; they do not block the actual controls. */
 @Composable
-private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
+private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit,
+    wheelEnabled: Boolean = false) {
     val message = when (step) {
-        0 -> ui("Halkanın kenarını parmağınla çevir. Hareketi dene!")
+        0 -> if (wheelEnabled) ui("Halkanın kenarını parmağınla çevir. Hareketi dene!")
+            else ui("Üstteki NPS alanına dokunarak boru çapını seç.")
         1 -> ui("Aşağıdaki SCH değerlerinden birine dokun.")
         else -> ui("Dış çap değerine dokunarak NPS seç.")
     }
