@@ -2,7 +2,7 @@ name: Boruzi Android UI Screenshots
 
 on:
   push:
-    branches: ['audit/boruzi-android-screenshots-*']
+    branches: [main, 'audit/boruzi-android-screenshots-*']
     paths: ['.github/workflows/ui-screenshots.yml']
   workflow_dispatch:
     inputs:
@@ -152,6 +152,20 @@ jobs:
                   raise AssertionError("Unit change was not reflected in pipe dimensions: "+target)
               png(tag+"_boru_initial")
               initial=nodes(tag+"_boru_initial")
+              # Accessibility acceptance: the priority OD value must be fully
+              # visible before scrolling on narrow screens with large text.
+              if width == 320 and scale >= 1.3 and metric:
+                  expected="168,30 mm"
+                  od=[n for n in initial if n.attrib.get("text")==expected]
+                  if not od:
+                      raise AssertionError("OD value not visible in first viewport: "+expected)
+                  bottom=int(re.findall(r"\\d+",od[0].attrib["bounds"])[3])
+                  nav=[n for n in initial if n.attrib.get("content-desc")=="Tablo/Standart"]
+                  if nav:
+                      nav_top=int(re.findall(r"\\d+",nav[0].attrib["bounds"])[1])
+                      if bottom >= nav_top:
+                          raise AssertionError("OD value overlaps bottom navigation")
+
               nav=["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
               coords={}
               for name in nav:
