@@ -135,7 +135,7 @@ jobs:
                   try:
                       items=nodes(tag+"_ready"+str(attempt))
                       if (any(n.attrib.get("text")=="Boruzi" for n in items) and
-                          any(n.attrib.get("text") in ("Ölçü birimi","Unit","Единицы")
+                          any(n.attrib.get("text","").startswith("NPS ")
                               for n in items)):
                           ready=items
                           break
