@@ -692,10 +692,26 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     Canvas(Modifier.fillMaxSize()) {
                         val c = center
                         val r = size.minDimension / 2f
-                        val outer = r * 0.93f
+                        val outer = r * 0.82f
                         val bore = outer * 0.72f
                         val metalRadius = (outer + bore) / 2f
                         val metalWidth = outer - bore
+                        // Draw the rear rim higher than the front face to reveal a short
+                        // top-down cylinder body, rather than a flat washer.
+                        val rearCenter = Offset(c.x, c.y - outer * 0.20f)
+                        drawCircle(
+                            brush = Brush.linearGradient(
+                                listOf(Color(0xFF273531), Color(0xFFB9C3BE),
+                                    Color(0xFF4F625C), Color(0xFF1C2F2B)),
+                                start = Offset(c.x - outer, rearCenter.y - outer),
+                                end = Offset(c.x + outer, rearCenter.y + outer)
+                            ),
+                            radius = outer,
+                            center = rearCenter
+                        )
+                        drawCircle(Color(0xFFC8D1CD).copy(alpha = 0.56f),
+                            radius = outer * 0.995f, center = rearCenter,
+                            style = Stroke(width = 1.5.dp.toPx()))
                         // Offset shadow makes the pipe's front edge lift from the UI.
                         drawCircle(Color.Black.copy(alpha = 0.35f), outer,
                             center = Offset(c.x + r * 0.015f, c.y + r * 0.045f))
@@ -780,6 +796,20 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 strokeWidth = 2.8.dp.toPx())
                             drawCircle(Gold, 4.4.dp.toPx(), outerTip)
                             drawCircle(Gold, 4.4.dp.toPx(), innerTip)
+                            // A separate leader points from the wall marker up to
+                            // the wall-thickness readout immediately above the dial.
+                            val leaderEnd = Offset(c.x + outer * 0.75f,
+                                c.y - outer * 1.17f)
+                            drawLine(Gold, outerTip, leaderEnd,
+                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
+                            drawLine(Gold, leaderEnd,
+                                Offset(leaderEnd.x - 6.dp.toPx(),
+                                    leaderEnd.y + 12.dp.toPx()),
+                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
+                            drawLine(Gold, leaderEnd,
+                                Offset(leaderEnd.x + 8.dp.toPx(),
+                                    leaderEnd.y + 10.dp.toPx()),
+                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
                         }
                     }
                     if (tutorialStep == 0) TutorialRingGesture(Modifier.fillMaxSize())
@@ -788,7 +818,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         val inner = if (imperial) pipe.idInches else pipe.idMm
                         Column(horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.align(Alignment.Center)
-                                .offset(y = -dialSide * 0.17f)
+                                .offset(y = -dialSide * 0.07f)
                                 .widthIn(max = dialSide * 0.68f)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(boreDark.copy(alpha = 0.90f))
