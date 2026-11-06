@@ -33,3 +33,10 @@ GitHub Actions veri kontrolü ve release APK derlemesini çalıştırır. CI son
 ## Güvenlik
 
 Üretim imzalama anahtarları, parolalar ve diğer sırlar herkese açık kaynak kodunda tutulmamalıdır. İmzalama değişiklikleri mevcut uygulama güncellemeleriyle uyumluluk gözetilerek yönetilmelidir.
+
+## İmzalama güvenliği: hazırlık (PR birleştirilmeden önce)
+
+GitHub → Settings → Secrets and variables → Actions altında şu dört secret gerekli:
+`BORUZI_RELEASE_KEYSTORE_B64` (mevcut anahtar dosyasının Base64 içeriği), `BORUZI_RELEASE_STORE_PASSWORD`, `BORUZI_RELEASE_KEY_ALIAS`, `BORUZI_RELEASE_KEY_PASSWORD`.
+
+Bu bilgiler hazır değilken release iş akışı bilerek hata verir. Aynı sertifika mevcut kurulu APK'ların üzerine güvenli güncelleme için zorunludur. Anahtar/parolayı commit geçmişinden kaldırmak eski sızıntıyı geri almaz: geçmişteki anahtarın ele geçirilmiş olabileceği kabul edilmeli, imza geçişi/rotasyonu dağıtım kanalına göre ayrıca planlanmalıdır. Anahtar veya parola sohbet, issue veya PR açıklamasına yazılmamalıdır.

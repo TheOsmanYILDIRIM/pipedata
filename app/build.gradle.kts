@@ -14,12 +14,18 @@ android {
         versionCode = 201
         versionName = "2.0.1"
     }
+    val keyPath = System.getenv("BORUZI_RELEASE_KEYSTORE_PATH")
+    val storePass = System.getenv("BORUZI_RELEASE_STORE_PASSWORD")
+    val keyAliasEnv = System.getenv("BORUZI_RELEASE_KEY_ALIAS")
+    val keyPass = System.getenv("BORUZI_RELEASE_KEY_PASSWORD")
     signingConfigs {
         create("release") {
-            storeFile = file("antigravity.keystore")
-            storePassword = "antigravity_android_key"
-            keyAlias = "antigravity"
-            keyPassword = "antigravity_android_key"
+            if (listOf(keyPath, storePass, keyAliasEnv, keyPass).all { !it.isNullOrBlank() }) {
+                storeFile = file(keyPath!!)
+                storePassword = storePass
+                keyAlias = keyAliasEnv
+                keyPassword = keyPass
+            }
         }
     }
     buildTypes {
@@ -28,10 +34,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        debug {
-            signingConfig = signingConfigs.getByName("release")
-            isDebuggable = true
-        }
+        debug { isDebuggable = true }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
