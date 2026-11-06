@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -22,4 +22,11 @@ local.properties
 !gradle/wrapper/gradle-wrapper.jar
 scratch/
 
-# Faz 7 reset (2026-09-10): turetilmis tum veri silindi; yeni cikarma pipeline'i buraya eklenecek
+# Credentials and signing material (does not untrack previously committed files)
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+.env
+.env.*
