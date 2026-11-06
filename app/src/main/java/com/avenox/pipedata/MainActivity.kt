@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 if (catalog == null) {
                     Box(Modifier.fillMaxSize().background(Background).padding(24.dp), contentAlignment = Alignment.Center) {
-                        Text("Boru standart tablosu yüklenemedi. Uygulamayı güncelleyin.", color = White, fontSize = 20.sp)
+                        Text(translateUi("Boru standart tablosu yüklenemedi. Uygulamayı güncelleyin.", resources.configuration.locales[0].language), color = White, fontSize = 20.sp)
                     }
                 } else {
                     PipeApp(catalog)
@@ -90,6 +90,11 @@ private fun PipeApp(catalog: PipeCatalog) {
     val prefs = remember { context.getSharedPreferences("pipe_preferences_v2", 0) }
     var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", true)) }
     var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", true)) }
+    var languageSelection by rememberSaveable {
+        mutableStateOf(prefs.getString("language", "system") ?: "system")
+    }
+    val systemLanguage = LocalConfiguration.current.locales[0].language.lowercase(Locale.ROOT)
+    val language = if (languageSelection == "system") systemLanguage else languageSelection
     var page by rememberSaveable { mutableIntStateOf(0) }
     var standard by rememberSaveable { mutableStateOf("B36.10") }
     var nps by rememberSaveable { mutableStateOf("6") }
@@ -117,6 +122,7 @@ private fun PipeApp(catalog: PipeCatalog) {
         if (pipe != null && standard != pipe.standard) standard = pipe.standard
     }
 
+    CompositionLocalProvider(CurrentUiLanguage provides language) {
     Column(
         modifier = Modifier.fillMaxSize().background(Background).systemBarsPadding()
     ) {
@@ -152,7 +158,11 @@ private fun PipeApp(catalog: PipeCatalog) {
                 else -> SettingsPage(
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
-                    normalSp
+                    normalSp, languageSelection,
+                    onLanguageChange = {
+                        languageSelection = it
+                        prefs.edit().putString("language", it).apply()
+                    }
                 )
             }
         }
@@ -180,6 +190,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                 }
             }
         }
+    }
     }
 }
 
@@ -248,7 +259,7 @@ private fun CalculatorPage(
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Ölçü birimi", color = Muted, fontSize = 16.sp)
+            Text(ui("Ölçü birimi", color = Muted, fontSize = 16.sp)
             Row(Modifier.clip(RoundedCornerShape(14.dp))
                 .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
                 listOf(true to "inç", false to "mm").forEach { (inch, label) ->
@@ -265,7 +276,7 @@ private fun CalculatorPage(
         }
         PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(12.dp))
-        Text("Schedule (SCH)", color = White, fontSize = 20.sp,
+        Text(ui("Schedule (SCH)", color = White, fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
                 .clickable { editing = "SCH" }.padding(vertical = 5.dp))
         LazyRow(
@@ -290,7 +301,7 @@ private fun CalculatorPage(
         }
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
-            Text("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
+            Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
         } else {
             ResultRows(pipe, imperial, textSp) { editing = it }
         }
@@ -320,7 +331,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             Column(Modifier.fillMaxWidth().clickable { onEdit("t") }
                 .padding(top = 6.dp, bottom = 4.dp),
                 horizontalAlignment = Alignment.End) {
-                Text("Et Kalınlığı (t)", color = Gold, fontSize = 20.sp,
+                Text(ui("Et Kalınlığı (t)", color = Gold, fontSize = 20.sp,
                     fontWeight = FontWeight.Bold)
                 Text(decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
                     color = Gold, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -500,7 +511,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.align(Alignment.Center)
                             .clickable { onEdit("ID") }.padding(6.dp)) {
-                        Text("İç Çap (ID)", color = White, fontSize = 20.sp,
+                        Text(ui("İç Çap (ID)", color = White, fontSize = 20.sp,
                             fontWeight = FontWeight.Bold)
                         Text(decimal(inner) + " " + dimensionUnit, color = White,
                             fontWeight = FontWeight.SemiBold, fontSize = 23.sp)
@@ -520,14 +531,14 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 .clickable { onEdit("NPS") }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Dış Çap (OD) · Seçmek için dokunun", color = Muted,
+                Text(ui("Dış Çap (OD) · Seçmek için dokunun", color = Muted,
                     fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) +
                     " " + dimensionUnit, color = White, fontSize = 29.sp,
                     fontWeight = FontWeight.Bold)
             }
         }
-        Text("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
+        Text(ui("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
     }
 }
 
@@ -671,11 +682,11 @@ private fun NumericPipeDialog(
                         if (field == "NPS" || field == "SCH") KeyboardType.Text else KeyboardType.Decimal),
                     label = { Text("Değer") })
                 Spacer(Modifier.height(9.dp))
-                Text("Yalnız tabloda kayıtlı nominal ölçüler kullanılabilir.",
+                Text(ui("Yalnız tabloda kayıtlı nominal ölçüler kullanılabilir.",
                     color = Muted, fontSize = 13.sp)
                 Spacer(Modifier.height(8.dp))
                 if (candidates.isEmpty()) {
-                    Text("Eşleşen kayıt yok. NPS, SCH veya değeri kontrol edin.",
+                    Text(ui("Eşleşen kayıt yok. NPS, SCH veya değeri kontrol edin.",
                         color = Gold, fontSize = 14.sp)
                 } else {
                     Column(Modifier.heightIn(max = 210.dp).verticalScroll(rememberScrollState())) {
@@ -724,7 +735,7 @@ private fun LengthDialog(pipe: PipeSpec, imperial: Boolean, onDismiss: () -> Uni
     val volumeUnit = if (imperial) " US gal" else " L"
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Boru uzunluğu hesabı", color = White) },
+        title = { Text(ui("Boru uzunluğu hesabı", color = White) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(if (imperial) "Uzunluğu fit (ft) olarak girin." else
@@ -744,7 +755,7 @@ private fun LengthDialog(pipe: PipeSpec, imperial: Boolean, onDismiss: () -> Uni
                         decimal(pipe.waterFilledKgPerMetre * metres * massFactor) +
                         massUnit, fontSize = 19.sp, color = White)
                 } else {
-                    Text("Pozitif ve geçerli bir uzunluk girin.", color = Gold)
+                    Text(ui("Pozitif ve geçerli bir uzunluk girin.", color = Gold)
                 }
             }
         },
@@ -774,13 +785,13 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
         catalog.findByMeasurement(odMm, wallMm) else emptyList()
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
-        PageHeading("SCH Bul", "Ölçtüğünüz dış çapı ve et kalınlığını girin.")
+        PageHeading(ui("SCH Bul"), ui("Ölçtüğünüz dış çapı ve et kalınlığını girin."))
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Ölçü birimi", color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
+            Text(ui("Ölçü birimi", color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
             listOf(true to "inç", false to "mm").forEach { (inch, label) ->
                 Surface(
                     color = if (useInches == inch) Gold else Panel,
@@ -826,7 +837,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                 Text("Bu ölçüye yakın kayıt bulunamadı. Birimi ve ölçüleri kontrol edin.",
                     fontSize = textSp.sp, color = Gold)
             } else {
-                Text("Olası nominal eşleşmeler", color = White,
+                Text(ui("Olası nominal eşleşmeler", color = White,
                     fontSize = 21.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(10.dp))
                 matches.take(12).forEach { pipe ->
@@ -851,7 +862,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                 }
             }
             Spacer(Modifier.height(13.dp))
-            Text("Nominal eşleştirmedir; basınç uygunluğu veya sertifika değildir.",
+            Text(ui("Nominal eşleştirmedir; basınç uygunluğu veya sertifika değildir.",
                 color = Muted, fontSize = 14.sp)
         }
     }
@@ -868,21 +879,21 @@ private fun CombinedTableStandardsPage(
                 .thenBy { it.schedule }.thenBy { it.standard })
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        PageHeading("Tablo / Standart", "ASME standartları ve nominal ölçüler")
-        InfoPanel("ASME B36.10M", "Karbon çelik boruların nominal çap, et ve Schedule serileri.", textSp)
+        PageHeading(ui("Tablo / Standart"), ui("ASME standartları ve nominal ölçüler"))
+        InfoPanel("ASME B36.10M", ui("Karbon çelik boruların nominal çap, et ve Schedule serileri."), textSp)
         Spacer(Modifier.height(12.dp))
-        InfoPanel("ASME B36.19M", "Paslanmaz çelik borularda S işaretli Schedule serileri ayrı kayıtlardır.", textSp)
+        InfoPanel("ASME B36.19M", ui("Paslanmaz çelik borularda S işaretli Schedule serileri ayrı kayıtlardır."), textSp)
         Spacer(Modifier.height(12.dp))
-        InfoPanel("Hesap formülleri",
-            "İç çap = dış çap − 2 × et kalınlığı.\n" +
-            "Kütle: çelik kesit alanı × 7850 kg/m³.\n" +
-            "İç hacim: π × iç çap² / 4 × uzunluk.\n" +
-            "Değerler nominaldir; basınç tasarım hesabı değildir.", textSp)
+        InfoPanel(ui("Hesap formülleri"),
+            ui("İç çap = dış çap − 2 × et kalınlığı.") + "\n" +
+            ui("Kütle: çelik kesit alanı × 7850 kg/m³.") + "\n" +
+            ui("İç hacim: π × iç çap² / 4 × uzunluk.") + "\n" +
+            ui("Değerler nominaldir; basınç tasarım hesabı değildir."), textSp)
         Spacer(Modifier.height(22.dp))
         Picker("NPS (inç)", nps + "″", sizes.map { it + "″" },
             { onNps(it.removeSuffix("″")) }, Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
-        Text("Nominal SCH ölçüleri", color = White, fontWeight = FontWeight.Bold,
+        Text(ui("Nominal SCH ölçüleri", color = White, fontWeight = FontWeight.Bold,
             fontSize = 20.sp)
         rows.forEach { p ->
             Column(
@@ -923,29 +934,41 @@ private fun InfoPanel(title: String, text: String, textSp: Int) {
 @Composable
 private fun SettingsPage(
     largeText: Boolean, onLargeText: (Boolean) -> Unit,
-    imperial: Boolean, onImperial: (Boolean) -> Unit, textSp: Int
+    imperial: Boolean, onImperial: (Boolean) -> Unit, textSp: Int,
+    languageSelection: String, onLanguageChange: (String) -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
-        PageHeading("Ayarlar", "Sahada kolay okunabilen ekran")
+        PageHeading(ui("Ayarlar"), ui("Sahada kolay okunabilen ekran"))
         Row(Modifier.fillMaxWidth().heightIn(min = 72.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Büyük yazı", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text("Daha kolay okunan ölçüler", color = Muted, fontSize = 15.sp)
+                Text(ui("Büyük yazı", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(ui("Daha kolay okunan ölçüler", color = Muted, fontSize = 15.sp)
             }
             Switch(checked = largeText, onCheckedChange = onLargeText)
         }
         HorizontalDivider(color = StrokeColor)
         Row(Modifier.fillMaxWidth().heightIn(min = 72.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("İnç / lb / gal", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text("Metrik yerine Imperial göster", color = Muted, fontSize = 15.sp)
+                Text(ui("İnç / lb / gal", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(ui("Metrik yerine Imperial göster", color = Muted, fontSize = 15.sp)
             }
             Switch(checked = imperial, onCheckedChange = onImperial)
         }
         HorizontalDivider(color = StrokeColor)
         Spacer(Modifier.height(18.dp))
-        InfoPanel("Çevrimdışı kullanım", "Boru tablosu cihazda bulunur. Hesaplamak için internet gerekmez.", textSp)
+        val languageOptions = listOf(
+            "system" to ui("Sistem dili"),
+            "tr" to ui("Türkçe"),
+            "en" to ui("İngilizce"),
+            "ru" to ui("Rusça")
+        )
+        Picker(ui("Dil"), languageOptions.first { it.first == languageSelection }.second,
+            languageOptions.map { it.second },
+            { label -> onLanguageChange(languageOptions.first { it.second == label }.first) },
+            Modifier.fillMaxWidth())
+        Spacer(Modifier.height(18.dp))
+        InfoPanel(ui("Çevrimdışı kullanım"), ui("Boru tablosu cihazda bulunur. Hesaplamak için internet gerekmez."), textSp)
         Spacer(Modifier.height(14.dp))
-        InfoPanel("Veri kapsamı", "Uygulama yalnızca geçerli nominal et kalınlığı kaydı olan NPS / SCH seçeneklerini listeler. Bilinmeyen veriler tahmin edilmez.", textSp)
+        InfoPanel(ui("Veri kapsamı"), ui("Uygulama yalnızca geçerli nominal et kalınlığı kaydı olan NPS / SCH seçeneklerini listeler. Bilinmeyen veriler tahmin edilmez."), textSp)
     }
 }
