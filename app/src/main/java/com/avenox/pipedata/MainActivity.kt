@@ -171,17 +171,18 @@ private fun PipeApp(catalog: PipeCatalog) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val items = listOf(
-                Triple("Boru", Icons.Default.Tune, 0),
-                Triple("SCH Bul", Icons.Default.Search, 1),
-                Triple("Tablo", Icons.Default.MenuBook, 2),
-                Triple("Ayarlar", Icons.Default.Settings, 3)
+                Triple(ui("Boru"), Icons.Default.Tune, 0),
+                Triple(ui("SCH Bul"), Icons.Default.Search, 1),
+                Triple(ui("Tablo"), Icons.Default.MenuBook, 2),
+                Triple(ui("Ayarlar"), Icons.Default.Settings, 3)
             )
             items.forEach { (label, icon, index) ->
+                val navDescription = if (index == 2) ui("Tablo / Standart") else label
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f).clip(RoundedCornerShape(8.dp))
                         .clickable { page = index }.padding(vertical = 8.dp)
-                        .semantics { contentDescription = if (index == 2) "Tablo/Standart" else label }
+                        .semantics { contentDescription = navDescription }
                 ) {
                     Icon(icon, contentDescription = null, tint = if (page == index) Gold else Muted, modifier = Modifier.size(26.dp))
                     Spacer(Modifier.height(2.dp))
@@ -207,7 +208,7 @@ private fun Picker(label: String, value: String, options: List<String>, onChange
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(value, color = White, fontSize = 19.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Seç", tint = Gold)
+                Icon(Icons.Default.ArrowDropDown, contentDescription = ui("Seç"), tint = Gold)
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 options.forEach { option ->
@@ -259,7 +260,7 @@ private fun CalculatorPage(
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(ui("Ölçü birimi", color = Muted, fontSize = 16.sp)
+            Text(ui("Ölçü birimi"), color = Muted, fontSize = 16.sp)
             Row(Modifier.clip(RoundedCornerShape(14.dp))
                 .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
                 listOf(true to "inç", false to "mm").forEach { (inch, label) ->
@@ -276,7 +277,7 @@ private fun CalculatorPage(
         }
         PipeDial(nps, step, pipe, imperial) { editing = it }
         Spacer(Modifier.height(12.dp))
-        Text(ui("Schedule (SCH)", color = White, fontSize = 20.sp,
+        Text(ui("Schedule (SCH)"), color = White, fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start)
                 .clickable { editing = "SCH" }.padding(vertical = 5.dp))
         LazyRow(
@@ -301,12 +302,12 @@ private fun CalculatorPage(
         }
         Spacer(Modifier.height(18.dp))
         if (pipe == null) {
-            Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok.", color = Gold, fontSize = textSp.sp)
+            Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok."), color = Gold, fontSize = textSp.sp)
         } else {
             ResultRows(pipe, imperial, textSp) { editing = it }
         }
         Spacer(Modifier.height(18.dp))
-        GoldButton("Hesapla", { showLength = true }, Modifier.fillMaxWidth())
+        GoldButton(ui("Hesapla"), { showLength = true }, Modifier.fillMaxWidth())
         Spacer(Modifier.height(20.dp))
     }
     if (showLength && pipe != null) LengthDialog(pipe, imperial) { showLength = false }
@@ -331,7 +332,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             Column(Modifier.fillMaxWidth().clickable { onEdit("t") }
                 .padding(top = 6.dp, bottom = 4.dp),
                 horizontalAlignment = Alignment.End) {
-                Text(ui("Et Kalınlığı (t)", color = Gold, fontSize = 20.sp,
+                Text(ui("Et Kalınlığı (t)"), color = Gold, fontSize = 20.sp,
                     fontWeight = FontWeight.Bold)
                 Text(decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
                     color = Gold, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -511,7 +512,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.align(Alignment.Center)
                             .clickable { onEdit("ID") }.padding(6.dp)) {
-                        Text(ui("İç Çap (ID)", color = White, fontSize = 20.sp,
+                        Text(ui("İç Çap (ID)"), color = White, fontSize = 20.sp,
                             fontWeight = FontWeight.Bold)
                         Text(decimal(inner) + " " + dimensionUnit, color = White,
                             fontWeight = FontWeight.SemiBold, fontSize = 23.sp)
@@ -531,14 +532,14 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 .clickable { onEdit("NPS") }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(ui("Dış Çap (OD) · Seçmek için dokunun", color = Muted,
+                Text(ui("Dış Çap (OD) · Seçmek için dokunun"), color = Muted,
                     fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(decimal(outer, if (imperial && pipe.odInches < 14.0) 3 else 2) +
                     " " + dimensionUnit, color = White, fontSize = 29.sp,
                     fontWeight = FontWeight.Bold)
             }
         }
-        Text(ui("Halkayı parmağınızla çevirin", color = Muted, fontSize = 14.sp)
+        Text(ui("Halkayı parmağınızla çevirin"), color = Muted, fontSize = 14.sp)
     }
 }
 
@@ -589,11 +590,11 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
     val specs = listOf(
-        Triple("Dış Çap (OD)", decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.OpenInFull),
-        Triple("İç Çap (ID)", decimal(id) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
-        Triple("Et Kalınlığı", decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.LineWeight),
-        Triple("Ağırlık", decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
-        Triple("İç Hacim", decimal(volume) + if (imperial) " gal/ft" else " L/m", Icons.Default.WaterDrop)
+        Triple(ui("Dış Çap (OD)"), decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.OpenInFull),
+        Triple(ui("İç Çap (ID)"), decimal(id) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
+        Triple(ui("Et Kalınlığı"), decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.LineWeight),
+        Triple(ui("Ağırlık"), decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
+        Triple(ui("İç Hacim"), decimal(volume) + if (imperial) " gal/ft" else " L/m", Icons.Default.WaterDrop)
     )
     Column(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp))
@@ -663,16 +664,16 @@ private fun NumericPipeDialog(
             it.standard + "|" + it.nps + "|" + it.schedule }
             .take(100).toList()
     val title = when (field) {
-        "NPS" -> "NPS çapı"
-        "SCH" -> "Schedule (SCH)"
-        "OD" -> "Dış çap (OD)"
-        "ID" -> "İç çap (ID)"
-        "t" -> "Et kalınlığı"
-        "mass" -> "Ağırlık"
-        else -> "İç hacim"
+        "NPS" -> ui("NPS çapı")
+        "SCH" -> ui("Schedule (SCH)")
+        "OD" -> ui("Dış çap (OD)")
+        "ID" -> ui("İç çap (ID)")
+        "t" -> ui("Et kalınlığı")
+        "mass" -> ui("Ağırlık")
+        else -> ui("İç hacim")
     }
     AlertDialog(onDismissRequest = onDismiss,
-        title = { Text(title + " yazın", color = White) },
+        title = { Text(title + " " + ui("yazın"), color = White) },
         text = {
             Column {
                 OutlinedTextField(value = value, onValueChange = { value = it },
@@ -680,13 +681,13 @@ private fun NumericPipeDialog(
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 25.sp, color = White),
                     keyboardOptions = KeyboardOptions(keyboardType =
                         if (field == "NPS" || field == "SCH") KeyboardType.Text else KeyboardType.Decimal),
-                    label = { Text("Değer") })
+                    label = { Text(ui("Değer")) })
                 Spacer(Modifier.height(9.dp))
-                Text(ui("Yalnız tabloda kayıtlı nominal ölçüler kullanılabilir.",
+                Text(ui("Yalnız tabloda kayıtlı nominal ölçüler kullanılabilir."),
                     color = Muted, fontSize = 13.sp)
                 Spacer(Modifier.height(8.dp))
                 if (candidates.isEmpty()) {
-                    Text(ui("Eşleşen kayıt yok. NPS, SCH veya değeri kontrol edin.",
+                    Text(ui("Eşleşen kayıt yok. NPS, SCH veya değeri kontrol edin."),
                         color = Gold, fontSize = 14.sp)
                 } else {
                     Column(Modifier.heightIn(max = 210.dp).verticalScroll(rememberScrollState())) {
@@ -717,10 +718,10 @@ private fun NumericPipeDialog(
         confirmButton = {
             TextButton(enabled = candidates.size == 1,
                 onClick = { candidates.singleOrNull()?.let(onChoose) }) {
-                Text("Seç", color = if (candidates.size == 1) Gold else Muted)
+                Text(ui("Seç"), color = if (candidates.size == 1) Gold else Muted)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("İptal", color = Muted) } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(ui("İptal"), color = Muted) } }
     )
 }
 
@@ -735,31 +736,31 @@ private fun LengthDialog(pipe: PipeSpec, imperial: Boolean, onDismiss: () -> Uni
     val volumeUnit = if (imperial) " US gal" else " L"
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(ui("Boru uzunluğu hesabı", color = White) },
+        title = { Text(ui("Boru uzunluğu hesabı"), color = White) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(if (imperial) "Uzunluğu fit (ft) olarak girin." else
-                    "Uzunluğu metre olarak girin.", color = White, fontSize = 17.sp)
+                Text(ui(if (imperial) "Uzunluğu fit (ft) olarak girin." else
+                    "Uzunluğu metre olarak girin."), color = White, fontSize = 17.sp)
                 OutlinedTextField(
                     length, { length = it },
-                    label = { Text(if (imperial) "Uzunluk (ft)" else "Uzunluk (m)") },
+                    label = { Text(ui(if (imperial) "Uzunluk (ft)" else "Uzunluk (m)")) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true, modifier = Modifier.fillMaxWidth()
                 )
                 if (metres != null && metres > 0 && metres <= 100000) {
-                    Text("Boş ağırlık: " + decimal(pipe.kgPerMetre * metres * massFactor) +
+                    Text(ui("Boş ağırlık: ") + decimal(pipe.kgPerMetre * metres * massFactor) +
                         massUnit, fontSize = 19.sp, color = White)
-                    Text("İç hacim: " + decimal(pipe.litresPerMetre * metres * volumeFactor) +
+                    Text(ui("İç hacim: ") + decimal(pipe.litresPerMetre * metres * volumeFactor) +
                         volumeUnit, fontSize = 19.sp, color = White)
-                    Text("Su dolu ağırlık: " +
+                    Text(ui("Su dolu ağırlık: ") +
                         decimal(pipe.waterFilledKgPerMetre * metres * massFactor) +
                         massUnit, fontSize = 19.sp, color = White)
                 } else {
-                    Text(ui("Pozitif ve geçerli bir uzunluk girin.", color = Gold)
+                    Text(ui("Pozitif ve geçerli bir uzunluk girin."), color = Gold)
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Kapat", color = Gold) } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text(ui("Kapat"), color = Gold) } }
     )
 }
 
@@ -791,7 +792,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(ui("Ölçü birimi", color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
+            Text(ui("Ölçü birimi"), color = White, fontSize = 18.sp, modifier = Modifier.weight(1f))
             listOf(true to "inç", false to "mm").forEach { (inch, label) ->
                 Surface(
                     color = if (useInches == inch) Gold else Panel,
@@ -816,7 +817,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
         }
         OutlinedTextField(
             outer, { outer = it; searched = false }, modifier = Modifier.fillMaxWidth(),
-            label = { Text("Dış çap (" + if (useInches) "inç)" else "mm)") },
+            label = { Text(ui("Dış çap (") + if (useInches) ui("inç") + ")" else "mm)") },
             singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -824,20 +825,20 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
         Spacer(Modifier.height(17.dp))
         OutlinedTextField(
             thick, { thick = it; searched = false }, modifier = Modifier.fillMaxWidth(),
-            label = { Text("Et kalınlığı (" + if (useInches) "inç)" else "mm)") },
+            label = { Text(ui("Et kalınlığı (") + if (useInches) ui("inç") + ")" else "mm)") },
             singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 26.sp, color = White),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         Spacer(Modifier.height(20.dp))
-        GoldButton("SCH Bul", { searched = true })
+        GoldButton(ui("SCH Bul"), { searched = true })
         Spacer(Modifier.height(24.dp))
         if (searched) {
             if (matches.isEmpty()) {
                 Text("Bu ölçüye yakın kayıt bulunamadı. Birimi ve ölçüleri kontrol edin.",
                     fontSize = textSp.sp, color = Gold)
             } else {
-                Text(ui("Olası nominal eşleşmeler", color = White,
+                Text(ui("Olası nominal eşleşmeler"), color = White,
                     fontSize = 21.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(10.dp))
                 matches.take(12).forEach { pipe ->
@@ -862,7 +863,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                 }
             }
             Spacer(Modifier.height(13.dp))
-            Text(ui("Nominal eşleştirmedir; basınç uygunluğu veya sertifika değildir.",
+            Text(ui("Nominal eşleştirmedir; basınç uygunluğu veya sertifika değildir."),
                 color = Muted, fontSize = 14.sp)
         }
     }
@@ -890,10 +891,10 @@ private fun CombinedTableStandardsPage(
             ui("İç hacim: π × iç çap² / 4 × uzunluk.") + "\n" +
             ui("Değerler nominaldir; basınç tasarım hesabı değildir."), textSp)
         Spacer(Modifier.height(22.dp))
-        Picker("NPS (inç)", nps + "″", sizes.map { it + "″" },
+        Picker(ui("NPS (inç)"), nps + "″", sizes.map { it + "″" },
             { onNps(it.removeSuffix("″")) }, Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
-        Text(ui("Nominal SCH ölçüleri", color = White, fontWeight = FontWeight.Bold,
+        Text(ui("Nominal SCH ölçüleri"), color = White, fontWeight = FontWeight.Bold,
             fontSize = 20.sp)
         rows.forEach { p ->
             Column(
@@ -911,9 +912,9 @@ private fun CombinedTableStandardsPage(
                 val unit = if (imperial) "in" else "mm"
                 val thick = if (imperial) p.wallMm / 25.4 else p.wallMm
                 val inner = if (imperial) p.idMm / 25.4 else p.idMm
-                Text("Et: " + decimal(thick, if (imperial) 3 else 2) + " " + unit,
+                Text(ui("Et: ") + decimal(thick, if (imperial) 3 else 2) + " " + unit,
                     color = White, fontSize = 17.sp)
-                Text("İç çap: " + decimal(inner, if (imperial) 3 else 2) + " " + unit,
+                Text(ui("İç çap: ") + decimal(inner, if (imperial) 3 else 2) + " " + unit,
                     color = White, fontSize = 17.sp)
             }
         }
@@ -941,16 +942,16 @@ private fun SettingsPage(
         PageHeading(ui("Ayarlar"), ui("Sahada kolay okunabilen ekran"))
         Row(Modifier.fillMaxWidth().heightIn(min = 72.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(ui("Büyük yazı", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text(ui("Daha kolay okunan ölçüler", color = Muted, fontSize = 15.sp)
+                Text(ui("Büyük yazı"), color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(ui("Daha kolay okunan ölçüler"), color = Muted, fontSize = 15.sp)
             }
             Switch(checked = largeText, onCheckedChange = onLargeText)
         }
         HorizontalDivider(color = StrokeColor)
         Row(Modifier.fillMaxWidth().heightIn(min = 72.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(ui("İnç / lb / gal", color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text(ui("Metrik yerine Imperial göster", color = Muted, fontSize = 15.sp)
+                Text(ui("İnç / lb / gal"), color = White, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(ui("Metrik yerine Imperial göster"), color = Muted, fontSize = 15.sp)
             }
             Switch(checked = imperial, onCheckedChange = onImperial)
         }
