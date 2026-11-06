@@ -232,8 +232,12 @@ jobs:
 
               # Dialog is verified using a real UI hierarchy and dismissed by its button.
               visible=nodes(tag+"_id_source")
-              if not tap_text(visible,id_label):
-                  raise AssertionError("ID tappable label missing")
+              # Compact ID badge shows "ID"; the localized full name is
+              # preserved as its accessibility content description.
+              if not (tap_text(visible,id_label,attr="content-desc")
+                      or tap_text(visible,"ID")
+                      or tap_text(visible,id_label)):
+                  raise AssertionError("ID badge not accessible or tappable")
               time.sleep(.4)
               dialog=nodes(tag+"_id_open")
               if not any(dialog_title in n.attrib.get("text","") for n in dialog):
