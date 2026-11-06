@@ -641,6 +641,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     val nextDiameter = ui("Sonraki boru çapı")
     val uiInnerDiameterDescription = ui("İç Çap (ID)")
     val innerGreen = Color(0xFF80F889)
+    val wallBlue = Color(0xFF55D9FF)
     val boreDark = Color(0xFF03221E)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -651,14 +652,14 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             Column(Modifier.fillMaxWidth().clickable { onEdit("t") }
                 .padding(top = 3.dp, bottom = 2.dp),
                 horizontalAlignment = Alignment.End) {
-                Text(ui("Et Kalınlığı (t)"), color = Gold, fontSize = 19.sp,
+                Text(ui("Et Kalınlığı (t)"), color = wallBlue, fontSize = 19.sp,
                     fontWeight = FontWeight.Bold)
                 Box(Modifier.padding(top = 3.dp)
-                    .border(1.5.dp, Gold, RoundedCornerShape(12.dp))
+                    .border(1.5.dp, wallBlue, RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .padding(horizontal = 12.dp, vertical = 3.dp)) {
                     Text(decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
-                        color = Gold, fontSize = 24.sp,
+                        color = wallBlue, fontSize = 24.sp,
                         fontWeight = FontWeight.Bold)
                 }
             }
@@ -760,25 +761,25 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         drawCircle(
                             brush = Brush.sweepGradient(
                                 listOf(
-                                    Color(0xFF59615E), Color(0xFFCED4D0),
-                                    Color(0xFFF1F2EC), Color(0xFF8D9893),
-                                    Color(0xFF5A6763), Color(0xFFE3E6E1),
-                                    Color(0xFF919A95), Color(0xFF59615E)
+                                    Color(0xFF576A69), Color(0xFFAAB8B8),
+                                    Color(0xFFF4F8F6), Color(0xFF869A9A),
+                                    Color(0xFF3E5356), Color(0xFFD9E2E1),
+                                    Color(0xFF879C9C), Color(0xFF576A69)
                                 ), center = c
                             ),
                             radius = metalRadius,
                             style = Stroke(width = metalWidth)
                         )
                         rotate(wheelRotation * 0.25f, pivot = c) {
-                            for (index in 0 until 19) {
-                                val t = index / 18f
+                            for (index in 0 until 13) {
+                                val t = index / 12f
                                 val grooveRadius = bore + metalWidth * t
                                 drawCircle(
                                     color = if (index % 3 == 0)
-                                        Color.White.copy(alpha = 0.20f)
-                                        else Color.Black.copy(alpha = 0.09f),
+                                        Color.White.copy(alpha = 0.09f)
+                                        else Color.Black.copy(alpha = 0.045f),
                                     radius = grooveRadius,
-                                    style = Stroke(width = 0.85.dp.toPx())
+                                    style = Stroke(width = 0.55.dp.toPx())
                                 )
                             }
                         }
@@ -786,12 +787,15 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             radius = outer * 0.988f,
                             style = Stroke(width = 1.4.dp.toPx()))
                         drawCircle(Color(0xFF132A27), radius = bore)
+                        drawCircle(Color(0xFF111F20).copy(alpha = 0.28f),
+                            radius = bore * 1.015f,
+                            style = Stroke(width = 2.dp.toPx()))
                         // The exposed inside wall is brighter at the bottom, as in a
                         // machined cylinder viewed at a shallow downward angle.
                         drawCircle(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF031C19), Color(0xFF092A25),
-                                    Color(0xFF1B5750), Color(0xFF6D9A8D)),
+                                listOf(Color(0xFF071D1C), Color(0xFF102F2F),
+                                    Color(0xFF245654), Color(0xFF749B96)),
                                 startY = c.y - bore, endY = c.y + bore
                             ), radius = bore
                         )
@@ -819,26 +823,33 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                     Offset(tip.x - sign * 13.dp.toPx(),
                                         y + 7.dp.toPx()), 3.dp.toPx())
                             }
-                            // The two yellow points mark the actual radial wall.
+                            // Green callout leader runs from the bore diameter to the left margin.
+                            val leftBore = Offset(c.x - half, y)
+                            val leftLeader = Offset(c.x - outer * 1.02f,
+                                y - bore * 0.35f)
+                            drawLine(innerGreen, leftBore, leftLeader,
+                                strokeWidth = 2.4.dp.toPx(), cap = StrokeCap.Round)
+                            drawCircle(innerGreen, 3.dp.toPx(), leftLeader)
+                            // Two blue points mark the actual radial wall.
                             val outerTip = Offset(c.x + outer * 0.73f,
                                 c.y - outer * 0.68f)
                             val innerTip = Offset(c.x + bore * 0.72f,
                                 c.y - bore * 0.69f)
-                            drawLine(Gold, innerTip, outerTip,
+                            drawLine(wallBlue, innerTip, outerTip,
                                 strokeWidth = 2.8.dp.toPx())
-                            drawCircle(Gold, 4.4.dp.toPx(), outerTip)
-                            drawCircle(Gold, 4.4.dp.toPx(), innerTip)
+                            drawCircle(wallBlue, 4.4.dp.toPx(), outerTip)
+                            drawCircle(wallBlue, 4.4.dp.toPx(), innerTip)
                             // A separate leader points from the wall marker up to
                             // the wall-thickness readout immediately above the dial.
                             val leaderEnd = Offset(c.x + outer * 0.75f,
                                 c.y - outer * 1.17f)
-                            drawLine(Gold, outerTip, leaderEnd,
+                            drawLine(wallBlue, outerTip, leaderEnd,
                                 strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
-                            drawLine(Gold, leaderEnd,
+                            drawLine(wallBlue, leaderEnd,
                                 Offset(leaderEnd.x - 6.dp.toPx(),
                                     leaderEnd.y + 12.dp.toPx()),
                                 strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
-                            drawLine(Gold, leaderEnd,
+                            drawLine(wallBlue, leaderEnd,
                                 Offset(leaderEnd.x + 8.dp.toPx(),
                                     leaderEnd.y + 10.dp.toPx()),
                                 strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
@@ -849,9 +860,11 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         val dimensionUnit = if (imperial) "in" else "mm"
                         val inner = if (imperial) pipe.idInches else pipe.idMm
                         Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.align(Alignment.Center)
-                                .offset(y = -dialSide * 0.07f)
-                                .widthIn(max = dialSide * 0.68f)
+                            modifier = Modifier.align(Alignment.CenterStart)
+                                .offset(x = -minOf(dialSide * 0.12f,
+                                    ((maxWidth - dialSide) / 2f - 5.dp).coerceAtLeast(0.dp)),
+                                    y = dialSide * 0.15f)
+                                .widthIn(max = dialSide * 0.54f)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(boreDark.copy(alpha = 0.90f))
                                 .border(1.5.dp, innerGreen,
@@ -860,11 +873,11 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 .clickable { onEdit("ID") }
                                 .padding(horizontal = 8.dp, vertical = 5.dp)) {
                             Text(ui("İç Çap (ID)"), color = White,
-                                fontSize = if (fontScale >= 1.2f) 14.sp else 17.sp,
+                                fontSize = if (fontScale >= 1.2f) 12.sp else 14.sp,
                                 fontWeight = FontWeight.Bold, maxLines = 1)
                             Text(decimal(inner, if (imperial) 3 else 4) + " " + dimensionUnit,
-                                color = White, fontWeight = FontWeight.Bold,
-                                fontSize = if (fontScale >= 1.2f) 19.sp else 25.sp,
+                                color = innerGreen, fontWeight = FontWeight.Bold,
+                                fontSize = if (fontScale >= 1.2f) 16.sp else 19.sp,
                                 maxLines = 1, softWrap = false)
                         }
                     } else {
@@ -1003,7 +1016,12 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(item.first, color = White, fontSize = (textSp - 2).sp, modifier = Modifier.weight(1f))
-                Text(item.second, color = if (i == 0) Gold else White,
+                Text(item.second, color = when (i) {
+                    0 -> Gold
+                    1 -> Color(0xFF80F889)
+                    2 -> Color(0xFF55D9FF)
+                    else -> White
+                },
                     fontWeight = FontWeight.Bold, fontSize = textSp.sp)
             }
             if (i < specs.lastIndex) HorizontalDivider(color = StrokeColor.copy(alpha = 0.6f))
