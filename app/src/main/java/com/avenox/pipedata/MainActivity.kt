@@ -796,7 +796,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             Text(ui("İç Çap (ID)"), color = White,
                                 fontSize = if (fontScale >= 1.2f) 14.sp else 17.sp,
                                 fontWeight = FontWeight.Bold, maxLines = 1)
-                            Text(decimal(inner) + " " + dimensionUnit,
+                            Text(decimal(inner, if (imperial) 3 else 4) + " " + dimensionUnit,
                                 color = White, fontWeight = FontWeight.Bold,
                                 fontSize = if (fontScale >= 1.2f) 19.sp else 25.sp,
                                 maxLines = 1, softWrap = false)
@@ -853,7 +853,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             Text(ui("Dış Çap (OD)"), color = White,
                                 fontWeight = FontWeight.Bold, fontSize = 17.sp)
                             Text(decimal(outer,
-                                if (imperial && pipe.odInches < 14.0) 3 else 2) +
+                                if (imperial) 3 else 4) +
                                 " " + dimensionUnit, color = Gold,
                                 fontSize = if (fontScale >= 1.2f) 25.sp else 30.sp,
                                 fontWeight = FontWeight.Bold)
@@ -914,9 +914,9 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
     val specs = listOf(
-        Triple(ui("Dış Çap (OD)"), decimal(od, if (imperial && pipe.odInches < 14.0) 3 else 2) + " " + thicknessUnit, Icons.Default.OpenInFull),
-        Triple(ui("İç Çap (ID)"), decimal(id) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
-        Triple(ui("Et Kalınlığı"), decimal(t, if (imperial) 3 else 2) + " " + thicknessUnit, Icons.Default.LineWeight),
+        Triple(ui("Dış Çap (OD)"), decimal(od, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.OpenInFull),
+        Triple(ui("İç Çap (ID)"), decimal(id, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
+        Triple(ui("Et Kalınlığı"), decimal(t, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.LineWeight),
         Triple(ui("Ağırlık"), decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
         Triple(ui("İç Hacim"), decimal(volume) + if (imperial) " gal/ft" else " L/m", Icons.Default.WaterDrop)
     )
@@ -954,9 +954,9 @@ private fun NumericPipeDialog(
     val initial = when (field) {
         "NPS" -> nps
         "SCH" -> schedule
-        "OD" -> selected?.let { decimal(if (imperial) it.odInches else it.odMm, if (imperial && it.odInches < 14.0) 3 else 2) }
-        "ID" -> selected?.let { decimal(if (imperial) it.idInches else it.idMm) }
-        "t" -> selected?.wallMm?.let { decimal(if (imperial) it / 25.4 else it, if (imperial) 3 else 2) }
+        "OD" -> selected?.let { decimal(if (imperial) it.odInches else it.odMm, if (imperial) 3 else 4) }
+        "ID" -> selected?.let { decimal(if (imperial) it.idInches else it.idMm, if (imperial) 3 else 4) }
+        "t" -> selected?.wallMm?.let { decimal(if (imperial) it / 25.4 else it, if (imperial) 3 else 4) }
         "mass" -> selected?.kgPerMetre?.let { decimal(if (imperial) it * 0.671968975 else it) }
         else -> selected?.litresPerMetre?.let { decimal(if (imperial) it * 0.08052 else it) }
     } ?: ""
@@ -980,7 +980,7 @@ private fun NumericPipeDialog(
                         "mass" -> if (imperial) row.kgPerMetre * 0.671968975 else row.kgPerMetre
                         else -> if (imperial) row.litresPerMetre * 0.08052 else row.litresPerMetre
                     }
-                    val tolerance = if (imperial && (field == "t" || (field == "OD" && row.odInches < 14.0))) 0.00051 else 0.0051
+                    val tolerance = if (field == "mass" || field == "volume") 0.0051 else if (imperial) 0.00051 else 0.000051
                     number != null && number.isFinite() && abs(actual - number) <= tolerance
                 }
             }
@@ -1191,7 +1191,7 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
             ) {
                 items(suggestions) { option ->
                     val wall = if (useInches) option.wallMm / 25.4 else option.wallMm
-                    val formatted = decimal(wall, if (useInches) 3 else 2)
+                    val formatted = decimal(wall, if (useInches) 3 else 4)
                     val unit = if (useInches) "in" else "mm"
                     val key = option.standard + "|" + option.nps + "|" + option.schedule
                     Surface(
@@ -1246,9 +1246,9 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                             val odDisplay = if (useInches) pipe.odInches else pipe.odMm
                             val wallDisplay = if (useInches) pipe.wallMm / 25.4 else pipe.wallMm
                             val unit = if (useInches) "in" else "mm"
-                            Text("OD " + decimal(odDisplay, if (useInches && pipe.odInches < 14.0) 3 else 2) + " " + unit,
+                            Text("OD " + decimal(odDisplay, if (useInches) 3 else 4) + " " + unit,
                                 color = White, fontSize = 17.sp)
-                            Text("t " + decimal(wallDisplay, if (useInches) 3 else 2) + " " + unit,
+                            Text("t " + decimal(wallDisplay, if (useInches) 3 else 4) + " " + unit,
                                 color = White, fontSize = 17.sp)
                         }
                     }
@@ -1304,9 +1304,9 @@ private fun CombinedTableStandardsPage(
                 val unit = if (imperial) "in" else "mm"
                 val thick = if (imperial) p.wallMm / 25.4 else p.wallMm
                 val inner = if (imperial) p.idInches else p.idMm
-                Text(ui("Et: ") + decimal(thick, if (imperial) 3 else 2) + " " + unit,
+                Text(ui("Et: ") + decimal(thick, if (imperial) 3 else 4) + " " + unit,
                     color = White, fontSize = 17.sp)
-                Text(ui("İç çap: ") + decimal(inner, if (imperial) 3 else 2) + " " + unit,
+                Text(ui("İç çap: ") + decimal(inner, if (imperial) 3 else 4) + " " + unit,
                     color = White, fontSize = 17.sp)
             }
         }

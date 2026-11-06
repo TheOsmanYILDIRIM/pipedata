@@ -10,44 +10,19 @@ data class PipeSpec(
     val standard: String,
     val nps: String,
     val dn: Int,
-    val odMm: Double,
+    val odInches: Double,
     val schedule: String,
-    val wallMm: Double
+    val wallInches: Double
 ) {
     init {
-        require(odMm > 0.0 && wallMm > 0.0 && wallMm < odMm / 2.0)
+        require(odInches.isFinite() && wallInches.isFinite() && odInches > 0.0 && wallInches > 0.0 && wallInches < odInches / 2.0)
     }
 
-    /**
-     * Native ASME outside diameter in inches. Sub-14 NPS is a nominal label,
-     * not an OD. Rounded metric catalog values must not be reconverted into
-     * false inch measurements (168.3 mm must display 6.625 in, not 6.626).
-     */
-    val odInches: Double get() = when (nps) {
-        "1/8" -> 0.405
-        "1/4" -> 0.540
-        "3/8" -> 0.675
-        "1/2" -> 0.840
-        "3/4" -> 1.050
-        "1" -> 1.315
-        "1 1/4" -> 1.660
-        "1 1/2" -> 1.900
-        "2" -> 2.375
-        "2 1/2" -> 2.875
-        "3" -> 3.500
-        "3 1/2" -> 4.000
-        "4" -> 4.500
-        "5" -> 5.563
-        "6" -> 6.625
-        "8" -> 8.625
-        "10" -> 10.750
-        "12" -> 12.750
-        else -> nps.toDoubleOrNull()?.takeIf { it >= 14.0 } ?: odMm / 25.4
-    }
-
-    val idMm: Double get() = odMm - 2.0 * wallMm
-    /** Imperial ID derives from the native inch OD, not rounded SI OD. */
-    val idInches: Double get() = odInches - 2.0 * (wallMm / 25.4)
+    // Canonical source measurements are in inches. No published SI rounding is stored.
+    val odMm: Double get() = odInches * 25.4
+    val wallMm: Double get() = wallInches * 25.4
+    val idInches: Double get() = odInches - 2.0 * wallInches
+    val idMm: Double get() = idInches * 25.4
     val metalAreaMm2: Double get() = PI / 4.0 * (odMm * odMm - idMm * idMm)
     val boreAreaMm2: Double get() = PI / 4.0 * idMm * idMm
     val kgPerMetre: Double get() = metalAreaMm2 * 0.00785  // 7850 kg/m³
@@ -61,6 +36,10 @@ class PipeCatalog private constructor(val rows: List<PipeSpec>) {
             val records = mutableListOf<PipeSpec>()
             val seen = mutableSetOf<String>()
             reader.buffered().useLines { lines ->
+                val header = lines.firstOrNull()?.trim()
+                require(header == "standard,nps,dn,outer_diameter_in,schedule,wall_thickness_in") {
+                    "Pipe catalogue must use original inch dimensions"
+                }
                 lines.drop(1).forEachIndexed { lineNo, raw ->
                     if (raw.isBlank()) return@forEachIndexed
                     val parts = raw.trim().split(",")
@@ -69,9 +48,9 @@ class PipeCatalog private constructor(val rows: List<PipeSpec>) {
                         standard = parts[0].trim(),
                         nps = parts[1].trim(),
                         dn = parts[2].toInt(),
-                        odMm = parts[3].toDouble(),
+                        odInches = parts[3].toDouble(),
                         schedule = parts[4].trim(),
-                        wallMm = parts[5].toDouble()
+                        wallInches = parts[5].toDouble()
                     )
                     require(record.standard == "B36.10" || record.standard == "B36.19")
                     require(record.nps.isNotEmpty() && record.schedule.isNotEmpty())
