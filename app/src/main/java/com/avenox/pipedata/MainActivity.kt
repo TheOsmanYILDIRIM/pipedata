@@ -821,6 +821,9 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                     }
                     Column(
                         Modifier.fillMaxWidth()
+                            .then(if (tutorialStep == 2)
+                                Modifier.border(3.dp, Gold, RoundedCornerShape(16.dp))
+                                else Modifier)
                             .clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -856,9 +859,6 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 fontSize = if (fontScale >= 1.2f) 25.sp else 30.sp,
                                 fontWeight = FontWeight.Bold)
                         }
-                    }
-                    if (tutorialStep == 2) {
-                        TutorialPulseFrame(Modifier.fillMaxWidth().height(8.dp))
                     }
                 }
             }
