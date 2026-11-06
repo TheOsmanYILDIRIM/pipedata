@@ -297,14 +297,36 @@ private fun CalculatorPage(
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(ui("Ölçü birimi"), color = Muted, fontSize = 16.sp)
+            var npsMenuExpanded by remember { mutableStateOf(false) }
+            Box(Modifier.weight(1f, fill = false)) {
+                Row(Modifier.clip(RoundedCornerShape(14.dp))
+                    .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))
+                    .clickable { npsMenuExpanded = true }
+                    .heightIn(min = 48.dp).padding(horizontal = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text("NPS " + nps + "″", color = White,
+                        fontSize = 19.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = ui("NPS seç"),
+                        tint = Gold, modifier = Modifier.size(24.dp))
+                }
+                DropdownMenu(expanded = npsMenuExpanded,
+                    onDismissRequest = { npsMenuExpanded = false }) {
+                    sizes.forEach { size ->
+                        DropdownMenuItem(
+                            text = { Text("NPS " + size + "″",
+                                color = if (size == nps) Gold else White) },
+                            onClick = { onNps(size); npsMenuExpanded = false })
+                    }
+                }
+            }
+            Spacer(Modifier.width(8.dp))
             Row(Modifier.clip(RoundedCornerShape(14.dp))
                 .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
                 listOf(true to ui("inç"), false to "mm").forEach { (inch, label) ->
                     Box(Modifier.clip(RoundedCornerShape(12.dp))
                         .background(if (imperial == inch) Gold else Color.Transparent)
                         .clickable { onImperial(inch) }
-                        .heightIn(min = 48.dp).padding(horizontal = 18.dp),
+                        .heightIn(min = 48.dp).padding(horizontal = 15.dp),
                         contentAlignment = Alignment.Center) {
                         Text(label, color = if (imperial == inch) Deep else White,
                             fontSize = 19.sp, fontWeight = FontWeight.Bold)
