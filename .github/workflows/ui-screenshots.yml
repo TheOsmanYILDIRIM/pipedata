@@ -128,7 +128,7 @@ jobs:
               tap_node("Boru",tag+"_nav_boru","content-desc")
               shot(tag+"_boru_selected")
               # Numerical selection dialog must open, have a field and close.
-              tap_node("Dış çap (OD)",tag+"_open_od","text")
+              tap_node("İç Çap (ID)",tag+"_open_od","text")
               shot(tag+"_od_dialog")
               tap_node("İptal",tag+"_dismiss_od","text")
               # SCH page: both field entry and result button are exercised.
@@ -139,7 +139,7 @@ jobs:
               shot(tag+"_numeric_keyboard")
               adb("shell","input","keyevent","4")
               # Text button is distinct from semantic bottom navigation.
-              tap_node("SCH Bul",tag+"_lookup_submit","text")
+              tap_node("SCH Bul",tag+"_lookup_submit","text",nth=1)
               shot(tag+"_sch_results")
               tap_node("Tablo/Standart",tag+"_nav_table","content-desc")
               shot(tag+"_tablo_standart")
