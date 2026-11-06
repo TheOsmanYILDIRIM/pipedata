@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Independent integrity and physics gate for the clean pipe-only app."""
 import csv
+import hashlib
+from collections import Counter
 import math
 from decimal import Decimal, ROUND_HALF_EVEN
 from pathlib import Path
@@ -12,6 +14,110 @@ assert len(ROWS) >= 390, f"Too few validated nominal records: {len(ROWS)}"
 assert set(ROWS[0]) == {
     "standard", "nps", "dn", "outer_diameter_mm", "schedule", "wall_thickness_mm"
 }
+# Frozen, explicit scope of this app: 1/8 through 48 inch. The baseline is a
+# regression lock of the reviewed application CSV, NOT an independent ASME license
+# or proof that every published schedule is present. When changing data, separately
+# verify the source, review the diff, then deliberately renew the baseline SHA.
+EXPECTED_GIT_BLOB_SHA = "ac5e2907ec6d26620df280d8228d97c4a5b3a29c"
+EXPECTED_NPS_COUNTS = {
+    "1/8": 6,
+    "1/4": 10,
+    "3/8": 10,
+    "1/2": 14,
+    "3/4": 14,
+    "1": 14,
+    "1 1/4": 14,
+    "1 1/2": 14,
+    "2": 14,
+    "2 1/2": 14,
+    "3": 14,
+    "3 1/2": 11,
+    "4": 15,
+    "5": 14,
+    "6": 14,
+    "8": 18,
+    "10": 18,
+    "12": 18,
+    "14": 17,
+    "16": 17,
+    "18": 17,
+    "20": 17,
+    "22": 14,
+    "24": 17,
+    "26": 4,
+    "28": 5,
+    "30": 8,
+    "32": 6,
+    "34": 6,
+    "36": 6,
+    "38": 2,
+    "40": 2,
+    "42": 2,
+    "44": 2,
+    "46": 2,
+    "48": 2,
+}
+EXPECTED_DN_OD = {
+    "1/8": (6, Decimal("10.30")),
+    "1/4": (8, Decimal("13.70")),
+    "3/8": (10, Decimal("17.10")),
+    "1/2": (15, Decimal("21.30")),
+    "3/4": (20, Decimal("26.70")),
+    "1": (25, Decimal("33.40")),
+    "1 1/4": (32, Decimal("42.20")),
+    "1 1/2": (40, Decimal("48.30")),
+    "2": (50, Decimal("60.30")),
+    "2 1/2": (65, Decimal("73.00")),
+    "3": (80, Decimal("88.90")),
+    "3 1/2": (90, Decimal("101.60")),
+    "4": (100, Decimal("114.30")),
+    "5": (125, Decimal("141.30")),
+    "6": (150, Decimal("168.30")),
+    "8": (200, Decimal("219.10")),
+    "10": (250, Decimal("273.00")),
+    "12": (300, Decimal("323.80")),
+    "14": (350, Decimal("355.60")),
+    "16": (400, Decimal("406.40")),
+    "18": (450, Decimal("457.20")),
+    "20": (500, Decimal("508.00")),
+    "22": (550, Decimal("558.80")),
+    "24": (600, Decimal("609.60")),
+    "26": (650, Decimal("660.40")),
+    "28": (700, Decimal("711.20")),
+    "30": (750, Decimal("762.00")),
+    "32": (800, Decimal("813.00")),
+    "34": (850, Decimal("864.00")),
+    "36": (900, Decimal("914.00")),
+    "38": (950, Decimal("965.00")),
+    "40": (1000, Decimal("1016.00")),
+    "42": (1050, Decimal("1067.00")),
+    "44": (1100, Decimal("1118.00")),
+    "46": (1150, Decimal("1168.00")),
+    "48": (1200, Decimal("1219.00")),
+}
+
+raw_csv = CSV.read_bytes()
+actual_blob_sha = hashlib.sha1(
+    b"blob " + str(len(raw_csv)).encode("ascii") + b"\0" + raw_csv
+).hexdigest()
+assert actual_blob_sha == EXPECTED_GIT_BLOB_SHA, (
+    "Pipe CSV changed without independent review and baseline approval",
+    actual_blob_sha, EXPECTED_GIT_BLOB_SHA
+)
+assert len(ROWS) == sum(EXPECTED_NPS_COUNTS.values()), "Unexpected total pipe rows"
+actual_counts = Counter(r["nps"] for r in ROWS)
+assert dict(actual_counts) == EXPECTED_NPS_COUNTS, (
+    "NPS coverage changed or size missing", dict(actual_counts)
+)
+for r in ROWS:
+    expected_dn, expected_od = EXPECTED_DN_OD[r["nps"]]
+    assert int(r["dn"]) == expected_dn, ("DN mismatch", r)
+    assert Decimal(r["outer_diameter_mm"]) == expected_od, ("OD mismatch", r)
+assert {r["schedule"] for r in ROWS if r["nps"] == "38"} == {"STD", "XS"}
+for nps in ("38", "40", "42", "44", "46", "48"):
+    assert {r["schedule"] for r in ROWS if r["nps"] == nps} == {"STD", "XS"}, nps
+print(f"PASS: locked full catalog, {len(ROWS)} rows, {len(EXPECTED_NPS_COUNTS)} NPS sizes")
+
 seen = set()
 for row in ROWS:
     key = (row["standard"], row["nps"], row["schedule"])
