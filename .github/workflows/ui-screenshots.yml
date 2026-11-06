@@ -54,7 +54,7 @@ jobs:
           root.mkdir(exist_ok=True)
           apk = "app/build/outputs/apk/debug/app-debug.apk"
           pkg = "com.avenox.pipedata"
-          passed, problems = [], []
+          passed, problems, warnings = [], [], []
 
           def adb(*args, timeout=25):
               p = subprocess.run(["adb", *map(str, args)], capture_output=True,
@@ -109,54 +109,85 @@ jobs:
               adb("shell","settings","put","system","font_scale",str(scale))
               adb("shell","am","force-stop",pkg)
               adb("shell","am","start","-n",pkg+"/.MainActivity")
-              time.sleep(1)
+              time.sleep(.65)
               if metric:
-                  items = nodes(tag+"_unit")
+                  items=nodes(tag+"_unit")
                   if not tap_text(items,"mm"):
                       raise AssertionError("Boru metric switch not found")
-                  time.sleep(.2)
-              png(tag+"_boru")
-              initial = nodes(tag+"_boru")
-              # Reuse bottom navigation coordinates: no expensive XML dump per click.
-              nav = ["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
-              coords = {}
+                  time.sleep(.35)
+              png(tag+"_boru_initial")
+              initial=nodes(tag+"_boru_initial")
+              nav=["SCH Bul","Tablo/Standart","Ayarlar","Boru"]
+              coords={}
               for name in nav:
                   found=[n for n in initial if n.attrib.get("content-desc")==name]
                   if not found:
-                      raise AssertionError("Missing bottom navigation semantics: "+name)
+                      raise AssertionError("Missing navigation semantics: "+name)
                   coords[name]=center(found[0].attrib["bounds"])
+              headings={"SCH Bul":"SCH Bul",
+                        "Tablo/Standart":"Tablo / Standart",
+                        "Ayarlar":"Ayarlar"}
               for name in nav:
                   adb("shell","input","tap",*coords[name])
-                  time.sleep(.18)
-                  png(tag+"_"+name.lower().replace("/","_").replace(" ","_"))
-              # Exercise at least one real Android dialog and a SCH field/keyboard.
-              dialog_nodes = nodes(tag+"_dialog_source")
-              if tap_text(dialog_nodes,"İç Çap (ID)"):
-                  time.sleep(.2)
-                  png(tag+"_id_dialog")
-                  adb("shell","input","keyevent","4")
-              else:
-                  problems.append({"case":tag,"error":"ID edit label not exposed in UI hierarchy"})
+                  time.sleep(.55)
+                  items=nodes(tag+"_page_"+name.replace("/","_").replace(" ","_"))
+                  if name in headings and not any(n.attrib.get("text")==headings[name] for n in items):
+                      raise AssertionError("Page did not open: "+name)
+                  suffix="boru_return" if name=="Boru" else name.lower().replace("/","_").replace(" ","_")
+                  png(tag+"_"+suffix)
+
+              # Dialog is verified using a real UI hierarchy and dismissed by its button.
+              visible=nodes(tag+"_id_source")
+              if not tap_text(visible,"İç Çap (ID)"):
+                  raise AssertionError("ID tappable label missing")
+              time.sleep(.4)
+              dialog=nodes(tag+"_id_open")
+              if not any("İç çap (ID) yazın" in n.attrib.get("text","") for n in dialog):
+                  raise AssertionError("ID dialog did not open")
+              png(tag+"_id_dialog")
+              if not tap_text(dialog,"İptal"):
+                  raise AssertionError("ID dialog dismiss button missing")
+              time.sleep(.55)
+              after=nodes(tag+"_id_closed")
+              if any("İç çap (ID) yazın" in n.attrib.get("text","") for n in after):
+                  raise AssertionError("ID dialog failed to close")
+
+              # Actual Compose text field exposes its value as EditText, not the label.
               adb("shell","input","tap",*coords["SCH Bul"])
-              lookup_nodes = nodes(tag+"_lookup_source")
-              wanted="Dış çap (mm)" if metric else "Dış çap (inç)"
-              if tap_text(lookup_nodes,wanted):
-                  time.sleep(.15)
-                  png(tag+"_keyboard")
-                  adb("shell","input","keyevent","4")
-              else:
-                  problems.append({"case":tag,"error":"SCH lookup input label not exposed: "+wanted})
-              # Change NPS with accessibility click and record difference for long values.
+              time.sleep(.55)
+              lookup=nodes(tag+"_lookup")
+              if not any(n.attrib.get("text")=="SCH Bul" for n in lookup):
+                  raise AssertionError("SCH page failed to open")
+              edits=[n for n in lookup if n.attrib.get("class")=="android.widget.EditText"]
+              if len(edits)<2:
+                  raise AssertionError(f"Expected two SCH EditText controls, found {len(edits)}")
+              x,y=center(edits[0].attrib["bounds"])
+              adb("shell","input","tap",x,y)
+              time.sleep(.4)
+              png(tag+"_sch_keyboard")
+              adb("shell","input","keyevent","4")
+              time.sleep(.35)
+
+              # NPS dial gesture is evaluated separately; don't fake success.
               adb("shell","input","tap",*coords["Boru"])
-              dial_nodes=nodes(tag+"_dial_source")
-              dial=next((n for n in dial_nodes if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
-              if dial:
-                  x,y=center(dial.attrib["bounds"])
-                  adb("shell","input","tap",x,y)
-                  time.sleep(.15)
-                  png(tag+"_nps_changed")
-              else:
-                  problems.append({"case":tag,"error":"NPS dial semantics missing"})
+              time.sleep(.55)
+              dial_source=nodes(tag+"_dial_before")
+              dial=next((n for n in dial_source if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+              if dial is None:
+                  raise AssertionError("NPS dial accessibility node missing")
+              before=dial.attrib.get("content-desc")
+              a,b,c,d=map(int,re.findall(r"\d+",dial.attrib["bounds"]))
+              cx,cy=(a+c)//2,(b+d)//2
+              radius=min(c-a,d-b)//2
+              adb("shell","input","swipe",cx+int(radius*.8),cy,
+                  cx+int(radius*.5),cy+int(radius*.6),450)
+              time.sleep(.45)
+              dial_after=nodes(tag+"_dial_after")
+              after_desc=next((n.attrib.get("content-desc") for n in dial_after
+                               if n.attrib.get("content-desc","").startswith("Döner NPS sayacı")),None)
+              png(tag+"_dial_drag")
+              if after_desc==before:
+                  warnings.append({"case":tag,"issue":"Dial drag did not change NPS; needs manual check"})
 
           def main():
               try:
@@ -170,9 +201,9 @@ jobs:
                       check(f"{w}dp_{f}_{m}",lambda w=w,f=f,m=m: exercise(w,f,m))
               finally:
                   (root/"results.json").write_text(json.dumps(
-                      {"capture_count":len(passed),"captures":passed,"errors":problems},
+                      {"capture_count":len(passed),"captures":passed,"errors":problems,"warnings":warnings},
                       indent=2,ensure_ascii=False))
-              print("SUMMARY",len(passed),"PNG",len(problems),"errors",flush=True)
+              print("SUMMARY",len(passed),"PNG",len(problems),"errors",len(warnings),"warnings",flush=True)
               if problems or not passed: raise SystemExit(1)
 
           if __name__ == "__main__":
