@@ -520,6 +520,43 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     }
 }
 
+
+/**
+ * Technical drawing symbols: outside diameter, bore diameter and wall thickness.
+ * Uses the same dimension geometry at any density; no bitmap dependencies.
+ */
+@Composable
+private fun PipeDimensionIcon(kind: Int, modifier: Modifier = Modifier) {
+    Canvas(modifier) {
+        val c = center
+        val r = size.minDimension * 0.42f
+        val line = size.minDimension * 0.055f
+        drawCircle(White, radius = r, style = Stroke(width = line))
+        drawCircle(Muted, radius = r * 0.56f, style = Stroke(width = line))
+        if (kind == 0 || kind == 1) {
+            val extent = if (kind == 0) r else r * 0.56f
+            drawLine(Gold, Offset(c.x - extent, c.y),
+                Offset(c.x + extent, c.y), strokeWidth = line)
+            for (direction in listOf(-1f, 1f)) {
+                val x = c.x + direction * extent
+                drawLine(Gold, Offset(x, c.y),
+                    Offset(x - direction * r * 0.22f, c.y - r * 0.16f), line)
+                drawLine(Gold, Offset(x, c.y),
+                    Offset(x - direction * r * 0.22f, c.y + r * 0.16f), line)
+            }
+        } else {
+            val innerX = c.x + r * 0.56f
+            val outerX = c.x + r
+            val y = c.y - r * 0.72f
+            drawLine(Gold, Offset(innerX, y), Offset(outerX, y), line)
+            drawLine(Gold, Offset(innerX, y - r * 0.18f),
+                Offset(innerX, y + r * 0.18f), line)
+            drawLine(Gold, Offset(outerX, y - r * 0.18f),
+                Offset(outerX, y + r * 0.18f), line)
+        }
+    }
+}
+
 @Composable
 private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     onEdit: (String) -> Unit) {
@@ -545,10 +582,16 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
                 .clickable { onEdit(listOf("NPS", "ID", "t", "mass", "volume")[i]) }
                 .padding(horizontal = 13.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                Icon(item.third, contentDescription = null, tint = White, modifier = Modifier.size(25.dp))
+                if (i < 3) {
+                    PipeDimensionIcon(i, Modifier.size(28.dp))
+                } else {
+                    Icon(item.third, contentDescription = null, tint = White,
+                        modifier = Modifier.size(28.dp))
+                }
                 Spacer(Modifier.width(10.dp))
                 Text(item.first, color = White, fontSize = (textSp - 2).sp, modifier = Modifier.weight(1f))
-                Text(item.second, color = White, fontWeight = FontWeight.Bold, fontSize = textSp.sp)
+                Text(item.second, color = if (i == 0) Gold else White,
+                    fontWeight = FontWeight.Bold, fontSize = textSp.sp)
             }
             if (i < specs.lastIndex) HorizontalDivider(color = StrokeColor.copy(alpha = 0.6f))
         }
