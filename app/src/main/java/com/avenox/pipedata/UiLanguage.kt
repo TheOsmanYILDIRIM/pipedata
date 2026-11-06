@@ -85,6 +85,7 @@ private val translations: Map<String, Pair<String, String>> = mapOf(
     "Boru standart tablosu yüklenemedi. Uygulamayı güncelleyin." to ("Pipe data failed to load. Update the app." to "Не удалось загрузить таблицу труб. Обновите приложение."),
     "Döner NPS sayacı, seçili çap " to ("NPS dial, selected size " to "Шкала NPS, выбранный размер "),
     "Sonraki boru çapı" to ("Next pipe diameter" to "Следующий диаметр трубы"),
+    "Önceki boru çapı" to ("Previous pipe diameter" to "Предыдущий диаметр трубы"),
     "NPS seç" to ("Select NPS" to "Выбрать NPS"),
     "Et kalınlığı önerileri" to ("Wall thickness suggestions" to "Варианты толщины стенки"),
     "İlk kullanım" to ("Quick guide" to "Быстрый урок"),
