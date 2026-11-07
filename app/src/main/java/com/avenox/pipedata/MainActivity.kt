@@ -902,7 +902,7 @@ private fun TutorialRingGesture(modifier: Modifier = Modifier) {
     }
 }
 
-/** Entirely procedural dial; no image assets or bitmap transformations. */
+/** Calm, technical pipe cross-section with dimensions outside the drawing. */
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     imperial: Boolean, onEdit: (String) -> Unit,
@@ -915,313 +915,206 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     var wheelRotation by remember { mutableFloatStateOf(0f) }
     val dialDescription = ui("Döner NPS sayacı, seçili çap ") + nps + " " + ui("inç")
     val nextDiameter = ui("Sonraki boru çapı")
-    val uiInnerDiameterDescription = ui("İç Çap (ID)")
-    val innerGreen = Color(0xFF80F889)
-    val wallBlue = Color(0xFF55D9FF)
-    val boreDark = Color(0xFF03221E)
+    val innerLabel = ui("İç Çap (ID)")
+    val outerLabel = ui("Dış Çap (OD)")
+    val thicknessLabel = ui("Et Kalınlığı")
+    val unit = if (imperial) "in" else "mm"
+    val accent = Gold
+    val softSteel = Color(0xFFB6C8C1)
+    val steelEdge = Color(0xFF637D75)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()) {
-        if (pipe != null) {
-            val dimensionUnit = if (imperial) "in" else "mm"
-            val wall = if (imperial) pipe.wallMm / 25.4 else pipe.wallMm
-            Column(Modifier.fillMaxWidth().clickable { onEdit("t") }
-                .padding(top = 3.dp, bottom = 2.dp),
-                horizontalAlignment = Alignment.End) {
-                Text(ui("Et Kalınlığı (t)"), color = wallBlue, fontSize = 19.sp,
-                    fontWeight = FontWeight.Bold)
-                Box(Modifier.padding(top = 3.dp)
-                    .border(1.5.dp, wallBlue, RoundedCornerShape(12.dp))
-                    .clip(RoundedCornerShape(12.dp))
-                    .padding(horizontal = 12.dp, vertical = 3.dp)) {
-                    Text(decimal(wall, if (imperial) 3 else 2) + " " + dimensionUnit,
-                        color = wallBlue, fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold)
-                }
-            }
-        }
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val widthDp = LocalConfiguration.current.screenWidthDp
             val fontScale = LocalDensity.current.fontScale
             val dialCap = minOf(dialLimit, when {
                 widthDp <= 340 && fontScale >= 1.2f -> 160.dp
                 widthDp <= 360 && fontScale >= 1.2f -> 185.dp
-                else -> 226.dp
+                else -> 218.dp
             })
-            val dialSide = minOf(maxWidth, dialCap)
-            val leftMargin = ((maxWidth - dialSide) / 2f - 5.dp).coerceAtLeast(0.dp)
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    modifier = Modifier.size(dialSide)
-                        .semantics {
-                            contentDescription = dialDescription
-                            onClick(label = nextDiameter) {
-                                currentOnStep(1)
-                                true
-                            }
+            val side = minOf(maxWidth, dialCap)
+            Box(
+                Modifier.size(side)
+                    .semantics {
+                        contentDescription = dialDescription
+                        onClick(label = nextDiameter) {
+                            currentOnStep(1)
+                            true
                         }
-                        .then(if (wheelEnabled) Modifier.pointerInput(wheelEnabled) {
-                            var previousAngle = 0f
-                            var remainder = 0f
-                            var draggingRing = false
-                            val stepAngle = 0.22f
-                            detectDragGestures(
-                                onDragStart = { point ->
-                                    val dx = point.x - size.width / 2f
-                                    val dy = point.y - size.height / 2f
-                                    val outer = minOf(size.width, size.height) / 2f
-                                    draggingRing = hypot(dx, dy) in (outer * 0.52f)..outer
-                                    previousAngle = atan2(dy, dx)
-                                    remainder = 0f
-                                },
-                                onDragCancel = { draggingRing = false; remainder = 0f },
-                                onDragEnd = { draggingRing = false; remainder = 0f }
-                            ) { change, _ ->
-                                if (draggingRing) {
-                                    change.consume()
-                                    val dx = change.position.x - size.width / 2f
-                                    val dy = change.position.y - size.height / 2f
-                                    val angle = atan2(dy, dx)
-                                    val delta = atan2(sin(angle - previousAngle),
-                                        cos(angle - previousAngle))
-                                    previousAngle = angle
-                                    wheelRotation = (wheelRotation +
-                                        Math.toDegrees(delta.toDouble()).toFloat()) % 360f
-                                    remainder += delta
-                                    while (abs(remainder) >= stepAngle) {
-                                        val direction = if (remainder > 0f) 1 else -1
-                                        currentOnStep(direction)
-                                        currentOnWheelDragged()
-                                        remainder -= direction * stepAngle
-                                    }
+                    }
+                    .then(if (wheelEnabled) Modifier.pointerInput(wheelEnabled) {
+                        var last = 0f
+                        var travelled = 0f
+                        var isOnRing = false
+                        detectDragGestures(
+                            onDragStart = { position ->
+                                val dx = position.x - size.width / 2f
+                                val dy = position.y - size.height / 2f
+                                val radius = minOf(size.width, size.height) / 2f
+                                isOnRing = hypot(dx, dy) in (radius * 0.49f)..radius
+                                last = atan2(dy, dx)
+                                travelled = 0f
+                            },
+                            onDragEnd = { isOnRing = false; travelled = 0f },
+                            onDragCancel = { isOnRing = false; travelled = 0f }
+                        ) { change, _ ->
+                            if (isOnRing) {
+                                change.consume()
+                                val dx = change.position.x - size.width / 2f
+                                val dy = change.position.y - size.height / 2f
+                                val current = atan2(dy, dx)
+                                val delta = atan2(sin(current - last), cos(current - last))
+                                last = current
+                                wheelRotation = (wheelRotation +
+                                    Math.toDegrees(delta.toDouble()).toFloat()) % 360f
+                                travelled += delta
+                                while (abs(travelled) >= 0.22f) {
+                                    val direction = if (travelled > 0f) 1 else -1
+                                    currentOnStep(direction)
+                                    currentOnWheelDragged()
+                                    travelled -= direction * 0.22f
                                 }
                             }
-                        } else Modifier),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Canvas(Modifier.fillMaxSize()) {
-                        val c = center
-                        val r = size.minDimension / 2f
-                        val outer = r * 0.82f
-                        val bore = outer * 0.72f
-                        val metalRadius = (outer + bore) / 2f
-                        val metalWidth = outer - bore
-                        // Draw the rear rim higher than the front face to reveal a short
-                        // top-down cylinder body, rather than a flat washer.
-                        val rearCenter = Offset(c.x, c.y - outer * 0.20f)
-                        drawCircle(
-                            brush = Brush.linearGradient(
-                                listOf(Color(0xFF273531), Color(0xFFB9C3BE),
-                                    Color(0xFF4F625C), Color(0xFF1C2F2B)),
-                                start = Offset(c.x - outer, rearCenter.y - outer),
-                                end = Offset(c.x + outer, rearCenter.y + outer)
-                            ),
-                            radius = outer,
-                            center = rearCenter
-                        )
-                        drawCircle(Color(0xFFC8D1CD).copy(alpha = 0.56f),
-                            radius = outer * 0.995f, center = rearCenter,
-                            style = Stroke(width = 1.5.dp.toPx()))
-                        // Offset shadow makes the pipe's front edge lift from the UI.
-                        drawCircle(Color.Black.copy(alpha = 0.35f), outer,
-                            center = Offset(c.x + r * 0.015f, c.y + r * 0.045f))
-                        drawCircle(
-                            brush = Brush.radialGradient(
-                                0f to Color(0xFF9CA8A2),
-                                0.58f to Color(0xFF2E3936),
-                                1f to Color(0xFF081815),
-                                center = Offset(c.x - r * 0.24f, c.y - r * 0.32f),
-                                radius = outer * 1.65f
-                            ), radius = outer
-                        )
-                        // Steel face: directional highlights, gentle machined grooves.
-                        drawCircle(
-                            brush = Brush.sweepGradient(
-                                listOf(
-                                    Color(0xFF576A69), Color(0xFFAAB8B8),
-                                    Color(0xFFF4F8F6), Color(0xFF869A9A),
-                                    Color(0xFF3E5356), Color(0xFFD9E2E1),
-                                    Color(0xFF879C9C), Color(0xFF576A69)
-                                ), center = c
-                            ),
-                            radius = metalRadius,
-                            style = Stroke(width = metalWidth)
-                        )
-                        rotate(wheelRotation * 0.25f, pivot = c) {
-                            for (index in 0 until 13) {
-                                val t = index / 12f
-                                val grooveRadius = bore + metalWidth * t
-                                drawCircle(
-                                    color = if (index % 3 == 0)
-                                        Color.White.copy(alpha = 0.09f)
-                                        else Color.Black.copy(alpha = 0.045f),
-                                    radius = grooveRadius,
-                                    style = Stroke(width = 0.55.dp.toPx())
-                                )
-                            }
                         }
-                        drawCircle(Color(0xFFF3F6F2).copy(alpha = 0.75f),
-                            radius = outer * 0.988f,
-                            style = Stroke(width = 1.4.dp.toPx()))
-                        drawCircle(Color(0xFF132A27), radius = bore)
-                        drawCircle(Color(0xFF111F20).copy(alpha = 0.28f),
-                            radius = bore * 1.015f,
-                            style = Stroke(width = 2.dp.toPx()))
-                        // The exposed inside wall is brighter at the bottom, as in a
-                        // machined cylinder viewed at a shallow downward angle.
-                        drawCircle(
-                            brush = Brush.verticalGradient(
-                                listOf(Color(0xFF071D1C), Color(0xFF102F2F),
-                                    Color(0xFF245654), Color(0xFF749B96)),
-                                startY = c.y - bore, endY = c.y + bore
-                            ), radius = bore
-                        )
-                        drawCircle(boreDark, radius = bore * 0.91f,
-                            center = Offset(c.x, c.y - bore * 0.085f))
-                        drawCircle(Color(0xFF8FF4E2).copy(alpha = 0.78f),
-                            radius = bore, style = Stroke(width = 1.8.dp.toPx()))
-                        drawCircle(Color(0xFF182E2B),
-                            radius = bore * 1.028f,
-                            style = Stroke(width = 1.3.dp.toPx()))
-                        // Green bore diameter arrow is inside the opening.
-                        if (pipe != null) {
-                            val y = c.y + bore * 0.34f
-                            val half = sqrt(maxOf(0f, bore * bore -
-                                (y - c.y) * (y - c.y))) * 0.93f
-                            drawLine(innerGreen, Offset(c.x - half, y),
-                                Offset(c.x + half, y), 3.dp.toPx(),
-                                cap = StrokeCap.Round)
-                            for (sign in listOf(-1f, 1f)) {
-                                val tip = Offset(c.x + sign * half, y)
-                                drawLine(innerGreen, tip,
-                                    Offset(tip.x - sign * 13.dp.toPx(),
-                                        y - 7.dp.toPx()), 3.dp.toPx())
-                                drawLine(innerGreen, tip,
-                                    Offset(tip.x - sign * 13.dp.toPx(),
-                                        y + 7.dp.toPx()), 3.dp.toPx())
-                            }
-                            // Green callout leader runs from the bore diameter to the left margin.
-                            val leftBore = Offset(c.x - half, y)
-                            val leftLeader = Offset(c.x - outer * 1.02f,
-                                y - bore * 0.35f)
-                            drawLine(innerGreen, leftBore, leftLeader,
-                                strokeWidth = 2.4.dp.toPx(), cap = StrokeCap.Round)
-                            drawCircle(innerGreen, 3.dp.toPx(), leftLeader)
-                            // Two blue points mark the actual radial wall.
-                            val outerTip = Offset(c.x + outer * 0.73f,
-                                c.y - outer * 0.68f)
-                            val innerTip = Offset(c.x + bore * 0.72f,
-                                c.y - bore * 0.69f)
-                            drawLine(wallBlue, innerTip, outerTip,
-                                strokeWidth = 2.8.dp.toPx())
-                            drawCircle(wallBlue, 4.4.dp.toPx(), outerTip)
-                            drawCircle(wallBlue, 4.4.dp.toPx(), innerTip)
-                            // A separate leader points from the wall marker up to
-                            // the wall-thickness readout immediately above the dial.
-                            val leaderEnd = Offset(c.x + outer * 0.75f,
-                                c.y - outer * 1.17f)
-                            drawLine(wallBlue, outerTip, leaderEnd,
-                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
-                            drawLine(wallBlue, leaderEnd,
-                                Offset(leaderEnd.x - 6.dp.toPx(),
-                                    leaderEnd.y + 12.dp.toPx()),
-                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
-                            drawLine(wallBlue, leaderEnd,
-                                Offset(leaderEnd.x + 8.dp.toPx(),
-                                    leaderEnd.y + 10.dp.toPx()),
-                                strokeWidth = 2.6.dp.toPx(), cap = StrokeCap.Round)
-                        }
-                    }
-                    if (tutorialStep == 0 && wheelEnabled) TutorialRingGesture(Modifier.fillMaxSize())
+                    } else Modifier),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(Modifier.fillMaxSize()) {
+                    val c = center
+                    val r = size.minDimension * 0.5f
+                    val outer = r * 0.75f
+                    val bore = outer * 0.72f
+                    val band = outer - bore
+                    // Flat technical section: no fake stacked cylinder or bright neon.
+                    drawCircle(Color.Black.copy(alpha = 0.22f),
+                        radius = outer + 3.dp.toPx(),
+                        center = Offset(c.x + 1.dp.toPx(), c.y + 3.dp.toPx()))
+                    drawCircle(
+                        brush = Brush.sweepGradient(
+                            listOf(Color(0xFF758D85), Color(0xFFCBD7D0),
+                                Color(0xFF879E95), Color(0xFF607C72),
+                                Color(0xFFB8C9C0), Color(0xFF758D85)),
+                            center = c
+                        ),
+                        radius = bore + band / 2f,
+                        style = Stroke(width = band)
+                    )
+                    drawCircle(color = softSteel.copy(alpha = 0.75f),
+                        radius = outer, style = Stroke(width = 1.1.dp.toPx()))
+                    drawCircle(color = steelEdge, radius = bore,
+                        style = Stroke(width = 2.dp.toPx()))
+                    drawCircle(
+                        brush = Brush.verticalGradient(
+                            listOf(Color(0xFF061F1C), Color(0xFF143B34),
+                                Color(0xFF092A26)),
+                            startY = c.y - bore, endY = c.y + bore
+                        ),
+                        radius = bore - 1.4.dp.toPx()
+                    )
+                    drawCircle(softSteel.copy(alpha = 0.22f), radius = bore * 0.96f,
+                        style = Stroke(width = 0.75.dp.toPx()))
                     if (pipe != null) {
-                        val dimensionUnit = if (imperial) "in" else "mm"
-                        val inner = if (imperial) pipe.idInches else pipe.idMm
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                                .offset(x = -minOf(dialSide * 0.12f,
-                                    leftMargin),
-                                    y = dialSide * 0.15f)
-                                .widthIn(max = if (fontScale >= 1.2f) dialSide * 0.73f else dialSide * 0.54f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(boreDark.copy(alpha = 0.90f))
-                                .border(1.5.dp, innerGreen,
-                                    RoundedCornerShape(12.dp))
-                                .semantics { contentDescription = uiInnerDiameterDescription }
-                                .clickable { onEdit("ID") }
-                                .padding(horizontal = 8.dp, vertical = 5.dp)) {
-                            Text(ui("İç Çap (ID)"), color = White,
-                                fontSize = if (fontScale >= 1.2f) 12.sp else 14.sp,
-                                fontWeight = FontWeight.Bold, maxLines = 1)
-                            Text(compactDimension(inner, imperial) + " " + dimensionUnit,
-                                color = innerGreen, fontWeight = FontWeight.Bold,
-                                fontSize = if (fontScale >= 1.2f) 16.sp else 19.sp,
-                                maxLines = 1, softWrap = false)
+                        // Minimal ID measure across the clear opening.
+                        val y = c.y + bore * 0.17f
+                        val half = bore * 0.88f
+                        drawLine(softSteel.copy(alpha = 0.80f),
+                            Offset(c.x - half, y), Offset(c.x + half, y),
+                            1.5.dp.toPx(), cap = StrokeCap.Round)
+                        for (sign in listOf(-1f, 1f)) {
+                            val x = c.x + sign * half
+                            drawLine(softSteel, Offset(x, y),
+                                Offset(x - sign * 7.dp.toPx(), y - 4.dp.toPx()),
+                                1.5.dp.toPx())
+                            drawLine(softSteel, Offset(x, y),
+                                Offset(x - sign * 7.dp.toPx(), y + 4.dp.toPx()),
+                                1.5.dp.toPx())
                         }
-                    } else {
-                        Text(nps + "″", color = White, fontSize = 36.sp,
-                            modifier = Modifier.clickable { onEdit("NPS") })
+                        // Small thickness marker, not a floating label.
+                        val angle = -Math.PI / 4.0
+                        val dx = cos(angle).toFloat()
+                        val dy = sin(angle).toFloat()
+                        drawLine(accent.copy(alpha = 0.85f),
+                            Offset(c.x + bore * dx, c.y + bore * dy),
+                            Offset(c.x + outer * dx, c.y + outer * dy),
+                            2.dp.toPx(), cap = StrokeCap.Round)
+                        // OD reference line outside the metal edge.
+                        val measureY = c.y + outer + 11.dp.toPx()
+                        drawLine(accent.copy(alpha = 0.85f),
+                            Offset(c.x - outer, measureY),
+                            Offset(c.x + outer, measureY),
+                            1.7.dp.toPx())
+                        for (sign in listOf(-1f, 1f)) {
+                            val x = c.x + sign * outer
+                            drawLine(accent, Offset(x, measureY - 5.dp.toPx()),
+                                Offset(x, measureY + 5.dp.toPx()), 1.5.dp.toPx())
+                        }
                     }
                 }
-                if (pipe != null) {
-                    val dimensionUnit = if (imperial) "in" else "mm"
-                    val outer = if (imperial) pipe.odInches else pipe.odMm
-                    if (tutorialStep == 2) {
-                        Column(Modifier.fillMaxWidth().then(
-                            if (odTarget != null)
-                                Modifier.bringIntoViewRequester(odTarget) else Modifier
-                        )) {
-                            TutorialHint(2, onOdTapped, onOdTapped)
-                            Spacer(Modifier.height(7.dp))
-                        }
-                    }
+                if (tutorialStep == 0 && wheelEnabled) {
+                    TutorialRingGesture(Modifier.fillMaxSize())
+                }
+                if (pipe == null) Text(nps + "″", color = White,
+                    fontSize = 30.sp, modifier = Modifier.clickable { onEdit("NPS") })
+            }
+        }
+        if (pipe != null) {
+            if (tutorialStep == 2) {
+                TutorialHint(2, onOdTapped, onOdTapped)
+                Spacer(Modifier.height(4.dp))
+            }
+            Row(
+                Modifier.fillMaxWidth()
+                    .then(if (odTarget != null)
+                        Modifier.bringIntoViewRequester(odTarget) else Modifier)
+                    .padding(top = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(7.dp)
+            ) {
+                val cells = listOf(
+                    Triple(outerLabel, compactDimension(
+                        if (imperial) pipe.odInches else pipe.odMm, imperial) + " " + unit,
+                        "NPS"),
+                    Triple(innerLabel, compactDimension(
+                        if (imperial) pipe.idInches else pipe.idMm, imperial) + " " + unit,
+                        "ID"),
+                    Triple(thicknessLabel, compactDimension(
+                        if (imperial) pipe.wallInches else pipe.wallMm, imperial) + " " + unit,
+                        "t")
+                )
+                cells.forEachIndexed { index, cell ->
                     Column(
-                        Modifier.fillMaxWidth()
-                            .then(if (tutorialStep == 2)
-                                Modifier.border(3.dp, Gold, RoundedCornerShape(16.dp))
-                                else Modifier)
-                            .clickable { onEdit("NPS"); if (tutorialStep == 2) onOdTapped() },
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        // Exact outer tangents and double-arrow share one Canvas width.
-                        Canvas(Modifier.width(dialSide).height(20.dp)) {
-                            val x1 = size.width * 0.035f
-                            val x2 = size.width * 0.965f
-                            val y = 8.dp.toPx()
-                            drawLine(Gold, Offset(x1, y), Offset(x2, y),
-                                3.dp.toPx(), cap = StrokeCap.Round)
-                            for (sign in listOf(-1f, 1f)) {
-                                val x = if (sign < 0f) x1 else x2
-                                drawLine(Gold, Offset(x, 0f),
-                                    Offset(x, 18.dp.toPx()), 2.dp.toPx())
-                                drawLine(Gold, Offset(x, y),
-                                    Offset(x - sign * 14.dp.toPx(),
-                                        y - 7.dp.toPx()), 3.dp.toPx())
-                                drawLine(Gold, Offset(x, y),
-                                    Offset(x - sign * 14.dp.toPx(),
-                                        y + 7.dp.toPx()), 3.dp.toPx())
+                        Modifier.weight(1f)
+                            .heightIn(min = 66.dp)
+                            .clip(RoundedCornerShape(13.dp))
+                            .background(Panel)
+                            .border(1.dp,
+                                if (index == 0) Gold.copy(alpha = 0.58f)
+                                else StrokeColor.copy(alpha = 0.75f),
+                                RoundedCornerShape(13.dp))
+                            .semantics { contentDescription = cell.first }
+                            .clickable {
+                                onEdit(cell.third)
+                                if (index == 0 && tutorialStep == 2) onOdTapped()
                             }
-                        }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .border(2.dp, Gold, RoundedCornerShape(16.dp))
-                                .clip(RoundedCornerShape(16.dp))
-                                .padding(horizontal = 15.dp, vertical = 2.dp)) {
-                            Text(ui("Dış Çap (OD)"), color = White,
-                                fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                            Text(compactDimension(outer, imperial) +
-                                " " + dimensionUnit, color = Gold,
-                                fontSize = if (fontScale >= 1.2f) 25.sp else 30.sp,
-                                fontWeight = FontWeight.Bold)
-                        }
+                            .padding(horizontal = 4.dp, vertical = 9.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(cell.first, color = Muted,
+                            fontSize = if (index == 2) 11.sp else 12.sp,
+                            maxLines = 1, softWrap = false)
+                        Spacer(Modifier.height(4.dp))
+                        Text(cell.second, color = if (index == 0) Gold else White,
+                            fontSize = if (LocalDensity.current.fontScale >= 1.2f) 15.sp else 16.sp,
+                            fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
                     }
                 }
             }
         }
-        if (wheelEnabled) Text(ui("Halkayı parmağınızla çevirin"), color = Muted,
-            fontSize = 13.sp, modifier = Modifier.padding(top = 3.dp, bottom = 2.dp))
+        if (wheelEnabled) Text(ui("Halkayı parmağınızla çevirin"),
+            color = Muted, fontSize = 13.sp,
+            modifier = Modifier.padding(top = 4.dp))
     }
 }
-
 
 /**
  * Technical drawing symbols: outside diameter, bore diameter and wall thickness.
@@ -1292,12 +1185,7 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(item.first, color = White, fontSize = (textSp - 2).sp, modifier = Modifier.weight(1f))
-                Text(item.second, color = when (i) {
-                    0 -> Gold
-                    1 -> Color(0xFF80F889)
-                    2 -> Color(0xFF55D9FF)
-                    else -> White
-                },
+                Text(item.second, color = if (i == 0) Gold else White,
                     fontWeight = FontWeight.Bold, fontSize = textSp.sp)
             }
             if (i < specs.lastIndex) HorizontalDivider(color = StrokeColor.copy(alpha = 0.6f))
