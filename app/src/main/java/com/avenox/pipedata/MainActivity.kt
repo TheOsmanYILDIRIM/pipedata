@@ -5,6 +5,7 @@ package com.avenox.pipedata
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -145,6 +146,12 @@ private fun PipeApp(catalog: PipeCatalog) {
         if (pipe != null && standard != pipe.standard) standard = pipe.standard
     }
 
+    // Hardware and predictive system back must navigate within the app first.
+    BackHandler(enabled = page != 0) {
+        if (page == 3 && activeTool != null) activeTool = null
+        else page = 0
+    }
+
     CompositionLocalProvider(CurrentUiLanguage provides language) {
     Column(
         modifier = Modifier.fillMaxSize().background(Background).systemBarsPadding()
@@ -182,7 +189,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                         standard = chosen.standard; nps = chosen.nps
                         schedule = chosen.schedule; page = 0
                     })
-                3 -> ToolsPage(activeTool, { activeTool = it }, pipe)
+                3 -> ToolsPage(activeTool, { activeTool = it }, pipe, unitImperial)
                 else -> SettingsPage(
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
@@ -237,9 +244,10 @@ private fun PipeApp(catalog: PipeCatalog) {
 
 /** Add new field calculators to this directory without replacing existing tabs. */
 @Composable
-private fun ToolsPage(selectedTool: String?, onSelect: (String?) -> Unit, pipe: PipeSpec?) {
+private fun ToolsPage(selectedTool: String?, onSelect: (String?) -> Unit,
+    pipe: PipeSpec?, imperial: Boolean) {
     if (selectedTool == "degree") {
-        DegreeMarkingPage(pipe, onBack = { onSelect(null) })
+        DegreeMarkingPage(pipe, imperial, onBack = { onSelect(null) })
         return
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -274,16 +282,20 @@ private fun circumferenceMarkingMm(diameterMm: Double, angle: Double): Double? {
 }
 
 @Composable
-private fun DegreeMarkingPage(pipe: PipeSpec?, onBack: () -> Unit) {
+private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean, onBack: () -> Unit) {
+    var useInches by rememberSaveable { mutableStateOf(imperial) }
     var diameterText by rememberSaveable(pipe?.odMm) {
-        mutableStateOf(pipe?.let { decimal(it.odMm, 2) } ?: "")
+        mutableStateOf(pipe?.let {
+            decimal(if (useInches) it.odInches else it.odMm, if (useInches) 3 else 4)
+        } ?: "")
     }
     var angleText by rememberSaveable { mutableStateOf("60") }
     var parts by rememberSaveable { mutableIntStateOf(0) }
-    val diameter = diameterText.trim().replace(",", ".").toDoubleOrNull()
+    val diameterInput = diameterText.trim().replace(",", ".").toDoubleOrNull()
+    val diameterMm = diameterInput?.let { if (useInches) it * 25.4 else it }
     val angle = angleText.trim().replace(",", ".").toDoubleOrNull()
-    val result = if (diameter != null && angle != null)
-        circumferenceMarkingMm(diameter, angle) else null
+    val result = if (diameterMm != null && angle != null)
+        circumferenceMarkingMm(diameterMm, angle) else null
     val arcDegrees = (angle ?: 0.0).coerceIn(0.0, 360.0).toFloat()
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
         .padding(horizontal = 18.dp, vertical = 10.dp),
@@ -293,8 +305,30 @@ private fun DegreeMarkingPage(pipe: PipeSpec?, onBack: () -> Unit) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Araçlar listesine dön",
                     tint = Gold)
             }
-            Text("Derece İşaretleme", color = White, fontSize = 21.sp,
-                fontWeight = FontWeight.Bold)
+            Text("Derece", color = White, fontSize = 19.sp,
+                fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            // Same inç/mm segmented control as the main Pipe screen.
+            Row(Modifier.clip(RoundedCornerShape(14.dp))
+                .border(1.dp, StrokeColor, RoundedCornerShape(14.dp))) {
+                listOf(true to ui("inç"), false to "mm").forEach { (inch, label) ->
+                    Box(Modifier.clip(RoundedCornerShape(12.dp))
+                        .background(if (useInches == inch) Gold else Color.Transparent)
+                        .clickable {
+                            if (useInches != inch) {
+                                val factor = if (inch) 1.0 / 25.4 else 25.4
+                                diameterText = diameterInput?.let {
+                                    decimal(it * factor, if (inch) 6 else 4)
+                                } ?: ""
+                                useInches = inch
+                            }
+                        }
+                        .heightIn(min = 52.dp).padding(horizontal = 11.dp),
+                        contentAlignment = Alignment.Center) {
+                        Text(label, color = if (useInches == inch) Deep else White,
+                            fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
         }
         Text("Dış çevrede 0° üst noktasından saat yönünde ölçün.",
             color = Muted, fontSize = 15.sp, modifier = Modifier.fillMaxWidth())
@@ -329,7 +363,7 @@ private fun DegreeMarkingPage(pipe: PipeSpec?, onBack: () -> Unit) {
             OutlinedTextField(
                 diameterText, { diameterText = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Dış çap (mm)") },
+                label = { Text(if (useInches) "Dış çap (inç)" else "Dış çap (mm)") },
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle(color = White, fontSize = 20.sp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
