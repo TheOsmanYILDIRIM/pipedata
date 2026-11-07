@@ -621,6 +621,8 @@ private fun CalculatorPage(
     val scrollState = rememberScrollState()
     val schTarget = remember { BringIntoViewRequester() }
     val odTarget = remember { BringIntoViewRequester() }
+    var highlightedDimension by remember { mutableIntStateOf(-1) }
+    val dimensionTarget = remember { BringIntoViewRequester() }
     LaunchedEffect(tutorialStep) {
         if (tutorialStep == 0) scrollState.animateScrollTo(0)
         if (tutorialStep == 1 || tutorialStep == 2) {
@@ -657,14 +659,6 @@ private fun CalculatorPage(
                 modifier = Modifier.weight(1f)) {
                 // 36 NPS options make an always-visible horizontal chip strip cumbersome.
                 // Accessible previous/next targets plus the full-size dialog are faster.
-                if (!compactNps) IconButton(
-                    onClick = { step(-1) },
-                    modifier = Modifier.size(42.dp)
-                ) {
-                    Icon(Icons.Default.ChevronLeft,
-                        contentDescription = ui("Önceki boru çapı"),
-                        tint = Gold, modifier = Modifier.size(30.dp))
-                }
                 Row(Modifier.weight(1f)
                     .clip(RoundedCornerShape(14.dp))
                     .border(1.5.dp, StrokeColor, RoundedCornerShape(14.dp))
@@ -677,14 +671,6 @@ private fun CalculatorPage(
                         fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = ui("NPS seç"),
                         tint = Gold, modifier = Modifier.size(20.dp))
-                }
-                if (!compactNps) IconButton(
-                    onClick = { step(1) },
-                    modifier = Modifier.size(42.dp)
-                ) {
-                    Icon(Icons.Default.ChevronRight,
-                        contentDescription = ui("Sonraki boru çapı"),
-                        tint = Gold, modifier = Modifier.size(30.dp))
                 }
                 if (npsMenuExpanded) ScrollableOptionDialog(
                     title = ui("NPS seç"),
@@ -722,7 +708,8 @@ private fun CalculatorPage(
             dialLimit = dialLimit,
             tutorialStep = tutorialStep,
             onOdTapped = { if (tutorialStep == 2) onTutorialNext() },
-            odTarget = odTarget)
+            odTarget = odTarget,
+            onDimensionSelected = { highlightedDimension = it })
         Spacer(Modifier.height(if (compactHeight) 3.dp else 8.dp))
         if (tutorialStep == 1) {
             TutorialHint(1, onTutorialNext, onTutorialSkip)
@@ -785,7 +772,14 @@ private fun CalculatorPage(
         if (pipe == null) {
             Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok."), color = Gold, fontSize = textSp.sp)
         } else {
-            ResultRows(pipe, imperial, textSp) { editing = it }
+            LaunchedEffect(highlightedDimension) {
+                if (highlightedDimension >= 0) {
+                    delay(100)
+                    dimensionTarget.bringIntoView()
+                }
+            }
+            ResultRows(pipe, imperial, textSp,
+                highlightedDimension, dimensionTarget) { editing = it }
         }
         Spacer(Modifier.height(18.dp))
         GoldButton(ui("Hesapla"), { showLength = true }, Modifier.fillMaxWidth())
@@ -908,229 +902,169 @@ private fun TutorialRingGesture(modifier: Modifier = Modifier) {
     }
 }
 
-/** Calm, technical pipe cross-section with dimensions outside the drawing. */
+
+/** Compact interactive technical section: numbers remain in ResultRows below. */
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     imperial: Boolean, onEdit: (String) -> Unit,
     dialLimit: androidx.compose.ui.unit.Dp,
     tutorialStep: Int = -1,
     onOdTapped: () -> Unit = {},
-    odTarget: BringIntoViewRequester? = null) {
-    val currentOnStep by rememberUpdatedState(onStep)
-    val dialDescription = "Kaydırılabilir NPS seçici, seçili çap " + nps + " " + ui("inç")
-    val nextDiameter = ui("Sonraki boru çapı")
-    val previousDiameter = "Önceki boru çapı"
-    val innerLabel = ui("İç Çap (ID)")
-    val outerLabel = ui("Dış Çap (OD)")
-    val thicknessLabel = ui("Et Kalınlığı")
-    val unit = if (imperial) "in" else "mm"
-    val accent = Gold
-    val softSteel = Color(0xFFB6C8C1)
-    val steelEdge = Color(0xFF637D75)
-    val idTint = Color(0xFFA6C9B8)
-    val thicknessTint = Color(0xFFD7B99A)
-
+    odTarget: BringIntoViewRequester? = null,
+    onDimensionSelected: (Int) -> Unit = {}
+) {
+    val onStepNow by rememberUpdatedState(onStep)
+    val dialDescription = "NPS " + nps + " — sağa sola kaydırarak boru değiştir"
+    val idDescription = ui("İç Çap (ID)")
+    val odDescription = ui("Dış Çap (OD)")
+    val thicknessDescription = ui("Et Kalınlığı")
+    val pipeSteel = Color(0xFFB8C8C1)
+    val idColor = Color(0xFFB7D3C6)
+    val wallColor = Color(0xFFDDBD91)
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            val widthDp = LocalConfiguration.current.screenWidthDp
             val fontScale = LocalDensity.current.fontScale
-            val dialCap = minOf(dialLimit, when {
-                widthDp <= 340 && fontScale >= 1.2f -> 160.dp
-                widthDp <= 360 && fontScale >= 1.2f -> 185.dp
-                else -> 218.dp
-            })
-            val side = minOf((maxWidth - 100.dp).coerceAtLeast(130.dp), dialCap)
+            val side = minOf((maxWidth - 98.dp).coerceAtLeast(132.dp), dialLimit,
+                if (fontScale >= 1.2f) 186.dp else 232.dp)
             Box(
                 Modifier.size(side)
                     .semantics {
                         contentDescription = dialDescription
-                        onClick(label = nextDiameter) {
-                            currentOnStep(1)
+                        onClick(label = "Sonraki boru çapı") {
+                            onStepNow(1)
                             true
                         }
                     }
                     .pointerInput(Unit) {
-                        var dxTotal = 0f
+                        var totalX = 0f
                         detectHorizontalDragGestures(
-                            onDragStart = { dxTotal = 0f },
-                            onDragCancel = { dxTotal = 0f },
+                            onDragStart = { totalX = 0f },
+                            onDragCancel = { totalX = 0f },
                             onDragEnd = {
-                                if (abs(dxTotal) > 42.dp.toPx())
-                                    currentOnStep(if (dxTotal < 0f) 1 else -1)
-                                dxTotal = 0f
+                                if (abs(totalX) > 42.dp.toPx())
+                                    onStepNow(if (totalX < 0f) 1 else -1)
+                                totalX = 0f
                             }
                         ) { change, delta ->
                             change.consume()
-                            dxTotal += delta
+                            totalX += delta
                         }
                     },
                 contentAlignment = Alignment.Center
             ) {
                 Canvas(Modifier.fillMaxSize()) {
                     val c = center
-                    val r = size.minDimension * 0.5f
-                    val outer = r * 0.75f
-                    val bore = outer * 0.72f
-                    val band = outer - bore
-                    // Flat technical section: no fake stacked cylinder or bright neon.
+                    val outer = size.minDimension * 0.385f
+                    // Preserve the actual ID/OD ratio, with a small visible
+                    // outline when the nominal wall is nearly hairline thin.
+                    val ratio = pipe?.let { (it.idMm / it.odMm).toFloat() } ?: 0.72f
+                    val bore = outer * ratio.coerceIn(0.30f, 0.965f)
+                    val faceWidth = outer - bore
                     drawCircle(Color.Black.copy(alpha = 0.22f),
                         radius = outer + 3.dp.toPx(),
                         center = Offset(c.x + 1.dp.toPx(), c.y + 3.dp.toPx()))
                     drawCircle(
-                        brush = Brush.sweepGradient(
-                            listOf(Color(0xFF758D85), Color(0xFFCBD7D0),
-                                Color(0xFF879E95), Color(0xFF607C72),
-                                Color(0xFFB8C9C0), Color(0xFF758D85)),
-                            center = c
-                        ),
-                        radius = bore + band / 2f,
-                        style = Stroke(width = band)
+                        brush = Brush.sweepGradient(listOf(
+                            Color(0xFF73887E), Color(0xFFDFE8DF),
+                            Color(0xFF9BAEA4), Color(0xFF566E63),
+                            Color(0xFFBFCEC5), Color(0xFF73887E)), center = c),
+                        radius = (outer + bore) / 2f,
+                        style = Stroke(width = faceWidth)
                     )
-                    drawCircle(color = softSteel.copy(alpha = 0.75f),
-                        radius = outer, style = Stroke(width = 1.1.dp.toPx()))
-                    drawCircle(color = steelEdge, radius = bore,
-                        style = Stroke(width = 2.dp.toPx()))
-                    drawCircle(
-                        brush = Brush.verticalGradient(
-                            listOf(Color(0xFF061F1C), Color(0xFF143B34),
-                                Color(0xFF092A26)),
-                            startY = c.y - bore, endY = c.y + bore
-                        ),
-                        radius = bore - 1.4.dp.toPx()
-                    )
-                    drawCircle(softSteel.copy(alpha = 0.22f), radius = bore * 0.96f,
-                        style = Stroke(width = 0.75.dp.toPx()))
+                    drawCircle(pipeSteel.copy(alpha = 0.78f), radius = outer,
+                        style = Stroke(width = 1.15.dp.toPx()))
+                    drawCircle(Color(0xFF536E64), radius = bore,
+                        style = Stroke(width = 1.5.dp.toPx()))
+                    drawCircle(brush = Brush.verticalGradient(
+                        listOf(Color(0xFF061D1A), Color(0xFF174038),
+                            Color(0xFF082A25)),
+                        startY = c.y - bore, endY = c.y + bore),
+                        radius = (bore - 1.dp.toPx()).coerceAtLeast(1f))
                     if (pipe != null) {
-                        // Minimal ID measure across the clear opening.
-                        val y = c.y + bore * 0.17f
-                        val half = bore * 0.88f
-                        drawLine(idTint.copy(alpha = 0.90f),
-                            Offset(c.x - half, y), Offset(c.x + half, y),
-                            1.5.dp.toPx(), cap = StrokeCap.Round)
+                        // ID chord across the open bore.
+                        val idY = c.y + bore * 0.13f
+                        val half = bore * 0.87f
+                        drawLine(idColor, Offset(c.x - half, idY),
+                            Offset(c.x + half, idY), 1.7.dp.toPx())
                         for (sign in listOf(-1f, 1f)) {
                             val x = c.x + sign * half
-                            drawLine(idTint, Offset(x, y),
-                                Offset(x - sign * 7.dp.toPx(), y - 4.dp.toPx()),
-                                1.5.dp.toPx())
-                            drawLine(idTint, Offset(x, y),
-                                Offset(x - sign * 7.dp.toPx(), y + 4.dp.toPx()),
-                                1.5.dp.toPx())
+                            drawLine(idColor, Offset(x, idY),
+                                Offset(x - sign * 6.dp.toPx(), idY - 4.dp.toPx()),
+                                1.7.dp.toPx())
+                            drawLine(idColor, Offset(x, idY),
+                                Offset(x - sign * 6.dp.toPx(), idY + 4.dp.toPx()),
+                                1.7.dp.toPx())
                         }
-                        // Small thickness marker, not a floating label.
-                        val angle = -Math.PI / 4.0
-                        val dx = cos(angle).toFloat()
-                        val dy = sin(angle).toFloat()
-                        drawLine(thicknessTint,
-                            Offset(c.x + bore * dx, c.y + bore * dy),
-                            Offset(c.x + outer * dx, c.y + outer * dy),
-                            2.dp.toPx(), cap = StrokeCap.Round)
-                        // OD reference line outside the metal edge.
-                        val measureY = c.y + outer + 11.dp.toPx()
-                        drawLine(accent.copy(alpha = 0.85f),
-                            Offset(c.x - outer, measureY),
-                            Offset(c.x + outer, measureY),
-                            1.7.dp.toPx())
+                        // Wall thickness is a radial segment on the upper right.
+                        val diagonal = 0.70710678f
+                        val wStart = Offset(c.x + bore * diagonal, c.y - bore * diagonal)
+                        val wEnd = Offset(c.x + outer * diagonal, c.y - outer * diagonal)
+                        drawLine(wallColor, wStart, wEnd, 2.6.dp.toPx(),
+                            cap = StrokeCap.Round)
+                        drawCircle(wallColor, 2.5.dp.toPx(), wEnd)
+                        // OD dimension line is outside the pipe, below its face.
+                        val y = c.y + outer + 9.dp.toPx()
+                        drawLine(Gold.copy(alpha = 0.88f),
+                            Offset(c.x - outer, y), Offset(c.x + outer, y),
+                            1.6.dp.toPx())
                         for (sign in listOf(-1f, 1f)) {
                             val x = c.x + sign * outer
-                            drawLine(accent, Offset(x, measureY - 5.dp.toPx()),
-                                Offset(x, measureY + 5.dp.toPx()), 1.5.dp.toPx())
+                            drawLine(Gold, Offset(x, y - 4.dp.toPx()),
+                                Offset(x, y + 4.dp.toPx()), 1.5.dp.toPx())
                         }
                     }
                 }
-                if (pipe == null) Text(nps + "″", color = White,
-                    fontSize = 30.sp, modifier = Modifier.clickable { onEdit("NPS") })
+                if (pipe != null) {
+                    Text("ID", color = idColor, fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp, modifier = Modifier
+                            .align(Alignment.Center)
+                            .offset(y = -side * 0.13f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Deep.copy(alpha = 0.80f))
+                            .semantics { contentDescription = idDescription }
+                            .clickable { onDimensionSelected(1) }
+                            .padding(horizontal = 11.dp, vertical = 6.dp))
+                    Text("t", color = wallColor, fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp, modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = -side * 0.05f, y = side * 0.14f)
+                            .clickable { onDimensionSelected(2) }
+                            .semantics { contentDescription = thicknessDescription }
+                            .padding(8.dp))
+                    Text("OD", color = Gold, fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp, modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .offset(y = -side * 0.012f)
+                            .clickable {
+                                onDimensionSelected(0)
+                                if (tutorialStep == 2) onOdTapped()
+                            }
+                            .semantics { contentDescription = odDescription }
+                            .padding(horizontal = 12.dp, vertical = 5.dp))
+                } else {
+                    Text(nps + "″", color = White, fontSize = 28.sp,
+                        modifier = Modifier.clickable { onEdit("NPS") })
+                }
             }
-            IconButton(onClick = { currentOnStep(-1) },
+            IconButton(onClick = { onStepNow(-1) },
                 modifier = Modifier.align(Alignment.CenterStart).size(48.dp)
-                    .semantics { contentDescription = previousDiameter }) {
+                    .semantics { contentDescription = "Önceki boru çapı" }) {
                 Icon(Icons.Default.ChevronLeft, contentDescription = null,
                     tint = Gold, modifier = Modifier.size(38.dp))
             }
-            IconButton(onClick = { currentOnStep(1) },
+            IconButton(onClick = { onStepNow(1) },
                 modifier = Modifier.align(Alignment.CenterEnd).size(48.dp)
-                    .semantics { contentDescription = nextDiameter }) {
+                    .semantics { contentDescription = "Sonraki boru çapı" }) {
                 Icon(Icons.Default.ChevronRight, contentDescription = null,
                     tint = Gold, modifier = Modifier.size(38.dp))
             }
         }
-        if (pipe != null) {
-            if (tutorialStep == 2) {
+        if (tutorialStep == 2) {
+            Box(Modifier.then(if (odTarget != null)
+                Modifier.bringIntoViewRequester(odTarget) else Modifier)) {
                 TutorialHint(2, onOdTapped, onOdTapped)
-                Spacer(Modifier.height(4.dp))
-            }
-            Canvas(Modifier.fillMaxWidth().height(16.dp)) {
-                val colors = listOf(Gold, idTint, thicknessTint)
-                val anchors = listOf(size.width * 0.165f,
-                    size.width * 0.50f, size.width * 0.835f)
-                anchors.forEachIndexed { index, x ->
-                    drawLine(colors[index].copy(alpha = 0.80f),
-                        Offset(x, 0f), Offset(x, size.height * 0.75f),
-                        1.3.dp.toPx(), cap = StrokeCap.Round)
-                    drawCircle(colors[index], 2.5.dp.toPx(),
-                        Offset(x, size.height * 0.75f))
-                }
-            }
-            Row(
-                Modifier.fillMaxWidth()
-                    .then(if (odTarget != null)
-                        Modifier.bringIntoViewRequester(odTarget) else Modifier)
-                    .padding(top = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp)
-            ) {
-                val cells = listOf(
-                    Triple(outerLabel, compactDimension(
-                        if (imperial) pipe.odInches else pipe.odMm, imperial) + " " + unit,
-                        "NPS"),
-                    Triple(innerLabel, compactDimension(
-                        if (imperial) pipe.idInches else pipe.idMm, imperial) + " " + unit,
-                        "ID"),
-                    Triple(thicknessLabel, compactDimension(
-                        if (imperial) pipe.wallInches else pipe.wallMm, imperial) + " " + unit,
-                        "t")
-                )
-                cells.forEachIndexed { index, cell ->
-                    Column(
-                        Modifier.weight(1f)
-                            .heightIn(min = 66.dp)
-                            .clip(RoundedCornerShape(13.dp))
-                            .background(Panel)
-                            .border(1.dp,
-                                if (index == 0) Gold.copy(alpha = 0.58f)
-                                else StrokeColor.copy(alpha = 0.75f),
-                                RoundedCornerShape(13.dp))
-                            .then(if (index == 1) Modifier.semantics {
-                                contentDescription = cell.first
-                            } else Modifier)
-                            .clickable {
-                                onEdit(cell.third)
-                                if (index == 0 && tutorialStep == 2) onOdTapped()
-                            }
-                            .padding(horizontal = 4.dp, vertical = 9.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        val dimensionColor = when (index) {
-                            0 -> Gold
-                            1 -> idTint
-                            else -> thicknessTint
-                        }
-                        Box(Modifier.width(24.dp).height(3.dp)
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(dimensionColor))
-                        Spacer(Modifier.height(3.dp))
-                        Text(cell.first, color = Muted,
-                            fontSize = if (index == 2) 11.sp else 12.sp,
-                            maxLines = 1, softWrap = false)
-                        Spacer(Modifier.height(4.dp))
-                        Text(cell.second, color = dimensionColor,
-                            fontSize = if (LocalDensity.current.fontScale >= 1.2f) 15.sp else 16.sp,
-                            fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
-                    }
-                }
             }
         }
-        Text("Kaydırarak veya sarı oklarla NPS değiştir", color = Muted,
-            fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp))
     }
 }
 
@@ -1172,6 +1106,7 @@ private fun PipeDimensionIcon(kind: Int, modifier: Modifier = Modifier) {
 
 @Composable
 private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
+    highlightedIndex: Int, dimensionTarget: BringIntoViewRequester,
     onEdit: (String) -> Unit) {
     val thicknessUnit = if (imperial) "in" else "mm"
     val od = if (imperial) pipe.odInches else pipe.odMm
@@ -1192,6 +1127,10 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     ) {
         specs.forEachIndexed { i, item ->
             Row(Modifier.fillMaxWidth().heightIn(min = 61.dp)
+                .then(if (i == highlightedIndex)
+                    Modifier.background(Gold.copy(alpha = 0.14f)) else Modifier)
+                .then(if (i == highlightedIndex)
+                    Modifier.bringIntoViewRequester(dimensionTarget) else Modifier)
                 .clickable { onEdit(listOf("NPS", "ID", "t", "mass", "volume")[i]) }
                 .padding(horizontal = 13.dp),
                 verticalAlignment = Alignment.CenterVertically) {
