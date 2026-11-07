@@ -355,7 +355,7 @@ private fun CalculatorPage(
     // Available height excludes the app header and bottom navigation.
     // Scale the illustration to 80% of its previous 282dp maximum;
     // smaller viewports reserve space for the SCH selector.
-    val dialLimit = minOf(226.dp, maxOf(150.dp, maxHeight * 0.34f))
+    val dialLimit = minOf(226.dp, maxOf(148.dp, maxHeight * if (maxHeight < 620.dp) 0.27f else 0.34f))
     val compactHeight = maxHeight < 620.dp
     Column(
         Modifier.fillMaxSize().verticalScroll(scrollState)
@@ -497,7 +497,7 @@ private fun CalculatorPage(
             }
             if (tutorialStep == 1) TutorialPulseFrame(Modifier.matchParentSize())
         }
-        Spacer(Modifier.height(if (compactHeight) 8.dp else 14.dp))
+        Spacer(Modifier.height(if (compactHeight) 4.dp else 14.dp))
         if (pipe == null) {
             Text(ui("Bu NPS ve Schedule için doğrulanmış ölçü yok."), color = Gold, fontSize = textSp.sp)
         } else {
@@ -668,8 +668,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
             val widthDp = LocalConfiguration.current.screenWidthDp
             val fontScale = LocalDensity.current.fontScale
             val dialCap = minOf(dialLimit, when {
-                widthDp <= 340 && fontScale >= 1.2f -> 190.dp
-                widthDp <= 360 && fontScale >= 1.2f -> 206.dp
+                widthDp <= 340 && fontScale >= 1.2f -> 160.dp
+                widthDp <= 360 && fontScale >= 1.2f -> 185.dp
                 else -> 226.dp
             })
             val dialSide = minOf(maxWidth, dialCap)
@@ -865,7 +865,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 .offset(x = -minOf(dialSide * 0.12f,
                                     leftMargin),
                                     y = dialSide * 0.15f)
-                                .widthIn(max = dialSide * 0.54f)
+                                .widthIn(max = if (fontScale >= 1.2f) dialSide * 0.73f else dialSide * 0.54f)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(boreDark.copy(alpha = 0.90f))
                                 .border(1.5.dp, innerGreen,
