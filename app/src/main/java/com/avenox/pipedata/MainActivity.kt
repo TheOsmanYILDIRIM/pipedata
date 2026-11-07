@@ -118,6 +118,7 @@ private fun PipeApp(catalog: PipeCatalog) {
         else if (tutorialStep >= 0) tutorialStep += 1
     }
     var page by rememberSaveable { mutableIntStateOf(0) }
+    var activeTool by rememberSaveable { mutableStateOf<String?>(null) }
     var standard by rememberSaveable { mutableStateOf("B36.10") }
     var nps by rememberSaveable { mutableStateOf("6") }
     var schedule by rememberSaveable { mutableStateOf("40") }
@@ -181,6 +182,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                         standard = chosen.standard; nps = chosen.nps
                         schedule = chosen.schedule; page = 0
                     })
+                3 -> ToolsPage(activeTool, { activeTool = it }, pipe)
                 else -> SettingsPage(
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
@@ -210,7 +212,8 @@ private fun PipeApp(catalog: PipeCatalog) {
                 Triple(ui("Boru"), Icons.Default.Tune, 0),
                 Triple(ui("SCH Bul"), Icons.Default.Search, 1),
                 Triple(ui("Tablo"), Icons.Default.MenuBook, 2),
-                Triple(ui("Ayarlar"), Icons.Default.Settings, 3)
+                Triple("Araçlar", Icons.Default.Build, 3),
+                Triple(ui("Ayarlar"), Icons.Default.Settings, 4)
             )
             items.forEach { (label, icon, index) ->
                 val navDescription = if (index == 2) ui("Tablo / Standart") else label
@@ -228,6 +231,179 @@ private fun PipeApp(catalog: PipeCatalog) {
             }
         }
     }
+    }
+}
+
+
+/** Add new field calculators to this directory without replacing existing tabs. */
+@Composable
+private fun ToolsPage(selectedTool: String?, onSelect: (String?) -> Unit, pipe: PipeSpec?) {
+    if (selectedTool == "degree") {
+        DegreeMarkingPage(pipe, onBack = { onSelect(null) })
+        return
+    }
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        .padding(horizontal = 18.dp, vertical = 16.dp)) {
+        PageHeading("Araçlar", "Saha hesaplayıcıları")
+        Spacer(Modifier.height(12.dp))
+        Surface(color = Panel, shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.fillMaxWidth().clickable { onSelect("degree") }) {
+            Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.TrackChanges, contentDescription = null,
+                    tint = Gold, modifier = Modifier.size(30.dp))
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Derece İşaretleme", color = White, fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold)
+                    Text("Boru çevresinde dereceyi cm ve mm olarak hesapla",
+                        color = Muted, fontSize = 14.sp)
+                }
+                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Gold)
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Text("Yeni araçlar burada listelenecek.", color = Muted, fontSize = 14.sp)
+    }
+}
+
+/** Outside circumference arc length only; never an angled-cut template. */
+private fun circumferenceMarkingMm(diameterMm: Double, angle: Double): Double? {
+    if (!diameterMm.isFinite() || diameterMm <= 0.0 ||
+        !angle.isFinite() || angle < 0.0 || angle > 360.0) return null
+    return (Math.PI * diameterMm * angle / 360.0).takeIf { it.isFinite() }
+}
+
+@Composable
+private fun DegreeMarkingPage(pipe: PipeSpec?, onBack: () -> Unit) {
+    var diameterText by rememberSaveable(pipe?.odMm) {
+        mutableStateOf(pipe?.let { decimal(it.odMm, 2) } ?: "")
+    }
+    var angleText by rememberSaveable { mutableStateOf("60") }
+    var parts by rememberSaveable { mutableIntStateOf(0) }
+    val diameter = diameterText.trim().replace(",", ".").toDoubleOrNull()
+    val angle = angleText.trim().replace(",", ".").toDoubleOrNull()
+    val result = if (diameter != null && angle != null)
+        circumferenceMarkingMm(diameter, angle) else null
+    val arcDegrees = (angle ?: 0.0).coerceIn(0.0, 360.0).toFloat()
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        .padding(horizontal = 18.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Araçlar listesine dön",
+                    tint = Gold)
+            }
+            Text("Derece İşaretleme", color = White, fontSize = 21.sp,
+                fontWeight = FontWeight.Bold)
+        }
+        Text("Dış çevrede 0° üst noktasından saat yönünde ölçün.",
+            color = Muted, fontSize = 15.sp, modifier = Modifier.fillMaxWidth())
+        Box(Modifier.fillMaxWidth().height(188.dp), contentAlignment = Alignment.Center) {
+            Canvas(Modifier.size(170.dp)) {
+                val radius = size.minDimension * 0.43f
+                drawCircle(brush = Brush.sweepGradient(listOf(
+                    Color(0xFF526C69), Color(0xFFDBE3E0),
+                    Color(0xFF76938E), Color(0xFF304842), Color(0xFF526C69))),
+                    radius = radius)
+                drawCircle(Deep, radius = radius * 0.72f)
+                drawCircle(Color(0xFF76A49B), radius = radius * 0.72f,
+                    style = Stroke(width = 2.dp.toPx()))
+                drawArc(Gold, startAngle = -90f, sweepAngle = arcDegrees,
+                    useCenter = false,
+                    topLeft = Offset(center.x - radius, center.y - radius),
+                    size = Size(radius * 2f, radius * 2f),
+                    style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round))
+                val rad = Math.toRadians((arcDegrees - 90f).toDouble())
+                val start = Offset(center.x, center.y - radius)
+                val finish = Offset(center.x + cos(rad).toFloat() * radius,
+                    center.y + sin(rad).toFloat() * radius)
+                drawLine(White, center, start, 1.5.dp.toPx())
+                drawLine(Gold, center, finish, 2.dp.toPx())
+                drawCircle(White, 3.dp.toPx(), start)
+                drawCircle(Gold, 4.dp.toPx(), finish)
+            }
+            Text("0°", color = White, fontSize = 13.sp,
+                modifier = Modifier.align(Alignment.TopCenter))
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                diameterText, { diameterText = it },
+                modifier = Modifier.weight(1f),
+                label = { Text("Dış çap (mm)") },
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(color = White, fontSize = 20.sp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+            OutlinedTextField(
+                angleText, { angleText = it; parts = 0 },
+                modifier = Modifier.weight(1f),
+                label = { Text("Açı (°)") },
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(color = White, fontSize = 20.sp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        }
+        Spacer(Modifier.height(10.dp))
+        Text("Hazır açılar", color = White, fontSize = 16.sp,
+            modifier = Modifier.align(Alignment.Start))
+        LazyRow(Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            items(listOf(30, 45, 60, 90, 120, 180)) { option ->
+                Surface(shape = RoundedCornerShape(12.dp),
+                    color = if (angle == option.toDouble() && parts == 0) Gold else Panel,
+                    modifier = Modifier.heightIn(min = 48.dp).clickable {
+                        angleText = option.toString(); parts = 0
+                    }) {
+                    Box(Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center) {
+                        Text(option.toString() + "°",
+                            color = if (angle == option.toDouble() && parts == 0) Deep else White,
+                            fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Text("Eşit böl", color = White, fontSize = 16.sp,
+            modifier = Modifier.align(Alignment.Start))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            listOf(2, 4, 6, 8).forEach { count ->
+                Surface(color = if (parts == count) Gold else Panel,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.weight(1f).heightIn(min = 46.dp)
+                        .clickable {
+                            parts = count
+                            angleText = decimal(360.0 / count, 2)
+                        }) {
+                    Box(Modifier.padding(vertical = 9.dp),
+                        contentAlignment = Alignment.Center) {
+                        Text(count.toString(),
+                            color = if (parts == count) Deep else White,
+                            fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Surface(color = Panel, shape = RoundedCornerShape(18.dp),
+            modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Çevrede işaretlenecek mesafe",
+                    color = Muted, fontSize = 16.sp)
+                Text(result?.let { decimal(it / 10.0, 2) + " cm" } ?: "—",
+                    color = Gold, fontSize = 34.sp, fontWeight = FontWeight.Bold)
+                Text(result?.let { decimal(it, 2) + " mm" }
+                    ?: "Geçerli dış çap ve 0–360° açı girin.",
+                    color = White, fontSize = 17.sp)
+            }
+        }
+        if (parts > 0 && result != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(parts.toString() + " eşit bölme: her " + decimal(result, 2) +
+                " mm'de bir işaretle.", color = White, fontSize = 15.sp)
+        }
+        Spacer(Modifier.height(10.dp))
+        Text("Yalnız dış çevrede işaretleme içindir; dirsek ve eğik kesim şablonu değildir.",
+            color = Muted, fontSize = 13.sp)
+        Spacer(Modifier.height(18.dp))
     }
 }
 
