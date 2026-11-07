@@ -177,20 +177,21 @@ jobs:
                   raise AssertionError("Unit change was not reflected in pipe dimensions: "+target)
               png(tag+"_boru_initial")
               initial=nodes(tag+"_boru_initial")
-              # Accessibility acceptance: the priority OD value must be fully
-              # visible before scrolling on narrow screens with large text.
+              # Measurements now live only in the existing results table.
+              # Check that the OD is reachable by normal vertical scrolling.
               if width == 320 and scale >= 1.3 and metric:
-                  # NPS 6 nominal OD is 6.625 in; rendered metric precision is 4 places.
                   expected="168,28 mm"
                   od=[n for n in initial if n.attrib.get("text")==expected]
                   if not od:
-                      raise AssertionError("OD value not visible in first viewport: "+expected)
-                  bottom=int(re.findall(r"\d+",od[0].attrib["bounds"])[3])
-                  nav=[n for n in initial if n.attrib.get("content-desc") in ("Tablo / Standart","Table / Standards","Таблица / Стандарты")]
-                  if nav:
-                      nav_top=int(re.findall(r"\d+",nav[0].attrib["bounds"])[1])
-                      if bottom >= nav_top:
-                          raise AssertionError("OD value overlaps bottom navigation")
+                      adb("shell","input","swipe","160","650","160","260","350")
+                      time.sleep(.4)
+                      od=[n for n in nodes(tag+"_od_in_table")
+                          if n.attrib.get("text")==expected]
+                  if not od:
+                      raise AssertionError("OD not reachable in results table: "+expected)
+                  # Return to the header for the regular navigation checks.
+                  adb("shell","input","swipe","160","220","160","740","300")
+                  time.sleep(.4)
 
               ready_text={n.attrib.get("text","") for n in initial}
               if "Pipe" in {n.attrib.get("content-desc","") for n in initial}:
@@ -231,25 +232,22 @@ jobs:
                   suffix="boru_return" if name=="Boru" else name.lower().replace("/","_").replace(" ","_")
                   png(tag+"_"+suffix)
 
-              # Dialog is verified using a real UI hierarchy and dismissed by its button.
+              # ID is now a marker, not a duplicate value badge.
+              # Tapping it scrolls to the matching row in the existing table.
               visible=nodes(tag+"_id_source")
-              # Compact ID badge shows "ID"; the localized full name is
-              # preserved as its accessibility content description.
               if not (tap_text(visible,id_label,attr="content-desc")
                       or tap_text(visible,"ID")
                       or tap_text(visible,id_label)):
-                  raise AssertionError("ID badge not accessible or tappable")
+                  raise AssertionError("ID marker not accessible or tappable")
+              time.sleep(.6)
+              after=nodes(tag+"_id_row")
+              if not any(id_label in n.attrib.get("text","") or
+                         id_label in n.attrib.get("content-desc","")
+                         for n in after):
+                  raise AssertionError("ID marker did not reveal results row")
+              png(tag+"_id_result")
+              adb("shell","input","swipe","160","220","160","740","300")
               time.sleep(.4)
-              dialog=nodes(tag+"_id_open")
-              if not any(dialog_title in n.attrib.get("text","") for n in dialog):
-                  raise AssertionError("ID dialog did not open")
-              png(tag+"_id_dialog")
-              if not tap_text(dialog,{"Pipe":"Cancel","Труба":"Отмена"}.get(pipe_label,"İptal")):
-                  raise AssertionError("ID dialog dismiss button missing")
-              time.sleep(.55)
-              after=nodes(tag+"_id_closed")
-              if any(dialog_title in n.attrib.get("text","") for n in after):
-                  raise AssertionError("ID dialog failed to close")
 
               # Actual Compose text field exposes its value as EditText, not the label.
               adb("shell","input","tap",*coords[lookup_label])
