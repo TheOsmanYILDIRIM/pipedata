@@ -181,7 +181,7 @@ jobs:
               # visible before scrolling on narrow screens with large text.
               if width == 320 and scale >= 1.3 and metric:
                   # NPS 6 nominal OD is 6.625 in; rendered metric precision is 4 places.
-                  expected="168,2750 mm"
+                  expected="168,28 mm"
                   od=[n for n in initial if n.attrib.get("text")==expected]
                   if not od:
                       raise AssertionError("OD value not visible in first viewport: "+expected)

@@ -67,6 +67,11 @@ private val Muted = Color(0xFFBED0CC)
 private fun decimal(value: Double, digits: Int = 2): String =
     String.format(Locale.forLanguageTag("tr-TR"), "%." + digits + "f", value)
 
+// Presentation only: never round the stored catalogue dimensions or calculations.
+private fun compactDimension(value: Double, imperial: Boolean): String =
+    decimal(value, if (imperial) 3 else 2).trimEnd('0').trimEnd(',')
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,7 +194,7 @@ private fun PipeApp(catalog: PipeCatalog) {
                         standard = chosen.standard; nps = chosen.nps
                         schedule = chosen.schedule; page = 0
                     })
-                3 -> ToolsPage(activeTool, { activeTool = it }, pipe, unitImperial)
+                3 -> ToolsPage(activeTool, { activeTool = it }, pipe, unitImperial, catalog)
                 else -> SettingsPage(
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
@@ -245,9 +250,9 @@ private fun PipeApp(catalog: PipeCatalog) {
 /** Add new field calculators to this directory without replacing existing tabs. */
 @Composable
 private fun ToolsPage(selectedTool: String?, onSelect: (String?) -> Unit,
-    pipe: PipeSpec?, imperial: Boolean) {
+    pipe: PipeSpec?, imperial: Boolean, catalog: PipeCatalog) {
     if (selectedTool == "degree") {
-        DegreeMarkingPage(pipe, imperial, onBack = { onSelect(null) })
+        DegreeMarkingPage(pipe, imperial, catalog, onBack = { onSelect(null) })
         return
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -282,17 +287,27 @@ private fun circumferenceMarkingMm(diameterMm: Double, angle: Double): Double? {
 }
 
 @Composable
-private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean, onBack: () -> Unit) {
+private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean,
+    catalog: PipeCatalog, onBack: () -> Unit) {
     var useInches by rememberSaveable { mutableStateOf(imperial) }
     var diameterText by rememberSaveable(pipe?.odMm) {
         mutableStateOf(pipe?.let {
-            decimal(if (useInches) it.odInches else it.odMm, if (useInches) 3 else 4)
+            compactDimension(if (useInches) it.odInches else it.odMm, useInches)
         } ?: "")
+    }
+    // A catalogue selection retains exact OD even when the displayed text is rounded.
+    var selectedDiameterMm by rememberSaveable(pipe?.odMm) {
+        mutableStateOf<Double?>(pipe?.odMm)
+    }
+    var showDiameters by rememberSaveable { mutableStateOf(false) }
+    var searchDiameters by rememberSaveable { mutableStateOf(false) }
+    val diameterChoices = remember(catalog) {
+        catalog.rows.distinctBy { it.odInches }.sortedBy { it.odInches }
     }
     var angleText by rememberSaveable { mutableStateOf("60") }
     var parts by rememberSaveable { mutableIntStateOf(0) }
     val diameterInput = diameterText.trim().replace(",", ".").toDoubleOrNull()
-    val diameterMm = diameterInput?.let { if (useInches) it * 25.4 else it }
+    val diameterMm = selectedDiameterMm ?: diameterInput?.let { if (useInches) it * 25.4 else it }
     val angle = angleText.trim().replace(",", ".").toDoubleOrNull()
     val result = if (diameterMm != null && angle != null)
         circumferenceMarkingMm(diameterMm, angle) else null
@@ -315,11 +330,12 @@ private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean, onBack: () -> 
                         .background(if (useInches == inch) Gold else Color.Transparent)
                         .clickable {
                             if (useInches != inch) {
-                                val factor = if (inch) 1.0 / 25.4 else 25.4
-                                diameterText = diameterInput?.let {
-                                    decimal(it * factor, if (inch) 6 else 4)
-                                } ?: ""
+                                val exactMm = diameterMm
                                 useInches = inch
+                                diameterText = exactMm?.let {
+                                    compactDimension(if (inch) it / 25.4 else it, inch)
+                                } ?: ""
+                                selectedDiameterMm = exactMm
                             }
                         }
                         .heightIn(min = 52.dp).padding(horizontal = 11.dp),
@@ -361,7 +377,8 @@ private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean, onBack: () -> 
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
-                diameterText, { diameterText = it },
+                diameterText, { diameterText = it; selectedDiameterMm = null;
+                    showDiameters = true; searchDiameters = true },
                 modifier = Modifier.weight(1f),
                 label = { Text(if (useInches) "Dış çap (inç)" else "Dış çap (mm)") },
                 singleLine = true,
@@ -374,6 +391,55 @@ private fun DegreeMarkingPage(pipe: PipeSpec?, imperial: Boolean, onBack: () -> 
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle(color = White, fontSize = 20.sp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("Katalogdaki dış çaplar", color = Muted, fontSize = 14.sp,
+                modifier = Modifier.weight(1f))
+            TextButton(onClick = {
+                showDiameters = !showDiameters
+                searchDiameters = false
+            }) {
+                Text(if (showDiameters) "Kapat" else "Çap seç", color = Gold)
+            }
+        }
+        if (showDiameters) {
+            val query = if (searchDiameters) diameterText.trim().lowercase(Locale.ROOT)
+                else ""
+            val candidates = diameterChoices.filter {
+                query.isEmpty() || it.nps.lowercase(Locale.ROOT).contains(query) ||
+                    compactDimension(if (useInches) it.odInches else it.odMm,
+                        useInches).lowercase(Locale.ROOT).contains(query)
+            }.take(30)
+            if (candidates.isEmpty()) {
+                Text("Bu değere yakın katalog çapı yok. Elle giriş yapabilirsiniz.",
+                    color = Muted, fontSize = 14.sp)
+            } else {
+                LazyColumn(Modifier.fillMaxWidth().heightIn(max = 195.dp)
+                    .border(1.dp, StrokeColor, RoundedCornerShape(12.dp))) {
+                    items(candidates) { option ->
+                        Row(Modifier.fillMaxWidth()
+                            .clickable {
+                                selectedDiameterMm = option.odMm
+                                diameterText = compactDimension(
+                                    if (useInches) option.odInches else option.odMm,
+                                    useInches)
+                                showDiameters = false
+                                searchDiameters = false
+                            }
+                            .padding(horizontal = 12.dp, vertical = 11.dp),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Text("NPS " + option.nps + "″", color = Muted,
+                                fontSize = 15.sp, modifier = Modifier.weight(1f))
+                            Text(compactDimension(if (useInches) option.odInches
+                                else option.odMm, useInches) +
+                                (if (useInches) " in" else " mm"),
+                                color = White, fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp)
+                        }
+                        HorizontalDivider(color = StrokeColor.copy(alpha = 0.45f))
+                    }
+                }
+            }
         }
         Spacer(Modifier.height(10.dp))
         Text("Hazır açılar", color = White, fontSize = 16.sp,
@@ -1086,7 +1152,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             Text(ui("İç Çap (ID)"), color = White,
                                 fontSize = if (fontScale >= 1.2f) 12.sp else 14.sp,
                                 fontWeight = FontWeight.Bold, maxLines = 1)
-                            Text(decimal(inner, if (imperial) 3 else 4) + " " + dimensionUnit,
+                            Text(compactDimension(inner, imperial) + " " + dimensionUnit,
                                 color = innerGreen, fontWeight = FontWeight.Bold,
                                 fontSize = if (fontScale >= 1.2f) 16.sp else 19.sp,
                                 maxLines = 1, softWrap = false)
@@ -1142,8 +1208,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 .padding(horizontal = 15.dp, vertical = 2.dp)) {
                             Text(ui("Dış Çap (OD)"), color = White,
                                 fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                            Text(decimal(outer,
-                                if (imperial) 3 else 4) +
+                            Text(compactDimension(outer, imperial) +
                                 " " + dimensionUnit, color = Gold,
                                 fontSize = if (fontScale >= 1.2f) 25.sp else 30.sp,
                                 fontWeight = FontWeight.Bold)
@@ -1204,9 +1269,9 @@ private fun ResultRows(pipe: PipeSpec, imperial: Boolean, textSp: Int,
     val mass = if (imperial) pipe.kgPerMetre * 0.671968975 else pipe.kgPerMetre
     val volume = if (imperial) pipe.litresPerMetre * 0.08052 else pipe.litresPerMetre
     val specs = listOf(
-        Triple(ui("Dış Çap (OD)"), decimal(od, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.OpenInFull),
-        Triple(ui("İç Çap (ID)"), decimal(id, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
-        Triple(ui("Et Kalınlığı"), decimal(t, if (imperial) 3 else 4) + " " + thicknessUnit, Icons.Default.LineWeight),
+        Triple(ui("Dış Çap (OD)"), compactDimension(od, imperial) + " " + thicknessUnit, Icons.Default.OpenInFull),
+        Triple(ui("İç Çap (ID)"), compactDimension(id, imperial) + " " + thicknessUnit, Icons.Default.CenterFocusStrong),
+        Triple(ui("Et Kalınlığı"), compactDimension(t, imperial) + " " + thicknessUnit, Icons.Default.LineWeight),
         Triple(ui("Ağırlık"), decimal(mass) + if (imperial) " lb/ft" else " kg/m", Icons.Default.Scale),
         Triple(ui("İç Hacim"), decimal(volume) + if (imperial) " gal/ft" else " L/m", Icons.Default.WaterDrop)
     )
@@ -1541,9 +1606,9 @@ private fun LookupPage(catalog: PipeCatalog, standard: String, textSp: Int, impe
                             val odDisplay = if (useInches) pipe.odInches else pipe.odMm
                             val wallDisplay = if (useInches) pipe.wallMm / 25.4 else pipe.wallMm
                             val unit = if (useInches) "in" else "mm"
-                            Text("OD " + decimal(odDisplay, if (useInches) 3 else 4) + " " + unit,
+                            Text("OD " + compactDimension(odDisplay, useInches) + " " + unit,
                                 color = White, fontSize = 17.sp)
-                            Text("t " + decimal(wallDisplay, if (useInches) 3 else 4) + " " + unit,
+                            Text("t " + compactDimension(wallDisplay, useInches) + " " + unit,
                                 color = White, fontSize = 17.sp)
                         }
                     }
