@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -114,7 +115,6 @@ private fun PipeApp(catalog: PipeCatalog) {
     val prefs = remember { context.getSharedPreferences("pipe_preferences_v2", 0) }
     var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", true)) }
     var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", false)) }
-    var wheelEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("wheel_enabled", false)) }
     var languageSelection by rememberSaveable {
         mutableStateOf(prefs.getString("language", "system") ?: "system")
     }
@@ -199,7 +199,6 @@ private fun PipeApp(catalog: PipeCatalog) {
                         standard = chosen.standard; nps = chosen.nps; schedule = chosen.schedule
                     },
                     tutorialStep = tutorialStep,
-                    wheelEnabled = wheelEnabled,
                     onTutorialNext = advanceTutorial,
                     onTutorialSkip = finishTutorial
                 )
@@ -214,11 +213,6 @@ private fun PipeApp(catalog: PipeCatalog) {
                     largeText, { largeText = it; prefs.edit().putBoolean("large_text", it).apply() },
                     unitImperial, { unitImperial = it; prefs.edit().putBoolean("imperial", it).apply() },
                     normalSp, languageSelection,
-                    wheelEnabled = wheelEnabled,
-                    onWheelEnabled = {
-                        wheelEnabled = it
-                        prefs.edit().putBoolean("wheel_enabled", it).apply()
-                    },
                     onLanguageChange = {
                         languageSelection = it
                         prefs.edit().putString("language", it).apply()
@@ -621,7 +615,7 @@ private fun CalculatorPage(
     pipe: PipeSpec?, imperial: Boolean, textSp: Int,
     onImperial: (Boolean) -> Unit,
     catalog: PipeCatalog, onChoose: (PipeSpec) -> Unit,
-    tutorialStep: Int, wheelEnabled: Boolean,
+    tutorialStep: Int,
     onTutorialNext: () -> Unit, onTutorialSkip: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -640,7 +634,7 @@ private fun CalculatorPage(
     val index = sizes.indexOf(nps).coerceAtLeast(0)
     val step: (Int) -> Unit = { delta ->
         onNps(sizes[(index + delta + sizes.size) % sizes.size])
-        if (tutorialStep == 0 && !wheelEnabled) onTutorialNext()
+        if (tutorialStep == 0) onTutorialNext()
     }
     BoxWithConstraints(Modifier.fillMaxSize()) {
     // Available height excludes the app header and bottom navigation.
@@ -699,7 +693,7 @@ private fun CalculatorPage(
                     onDismiss = { npsMenuExpanded = false },
                     onChoose = { option ->
                         onNps(option.removePrefix("NPS ").removeSuffix("″"))
-                        if (tutorialStep == 0 && !wheelEnabled) onTutorialNext()
+                        if (tutorialStep == 0) onTutorialNext()
                         npsMenuExpanded = false
                     }
                 )
@@ -720,14 +714,13 @@ private fun CalculatorPage(
             }
         }
         if (tutorialStep == 0) {
-            TutorialHint(0, onTutorialNext, onTutorialSkip, wheelEnabled)
+            TutorialHint(0, onTutorialNext, onTutorialSkip)
             Spacer(Modifier.height(8.dp))
         }
         PipeDial(nps, step, pipe, imperial,
             onEdit = { editing = it },
-            dialLimit = dialLimit, wheelEnabled = wheelEnabled,
+            dialLimit = dialLimit,
             tutorialStep = tutorialStep,
-            onWheelDragged = { if (tutorialStep == 0) onTutorialNext() },
             onOdTapped = { if (tutorialStep == 2) onTutorialNext() },
             odTarget = odTarget)
         Spacer(Modifier.height(if (compactHeight) 3.dp else 8.dp))
@@ -810,11 +803,9 @@ private fun CalculatorPage(
 
 /** Short, contextual hints; they do not block the actual controls. */
 @Composable
-private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit,
-    wheelEnabled: Boolean = false) {
+private fun TutorialHint(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
     val message = when (step) {
-        0 -> if (wheelEnabled) ui("Halkanın kenarını parmağınla çevir. Hareketi dene!")
-            else ui("Üstteki NPS alanına dokunarak boru çapını seç.")
+        0 -> "Boruyu sağa/sola kaydır veya sarı oklarla NPS değiştir."
         1 -> ui("Aşağıdaki SCH değerlerinden birine dokun.")
         else -> ui("Dış çap değerine dokunarak NPS seç.")
     }
@@ -921,15 +912,14 @@ private fun TutorialRingGesture(modifier: Modifier = Modifier) {
 @Composable
 private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     imperial: Boolean, onEdit: (String) -> Unit,
-    dialLimit: androidx.compose.ui.unit.Dp, wheelEnabled: Boolean,
+    dialLimit: androidx.compose.ui.unit.Dp,
     tutorialStep: Int = -1,
-    onWheelDragged: () -> Unit = {}, onOdTapped: () -> Unit = {},
+    onOdTapped: () -> Unit = {},
     odTarget: BringIntoViewRequester? = null) {
     val currentOnStep by rememberUpdatedState(onStep)
-    val currentOnWheelDragged by rememberUpdatedState(onWheelDragged)
-    var wheelRotation by remember { mutableFloatStateOf(0f) }
-    val dialDescription = ui("Döner NPS sayacı, seçili çap ") + nps + " " + ui("inç")
+    val dialDescription = "Kaydırılabilir NPS seçici, seçili çap " + nps + " " + ui("inç")
     val nextDiameter = ui("Sonraki boru çapı")
+    val previousDiameter = "Önceki boru çapı"
     val innerLabel = ui("İç Çap (ID)")
     val outerLabel = ui("Dış Çap (OD)")
     val thicknessLabel = ui("Et Kalınlığı")
@@ -937,6 +927,8 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
     val accent = Gold
     val softSteel = Color(0xFFB6C8C1)
     val steelEdge = Color(0xFF637D75)
+    val idTint = Color(0xFFA6C9B8)
+    val thicknessTint = Color(0xFFD7B99A)
 
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -947,7 +939,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                 widthDp <= 360 && fontScale >= 1.2f -> 185.dp
                 else -> 218.dp
             })
-            val side = minOf(maxWidth, dialCap)
+            val side = minOf((maxWidth - 100.dp).coerceAtLeast(130.dp), dialCap)
             Box(
                 Modifier.size(side)
                     .semantics {
@@ -957,41 +949,21 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                             true
                         }
                     }
-                    .then(if (wheelEnabled) Modifier.pointerInput(wheelEnabled) {
-                        var last = 0f
-                        var travelled = 0f
-                        var isOnRing = false
-                        detectDragGestures(
-                            onDragStart = { position ->
-                                val dx = position.x - size.width / 2f
-                                val dy = position.y - size.height / 2f
-                                val radius = minOf(size.width, size.height) / 2f
-                                isOnRing = hypot(dx, dy) in (radius * 0.49f)..radius
-                                last = atan2(dy, dx)
-                                travelled = 0f
-                            },
-                            onDragEnd = { isOnRing = false; travelled = 0f },
-                            onDragCancel = { isOnRing = false; travelled = 0f }
-                        ) { change, _ ->
-                            if (isOnRing) {
-                                change.consume()
-                                val dx = change.position.x - size.width / 2f
-                                val dy = change.position.y - size.height / 2f
-                                val current = atan2(dy, dx)
-                                val delta = atan2(sin(current - last), cos(current - last))
-                                last = current
-                                wheelRotation = (wheelRotation +
-                                    Math.toDegrees(delta.toDouble()).toFloat()) % 360f
-                                travelled += delta
-                                while (abs(travelled) >= 0.22f) {
-                                    val direction = if (travelled > 0f) 1 else -1
-                                    currentOnStep(direction)
-                                    currentOnWheelDragged()
-                                    travelled -= direction * 0.22f
-                                }
+                    .pointerInput(Unit) {
+                        var dxTotal = 0f
+                        detectHorizontalDragGestures(
+                            onDragStart = { dxTotal = 0f },
+                            onDragCancel = { dxTotal = 0f },
+                            onDragEnd = {
+                                if (abs(dxTotal) > 42.dp.toPx())
+                                    currentOnStep(if (dxTotal < 0f) 1 else -1)
+                                dxTotal = 0f
                             }
+                        ) { change, delta ->
+                            change.consume()
+                            dxTotal += delta
                         }
-                    } else Modifier),
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Canvas(Modifier.fillMaxSize()) {
@@ -1032,15 +1004,15 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         // Minimal ID measure across the clear opening.
                         val y = c.y + bore * 0.17f
                         val half = bore * 0.88f
-                        drawLine(softSteel.copy(alpha = 0.80f),
+                        drawLine(idTint.copy(alpha = 0.90f),
                             Offset(c.x - half, y), Offset(c.x + half, y),
                             1.5.dp.toPx(), cap = StrokeCap.Round)
                         for (sign in listOf(-1f, 1f)) {
                             val x = c.x + sign * half
-                            drawLine(softSteel, Offset(x, y),
+                            drawLine(idTint, Offset(x, y),
                                 Offset(x - sign * 7.dp.toPx(), y - 4.dp.toPx()),
                                 1.5.dp.toPx())
-                            drawLine(softSteel, Offset(x, y),
+                            drawLine(idTint, Offset(x, y),
                                 Offset(x - sign * 7.dp.toPx(), y + 4.dp.toPx()),
                                 1.5.dp.toPx())
                         }
@@ -1048,7 +1020,7 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         val angle = -Math.PI / 4.0
                         val dx = cos(angle).toFloat()
                         val dy = sin(angle).toFloat()
-                        drawLine(accent.copy(alpha = 0.85f),
+                        drawLine(thicknessTint,
                             Offset(c.x + bore * dx, c.y + bore * dy),
                             Offset(c.x + outer * dx, c.y + outer * dy),
                             2.dp.toPx(), cap = StrokeCap.Round)
@@ -1065,17 +1037,38 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         }
                     }
                 }
-                if (tutorialStep == 0 && wheelEnabled) {
-                    TutorialRingGesture(Modifier.fillMaxSize())
-                }
                 if (pipe == null) Text(nps + "″", color = White,
                     fontSize = 30.sp, modifier = Modifier.clickable { onEdit("NPS") })
+            }
+            IconButton(onClick = { currentOnStep(-1) },
+                modifier = Modifier.align(Alignment.CenterStart).size(48.dp)
+                    .semantics { contentDescription = previousDiameter }) {
+                Icon(Icons.Default.ChevronLeft, contentDescription = null,
+                    tint = Gold, modifier = Modifier.size(38.dp))
+            }
+            IconButton(onClick = { currentOnStep(1) },
+                modifier = Modifier.align(Alignment.CenterEnd).size(48.dp)
+                    .semantics { contentDescription = nextDiameter }) {
+                Icon(Icons.Default.ChevronRight, contentDescription = null,
+                    tint = Gold, modifier = Modifier.size(38.dp))
             }
         }
         if (pipe != null) {
             if (tutorialStep == 2) {
                 TutorialHint(2, onOdTapped, onOdTapped)
                 Spacer(Modifier.height(4.dp))
+            }
+            Canvas(Modifier.fillMaxWidth().height(16.dp)) {
+                val colors = listOf(Gold, idTint, thicknessTint)
+                val anchors = listOf(size.width * 0.165f,
+                    size.width * 0.50f, size.width * 0.835f)
+                anchors.forEachIndexed { index, x ->
+                    drawLine(colors[index].copy(alpha = 0.80f),
+                        Offset(x, 0f), Offset(x, size.height * 0.75f),
+                        1.3.dp.toPx(), cap = StrokeCap.Round)
+                    drawCircle(colors[index], 2.5.dp.toPx(),
+                        Offset(x, size.height * 0.75f))
+                }
             }
             Row(
                 Modifier.fillMaxWidth()
@@ -1116,20 +1109,28 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
+                        val dimensionColor = when (index) {
+                            0 -> Gold
+                            1 -> idTint
+                            else -> thicknessTint
+                        }
+                        Box(Modifier.width(24.dp).height(3.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(dimensionColor))
+                        Spacer(Modifier.height(3.dp))
                         Text(cell.first, color = Muted,
                             fontSize = if (index == 2) 11.sp else 12.sp,
                             maxLines = 1, softWrap = false)
                         Spacer(Modifier.height(4.dp))
-                        Text(cell.second, color = if (index == 0) Gold else White,
+                        Text(cell.second, color = dimensionColor,
                             fontSize = if (LocalDensity.current.fontScale >= 1.2f) 15.sp else 16.sp,
                             fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
                     }
                 }
             }
         }
-        if (wheelEnabled) Text(ui("Halkayı parmağınızla çevirin"),
-            color = Muted, fontSize = 13.sp,
-            modifier = Modifier.padding(top = 4.dp))
+        Text("Kaydırarak veya sarı oklarla NPS değiştir", color = Muted,
+            fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp))
     }
 }
 
@@ -1594,7 +1595,6 @@ private fun SettingsPage(
     largeText: Boolean, onLargeText: (Boolean) -> Unit,
     imperial: Boolean, onImperial: (Boolean) -> Unit, textSp: Int,
     languageSelection: String, onLanguageChange: (String) -> Unit,
-    wheelEnabled: Boolean, onWheelEnabled: (Boolean) -> Unit,
     onReplayTutorial: () -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
@@ -1613,17 +1613,6 @@ private fun SettingsPage(
                 Text(ui("Metrik yerine Imperial göster"), color = Muted, fontSize = 15.sp)
             }
             Switch(checked = imperial, onCheckedChange = onImperial)
-        }
-        HorizontalDivider(color = StrokeColor)
-        Row(Modifier.fillMaxWidth().heightIn(min = 72.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text("Boru halkasıyla NPS değiştir", color = White,
-                    fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("Varsayılan kapalı. NPS menüsü her zaman kullanılabilir.",
-                    color = Muted, fontSize = 14.sp)
-            }
-            Switch(checked = wheelEnabled, onCheckedChange = onWheelEnabled)
         }
         HorizontalDivider(color = StrokeColor)
         Spacer(Modifier.height(18.dp))
