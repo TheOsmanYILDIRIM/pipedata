@@ -67,9 +67,17 @@ private val Muted = Color(0xFFBED0CC)
 private fun decimal(value: Double, digits: Int = 2): String =
     String.format(Locale.forLanguageTag("tr-TR"), "%." + digits + "f", value)
 
-// Presentation only: never round the stored catalogue dimensions or calculations.
-private fun compactDimension(value: Double, imperial: Boolean): String =
-    decimal(value, if (imperial) 3 else 2).trimEnd('0').trimEnd(',')
+// Presentation only: native inch data are exact to 0.001 in; their converted
+// nominal metric values are exact to 0.0001 mm. Normalize floating-point noise
+// before rounding to 2 visible places (168.275 mm must display 168,28 mm).
+private fun compactDimension(value: Double, imperial: Boolean): String {
+    val nominal = java.math.BigDecimal.valueOf(value)
+    val normalized = if (imperial) nominal else
+        nominal.setScale(4, java.math.RoundingMode.HALF_UP)
+    val shown = normalized.setScale(if (imperial) 3 else 2,
+        java.math.RoundingMode.HALF_UP).stripTrailingZeros()
+    return shown.toPlainString().replace(".", ",")
+}
 
 
 class MainActivity : ComponentActivity() {
