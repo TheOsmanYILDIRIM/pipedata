@@ -144,6 +144,10 @@ assert "val odMm: Double get() = odInches * 25.4" in kotlin
 assert "val wallMm: Double get() = wallInches * 25.4" in kotlin
 assert "val idMm: Double get() = idInches * 25.4" in kotlin
 screen = (ROOT / "app/src/main/java/com/avenox/pipedata/MainActivity.kt").read_text()
-assert "decimal(t, if (imperial) 3 else 4)" in screen
-assert "decimal(inner, if (imperial) 3 else 4)" in screen
+assert "private fun compactDimension(value: Double, imperial: Boolean)" in screen
+assert "compactDimension(t, imperial)" in screen
+assert "compactDimension(inner, imperial)" in screen
+# Display rounding must not replace the canonical exact catalogue dimension.
+assert "selectedDiameterMm ?: diameterInput" in screen
+assert "catalog.rows.distinctBy { it.odInches }" in screen
 print(f"PASS: {len(rows)} inch-native records, {len(EXPECTED_COUNTS)} NPS, exact decimal conversions")
