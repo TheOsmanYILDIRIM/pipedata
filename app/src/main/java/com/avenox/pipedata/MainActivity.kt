@@ -113,7 +113,7 @@ private fun PipeApp(catalog: PipeCatalog) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("pipe_preferences_v2", 0) }
     var unitImperial by rememberSaveable { mutableStateOf(prefs.getBoolean("imperial", true)) }
-    var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", true)) }
+    var largeText by rememberSaveable { mutableStateOf(prefs.getBoolean("large_text", false)) }
     var wheelEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("wheel_enabled", false)) }
     var languageSelection by rememberSaveable {
         mutableStateOf(prefs.getString("language", "system") ?: "system")
@@ -151,7 +151,9 @@ private fun PipeApp(catalog: PipeCatalog) {
     val pipe = catalog.rows.firstOrNull {
         it.nps == activeNps && it.schedule == activeSch && it.standard == standard
     } ?: catalog.rows.firstOrNull { it.nps == activeNps && it.schedule == activeSch }
-    val normalSp = if (largeText) 18 else 16
+    // Spacing stays in dp; text everywhere is scaled through LocalDensity.
+    val normalSp = 16
+    val baseDensity = LocalDensity.current
 
     LaunchedEffect(activeNps, activeSch, pipe?.standard) {
         if (nps != activeNps) nps = activeNps
@@ -165,14 +167,19 @@ private fun PipeApp(catalog: PipeCatalog) {
         else page = 0
     }
 
-    CompositionLocalProvider(CurrentUiLanguage provides language) {
+    CompositionLocalProvider(
+        CurrentUiLanguage provides language,
+        LocalDensity provides androidx.compose.ui.unit.Density(
+            baseDensity.density, baseDensity.fontScale * if (largeText) 1.22f else 1f
+        )
+    ) {
     Column(
         modifier = Modifier.fillMaxSize().background(Background).systemBarsPadding()
     ) {
         Box(Modifier.fillMaxWidth().heightIn(min = 62.dp).padding(horizontal = 12.dp),
             contentAlignment = Alignment.Center) {
             Text("Boruzi", color = White, fontWeight = FontWeight.SemiBold,
-                fontSize = if (largeText) 25.sp else 22.sp, textAlign = TextAlign.Center)
+                fontSize = 22.sp, textAlign = TextAlign.Center)
         }
         Box(Modifier.weight(1f)) {
             when (page) {
