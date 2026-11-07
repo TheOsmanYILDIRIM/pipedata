@@ -1090,7 +1090,9 @@ private fun PipeDial(nps: String, onStep: (Int) -> Unit, pipe: PipeSpec?,
                                 if (index == 0) Gold.copy(alpha = 0.58f)
                                 else StrokeColor.copy(alpha = 0.75f),
                                 RoundedCornerShape(13.dp))
-                            .semantics { contentDescription = cell.first }
+                            .then(if (index == 1) Modifier.semantics {
+                                contentDescription = cell.first
+                            } else Modifier)
                             .clickable {
                                 onEdit(cell.third)
                                 if (index == 0 && tutorialStep == 2) onOdTapped()
